@@ -1,0 +1,1192 @@
+<html>
+<head>
+<title>Weather Station Monitor</title>
+<script src="res/jquery-2.1.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="res/external/smoothness/jquery-ui.min.css">
+<link rel="stylesheet" type="text/css" href="res/external/dist/themes/default/style.min.css" />
+<script type="text/javascript" src="res/external/jquery-ui.min.js"></script> <!-- jquery ui library -->
+<script type="text/javascript" src="res/external/jquery-ui-touch-punch-min.js"></script> <!-- jquery ui library -->
+<script src="res/external/dist/jstree.js"></script>
+<script src="http://cam.aprsworld.com:8888/res/swfobject-2.2.min.js"></script> <!-- SWFObject [Flash fallback for web_socket_js] -->
+<script src="http://cam.aprsworld.com:8888/res/web-socket-js/web_socket.js"></script> <!-- git.com/gimite/web-socket-js WebSockets Compatibility Fall-Back library -->
+<!-- Global Settings for web-socket-js library -->
+<script>WEB_SOCKET_SWF_LOCATION = "res/web-socket-js/WebSocketMain.swf";</script>
+<script src="http://cam.aprsworld.com:8888/js/wsb-client.js"></script> <!-- WebSockets Broadcast Client -->
+<script>
+/***** Global variables ********/
+var time; //incremental variable that keeps track of time since last data update
+var camTime = 0; //incremental variable that keeps track of time since last camera image update
+var newImage; // variable that holds url of new camera image
+var lastImage; // variable tha tholds url of last camera image
+var lastkey;
+var id_arr = [];
+var path_arr = [];
+var name_arr = [];
+var originalTable = [];
+var savedStates = []; //set of saved table states in the format of a multi Dimensional array consisting of coordinates of each cell
+var textBlocks = []; //array to keep track of ids of generated text blocks
+var imgBlocks = []; //array to keep track of ids of generated images
+var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
+var editMode = false; //boolean that determines whether we are in edit mode or not
+/*******************************/
+function table_generate(data) {
+    var $dtable = $('<table border=1></table>');
+    for (var p in data) {
+        var $drow = $('<tr></tr>');
+        var $th = $('<th></th>');
+        $th.text(p);
+        $drow.append($th);
+        // Nest Objects
+        if (typeof data[p] === 'object') {
+            $drow.append(table_generate(data[p]));
+        } else {
+            var $td = $('<td></td>');
+            $td.text(data[p]);
+            $drow.append($td);
+        }
+        $dtable.append($drow);
+    }
+    return $dtable;
+}
+
+function data_error(errors, delay) {
+    $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
+}
+
+/*
+The three iterate functions below form IDs, names, and paths to our objects and they put them in arrays of equal size to be accessed later.
+All three functions work in a recursive manner by finding each nested property and determining whether that property is an object or not
+once a non-object property is found, it pushes the entire thing to an array
+*/
+function iterateID(obj, stack) {
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] == "object") { //is this property an object? then find next property
+                lastkey = property; //keeps track of last property which is stored in a global variable
+                iterateID(obj[property], stack + '.' + property); //combine stack and property and call function recurssively
+            } else {
+                //console.log(property + "   " + obj[property]);
+                var id = "ws_" + stack + "_" + property;
+                id = id.replace(/\s+/g, '_'); //replaces spaces with underscores to comply with html standards
+                id = id.replace(/\./g, ""); //removes periods since one function that uses these ids splits the string using periods as a delimiter
+                id_arr.push(id);
+            }
+        }
+    }
+    return id_arr;
+}
+
+function iterateName(obj, stack) {
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] == "object") { //is this property an object? then find next property
+                lastkey = property; //keeps track of last property which is stored in a global variable
+                iterateName(obj[property], stack + '.' + property); //combine stack and property and call function recurssively
+            } else {
+                var name = lastkey + " " + property;
+                parts = name.split("."); //split the string using period as a delimiter
+                name_arr.push(parts[parts.length - 1]); //only return last two properties on the stack		
+            }
+        }
+    }
+    return name_arr;
+}
+
+function iteratePath(obj, stack) {
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] == "object") { //is this property an object? then find next property
+                lastkey = property; //keeps track of last property which is stored in a global variable
+                iteratePath(obj[property], stack + '.' + property); //combine stack and property and call function recurssively
+            } else {
+                var path = stack + '.' + property;
+                path_arr.push(path);
+            }
+        }
+    }
+    return path_arr;
+}
+function iterateStations(obj, stack, arr, lastk) {
+	for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] == "object") { //is this property an object? then find next property
+				var jsonItem = {};
+				var id = ("ws_" + stack+property+"_x").replace(/\./g, "");				
+				var path = stack + '.' + property;
+				var parent = ("ws_"+stack+"_x").replace(/\./g, "");
+				if(parent == "ws__x"){ //case for root node
+					parent = "#";	
+				}
+				jsonItem ["id"] = id;
+				jsonItem ["parent"] = parent;
+				//checks for specific child properties of nested object - this will allow for dynamically adding units and titles to the cells
+				if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units']){
+					jsonItem ["id"] = id;
+					jsonItem ["parent"] = parent;
+					//case for all three child properties existing
+					if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['value'] && 'undefined' !== typeof obj[property]['units']){
+						jsonItem ["text"] = obj[property]['title'];
+						jsonItem ["obj"] = {"path": stack + '.' + property + ".value", "value": obj[property]['value'], "units": obj[property]['units'], "title": obj[property]['title']};
+					}
+					//case for missing title property
+					else if('undefined' !== typeof obj[property]['value'] && 'undefined' !== typeof obj[property]['units']){
+						jsonItem ["text"] = property;
+						jsonItem ["obj"] = {"path": stack + '.' + property + ".value", "value": obj[property]['value'], "units": obj[property]['units']};
+					}
+					//case for missing value property
+					else if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['units']){
+						jsonItem ["obj"] = {"path": stack + '.' + property, "units": obj[property]['units'], "title": obj[property]['title']};
+					}
+					//case for missing units property
+					else if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['value']){
+						jsonItem ["obj"] = {"path": stack + '.' + property + ".value", "value": obj[property]['value'], "title": obj[property]['title']};
+					}
+					//case fo rmissing units and value property
+					else if('undefined' !== typeof obj[property]['title']){
+						jsonItem ["obj"] = {"path": stack + '.' + property, "title": obj[property]['title']};						
+					}
+					//case for missing units and title property
+					else if('undefined' !== typeof obj[property]['value']){
+						jsonItem ["text"] = property;
+						jsonItem ["obj"] = {"path": stack + '.' + property + ".value"};						
+					}
+					//case for missing value and title property
+					else if('undefined' !== typeof obj[property]['units']){
+						jsonItem ["text"] = property;
+						jsonItem ["obj"] = {"path": stack + '.' + property, "units": obj[property]['units']};												
+					}
+					arr.push(jsonItem);
+				}
+				//if not child properties, recurssively call function once more to find next level of objects/properties
+				else{
+					jsonItem ["id"] = id;
+					jsonItem ["parent"] = parent;
+					jsonItem ["text"] = property;
+					jsonItem ["obj"] = {"path": stack + '.' + property};
+					arr.push(jsonItem)
+					lastk = property; //keeps track of last property which is stored in a global variable
+					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
+				}
+            } else {
+				var jsonItem = {};
+				var id = ("ws_" + stack+property+"_x").replace(/\./g, "");
+				var path = stack + '.' + property;
+				var parent = ("ws_"+stack+"_x").replace(/\./g, "");
+				jsonItem ["id"] = id;
+				jsonItem ["parent"] = parent;
+				jsonItem ["text"] = property;
+				jsonItem ["obj"] = {"path": stack + '.' + property};
+                arr.push(jsonItem);
+            }
+        }
+    }
+	var jsonString = JSON.stringify(arr);
+    return jsonString;
+}
+/*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
+function ref(obj, str) {
+    str = str.split("."); //splits the dot notation
+    for (var i = 1; i < str.length; i++) {
+        obj = obj[str[i]];
+    }
+    return obj;
+}
+
+/*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
+function dynamicUpdate($id_arr, $path_arr, data) {
+    for ($i = 0; $i < $id_arr.length; $i++) {
+		var value = ref(data, $path_arr[$i]); //finds value of object
+        $('div#' + $id_arr[$i] + '').children('p').text(value);
+    }
+}
+
+/*function that is in charge of setting up the table that holds all of the values*/
+function create_table($id_arr, $name_arr) {
+    var $myTable = "";
+    for ($i = 0; $i < $id_arr.length; $i++) { //generates the divs that hold all of our values
+        $myTable += '<div class="tr draggable" id="' + ($i + 1) + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + ($i + 1) + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ $name_arr[$i] +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + $name_arr[$i] + '</p></div><div class="td myTableValue" id="' + $id_arr[$i] + '"><p>Loading...</p> <span class="label"></span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>';
+    }
+
+    return $myTable;
+}
+
+/* maps the ids and left/top coordinate of each div in "table"*/
+function mapTable($id_arr) {
+    var table = [];
+    for ($i = 0; $i < $id_arr.length; $i++) { //loops through every .tr div
+        var id = $('#' + $id_arr[$i]); //gets id
+        var top = $('#' + $id_arr[$i]).closest('.tr').css('top'); //gets top cooridinate of div
+        var left = $('#' + $id_arr[$i]).closest('.tr').css('left'); //gets left coordinate
+        var hidden = $('#' + $id_arr[$i]).closest('.tr').children('.dg-arrange-table-rows-close-icon').find('input[type="checkbox"]').prop('checked'); //gets checkbox status
+        var title = $('#' + $id_arr[$i]).closest('.tr').children('.myTableTitle').children('.titleText').text(); //gets title value
+		var label =  $('#' + $id_arr[$i]).closest('.tr').children('.myTableValue').children('.label').text(); //gets label
+		var position_arr = [id, top, left, hidden, title, label];
+		table.push(position_arr);
+    }
+    savedStates.push(table);
+    //append an option to the select input on the control bar for our newly saved state
+    var option = document.createElement("option");
+    if ($('#saveAs').val() !== '') {
+        option.text = $('#saveAs').val();
+    } else {
+        option.text = "Table#" + savedStates.length;
+    }
+    option.value = savedStates.length - 1;
+    $('#stateSelect').append(option);
+}
+function getStations(data){
+	var stations = [];
+	var stationData =[];
+	var lastk = "#";
+	for(var k in data){
+		if( i = 0){
+			//do nothing since this is not a station	
+		}
+		else{
+			var station_arr;
+			stations.push(k);
+			iterateStations(k, "",station_arr, lastk);
+		}
+	}
+}	
+function getCamData(data){
+	var pairs = []; //array to hold serial key pairs
+	var serials; //names of each camera
+	var keys; //image url source for each camera
+	var path
+	var i = 0;
+	for(var k in data){
+		if( i = 0){
+			//do nothing since this is not a station	
+		}
+		else{
+			for(var c in data[k]['cameras']){
+				var stationName = k;
+				var camNumber = c;
+				keys = (data[k]['cameras'][c]['image_url']);
+				serials = (data[k]['cameras'][c]['source_serial']);
+				path = stationName+"cameras"+camNumber;
+				pairs.push([serials, keys, path]);
+			}
+		}
+	}
+	return pairs;
+}
+function populateCams(cam_arr){
+	for(var i =0; i<cam_arr.length; i++){
+		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"></div>');
+		$('#preload').append('<img id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
+	}	
+}
+function createCamFromTree(tree_id){
+	var selection = tree_id;
+	console.log('create ' + tree_id);
+	$("#div_"+selection).css('display','inline');
+	$('.imgCamContainer').draggable({
+					start: function(event, ui) {
+							$('.controls').animate({
+								width: '10px'
+							},100);
+							$('.editWindow').animate({
+								width: '0px',
+								margin: '0',
+								padding: '0'
+							},50);
+							$('.controlRow').hide();
+							$('.controls h2').hide();
+						},
+					stop: function(event, ui) {
+						$('.controls').animate({
+							width: '250px'
+						},200);
+						$('.editWindow').animate({
+							width: '280px',
+							margin: '10px',
+							padding: '20px'
+						},200);
+						$('.controlRow').show();
+						$('.controls h2').show();
+					},
+					disabled: false}).resizable({disabled: false, aspectRatio: true});
+	preloadCam(selection);
+	$('#preload_div_'+selection).load(function() {
+		//console.log($('#preload_div_'+selection).naturalWidth);
+	});
+}
+	
+//function that refreshes cams and preloads the refreshed image before displaying it	
+function refreshCams(cam_arr){
+	//iterates through known cams
+	for(var i =0; i<cam_arr.length; i++){
+		//only finds cams that are visible
+		if($('#div_ws_'+cam_arr[i][2]+'image_url_x').is(":visible")){
+			//the camera image is not displayed until the image is done loading
+			$('#preload_div_ws_'+cam_arr[i][2]+'image_url_x').load(function() {
+				var src = $(this).attr('src');
+				var cam = $(this).attr('id').replace("preload_","");
+				$("#"+cam).css('background-image','url('+src+')');
+			});
+			//src is set after the .load() function
+			$('#preload_div_ws_'+cam_arr[i][2]+'image_url_x').attr('src',cam_arr[i][1]);		
+			
+		}
+	}
+}	
+function preloadCam(selection){
+	var url = $('#'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
+	$('#preload_div_'+selection).attr('src', url);
+
+}
+/* resets div positions to a selected saved state*/
+function resetTable($originalTable) {
+    console.log($originalTable);
+    console.log(savedStates);
+    for ($i = 0; $i < $originalTable.length; $i++) { //pull id, coordinates, hidden state and title out of array
+        var id = $originalTable[$i][0];
+        var top = $originalTable[$i][1];
+        var left = $originalTable[$i][2];
+        var hidden = $originalTable[$i][3];
+		var title = $originalTable[$i][4];
+		var label = $originalTable[$i][5];
+        if (hidden === true) {
+            $($originalTable[$i][0]).closest('.tr').children('.dg-arrange-table-rows-close-icon').find('input[type="checkbox"]').prop('checked', true);
+            if (editMode === false) { //hides the cell if we are not editing the table.
+                id.parent().css('visibility', 'hidden');
+            }
+        } else {
+            $($originalTable[$i][0]).closest('.tr').children('.dg-arrange-table-rows-close-icon').find('input[type="checkbox"]').prop('checked', false);
+            id.parent().css('visibility', 'initial');
+        }
+        $(id).closest('.tr').css('left', left);
+        $(id).closest('.tr').css('top', top);
+		$(id).closest('.tr').children('.myTableTitle').find('p').text(title);
+		$(id).closest('.tr').children('.myTableValue').find('.label').text(label);
+    }
+}
+function fontSizeChange(direction, id){
+	var fontsize = $('#'+id).css('font-size');
+	if(direction == 'decrease'){
+		fontsize = fontsize.replace("px",'');
+		fontsize = (parseInt(fontsize)-1).toString();
+		fontsize = fontsize+"px";
+		$('#'+id).css('font-size', fontsize);
+	}
+	else if(direction == 'increase'){
+		fontsize = fontsize.replace("px",'');
+		fontsize = (parseInt(fontsize)+1).toString();
+		fontsize = fontsize+"px";
+		$('#'+id).css('font-size', fontsize);	
+	}
+	$('#fontSize').val((fontsize).slice(0,-2));
+}
+function timer(){
+	camTime = camTime+1;
+	time = time+1;
+	$('#timer').text("Last data received " + time + " seconds ago ");
+	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
+	if(time > 30){
+		$('#timer').text("30+ seconds since last data received. Try refreshing your browser window.");
+	}
+	if(camTime > 90){
+		//$('#camTimer').text("90+ seconds since last camera image received. Try refreshing your browser window.");	
+	}
+}
+/*function that periodically updates the data */
+function data_update(data) {
+	time=0;
+	var cams = getCamData(data);
+    if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
+        //path_arr = iteratePath(data, '');
+		var cellCount = 0;
+        $(".draggable").draggable({ //makes our data cells draggable
+            disabled: true,
+			grid: [1, 1],
+            snap: true,
+            snapTolerance: 10,
+            start: function(event, ui) {
+                $(this).addClass('draggable_focus_in');
+            },
+            stop: function(event, ui) {
+                $(this).removeClass('draggable_focus_in');
+            }
+        });
+        $("#ws_status").draggable({}); //makes the little green "connected" span draggable
+        $(".controls").resizable({ //makes our controls div resizable and draggable
+            minHeight: 70,
+			maxWidth: 250	
+        });
+        $(document).ready(function() {
+			setInterval(timer,1000);
+			populateCams(cams);
+			var lastk = "#";
+			var jsonArray = [];
+			var json = iterateStations(data, "", jsonArray, lastk);
+			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray}})});
+			$("#stationTree").bind("open_node.jstree", function (event,  data) {
+				$(".jstree-leaf").draggable({
+					helper: "clone",
+					start: function (event, ui) {
+						$('.controls').animate({
+							width: '10px'
+						},100);
+						$('.editWindow').animate({
+							width: '0px',
+							margin: '0',
+							padding: '0'
+						},50);
+						$('.controlRow').hide();
+						$('.controls h2').hide();
+						
+					},
+					stop: function (event, ui) {
+						$('.controls').animate({
+							width: '250px'
+						},200);
+						$('.editWindow').animate({
+							width: '280px',
+							margin: '10px',
+							padding: '20px'
+						},200);
+						$('.controlRow').show();
+						$('.controls h2').show();
+					}
+				});
+			});
+			$(".top-container").droppable({
+        		accept: '.jstree-leaf',
+				drop: function( event, ui ) {
+					var $element, $me, $newElement;
+					
+					$element = $(ui.draggable);
+					var id = $($element).attr('id');
+					var new_id = "div_"+id;
+					var treeNode = $.jstree.reference('#stationTree').get_node(id);
+					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+					var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
+					var units;
+					
+					if($('#stationTree').jstree(true).get_node(id).original.obj.units){
+						units = $('#stationTree').jstree(true).get_node(id).original.obj.units;
+					}
+					else{
+						units = "";
+					}
+					var title;
+					if($('#stationTree').jstree(true).get_node(id).original.obj.title){
+						title = $('#stationTree').jstree(true).get_node(id).original.obj.title; 
+					}
+					else{
+						title = $($element).text();
+					}
+					path_arr.push(path);
+					id_arr.push(new_id);
+					console.log("IDs " + id_arr);
+					console.log("paths " + path_arr);
+					var pageX = event.pageX;
+					var pageY = event.pageY;
+					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
+					if(id.indexOf("image_url") >= 0){
+						createCamFromTree(id);
+						$('#div_'+id).css('position', 'absolute');
+						$('#div_'+id).css('top',pageY);
+						$('#div_'+id).css('left',pageX);
+					cellCount++;
+					}
+					else{
+						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ title +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + id_arr[cellCount] + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label">'+ units +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
+						$(".draggable").draggable({ //makes our data cells draggable
+							disabled: true,
+							grid: [1, 1],
+							snap: true,
+							snapTolerance: 10,
+							start: function(event, ui) {
+								$(this).addClass('draggable_focus_in');
+								$('.controls').animate({
+									width: '10px'
+								},100);
+								$('.editWindow').animate({
+									width: '0px',
+									margin: '0',
+									padding: '0'
+								},50);
+								$('.controlRow').hide();
+								$('.controls h2').hide();
+							},
+							stop: function(event, ui) {
+								$(this).removeClass('draggable_focus_in');
+								$('.controls').animate({
+									width: '250px'
+								},200);
+								$('.editWindow').animate({
+									width: '280px',
+									margin: '10px',
+									padding: '20px'
+								},200);
+								$('.controlRow').show();
+								$('.controls h2').show();
+							}
+						}).resizable({});						
+						$(".draggable").draggable({ disabled: false});
+						$('#'+cellCount).css('position', 'absolute');
+						$('#'+cellCount).css('top',pageY);
+						$('#'+cellCount).css('left',pageX);
+					cellCount++;
+					}
+				}
+			});		
+        });
+	}
+    started = true; //sets our boolean to true so the above only executes once
+	refreshCams(cams);
+    dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
+
+	/*newImage = data.DEEPLAKE.image_url;
+//compares the last image url to the new image url and checks if it is different. If it is, it resets the timer for the camera.
+	if(!Object.is(newImage, lastImage)){
+		camTime = 0;
+		lastImage = data.DEEPLAKE.image_url;
+	}		
+	$('#ws_image_preload').attr('src', data.DEEPLAKE.image_url); //preloads the image so that we don't get a "scan-line" effect when the image loads on a slow internet connection
+	$('#ws_image_preload').load(function() {
+        $('#ws_image').attr('src', data.DEEPLAKE.image_url);
+		
+    });
+    $('#ws_image').attr('alt', 'Image from ' + data['DEEPLAKE']._bserver_['date']);
+*/
+}
+/*function initiates the data transfer*/
+function data_start() {
+    data_object = new BroadcastClient({
+        callback_update: data_update,
+        callback_error: data_error,
+        // XXX: These are temporary
+        url_ajax: 'http://cam.aprsworld.com:8888/.data',
+        url_ws: 'ws://cam.aprsworld.com:1228/.data'
+    });
+    document.title = 'APRSWorld LLC, wsBroadcast System';
+    $('#header').html('<div class="logo_container"> </div><h1>DEEPLAKE Station Monitor</h1>');
+    $('#ws_status').text('Connecting...');
+}
+	
+/*function that is called when the edit table button is pressed. The function sets the drag and hide toggles to be unhidden*/
+function editTable() {
+    $('.dg-arrange-table-rows-drag-icon').each(function() {
+		//initialize variables
+		var row, td, id, close, title, titleEdit, titleText, label, labelEdit, labelText, formulaEdit;
+		
+        row = $(this).parent();
+        td = $(this);
+        id = $(row).children('.myTableID');
+        close = $(row).children('.dg-arrange-table-rows-close-icon');
+		title = $(row).children('.myTableTitle').children('p');
+		titleEdit = $(row).children('.myTableTitle').children('.titleEdit');
+		titleText = title.text();
+		label = $(row).children('.myTableValue').children('.label');
+		labelEdit = $(row).children('.myTableTitle').children('.labelEdit');
+		labelText = label.text();
+		console.log(titleText);
+        formulaEdit = $(row).children('.myTableTitle').children('.formulaEdit');
+					
+		$('.container .myTableTitle').css('width', '75%');
+        $('.container .myTableTitle').css('clear', 'none');
+        $('.container .myTableTitle').css('background-color', 'transparent');
+        $('.container .myTableTitle').css('height', '50px');
+		$('.container .myTableValue').hide(); //hide value for the sake of editing
+		$(title).hide(); //hide title text for editing
+		$(titleEdit).val(titleText); //import the current title tex tinto the edit input field
+		$(titleEdit).show();
+		$(labelEdit).val(labelText); //import the current label text into the edit label field
+		$(labelEdit).show();
+        $(row).css('visibility', 'initial'); //makes the cell visible
+        $(td).show(); //shows drag icon
+        $(close).show(); //shows the close button
+    });
+    editMode = true;
+	$('.drag-handle').show();
+    $('#editTable').text('Finish Modifying');
+    $('#editTable').attr('onclick', 'disableEdit()');
+}
+/*function that is called when the ok button is pressed. The function sets the drag and hide toggles to be hidden and hides rows where the hidden button is checked*/
+function disableEdit() {
+    $('.dg-arrange-table-rows-close-icon').each(function(index) {
+		//initialize variables
+		var row, td, id, move, title, titleEdit, titleChangedText, label, labelEdit, labelChangedText, formulaEdit, formulaVal;
+		
+        row = $(this).parent();
+        td = $(this);
+        id = $(row).children('.myTableID');
+        move = $(row).children('.dg-arrange-table-rows-drag-icon');
+		title = $(row).children('.myTableTitle').children('p');
+		titleEdit = $(row).children('.myTableTitle').children('.titleEdit');
+		titleChangedText = titleEdit.val();
+		label = $(row).children('.myTableValue').children('.label');
+		labelEdit = $(row).children('.myTableTitle').children('.labelEdit');
+		labelChangedText = labelEdit.val();
+
+		if (td.children().is(':checked')) {
+            row.css('visibility', 'hidden');
+        }
+		$(title).text(titleChangedText);
+		$(titleEdit).hide();	
+		$(title).show();
+		$(label).text(labelChangedText);
+		$(labelEdit).hide();	
+		$(label).show();
+        td.hide();
+        id.hide();
+        move.hide();
+        $('.container .myTableTitle').css('width', '100%');
+        $('.container .myTableTitle').css('clear', 'both');
+        $('.container .myTableTitle').css('background-color', 'rgba(0,0,0,.35)');
+        $('.container .myTableTitle').css('height', '20px');
+        $('.container .myTableValue').show();
+    });
+    editMode = false;
+	$('.drag-handle').hide();
+	$('#imageHide').hide();
+	$('.cam-drag-handle').hide();
+    $('#editTable').text('Modify Table');
+    $('#editTable').attr('onclick', 'editTable()');
+}
+function createText(){
+	var textBlock, textTitle, textContent, title, index;
+	
+	index = textBlocks.length;
+	//set default text
+	textContent = "Click to change text";
+	//create a div to hold the text
+	textBlock = document.createElement("div");
+	textBlock.className = "textBlockContainer";
+	//incremental ID attribute
+	textBlock.id = "block"+index;
+	//appends a textblock to the div with our default text
+	$(textBlock).append('<p>'+textContent+'</p>');
+	//appends the textblock to the page
+	$('#content').append(textBlock);
+	//pushes our id to the global array
+	textBlocks.push("block"+index);
+	//makes block draggable and resizable
+	$(".textBlockContainer").draggable({
+					disabled: false,
+					start: function(event, ui) {
+								$(this).addClass('draggable_focus_in');
+								$('.controls').animate({
+									width: '10px'
+								},100);
+								$('.editWindow').animate({
+									width: '0px',
+									margin: '0',
+									padding: '0'
+								},50);
+								$('.controlRow').hide();
+								$('.controls h2').hide();
+							},
+					stop: function(event, ui) {
+						$(this).removeClass('draggable_focus_in');
+						$('.controls').animate({
+							width: '250px'
+						},200);
+						$('.editWindow').animate({
+							width: '280px',
+							margin: '10px',
+							padding: '20px'
+						},200);
+						$('.controlRow').show();
+						$('.controls h2').show();
+					}
+					}).resizable({
+						disabled: false
+					});	
+}
+	
+function createImage(){
+//unhide inputs
+	$('#createTextTitle').hide();
+	$('#createTextBody').hide();
+	$('#createImageURL').show();
+	$('#createImageURL').val('');
+	$('#createImg').text('Submit URL');
+	$('#createText').text('Create Text');
+//change function of button
+    $('#createText').attr('onclick', 'createText()');
+    $('#createImg').attr('onclick', 'submitURL()');
+}
+function submitURL(){
+	var imgURL, index;
+	index = imgBlocks.length;
+	imgBlocks.push("img"+index);
+	imgURL = $('#createImageURL').val();
+	if(imgURL != ""){
+		$('#content').append('<div class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src='+imgURL+'></img></div>');
+		$(".imgBlockContainer").draggable({
+		start: function(event, ui) {
+		$(this).addClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '10px'
+			},100);
+			$('.editWindow').animate({
+				width: '0px',
+				margin: '0',
+				padding: '0'
+			},50);
+			$('.controlRow').hide();
+			$('.controls h2').hide();
+		},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+		});
+		$("#img"+index+"").resizable({ 
+					disabled: false,
+					minHeight: 70,
+					minWidth: 150,
+					aspectRatio: true
+		});	
+	}
+}
+function refreshTree(){
+	$('#stationTree').jstree(true).refresh();
+}
+/* function that removes an image if it returns a 404 error.*/
+function brokenImg(id){
+	alert('invalid URL');
+	$(id).closest('.imgBlockContainer').remove();
+}
+var editWindow =  function() {
+	var selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
+	titleChange = $('.titleChange');
+	labelChange = $('.labelChange');
+	bodyChange = $('.bodyChange');
+	urlChange = $('.urlChange');
+	fontSize = $('#fontSize');
+	fontPlus = $('#fontSizePlus');
+	fontMinus = $('#fontSizeMinus');
+	bgColor = $('.backgroundColorChange');
+	textColor= $('.textColorChange');
+	
+	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow').hide();
+	$('.editWindow').show(150).draggable({});
+	selectedModule = $(this).attr('id');
+	console.log($(this));
+	if($(this).hasClass('imgCamContainer')){
+		$('.editWindow h2').text("Edit Camera");
+		// delete event hanlder
+		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#deleteModule" , function() {	
+			$("#"+selectedModule).hide();
+			$('.editWindow').hide(150);
+		});
+	}
+	else if($(this).hasClass('textBlockContainer')){
+		$('#bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow').show();
+		$('.editWindow h2').text("Edit Text Block");
+		id = $(this).attr('id');
+		body = $(this).children('p');
+		$(bodyChange).val(body.html());
+		$(bgColor).val($('#'+id).css('background-color'));
+		$(textColor).val($('#'+id).children('p').css('color'));
+		
+		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
+		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
+		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
+		
+		//fontsize input change event handler
+		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input#fontSize" , function() {	
+			fontsize = $('#'+id).css('font-size');
+			$('#'+id).css('font-size', fontSize.val());				
+		});
+		//background color input change event handler
+		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
+			var enteredColor = bgColor.val();
+			$('#'+id).css('background-color', enteredColor);				
+		});
+		//color input change event handler
+		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.textColorChange" , function() {	
+			var enteredTextColor = textColor.val();
+			$('#'+id).children('p').css('color', enteredTextColor);				
+		});
+		// delete event hanlder
+		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#deleteModule" , function() {	
+			$("#"+selectedModule).remove();
+			$('.editWindow').hide(150);
+		});
+		$( document ).off( "keyup", "textarea.bodyChange"); //unbind old events, and bind a new one		
+		$( document ).on( "keyup", "textarea.bodyChange" , function() {	
+			var enteredText = bodyChange.val();
+			//allows line breaks and consecutive spaces but also replaces "<" with the entity to remove possibility of script injection
+			enteredText = enteredText.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/\n/g,  "<br>");
+			$(body).html(enteredText);
+		});
+	}
+	else if($(this).hasClass('imgBlockContainer')){
+		$('#urlRow').show();
+		$('.editWindow h2').text("Edit Image");
+		selectedModule = $(this).children().children('img').attr('id');
+		url = $(this).find('img');
+		$(urlChange).val(url.attr('src'));
+		
+		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
+		$( document ).on( "paste", "input.urlChange" , function() {	
+			console.log('fired');
+			var element = this;
+ 			setTimeout(function () {
+				url.attr('src', urlChange.val());
+			}, 100);	 
+		});
+		
+		// delete event hanlder
+		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#deleteModule" , function() {
+			$("#"+selectedModule).parent().parent().remove();
+			$('.editWindow').hide(150);
+		});
+		
+	}
+	else if($(this).hasClass('tr')){
+		$('#titleRow, #labelRow, #fontSizeRow').show();
+		$('.editWindow h2').text("Edit Cell");
+		title = $(this).children('.myTableTitle').children('p');
+		label = $(this).children('.myTableValue').children('.label');
+		value = $(this).children('.myTableValue');
+		id = $(this).children('.myTableValue').attr('id');
+		originalTitle = $(this).children('.myTableID').children('span').text();
+
+		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
+		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
+		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
+
+		//fontsize input change event handler
+		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input#fontSize" , function() {	
+			fontsize = $('#'+id).css('font-size');
+			$('#'+id).css('font-size', fontSize.val());				
+		});
+		//title change event handler
+		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.titleChange" , function() {	
+			title.text(titleChange.val());
+			//gets makes background-color on title transparent if the title field is empty
+			if(titleChange.val() == ""){
+				title.parent().css('background-color','transparent');	
+			}
+			else{
+				title.parent().css('background-color','rgba(0, 0, 0, 0.35)');	
+			}
+		});
+		// label change event handler
+		$( document ).off( "keyup", "input.labelChange"); //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.labelChange" , function() {	
+			label.text(htmlEntities(labelChange.val()));
+		});
+		// delete event hanlder
+		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#deleteModule" , function() {	
+			$("#"+selectedModule).remove();
+			$('.editWindow').hide(150);
+		});
+		//tool tip shows original title
+		$(titleChange).attr('title','Original Title: '+originalTitle);
+		$(titleChange).val(title.text());
+		$(labelChange).val(label.text());
+	}
+	if($("#"+selectedModule).hasClass('hide')){
+		$('#hideModule').attr('onclick', "showModule('"+ selectedModule +"')");
+		$('#hideModule').text('Unhide selected');
+	}
+	else{
+		$('#hideModule').attr('onclick', "hideModule('"+ selectedModule +"')");
+		$('#hideModule').text('Hide selected');
+	}
+};
+function edit(handler) {
+	$('#masterEdit').css('background-color','green');
+	$('#masterEdit').attr('onclick', 'nonEdit()');
+	$('.tr').css('cursor','pointer');
+	$('.textBlockContainer').css('cursor','pointer');
+	$('.hide').css('visibility','visible');
+	$('.controls').show(200);
+	//delegate events
+	$('.top-container').delegate('.tr','click', editWindow);
+	$('#content').delegate('.textBlockContainer','click', editWindow);	
+	$('#content').delegate('.imgBlockContainer','click',editWindow);
+	$('#content').delegate('.imgCamContainer','click',editWindow);
+
+	
+	//enable draggables and resizables
+	$('.ui-icon').show();
+	$(".jstree-leaf").draggable({
+		helper: "clone"
+	});
+	$(".imgCamContainer").draggable({disabled: false}).resizable({disabled: false});
+	$(".draggable").draggable({ disabled: false}).resizable({disabled:false});
+	$('#ws_status').draggable({disabled: false}).resizable({disabled:false});
+	$('.textBlockContainer').draggable({disabled: false}).resizable({disabled: false});
+	$('.imgBlockContainer').draggable({disabled: false}).resizable({disabled: false});
+}
+function nonEdit(handler) {
+	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
+	$('#masterEdit').attr('onclick', 'edit()');
+	$('.tr').css('cursor','initial');
+	$('.textBlockContainer').css('cursor','initial');
+	$('.hide').css('visibility', 'hidden');
+	$('.editWindow').hide(150);
+	$('.controls').hide(200);
+	//delegate events
+	$('#content').undelegate('.textBlockContainer','click', editWindow);
+	$('.top-container').undelegate('.tr','click', editWindow);
+	$('#content').undelegate('.imgBlockContainer','click',editWindow);
+	$('#content').undelegate('.imgCamContainer','click',editWindow);
+	
+	//disable draggables and resizables
+	$('.ui-icon').hide();
+	$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
+	$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
+	$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
+	$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
+	$('.imgBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
+}
+function hideModule(id) {
+	console.log(id);
+	$("#"+id).addClass('hide');
+	$("#"+id).css('opacity','.2');
+	$('#hideModule').attr('onclick', "showModule('"+ id +"')");	
+	$('#hideModule').text('unhide selected');
+}
+function showModule(id) {
+	$("#"+id).css('opacity','1.0');
+	$("#"+id).removeClass('hide');
+	$('#hideModule').attr('onclick', "hideModule('"+ id +"')");
+	$('#hideModule').text('hide selected');
+}
+//function that allows for the safe decoding of html entities	
+function htmlEntities(str) {
+   	var decoded = $('<div/>').html(str).text();
+	return decoded
+}
+/*A function that will iterate through all instances of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" class selectors
+and record all relevant data from the elements with these classes, create objects using the data as properties, and then load the objects into
+individual arrays for each type of selector class. once Each array has been created, a saved state array will encompass all of the data.*/
+function captureState(){
+	//saved_state array to hold individual object arrays
+	var saved_State = [];
+	//object arrays for different types of objects
+	var cells = [];
+	var text_Blocks = [];
+	var cameras = [];
+	var img_Blocks = [];
+	//object for storing data
+	var SavedElement = function SavedElement() {
+		//default attributes
+		SavedElement.prototype.top;
+		SavedElement.prototype.left;
+		SavedElement.prototype.width;
+		SavedElement.prototype.height;
+		SavedElement.prototype.fontSize;
+		SavedElement.prototype.fontColor;
+		SavedElement.prototype.bgColor;
+		SavedElement.prototype.id;
+		SavedElement.prototype.innerHTML;
+		SavedElement.prototype.src;
+		SavedElement.prototype.title;
+		SavedElement.prototype.label;
+		SavedElement.prototype.path;
+		SavedElement.prototype.divID;	
+		SavedElement.prototype.hidden;	
+		
+	}
+	//iterate through cells currently on screen
+	$( '.tr' ).each(function( index ) {
+		//create an instance of the SavedElement object
+		var savedCell = new SavedElement;
+		//set attributes to the values of the current cell
+		savedCell.top = $(this).css('top');
+		savedCell.left = $(this).css('left');
+		savedCell.width = $(this).css('width');
+		savedCell.height = $(this).css('height');
+		savedCell.title = $(this).children('.myTableTitle').children('.titleText').text();
+		savedCell.label = $(this).children('.myTableValue').children('.label').text();
+		savedCell.fontSize = $(this).children('.myTableValue').css('font-size');
+		savedCell.divID = $(this).attr('id');
+		savedCell.id = $(this).children('.myTableValue').attr('id');
+		savedCell.path = $(this).children('.myTableValue').children('.path').text();
+		if($(this).hasClass("hide")){
+				savedCell.hidden = true;
+		}
+		//push the object to the cell array
+		cells.push(savedCell);
+	});
+	//iterate through user created images
+	$( '.imgBlockContainer' ).each(function( index ) {
+		//create an instance of the SavedElement object
+		var savedImg = new SavedElement;
+		//set attributes to the values of the current image
+		savedImg.top = $(this).css('top');
+		savedImg.left = $(this).css('left');
+		savedImg.width = $(this).children('.ui-wrapper').children('img').css('width');
+		savedImg.height = $(this).children('.ui-wrapper').children('img').css('height');
+		savedImg.src = $(this).children('.ui-wrapper').children('img').attr('src');
+		savedImg.id = $(this).children('.ui-wrapper').children('img').attr('id');
+		if($(this).hasClass("hide")){
+				savedImg.hidden = true;
+		}
+		//push the object to the img_Blocks array
+		img_Blocks.push(savedImg);
+	});
+	//iterate through user created text
+	$( '.textBlockContainer' ).each(function( index ) {
+		//create an instance of the savedElement object
+		var savedText = new SavedElement;
+		//set attributes to the values of the current text block
+		savedText.top = $(this).css('top');
+		savedText.left = $(this).css('left');
+		savedText.width = $(this).css('width');
+		savedText.height = $(this).css('height');
+		savedText.fontSize = $(this).css('font-size');
+		savedText.fontColor = $(this).children('p').css('color');
+		savedText.bgColor = $(this).css('background-color');
+		savedText.divID = $(this).attr('id');
+		savedText.innerHTML = $(this).children('p').html();
+		if($(this).hasClass("hide")){
+				savedText.hidden = true;
+		}
+		//push the object to the img_Blocks array
+		text_Blocks.push(savedText);
+	});
+	//iterate through active cams
+	$( '.imgCamContainer' ).each(function( index ) {
+		var savedCam = new SavedElement;
+		if($(this).is(":visible") && !$(this).hasClass("hide")){
+			savedCam.top = $(this).css('top');
+			savedCam.left = $(this).css('left');
+			savedCam.width = $(this).css('width');
+			savedCam.height = $(this).css('height');
+			savedCam.divID = $(this).attr('id');
+		cameras.push(savedCam);	
+		}
+		else if($(this).hasClass("hide")){
+			savedCam.top = $(this).css('top');
+			savedCam.left = $(this).css('left');
+			savedCam.width = $(this).css('width');
+			savedCam.height = $(this).css('height');
+			savedCam.divID = $(this).attr('id');
+			if($(this).hasClass("hide")){
+				savedCam.hidden = true;
+			}
+		cameras.push(savedCam);		
+		}
+	});
+	//load our object arrays into the saved state array
+	saved_state = {"cells":cells, "text_Blocks":text_Blocks, "cameras":cameras, "img_Blocks":img_Blocks};
+	console.log(JSON.stringify(saved_state));
+}
+</script>
+<link rel="stylesheet" type="text/css" href="styles/style.css">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+</head>
+
+<body onload="data_start();">
+<div id="preload">
+</div>
+<div id="content">
+	<div class="container">
+		<div class="top-container">
+			<div class="outer">
+				<!--<div class="camera-container">
+					<span id="ws_status"> disconnected </span>
+					<div id="imageHide"><span>hide</span><input id="imageHideCheck" autocomplete="off" class="checkBox" type="checkbox"></div>
+					<img id="ws_image" class="cam_image" src="images/disconnected.png" alt="This site requirest JavaScript!">
+					<div class="cam-drag-handle"></div>
+
+				</div>-->
+			</div>
+				<div class="controls">
+					<h2> Station Tree </h2>
+					<hr>
+					<div id="stationTree"></div>
+					<div class="controlRow">
+						<input id="createTextTitle" type="text" placeholder="Title"></input>
+						<input id="createImageURL" type="text" placeholder="Enter Image URL"></input>
+						<textarea id="createTextBody" placeholder= "Text Body" rows"6"></textarea>
+						<button id="createText" onclick="createText()"> Create Text </button>
+						<button id="createImg" onclick="createImage()"> Create Image </button>						
+					</div>
+					<div class="controlRow">
+						<button id="refreshTree" onclick="captureState()"> Refresh Tree </button>						
+					</div>	
+					<div class="controlRow">
+						<input id="saveAs" type="textfield" value="" placeholder="Save as..."></input>
+						<button id="saveState" onclick="">Save Layout</button>
+					</div>
+					<div class="controlRow">
+						<select id="stateSelect" name="states">
+						</select>
+						<button id="loadState" onclick="">Load Layout</button>
+					</div>
+					<div class="drag-handle"></div>
+				</div>
+		</div>
+		<div class="table_container">
+			<div id="myTable">
+				<div id="myTableBody">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="statusBar">
+	<span id="timer"> loading data... </span>
+	<button id="masterEdit" onclick="edit()"> </button>
+	<span id="camTimer"> Edit Window </span>
+
+</div>
+<div class="editWindow" class="editWindowRow">
+	<h2> Edit Cell </h2>
+	<hr>
+	<div id="titleRow" class="editWindowRow">
+		<label> Edit Title </label><input title="" class="titleChange" type="text"></input>
+	</div>	
+	<div id="labelRow" class="editWindowRow">
+		<label> Edit Label </label><input title="Add a unit label" class="labelChange" type="text" placeholder="Add a Label"></input>
+	</div>
+	<div id="urlRow" class="editWindowRow">
+		<label> Edit URL </label><input title="" class="urlChange" type="text" placeholder="Change URL"></input>
+	</div>
+	<div id="bodyRow" class="editWindowRow">
+		<label id="editBodyLabel"> Edit Body </label><textarea title="" class="bodyChange" type="text" placeholder="Change Text"></textarea>
+	</div>
+	<div id="backgroundColorRow" class="editWindowRow">
+		<label id="bgColorLabel"> Background Color</label><input title="Type in a color" class="backgroundColorChange" type="text" placeholder="Type in a color"></input>
+	</div>
+	<div id="textColorRow" class="editWindowRow">
+		<label id="textColorLabel"> Font Color</label><input title="Type in a color" class="textColorChange" type="text" placeholder="Type in a color"></input>
+	</div>
+	<div id="fontSizeRow" class="editWindowRow">
+		<label id="fontSizeLabel"> Font Size </label>
+		<div class="fontContainer">
+			<input id="fontSize" type="text"> </input>
+			<button id="fontSizePlus" onclick="">+</button>
+			<button id="fontSizeMinus" onclick="">-</button>		
+
+		</div>
+	</div>
+	<div >
+		<button id="hideModule"> Hide Selected</button>
+		<button id="deleteModule"> Delete Selected </button>
+	</div>
+</div>
+</body>
+</html>
