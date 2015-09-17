@@ -1,18 +1,13 @@
 /***** Global variables ********/
 var time; //incremental variable that keeps track of time since last data update
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
-var newImage; // variable that holds url of new camera image
-var lastImage; // variable tha tholds url of last camera image
-var lastkey;
 var id_arr = [];
 var path_arr = [];
 var name_arr = [];
-var originalTable = [];
 var savedStates = []; //set of saved table states in the format of a multi Dimensional array consisting of coordinates of each cell
 var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
-var editMode = false; //boolean that determines whether we are in edit mode or not
 /*******************************/
 function table_generate(data) {
     var $dtable = $('<table border=1></table>');
@@ -36,60 +31,6 @@ function table_generate(data) {
 
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
-}
-
-/*
-The three iterate functions below form IDs, names, and paths to our objects and they put them in arrays of equal size to be accessed later.
-All three functions work in a recursive manner by finding each nested property and determining whether that property is an object or not
-once a non-object property is found, it pushes the entire thing to an array
-*/
-function iterateID(obj, stack) {
-    for (var property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (typeof obj[property] == "object") { //is this property an object? then find next property
-                lastkey = property; //keeps track of last property which is stored in a global variable
-                iterateID(obj[property], stack + '.' + property); //combine stack and property and call function recurssively
-            } else {
-                //console.log(property + "   " + obj[property]);
-                var id = "ws_" + stack + "_" + property;
-                id = id.replace(/\s+/g, '_'); //replaces spaces with underscores to comply with html standards
-                id = id.replace(/\./g, ""); //removes periods since one function that uses these ids splits the string using periods as a delimiter
-                id_arr.push(id);
-            }
-        }
-    }
-    return id_arr;
-}
-
-function iterateName(obj, stack) {
-    for (var property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (typeof obj[property] == "object") { //is this property an object? then find next property
-                lastkey = property; //keeps track of last property which is stored in a global variable
-                iterateName(obj[property], stack + '.' + property); //combine stack and property and call function recurssively
-            } else {
-                var name = lastkey + " " + property;
-                parts = name.split("."); //split the string using period as a delimiter
-                name_arr.push(parts[parts.length - 1]); //only return last two properties on the stack		
-            }
-        }
-    }
-    return name_arr;
-}
-
-function iteratePath(obj, stack) {
-    for (var property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (typeof obj[property] == "object") { //is this property an object? then find next property
-                lastkey = property; //keeps track of last property which is stored in a global variable
-                iteratePath(obj[property], stack + '.' + property); //combine stack and property and call function recurssively
-            } else {
-                var path = stack + '.' + property;
-                path_arr.push(path);
-            }
-        }
-    }
-    return path_arr;
 }
 function iterateStations(obj, stack, arr, lastk) {
 	for (var property in obj) {
@@ -245,31 +186,31 @@ function createCamFromTree(tree_id){
 	console.log('create ' + tree_id);
 	$("#div_"+selection).css('display','inline');
 	$('.imgCamContainer').draggable({
-					start: function(event, ui) {
-							$('.controls').animate({
-								width: '10px'
-							},100);
-							$('.editWindow').animate({
-								width: '0px',
-								margin: '0',
-								padding: '0'
-							},50);
-							$('.controlRow').hide();
-							$('.controls h2').hide();
-						},
-					stop: function(event, ui) {
-						$('.controls').animate({
-							width: '250px'
-						},200);
-						$('.editWindow').animate({
-							width: '280px',
-							margin: '10px',
-							padding: '20px'
-						},200);
-						$('.controlRow').show();
-						$('.controls h2').show();
-					},
-					disabled: false}).resizable({disabled: false, aspectRatio: true});
+		start: function(event, ui) {
+			$('.controls').animate({
+				width: '10px'
+			},100);
+			$('.editWindow').animate({
+				width: '0px',
+				margin: '0',
+				padding: '0'
+			},50);
+			$('.controlRow').hide();
+			$('.controls h2').hide();
+		},
+		stop: function(event, ui) {
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		},
+		disabled: false}).resizable({disabled: false, aspectRatio: true});
 	preloadCam(selection);
 	$('#preload_div_'+selection).load(function() {
 		//console.log($('#preload_div_'+selection).naturalWidth);
@@ -508,36 +449,36 @@ function createText(){
 	textBlocks.push("block"+index);
 	//makes block draggable and resizable
 	$(".textBlockContainer").draggable({
-					disabled: false,
-					start: function(event, ui) {
-								$(this).addClass('draggable_focus_in');
-								$('.controls').animate({
-									width: '10px'
-								},100);
-								$('.editWindow').animate({
-									width: '0px',
-									margin: '0',
-									padding: '0'
-								},50);
-								$('.controlRow').hide();
-								$('.controls h2').hide();
-							},
-					stop: function(event, ui) {
-						$(this).removeClass('draggable_focus_in');
-						$('.controls').animate({
-							width: '250px'
-						},200);
-						$('.editWindow').animate({
-							width: '280px',
-							margin: '10px',
-							padding: '20px'
-						},200);
-						$('.controlRow').show();
-						$('.controls h2').show();
-					}
-					}).resizable({
-						disabled: false
-					});	
+		disabled: false,
+		start: function(event, ui) {
+			$(this).addClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '10px'
+			},100);
+			$('.editWindow').animate({
+				width: '0px',
+				margin: '0',
+				padding: '0'
+			},50);
+			$('.controlRow').hide();
+			$('.controls h2').hide();
+		},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+		}).resizable({
+			disabled: false
+		});	
 }
 //function that expands inputs for creating images	
 function createImage(){
@@ -818,9 +759,9 @@ function htmlEntities(str) {
    	var decoded = $('<div/>').html(str).text();
 	return decoded
 }
-/*A function that will iterate through all instances of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" class selectors
-and record all relevant data from the elements with these classes, create objects using the data as properties, and then load the objects into
-individual arrays for each type of selector class. once Each array has been created, a saved state array will encompass all of the data.*/
+/*function that iterates through all instances of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" class selectors
+and records all relevant data from the elements with these classes, create objects using the data as properties, and then loads the objects into
+individual arrays for each type of selector class. once Each array has been created, a saved state array encompasses all of the data.*/
 function captureState(){
 	//saved_state array to hold individual object arrays
 	var saved_State = [];
@@ -959,7 +900,7 @@ function loadState(){
 	console.log(stateObject);
 	$('.tr, .textBlockContainer, .imgBlockContainer').remove();
 	$('.imgCamContainer').hide();
-
+	//iterate over all keys in the saved state object
 	for(var k in stateObject){
 		if(k == 'cells'){
 			for(var cells in stateObject[k]){
