@@ -125,16 +125,6 @@ function dynamicUpdate($id_arr, $path_arr, data) {
         $('div#' + $id_arr[$i] + '').children('p').text(value);
     }
 }
-
-/*function that is in charge of setting up the table that holds all of the values*/
-function create_table($id_arr, $name_arr) {
-    var $myTable = "";
-    for ($i = 0; $i < $id_arr.length; $i++) { //generates the divs that hold all of our values
-        $myTable += '<div class="tr draggable" id="' + ($i + 1) + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + ($i + 1) + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ $name_arr[$i] +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + $name_arr[$i] + '</p></div><div class="td myTableValue" id="' + $id_arr[$i] + '"><p>Loading...</p> <span class="label"></span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>';
-    }
-
-    return $myTable;
-}
 function getStations(data){
 	var stations = [];
 	var stationData =[];
@@ -211,10 +201,10 @@ function createCamFromTree(tree_id){
 			$('.controls h2').show();
 		},
 		disabled: false}).resizable({disabled: false, aspectRatio: true});
-	preloadCam(selection);
 	$('#preload_div_'+selection).load(function() {
-		//console.log($('#preload_div_'+selection).naturalWidth);
+		var src = $(this).attr("src");
 	});
+	preloadCam(selection);
 }
 	
 //function that refreshes cams and preloads the refreshed image before displaying it	
@@ -876,6 +866,8 @@ function captureState(){
 	populateSelection();
 	var jsonString = JSON.stringify(saved_state);
 	savedStates.push(jsonString);
+		//for testing purposes
+	$('#json').val(jsonString);
 }
 /* grabs the latest saved state and populates the select field for loading */
 function populateSelection(){
@@ -1045,97 +1037,97 @@ function loadState(){
 	}
 	//make new cells draggable and resizable
 	$(".draggable").draggable({ //makes our data cells draggable
-							disabled: true,
-							grid: [1, 1],
-							snap: true,
-							snapTolerance: 10,
-							start: function(event, ui) {
-								$(this).addClass('draggable_focus_in');
-								$('.controls').animate({
-									width: '10px'
-								},100);
-								$('.editWindow').animate({
-									width: '0px',
-									margin: '0',
-									padding: '0'
-								},50);
-								$('.controlRow').hide();
-								$('.controls h2').hide();
-							},
-							stop: function(event, ui) {
-								$(this).removeClass('draggable_focus_in');
-								$('.controls').animate({
-									width: '250px'
-								},200);
-								$('.editWindow').animate({
-									width: '280px',
-									margin: '10px',
-									padding: '20px'
-								},200);
-								$('.controlRow').show();
-								$('.controls h2').show();
-							}
-						}).resizable({});						
-						$(".draggable").draggable({ disabled: false});
+		disabled: true,
+		grid: [1, 1],
+		snap: true,
+		snapTolerance: 10,
+		start: function(event, ui) {
+			$(this).addClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '10px'
+			},100);
+			$('.editWindow').animate({
+				width: '0px',
+				margin: '0',
+				padding: '0'
+			},50);
+			$('.controlRow').hide();
+			$('.controls h2').hide();
+		},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+		}).resizable({});						
+		$(".draggable").draggable({ disabled: false});
 	//makes text blocks draggable and resizable after being loaded
 	$(".textBlockContainer").draggable({
-					disabled: false,
-					start: function(event, ui) {
-								$(this).addClass('draggable_focus_in');
-								$('.controls').animate({
-									width: '10px'
-								},100);
-								$('.editWindow').animate({
-									width: '0px',
-									margin: '0',
-									padding: '0'
-								},50);
-								$('.controlRow').hide();
-								$('.controls h2').hide();
-							},
-					stop: function(event, ui) {
-						$(this).removeClass('draggable_focus_in');
-						$('.controls').animate({
-							width: '250px'
-						},200);
-						$('.editWindow').animate({
-							width: '280px',
-							margin: '10px',
-							padding: '20px'
-						},200);
-						$('.controlRow').show();
-						$('.controls h2').show();
-					}
-					}).resizable({
-						disabled: false
-					});
+		disabled: false,
+		start: function(event, ui) {
+					$(this).addClass('draggable_focus_in');
+					$('.controls').animate({
+						width: '10px'
+					},100);
+					$('.editWindow').animate({
+						width: '0px',
+						margin: '0',
+						padding: '0'
+					},50);
+					$('.controlRow').hide();
+					$('.controls h2').hide();
+				},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+		}).resizable({
+			disabled: false
+		});
 	//makes cameras draggable and resizable after being loaded
 	$('.imgCamContainer').draggable({
-					start: function(event, ui) {
-							$('.controls').animate({
-								width: '10px'
-							},100);
-							$('.editWindow').animate({
-								width: '0px',
-								margin: '0',
-								padding: '0'
-							},50);
-							$('.controlRow').hide();
-							$('.controls h2').hide();
-						},
-					stop: function(event, ui) {
-						$('.controls').animate({
-							width: '250px'
-						},200);
-						$('.editWindow').animate({
-							width: '280px',
-							margin: '10px',
-							padding: '20px'
-						},200);
-						$('.controlRow').show();
-						$('.controls h2').show();
-					},
-					disabled: false}).resizable({disabled: false, aspectRatio: true});
+		start: function(event, ui) {
+				$('.controls').animate({
+					width: '10px'
+				},100);
+				$('.editWindow').animate({
+					width: '0px',
+					margin: '0',
+					padding: '0'
+				},50);
+				$('.controlRow').hide();
+				$('.controls h2').hide();
+			},
+		stop: function(event, ui) {
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		},
+		disabled: false}).resizable({disabled: false, aspectRatio: true});
 	//makes images draggable and resziable after being loaded
 	$(".imgBlockContainer").draggable({
 		start: function(event, ui) {

@@ -214,10 +214,12 @@ div.logo_container{
 	text-align: center;
 	border-color: black;
 }
+#saveState{
+}
 #saveAs{
 	text-align: center;
 	width: 93px;
-
+	display: none;
 }
 .fontContainer{
 	width: 65px;	
