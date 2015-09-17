@@ -1091,7 +1091,28 @@ function captureState(){
 	});
 	//load our object arrays into the saved state array
 	saved_state = {"cells":cells, "text_Blocks":text_Blocks, "cameras":cameras, "img_Blocks":img_Blocks};
-	console.log(JSON.stringify(saved_state));
+	populateSelection();
+	var jsonString = JSON.stringify(saved_state);
+	savedStates.push(jsonString);
+}
+/* grabs the latest saved state and populates the select field for loading */
+function populateSelection(){
+	var option = document.createElement("option");
+	if ($('#saveAs').val() !== '') {
+        option.text = $('#saveAs').val();
+    } else {
+        option.text = "Layout#" + savedStates.length;
+    }
+    option.value = savedStates.length;
+    $('#stateSelect').append(option);
+}
+/*A function that is passed a json string that holds elements and their properties from a saved state of a layout. Once it takes in the json string
+it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
+the saved state*/
+function loadState(){
+	var index = $( "#stateSelect option:selected" ).attr("value"); 
+	console.log(index);
+	console.log(savedStates[index]);
 }
 </script>
 <link rel="stylesheet" type="text/css" href="styles/style.css">
@@ -1125,16 +1146,16 @@ function captureState(){
 						<button id="createImg" onclick="createImage()"> Create Image </button>						
 					</div>
 					<div class="controlRow">
-						<button id="refreshTree" onclick="captureState()"> Refresh Tree </button>						
+						<button id="refreshTree" onclick=""> Refresh Tree </button>						
 					</div>	
 					<div class="controlRow">
 						<input id="saveAs" type="textfield" value="" placeholder="Save as..."></input>
-						<button id="saveState" onclick="">Save Layout</button>
+						<button id="saveState" onclick="captureState()">Save Layout</button>
 					</div>
 					<div class="controlRow">
 						<select id="stateSelect" name="states">
 						</select>
-						<button id="loadState" onclick="">Load Layout</button>
+						<button id="loadState" onclick="loadState()">Load Layout</button>
 					</div>
 					<div class="drag-handle"></div>
 				</div>
