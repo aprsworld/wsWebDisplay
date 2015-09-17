@@ -238,6 +238,7 @@ function getStations(data){
 	var stations = [];
 	var stationData =[];
 	var lastk = "#";
+	var i = 0;
 	for(var k in data){
 		if( i = 0){
 			//do nothing since this is not a station	
@@ -247,6 +248,7 @@ function getStations(data){
 			stations.push(k);
 			iterateStations(k, "",station_arr, lastk);
 		}
+		i++;
 	}
 }	
 function getCamData(data){
@@ -1018,6 +1020,7 @@ function captureState(){
 		savedCell.width = $(this).css('width');
 		savedCell.height = $(this).css('height');
 		savedCell.title = $(this).children('.myTableTitle').children('.titleText').text();
+		savedCell.originalTitle = $(this).children('.mytableTitle').children('.titleEdit').attr('title');
 		savedCell.label = $(this).children('.myTableValue').children('.label').text();
 		savedCell.fontSize = $(this).children('.myTableValue').css('font-size');
 		savedCell.divID = $(this).attr('id');
@@ -1111,8 +1114,89 @@ it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlo
 the saved state*/
 function loadState(){
 	var index = $( "#stateSelect option:selected" ).attr("value"); 
+	var jsonString = savedStates[index];
+	var stateObject = $.parseJSON(jsonString);
 	console.log(index);
-	console.log(savedStates[index]);
+	console.log(jsonString);
+	console.log(stateObject);
+	$('.tr, .textBlockContainer, .imgBlockContainer').remove();
+	$('.imgCamContainer').hide();
+	textBlocks.length = 0;
+	imgBlocks.length = 0;
+	for(var k in stateObject){
+		if(k == 'cells'){
+			for(var cells in stateObject[k]){
+				//find the cell object
+				var savedCell = stateObject[k][cells];
+				//get attributes of cell object 
+				var savedCellTop = savedCell.top; 
+				var savedCellLeft = savedCell.left; 
+				var savedCellWidth = savedCell.width; 
+				var savedCellHeight = savedCell.height; 
+				var savedCellTitle = savedCell.title; 
+				var savedCellOriginalTitle = savedCell.originalTitle; 
+				var savedCellLabel = savedCell.label; 
+				var savedCellFontSize = savedCell.fontSize;
+				var savedCellDivID = savedCell.divID; 
+				var savedCellID = savedCell.id; 
+				var savedCellPath = savedCell.path;
+				//append a cell with these properties to the body
+				$('.top-container').append('<div class="tr draggable" id="' + savedCellDivID + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + savedCellDivID + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ savedCellOriginalTitle +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + savedCellTitle + '</p></div><div class="td myTableValue" id="' + savedCellID + '"><p>Loading...</p><span class="path">'+ savedCellPath +'</span><span class="label">'+ savedCellLabel +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
+				$("#"+savedCellDivID).css('position','absolute');
+				$("#"+savedCellDivID).css('top', savedCellTop);
+				$("#"+savedCellDivID).css('left',savedCellLeft);
+				$("#"+savedCellDivID).css('width',savedCellWidth);
+				$("#"+savedCellDivID).css('height',savedCellHeight);
+				$("#"+savedCellDivID).children('.myTableValue').css('font-size', savedCellFontSize);
+			}
+		}
+		else if(k == 'text_Blocks'){
+			console.log(k);
+
+		}
+		else if(k == 'cameras'){
+			console.log(k);
+			
+		}
+		else if(k == 'img_Blocks'){
+			console.log(k);
+			
+		}
+	}
+	//make new cells draggable and resizable
+	$(".draggable").draggable({ //makes our data cells draggable
+							disabled: true,
+							grid: [1, 1],
+							snap: true,
+							snapTolerance: 10,
+							start: function(event, ui) {
+								$(this).addClass('draggable_focus_in');
+								$('.controls').animate({
+									width: '10px'
+								},100);
+								$('.editWindow').animate({
+									width: '0px',
+									margin: '0',
+									padding: '0'
+								},50);
+								$('.controlRow').hide();
+								$('.controls h2').hide();
+							},
+							stop: function(event, ui) {
+								$(this).removeClass('draggable_focus_in');
+								$('.controls').animate({
+									width: '250px'
+								},200);
+								$('.editWindow').animate({
+									width: '280px',
+									margin: '10px',
+									padding: '20px'
+								},200);
+								$('.controlRow').show();
+								$('.controls h2').show();
+							}
+						}).resizable({});						
+						$(".draggable").draggable({ disabled: false});
 }
 </script>
 <link rel="stylesheet" type="text/css" href="styles/style.css">
