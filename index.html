@@ -1086,9 +1086,8 @@ function captureState(){
 			savedCam.width = $(this).css('width');
 			savedCam.height = $(this).css('height');
 			savedCam.divID = $(this).attr('id');
-			if($(this).hasClass("hide")){
-				savedCam.hidden = true;
-			}
+			savedCam.hidden = true;
+			
 		cameras.push(savedCam);		
 		}
 	});
@@ -1121,8 +1120,7 @@ function loadState(){
 	console.log(stateObject);
 	$('.tr, .textBlockContainer, .imgBlockContainer').remove();
 	$('.imgCamContainer').hide();
-	textBlocks.length = 0;
-	imgBlocks.length = 0;
+
 	for(var k in stateObject){
 		if(k == 'cells'){
 			for(var cells in stateObject[k]){
@@ -1140,7 +1138,7 @@ function loadState(){
 				var savedCellDivID = savedCell.divID; 
 				var savedCellID = savedCell.id; 
 				var savedCellPath = savedCell.path;
-				//append a cell with these properties to the body
+				//append a cell with these properties to the top-container div
 				$('.top-container').append('<div class="tr draggable" id="' + savedCellDivID + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + savedCellDivID + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ savedCellOriginalTitle +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + savedCellTitle + '</p></div><div class="td myTableValue" id="' + savedCellID + '"><p>Loading...</p><span class="path">'+ savedCellPath +'</span><span class="label">'+ savedCellLabel +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
 				$("#"+savedCellDivID).css('position','absolute');
 				$("#"+savedCellDivID).css('top', savedCellTop);
@@ -1151,12 +1149,59 @@ function loadState(){
 			}
 		}
 		else if(k == 'text_Blocks'){
-			console.log(k);
-
+			for(var textBlocks in stateObject[k]){
+				//find the text block object
+				var savedText = stateObject[k][textBlocks];
+				//get attributes of the text block object
+				var savedTbTop = savedText.top; 
+				var savedTbLeft = savedText.left; 
+				var savedTbWidth = savedText.width; 
+				var savedTbHeight = savedText.height; 
+				var savedTbFontSize = savedText.fontSize;
+				var savedTbFontColor = savedText.fontColor;
+				var savedTbBgColor = savedText.bgColor
+				var savedTbDivID = savedText.divID; 
+				var savedTbInnerHtml = savedText.innerHTML;
+				//append text block with these properties to the content div
+				$('#content').append('<div class="textBlockContainer" id="'+ savedTbDivID +'"><p>"'+ savedTbInnerHtml +'" </p></div>');
+				$("#"+savedTbDivID).css('top',savedTbTop);
+				$("#"+savedTbDivID).css('left', savedTbLeft);
+				$("#"+savedTbDivID).css('width', savedTbWidth);
+				$("#"+savedTbDivID).css('height',savedTbHeight);
+				$("#"+savedTbDivID).css('font-size', savedTbFontSize);
+				$("#"+savedTbDivID).children('p').css('color', savedTbFontColor);
+				$("#"+savedTbDivID).css('background-color', savedTbBgColor);
+			}
 		}
 		else if(k == 'cameras'){
-			console.log(k);
-			
+			for(var cameras in stateObject[k]){
+				//find the camera object
+				var savedCam = stateObject[k][cameras];
+				//get attributes of the camera object	
+				var savedCamTop = savedCam.top;
+				var savedCamLeft = savedCam.left;
+				var savedCamWidth = savedCam.width;
+				var savedCamHeight = savedCam.height;
+				var savedCamDivID = savedCam.divID;
+				var savedCamVisibility = savedCam.hidden;
+				$("#"+savedCamDivID).css('top',savedCamTop);
+				$("#"+savedCamDivID).css('left',savedCamLeft);
+				$("#"+savedCamDivID).css('width',savedCamWidth);
+				$("#"+savedCamDivID).css('height',savedCamHeight);
+				if(savedCamVisibility == true){
+					$("#"+savedCamDivID).addClass('hide');
+					$("#"+savedCamDivID).css('opacity','0.2');
+
+				}
+				else{
+					console.log('false');
+					if($("#"+savedCamDivID).hasClass('hide')){
+						$("#"+savedCamDivID).removeClass('hide');
+						$("#"+savedCamDivID).css('opacity','1.0');
+					}
+				}
+				$("#"+savedCamDivID).show();
+			}
 		}
 		else if(k == 'img_Blocks'){
 			console.log(k);
@@ -1197,6 +1242,37 @@ function loadState(){
 							}
 						}).resizable({});						
 						$(".draggable").draggable({ disabled: false});
+	$(".textBlockContainer").draggable({
+					disabled: false,
+					start: function(event, ui) {
+								$(this).addClass('draggable_focus_in');
+								$('.controls').animate({
+									width: '10px'
+								},100);
+								$('.editWindow').animate({
+									width: '0px',
+									margin: '0',
+									padding: '0'
+								},50);
+								$('.controlRow').hide();
+								$('.controls h2').hide();
+							},
+					stop: function(event, ui) {
+						$(this).removeClass('draggable_focus_in');
+						$('.controls').animate({
+							width: '250px'
+						},200);
+						$('.editWindow').animate({
+							width: '280px',
+							margin: '10px',
+							padding: '20px'
+						},200);
+						$('.controlRow').show();
+						$('.controls h2').show();
+					}
+					}).resizable({
+						disabled: false
+					});	
 }
 </script>
 <link rel="stylesheet" type="text/css" href="styles/style.css">
