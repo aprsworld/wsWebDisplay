@@ -1043,7 +1043,7 @@ function captureState(){
 		savedImg.height = $(this).children('.ui-wrapper').children('img').css('height');
 		savedImg.src = $(this).children('.ui-wrapper').children('img').attr('src');
 		savedImg.id = $(this).children('.ui-wrapper').children('img').attr('id');
-		if($(this).hasClass("hide")){
+		if($(this).children('.ui-wrapper').children('img').hasClass("hide")){
 				savedImg.hidden = true;
 		}
 		//push the object to the img_Blocks array
@@ -1138,6 +1138,7 @@ function loadState(){
 				var savedCellDivID = savedCell.divID; 
 				var savedCellID = savedCell.id; 
 				var savedCellPath = savedCell.path;
+				var savedCellVisibility = savedCell.hidden;
 				//append a cell with these properties to the top-container div
 				$('.top-container').append('<div class="tr draggable" id="' + savedCellDivID + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + savedCellDivID + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ savedCellOriginalTitle +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + savedCellTitle + '</p></div><div class="td myTableValue" id="' + savedCellID + '"><p>Loading...</p><span class="path">'+ savedCellPath +'</span><span class="label">'+ savedCellLabel +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
 				$("#"+savedCellDivID).css('position','absolute');
@@ -1146,6 +1147,18 @@ function loadState(){
 				$("#"+savedCellDivID).css('width',savedCellWidth);
 				$("#"+savedCellDivID).css('height',savedCellHeight);
 				$("#"+savedCellDivID).children('.myTableValue').css('font-size', savedCellFontSize);
+				if(savedCellVisibility == true){
+					$("#"+savedCellDivID).addClass('hide');
+					$("#"+savedCellDivID).css('opacity','0.2');
+
+				}
+				else{
+					console.log('false');
+					if($("#"+savedCellDivID).hasClass('hide')){
+						$("#"+savedCellDivID).removeClass('hide');
+						$("#"+savedCellDivID).css('opacity','1.0');
+					}
+				}
 			}
 		}
 		else if(k == 'text_Blocks'){
@@ -1162,8 +1175,9 @@ function loadState(){
 				var savedTbBgColor = savedText.bgColor
 				var savedTbDivID = savedText.divID; 
 				var savedTbInnerHtml = savedText.innerHTML;
+				var savedTbVisibility = savedText.hidden;
 				//append text block with these properties to the content div
-				$('#content').append('<div class="textBlockContainer" id="'+ savedTbDivID +'"><p>"'+ savedTbInnerHtml +'" </p></div>');
+				$('#content').append('<div class="textBlockContainer" id="'+ savedTbDivID +'"><p>'+ savedTbInnerHtml +' </p></div>');
 				$("#"+savedTbDivID).css('top',savedTbTop);
 				$("#"+savedTbDivID).css('left', savedTbLeft);
 				$("#"+savedTbDivID).css('width', savedTbWidth);
@@ -1171,6 +1185,18 @@ function loadState(){
 				$("#"+savedTbDivID).css('font-size', savedTbFontSize);
 				$("#"+savedTbDivID).children('p').css('color', savedTbFontColor);
 				$("#"+savedTbDivID).css('background-color', savedTbBgColor);
+				if(savedTbVisibility == true){
+					$("#"+savedTbDivID).addClass('hide');
+					$("#"+savedTbDivID).css('opacity','0.2');
+
+				}
+				else{
+					console.log('false');
+					if($("#"+savedTbDivID).hasClass('hide')){
+						$("#"+savedTbDivID).removeClass('hide');
+						$("#"+savedTbDivID).css('opacity','1.0');
+					}
+				}
 			}
 		}
 		else if(k == 'cameras'){
@@ -1204,8 +1230,37 @@ function loadState(){
 			}
 		}
 		else if(k == 'img_Blocks'){
-			console.log(k);
-			
+			for(var imgBlocks in stateObject[k]){
+				//find the img block object
+				var savedImg = stateObject[k][imgBlocks];
+				//get attributes of the imgBlock Object
+				var savedImgTop = savedImg.top; 
+				var savedImgLeft = savedImg.left; 
+				var savedImgWidth = savedImg.width; 
+				var savedImgHeight = savedImg.height; 
+				var savedImgSrc = savedImg.src; 
+				var savedImgId = savedImg.id; 
+				var savedImgVisibility = savedImg.hidden;
+				//append the image to the content div and set its properties
+				$('#content').append('<div class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg('+savedImgId+')" id='+savedImgId+' alt='+savedImgId+' src='+savedImgSrc+'></img></div>');
+				$("#"+savedImgId).parent().css('top',savedImgTop);
+				$("#"+savedImgId).parent().css('left',savedImgLeft);
+				$("#"+savedImgId).css('width',savedImgWidth);
+				$("#"+savedImgId).css('height',savedImgHeight);
+				if(savedImgVisibility == true){
+					$("#"+savedImgId).addClass('hide');
+					$("#"+savedImgId).css('opacity','0.2');
+
+				}
+				else{
+					console.log('false');
+					if($("#"+savedImgId).hasClass('hide')){
+						$("#"+savedImgId).removeClass('hide');
+						$("#"+savedImgId).css('opacity','1.0');
+					}
+				}
+				$("#"+savedImgId).show();
+			}
 		}
 	}
 	//make new cells draggable and resizable
@@ -1242,6 +1297,7 @@ function loadState(){
 							}
 						}).resizable({});						
 						$(".draggable").draggable({ disabled: false});
+	//makes text blocks draggable and resizable after being loaded
 	$(".textBlockContainer").draggable({
 					disabled: false,
 					start: function(event, ui) {
@@ -1272,7 +1328,69 @@ function loadState(){
 					}
 					}).resizable({
 						disabled: false
-					});	
+					});
+	//makes cameras draggable and resizable after being loaded
+	$('.imgCamContainer').draggable({
+					start: function(event, ui) {
+							$('.controls').animate({
+								width: '10px'
+							},100);
+							$('.editWindow').animate({
+								width: '0px',
+								margin: '0',
+								padding: '0'
+							},50);
+							$('.controlRow').hide();
+							$('.controls h2').hide();
+						},
+					stop: function(event, ui) {
+						$('.controls').animate({
+							width: '250px'
+						},200);
+						$('.editWindow').animate({
+							width: '280px',
+							margin: '10px',
+							padding: '20px'
+						},200);
+						$('.controlRow').show();
+						$('.controls h2').show();
+					},
+					disabled: false}).resizable({disabled: false, aspectRatio: true});
+	//makes images draggable and resziable after being loaded
+	$(".imgBlockContainer").draggable({
+		start: function(event, ui) {
+		$(this).addClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '10px'
+			},100);
+			$('.editWindow').animate({
+				width: '0px',
+				margin: '0',
+				padding: '0'
+			},50);
+			$('.controlRow').hide();
+			$('.controls h2').hide();
+		},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+		});
+		$(".imgBlockContainer").find('img').resizable({ 
+					disabled: false,
+					minHeight: 70,
+					minWidth: 150,
+					aspectRatio: true
+		});	
 }
 </script>
 <link rel="stylesheet" type="text/css" href="styles/style.css">
