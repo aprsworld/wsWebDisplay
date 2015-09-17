@@ -209,31 +209,6 @@ function create_table($id_arr, $name_arr) {
 
     return $myTable;
 }
-
-/* maps the ids and left/top coordinate of each div in "table"*/
-function mapTable($id_arr) {
-    var table = [];
-    for ($i = 0; $i < $id_arr.length; $i++) { //loops through every .tr div
-        var id = $('#' + $id_arr[$i]); //gets id
-        var top = $('#' + $id_arr[$i]).closest('.tr').css('top'); //gets top cooridinate of div
-        var left = $('#' + $id_arr[$i]).closest('.tr').css('left'); //gets left coordinate
-        var hidden = $('#' + $id_arr[$i]).closest('.tr').children('.dg-arrange-table-rows-close-icon').find('input[type="checkbox"]').prop('checked'); //gets checkbox status
-        var title = $('#' + $id_arr[$i]).closest('.tr').children('.myTableTitle').children('.titleText').text(); //gets title value
-		var label =  $('#' + $id_arr[$i]).closest('.tr').children('.myTableValue').children('.label').text(); //gets label
-		var position_arr = [id, top, left, hidden, title, label];
-		table.push(position_arr);
-    }
-    savedStates.push(table);
-    //append an option to the select input on the control bar for our newly saved state
-    var option = document.createElement("option");
-    if ($('#saveAs').val() !== '') {
-        option.text = $('#saveAs').val();
-    } else {
-        option.text = "Table#" + savedStates.length;
-    }
-    option.value = savedStates.length - 1;
-    $('#stateSelect').append(option);
-}
 function getStations(data){
 	var stations = [];
 	var stationData =[];
@@ -338,32 +313,6 @@ function preloadCam(selection){
 	var url = $('#'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
 	$('#preload_div_'+selection).attr('src', url);
 
-}
-/* resets div positions to a selected saved state*/
-function resetTable($originalTable) {
-    console.log($originalTable);
-    console.log(savedStates);
-    for ($i = 0; $i < $originalTable.length; $i++) { //pull id, coordinates, hidden state and title out of array
-        var id = $originalTable[$i][0];
-        var top = $originalTable[$i][1];
-        var left = $originalTable[$i][2];
-        var hidden = $originalTable[$i][3];
-		var title = $originalTable[$i][4];
-		var label = $originalTable[$i][5];
-        if (hidden === true) {
-            $($originalTable[$i][0]).closest('.tr').children('.dg-arrange-table-rows-close-icon').find('input[type="checkbox"]').prop('checked', true);
-            if (editMode === false) { //hides the cell if we are not editing the table.
-                id.parent().css('visibility', 'hidden');
-            }
-        } else {
-            $($originalTable[$i][0]).closest('.tr').children('.dg-arrange-table-rows-close-icon').find('input[type="checkbox"]').prop('checked', false);
-            id.parent().css('visibility', 'initial');
-        }
-        $(id).closest('.tr').css('left', left);
-        $(id).closest('.tr').css('top', top);
-		$(id).closest('.tr').children('.myTableTitle').find('p').text(title);
-		$(id).closest('.tr').children('.myTableValue').find('.label').text(label);
-    }
 }
 function fontSizeChange(direction, id){
 	var fontsize = $('#'+id).css('font-size');
@@ -541,20 +490,6 @@ function data_update(data) {
     started = true; //sets our boolean to true so the above only executes once
 	refreshCams(cams);
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
-
-	/*newImage = data.DEEPLAKE.image_url;
-//compares the last image url to the new image url and checks if it is different. If it is, it resets the timer for the camera.
-	if(!Object.is(newImage, lastImage)){
-		camTime = 0;
-		lastImage = data.DEEPLAKE.image_url;
-	}		
-	$('#ws_image_preload').attr('src', data.DEEPLAKE.image_url); //preloads the image so that we don't get a "scan-line" effect when the image loads on a slow internet connection
-	$('#ws_image_preload').load(function() {
-        $('#ws_image').attr('src', data.DEEPLAKE.image_url);
-		
-    });
-    $('#ws_image').attr('alt', 'Image from ' + data['DEEPLAKE']._bserver_['date']);
-*/
 }
 /*function initiates the data transfer*/
 function data_start() {
@@ -568,87 +503,6 @@ function data_start() {
     document.title = 'APRSWorld LLC, wsBroadcast System';
     $('#header').html('<div class="logo_container"> </div><h1>DEEPLAKE Station Monitor</h1>');
     $('#ws_status').text('Connecting...');
-}
-	
-/*function that is called when the edit table button is pressed. The function sets the drag and hide toggles to be unhidden*/
-function editTable() {
-    $('.dg-arrange-table-rows-drag-icon').each(function() {
-		//initialize variables
-		var row, td, id, close, title, titleEdit, titleText, label, labelEdit, labelText, formulaEdit;
-		
-        row = $(this).parent();
-        td = $(this);
-        id = $(row).children('.myTableID');
-        close = $(row).children('.dg-arrange-table-rows-close-icon');
-		title = $(row).children('.myTableTitle').children('p');
-		titleEdit = $(row).children('.myTableTitle').children('.titleEdit');
-		titleText = title.text();
-		label = $(row).children('.myTableValue').children('.label');
-		labelEdit = $(row).children('.myTableTitle').children('.labelEdit');
-		labelText = label.text();
-		console.log(titleText);
-        formulaEdit = $(row).children('.myTableTitle').children('.formulaEdit');
-					
-		$('.container .myTableTitle').css('width', '75%');
-        $('.container .myTableTitle').css('clear', 'none');
-        $('.container .myTableTitle').css('background-color', 'transparent');
-        $('.container .myTableTitle').css('height', '50px');
-		$('.container .myTableValue').hide(); //hide value for the sake of editing
-		$(title).hide(); //hide title text for editing
-		$(titleEdit).val(titleText); //import the current title tex tinto the edit input field
-		$(titleEdit).show();
-		$(labelEdit).val(labelText); //import the current label text into the edit label field
-		$(labelEdit).show();
-        $(row).css('visibility', 'initial'); //makes the cell visible
-        $(td).show(); //shows drag icon
-        $(close).show(); //shows the close button
-    });
-    editMode = true;
-	$('.drag-handle').show();
-    $('#editTable').text('Finish Modifying');
-    $('#editTable').attr('onclick', 'disableEdit()');
-}
-/*function that is called when the ok button is pressed. The function sets the drag and hide toggles to be hidden and hides rows where the hidden button is checked*/
-function disableEdit() {
-    $('.dg-arrange-table-rows-close-icon').each(function(index) {
-		//initialize variables
-		var row, td, id, move, title, titleEdit, titleChangedText, label, labelEdit, labelChangedText, formulaEdit, formulaVal;
-		
-        row = $(this).parent();
-        td = $(this);
-        id = $(row).children('.myTableID');
-        move = $(row).children('.dg-arrange-table-rows-drag-icon');
-		title = $(row).children('.myTableTitle').children('p');
-		titleEdit = $(row).children('.myTableTitle').children('.titleEdit');
-		titleChangedText = titleEdit.val();
-		label = $(row).children('.myTableValue').children('.label');
-		labelEdit = $(row).children('.myTableTitle').children('.labelEdit');
-		labelChangedText = labelEdit.val();
-
-		if (td.children().is(':checked')) {
-            row.css('visibility', 'hidden');
-        }
-		$(title).text(titleChangedText);
-		$(titleEdit).hide();	
-		$(title).show();
-		$(label).text(labelChangedText);
-		$(labelEdit).hide();	
-		$(label).show();
-        td.hide();
-        id.hide();
-        move.hide();
-        $('.container .myTableTitle').css('width', '100%');
-        $('.container .myTableTitle').css('clear', 'both');
-        $('.container .myTableTitle').css('background-color', 'rgba(0,0,0,.35)');
-        $('.container .myTableTitle').css('height', '20px');
-        $('.container .myTableValue').show();
-    });
-    editMode = false;
-	$('.drag-handle').hide();
-	$('#imageHide').hide();
-	$('.cam-drag-handle').hide();
-    $('#editTable').text('Modify Table');
-    $('#editTable').attr('onclick', 'editTable()');
 }
 function createText(){
 	var textBlock, textTitle, textContent, title, index;
@@ -700,7 +554,7 @@ function createText(){
 						disabled: false
 					});	
 }
-	
+//function that expands inputs for creating images	
 function createImage(){
 //unhide inputs
 	$('#createTextTitle').hide();
