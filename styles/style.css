@@ -420,8 +420,7 @@ div.logo_container{
 	top: 15%;
 	left: 20%;
 	z-index: 1;
-	width: 500px;
-	height: 300px;
+
 	background-repeat: no-repeat;
 	background-position: center; 
 	background-size: contain;
@@ -430,7 +429,6 @@ div.logo_container{
 	-ms-backface-visibility:     hidden;
 	-webkit-transform: translate3d(0, 0, 0);
 }
-
 .textBlockContainer p{
 	color: #333;
 	margin: 0;

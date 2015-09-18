@@ -166,14 +166,13 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"></div>');
+		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
 		$('#preload').append('<img id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
 function createCamFromTree(tree_id){
 	var selection = tree_id;
 	console.log('create ' + tree_id);
-	$("#div_"+selection).css('display','inline');
 	$('.imgCamContainer').draggable({
 		start: function(event, ui) {
 			$('.controls').animate({
@@ -202,6 +201,10 @@ function createCamFromTree(tree_id){
 		disabled: false}).resizable({disabled: false, aspectRatio: true});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
+		$('#div_'+selection).children('img').attr('src',src);
+		console.log($('#div_'+selection).children('img').width());
+		$("#div_"+selection).css('display','inline');
+
 	});
 	preloadCam(selection);
 }
@@ -217,10 +220,11 @@ function refreshCams(cam_arr){
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
 				$("#"+cam).css('background-image','url('+src+')');
+				
 			});
 			//src is set after the .load() function
 			$('#preload_div_ws_'+cam_arr[i][2]+'image_url_x').attr('src',cam_arr[i][1]);		
-			
+
 		}
 	}
 }	
@@ -282,6 +286,7 @@ function data_update(data) {
 			maxWidth: 250	
         });
         $(document).ready(function() {
+			//attempts to grab the get parameter to set background color
 			var bgColor = getUrlVars()["bgColor"];
 			if(bgColor !== undefined){
 				$('.top-container').css('background-color',bgColor);
@@ -291,6 +296,7 @@ function data_update(data) {
 			var lastk = "#";
 			var jsonArray = [];
 			var json = iterateStations(data, "", jsonArray, lastk);
+			//sets up our tree
 			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray}})});
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				$(".jstree-leaf").draggable({

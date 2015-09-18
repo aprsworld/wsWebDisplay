@@ -23,43 +23,34 @@
 <div id="content">
 	<div class="container">
 		<div class="top-container">
-			<div class="outer">
-				<!--<div class="camera-container">
-					<span id="ws_status"> disconnected </span>
-					<div id="imageHide"><span>hide</span><input id="imageHideCheck" autocomplete="off" class="checkBox" type="checkbox"></div>
-					<img id="ws_image" class="cam_image" src="images/disconnected.png" alt="This site requirest JavaScript!">
-					<div class="cam-drag-handle"></div>
-
-				</div>-->
-			</div>
-				<div class="controls">
-					<h2> Station Tree </h2>
-					<hr>
-					<div id="stationTree"></div>
-					<div class="controlRow">
-						<input id="createTextTitle" type="text" placeholder="Title"></input>
-						<input id="createImageURL" type="text" placeholder="Enter Image URL"></input>
-						<textarea id="createTextBody" placeholder= "Text Body" rows"6"></textarea>
-						<button id="createText" onclick="createText()"> Create Text </button>
-						<button id="createImg" onclick="createImage()"> Create Image </button>						
-					</div>
-					<div class="controlRow">
-						<button id="refreshTree" onclick=""> Refresh Tree </button>						
-					</div>	
-					<div class="controlRow">
-						<input id="saveAs" type="textfield" value="" placeholder="Save as..."></input>
-						<button id="saveState" onclick="captureState()">Save Layout</button>
-					</div>
-					<div class="controlRow">
-						<select id="stateSelect" name="states">
-						</select>
-						<button id="loadState" onclick="loadState()">Load Layout</button>
-					</div>
-					<div class="controlRow">
-						<input type="text" id="json"></input>
-					</div>
-					<div class="drag-handle"></div>
+			<div class="controls">
+				<h2> Station Tree </h2>
+				<hr>
+				<div id="stationTree"></div>
+				<div class="controlRow">
+					<input id="createTextTitle" type="text" placeholder="Title"></input>
+					<input id="createImageURL" type="text" placeholder="Enter Image URL"></input>
+					<textarea id="createTextBody" placeholder= "Text Body" rows"6"></textarea>
+					<button id="createText" onclick="createText()"> Create Text </button>
+					<button id="createImg" onclick="createImage()"> Create Image </button>						
 				</div>
+				<div class="controlRow">
+					<button id="refreshTree" onclick=""> Refresh Tree </button>						
+				</div>	
+				<div class="controlRow">
+					<input id="saveAs" type="textfield" value="" placeholder="Save as..."></input>
+					<button id="saveState" onclick="captureState()">Save Layout</button>
+				</div>
+				<div class="controlRow">
+					<select id="stateSelect" name="states">
+					</select>
+					<button id="loadState" onclick="loadState()">Load Layout</button>
+				</div>
+				<div class="controlRow">
+					<input type="text" id="json"></input>
+				</div>
+				<div class="drag-handle"></div>
+			</div>
 		</div>
 		<div class="table_container">
 			<div id="myTable">
