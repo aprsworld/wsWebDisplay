@@ -28,7 +28,6 @@ function table_generate(data) {
     }
     return $dtable;
 }
-
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
@@ -407,17 +406,38 @@ function data_update(data) {
 	refreshCams(cams);
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
 }
+//gets parameters in url
+//called like: var host = getUrlVars()["host"];
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
+    function(m,key,value) {
+      vars[key] = value;
+    });
+    return vars;
+  }
 /*function initiates the data transfer*/
 function data_start() {
+	//user defined host via url get parameter
+	var host = getUrlVars()["host"];
+	if(host == undefined){
+		host = 'cam.aprsworld.com';
+	}
+	console.log(host);
     data_object = new BroadcastClient({
         callback_update: data_update,
         callback_error: data_error,
         // XXX: These are temporary
         url_ajax: 'http://cam.aprsworld.com:8888/.data',
-        url_ws: 'ws://cam.aprsworld.com:1228/.data'
+        url_ws: 'ws://'+host+':1228/.data'
     });
-    document.title = 'APRSWorld LLC, wsBroadcast System';
-    $('#header').html('<div class="logo_container"> </div><h1>DEEPLAKE Station Monitor</h1>');
+	var title = getUrlVars()["title"];
+	if(title == undefined){
+    	document.title = 'wsWebDisplay';
+	}
+	else{
+		document.title = title;	
+	}
     $('#ws_status').text('Connecting...');
 }
 function createText(){
@@ -664,7 +684,7 @@ var editWindow =  function() {
 		$( document ).on( "keyup", "input.labelChange" , function() {	
 			label.text(htmlEntities(labelChange.val()));
 		});
-		// delete event hanlder
+		// delete event handler
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).remove();
