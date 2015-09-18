@@ -204,7 +204,6 @@ function createCamFromTree(tree_id){
 		$('#div_'+selection).children('img').attr('src',src);
 		console.log($('#div_'+selection).children('img').width());
 		$("#div_"+selection).css('display','inline');
-
 	});
 	preloadCam(selection);
 }
@@ -575,17 +574,26 @@ var editWindow =  function() {
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
 	
-	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow').hide();
+	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #resizeModule').hide();
 	$('.editWindow').show(150).draggable({});
 	selectedModule = $(this).attr('id');
 	console.log($(this));
 	if($(this).hasClass('imgCamContainer')){
+		$('#resizeModule').show();
 		$('.editWindow h2').text("Edit Camera");
 		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).hide();
 			$('.editWindow').hide(150);
+		});
+		// delete event hanlder
+		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizeModule" , function() {	
+			var width = $("#"+selectedModule).children('img').width();
+			var height = $("#"+selectedModule).children('img').height();
+			$("#"+selectedModule).css('width', width);
+			$("#"+selectedModule).css('height',height);
 		});
 	}
 	else if($(this).hasClass('textBlockContainer')){
