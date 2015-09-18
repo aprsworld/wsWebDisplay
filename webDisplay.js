@@ -282,6 +282,10 @@ function data_update(data) {
 			maxWidth: 250	
         });
         $(document).ready(function() {
+			var bgColor = getUrlVars()["bgColor"];
+			if(bgColor !== undefined){
+				$('.top-container').css('background-color',bgColor);
+			}
 			setInterval(timer,1000);
 			populateCams(cams);
 			var lastk = "#";
@@ -436,9 +440,8 @@ function data_start() {
     	document.title = 'wsWebDisplay';
 	}
 	else{
-		document.title = title;	
+		document.title = title.replace('%20'," ");	
 	}
-    $('#ws_status').text('Connecting...');
 }
 function createText(){
 	var textBlock, textTitle, textContent, title, index;
