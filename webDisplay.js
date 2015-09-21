@@ -454,6 +454,16 @@ function data_update(data) {
 				}
 			});		
         });
+		var layout = getUrlVars()["layout"];
+		if(layout != undefined){
+			$("#stateSelect").val(layout);
+			loadState();
+			$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
+			$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
+			$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
+			$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
+			$('.imgBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
+		}
 	}
     started = true; //sets our boolean to true so the above only executes once
 	refreshCams(cams);
