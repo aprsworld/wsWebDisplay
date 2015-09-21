@@ -9,6 +9,46 @@ var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
 /*******************************/
+function config_retr(url) {
+	$.ajax(url, {
+		cache: false,
+		dataType: 'json',
+	}).done(function (data, status, XHR) {
+		// XXX: status, XHR?
+		if (!data || typeof data !== 'object' || data.error || !data.result || typeof data.result !== 'object') {
+			alert('Failed to load configurations from server.');
+			return;
+		}
+		savedStates = data.result;
+		$('#stateSelect').empty();
+		var i;
+		for (i = 0; i < savedStates.length; i++) {
+			var option = document.createElement("option");
+        		option.text = "Layout#" + i;
+    			option.value = i;
+			$('#stateSelect').append(option);
+		}
+	}).fail(function (XHR, status, error) {
+		alert('Failed to load configurations from server.');
+	});
+}
+function config_send(url) {
+	$.ajax(url, {
+		cache: false,
+		dataType: 'json',
+		method: 'POST',
+		contentType: 'text/plain',	// XXX: application/json but this has complications
+		processData: false,
+		data: JSON.stringify(savedStates)
+	}).done(function (data, status, XHR) {
+		if (!data || typeof data !== 'object' || data.error || !data.result || data.result != "STORED") {
+			alert('Failed to save configurations to server.');
+		}
+	}).fail(function (XHR, status, error) {
+		alert('Failed to save configurations to server.');
+	});
+}
+/******************************/
 function table_generate(data) {
     var $dtable = $('<table border=1></table>');
     for (var p in data) {
