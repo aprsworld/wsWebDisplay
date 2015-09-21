@@ -51,7 +51,20 @@ function config_send(url) {
 		alert('Failed to save configurations to server.');
 	});
 }
-/******************************/
+/********************************************************************
+Work around for jquery ui bug that causes aspect ratio option to fail
+on resizables that have already been initialized
+*********************************************************************/
+$(function() {
+	$.extend($.ui.resizable.prototype, (function (orig) {
+		return {
+			_mouseStart: function (event) {
+				this._aspectRatio = !!(this.options.aspectRatio);
+				return(orig.call(this, event));
+			}
+		};
+	})($.ui.resizable.prototype["_mouseStart"]));
+});
 function table_generate(data) {
     var $dtable = $('<table border=1></table>');
     for (var p in data) {
@@ -217,6 +230,9 @@ function createCamFromTree(tree_id){
 	var selection = tree_id;
 	console.log('create ' + tree_id);
 	$('.imgCamContainer').draggable({
+		grid: [1, 1],
+		snap: true,
+		snapTolerance: 10,
 		start: function(event, ui) {
 			$('.controls').animate({
 				width: '10px'
@@ -241,12 +257,14 @@ function createCamFromTree(tree_id){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false}).resizable({disabled: false, aspectRatio: true});
+		disabled: false}).resizable({disabled: false});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
 		$('#div_'+selection).children('img').attr('src',src);
 		console.log($('#div_'+selection).children('img').width());
 		$("#div_"+selection).css('display','inline');
+		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
+
 	});
 	preloadCam(selection);
 }
@@ -527,6 +545,9 @@ function createText(){
 	//makes block draggable and resizable
 	$(".textBlockContainer").draggable({
 		disabled: false,
+		grid: [1, 1],
+		snap: true,
+		snapTolerance: 10,
 		start: function(event, ui) {
 			$(this).addClass('draggable_focus_in');
 			$('.controls').animate({
@@ -578,19 +599,22 @@ function submitURL(){
 	if(imgURL != ""){
 		$('#content').append('<div class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src='+imgURL+'></img></div>');
 		$(".imgBlockContainer").draggable({
-		start: function(event, ui) {
-		$(this).addClass('draggable_focus_in');
-			$('.controls').animate({
-				width: '10px'
-			},100);
-			$('.editWindow').animate({
-				width: '0px',
-				margin: '0',
-				padding: '0'
-			},50);
-			$('.controlRow').hide();
-			$('.controls h2').hide();
-		},
+			grid: [1, 1],
+			snap: true,
+			snapTolerance: 10,
+			start: function(event, ui) {
+			$(this).addClass('draggable_focus_in');
+				$('.controls').animate({
+					width: '10px'
+				},100);
+				$('.editWindow').animate({
+					width: '0px',
+					margin: '0',
+					padding: '0'
+				},50);
+				$('.controlRow').hide();
+				$('.controls h2').hide();
+			},
 		stop: function(event, ui) {
 			$(this).removeClass('draggable_focus_in');
 			$('.controls').animate({
@@ -1232,7 +1256,7 @@ function loadState(){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false}).resizable({disabled: false, aspectRatio: true});
+		disabled: false}).resizable({disabled: false});
 	//makes images draggable and resziable after being loaded
 	$(".imgBlockContainer").draggable({
 		start: function(event, ui) {
