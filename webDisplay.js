@@ -370,6 +370,10 @@ function data_update(data) {
 					}
 				});
 			});
+			$( document ).on( "click", "#refreshTree" , function() {	
+				iterateStations(data, "", jsonArray, lastk);
+				refreshTree();
+			});
 			$(".top-container").droppable({
         		accept: '.jstree-leaf',
 				drop: function( event, ui ) {
