@@ -437,8 +437,8 @@ function data_start() {
         callback_update: data_update,
         callback_error: data_error,
         // XXX: These are temporary
-        url_ajax: 'http://cam.aprsworld.com:8888/.data',
-        url_ws: 'ws://'+host+':1228/.data'
+        url_ajax: 'http://'+host+':8888/.data',
+        url_ws: 'ws://'+host+':8889/.data'
     });
 	var title = getUrlVars()["title"];
 	if(title == undefined){
