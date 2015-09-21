@@ -28,6 +28,7 @@ function config_retr(url) {
     			option.value = i;
 			$('#stateSelect').append(option);
 		}
+		console.log('success');
 	}).fail(function (XHR, status, error) {
 		alert('Failed to load configurations from server.');
 	});
@@ -43,6 +44,9 @@ function config_send(url) {
 	}).done(function (data, status, XHR) {
 		if (!data || typeof data !== 'object' || data.error || !data.result || data.result != "STORED") {
 			alert('Failed to save configurations to server.');
+		}
+		else{
+			console.log('success')
 		}
 	}).fail(function (XHR, status, error) {
 		alert('Failed to save configurations to server.');
@@ -455,6 +459,7 @@ function data_update(data) {
 	refreshCams(cams);
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
 }
+
 //gets parameters in url
 //called like: var host = getUrlVars()["host"];
 function getUrlVars() {
@@ -472,6 +477,7 @@ function data_start() {
 	if(host == undefined){
 		host = 'cam.aprsworld.com';
 	}
+	config_retr("http://"+host+":8888/.config");
 	console.log(host);
     data_object = new BroadcastClient({
         callback_update: data_update,
@@ -945,6 +951,7 @@ function captureState(){
 	savedStates.push(jsonString);
 		//for testing purposes
 	$('#json').val(jsonString);
+	config_send("http://cam.aprsworld.com:8888/.config");
 }
 /* grabs the latest saved state and populates the select field for loading */
 function populateSelection(){
@@ -961,6 +968,7 @@ function populateSelection(){
 it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
 the saved state*/
 function loadState(){
+	
 	var index = $( "#stateSelect option:selected" ).attr("value"); 
 	var jsonString = savedStates[index];
 	var stateObject = $.parseJSON(jsonString);
@@ -1008,6 +1016,8 @@ function loadState(){
 						$("#"+savedCellDivID).css('opacity','1.0');
 					}
 				}
+				id_arr.push(savedCellID);
+				path_arr.push(savedCellPath);
 			}
 		}
 		else if(k == 'text_Blocks'){
