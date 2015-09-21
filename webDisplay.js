@@ -1,3 +1,6 @@
+/********** Constants ************/
+const HOST_DEFAULT = 'cam.aprsworld.com';
+const TITLE_DEFAULT = 'wsWebDisplay';
 /***** Global variables ********/
 var time; //incremental variable that keeps track of time since last data update
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
@@ -28,7 +31,6 @@ function config_retr(url) {
     			option.value = i;
 			$('#stateSelect').append(option);
 		}
-		console.log('success');
 	}).fail(function (XHR, status, error) {
 		alert('Failed to load configurations from server.');
 	});
@@ -44,9 +46,6 @@ function config_send(url) {
 	}).done(function (data, status, XHR) {
 		if (!data || typeof data !== 'object' || data.error || !data.result || data.result != "STORED") {
 			alert('Failed to save configurations to server.');
-		}
-		else{
-			console.log('success')
 		}
 	}).fail(function (XHR, status, error) {
 		alert('Failed to save configurations to server.');
@@ -485,7 +484,7 @@ function data_start() {
 	//user defined host via url get parameter
 	var host = getUrlVars()["host"];
 	if(host == undefined){
-		host = 'cam.aprsworld.com';
+		host = HOST_DEFAULT;
 	}
 	config_retr("http://"+host+":8888/.config");
 	console.log(host);
@@ -498,7 +497,7 @@ function data_start() {
     });
 	var title = getUrlVars()["title"];
 	if(title == undefined){
-    	document.title = 'wsWebDisplay';
+    	document.title = TITLE_DEFAULT;
 	}
 	else{
 		document.title = title.replace('%20'," ");	
@@ -974,11 +973,16 @@ function populateSelection(){
     option.value = savedStates.length;
     $('#stateSelect').append(option);
 }
+function deleteState(){
+	var index = $( "#stateSelect option:selected" ).attr("value"); 
+	savedStates.splice(index, 1);
+	$("select#stateSelect option[value='"+index+"']").remove();
+	console.log(savedStates);
+}
 /*A function that is passed a json string that holds elements and their properties from a saved state of a layout. Once it takes in the json string
 it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
 the saved state*/
 function loadState(){
-	
 	var index = $( "#stateSelect option:selected" ).attr("value"); 
 	var jsonString = savedStates[index];
 	var stateObject = $.parseJSON(jsonString);
