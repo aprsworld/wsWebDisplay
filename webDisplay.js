@@ -681,11 +681,14 @@ var editWindow =  function() {
 		});	
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
+			$("#cropModule").hide();
+			$("#endCrop").show();
 			$(".imgCamContainer").draggable({disabled: true});
 			$(".imgCamContainer").find('img').resizable({disabled: true});
 			var imgID = $("#"+selectedModule).find('img').attr('id');
 			var width = $("#"+imgID).css('width');
 			var height = $("#"+imgID).css('width');
+			var top, left, width, height;
 			$('.ui-wrapper > #'+imgID).cropper({
 				aspectRatio: width / height,
 				autoCropArea: .8,
@@ -697,13 +700,17 @@ var editWindow =  function() {
 				crop: function(e) {
 					// Output the result data for cropping image.
 					console.log(e.x);
+					left = e.x;
 					console.log(e.y);
+					top = e.y;
 					console.log(e.width);
+					width = e.width;
 					console.log(e.height);
-					console.log(e.rotate);
-					console.log(e.scaleX);
-					console.log(e.scaleY);
+					height = e.height;
 				}
+			});
+			$('#endCrop').click( function() {
+				
 			});
 		});
 	}
