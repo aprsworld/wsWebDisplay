@@ -1,7 +1,7 @@
 /********** Constants ************/
 const HOST_DEFAULT = 'cam.aprsworld.com';
 const TITLE_DEFAULT = 'wsWebDisplay';
-/***** Global variables **********/
+/***** Global variables ********/
 var time; //incremental variable that keeps track of time since last data update
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
 var id_arr = [];
@@ -11,7 +11,7 @@ var savedStates = []; //set of saved table states in the format of a multi Dimen
 var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
-/*********************************/
+/*******************************/
 function config_retr(url) {
 	$.ajax(url, {
 		cache: false,
@@ -222,7 +222,7 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="display: none;"><p style="display:none;">'+cam_arr[i][1]+'</p><img id="camImg'+i+'" style="visibility:hidden;" src=""></div>');	
+		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
 		$('#preload').append('<img id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
@@ -257,13 +257,14 @@ function createCamFromTree(tree_id){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false});
+		disabled: false}).resizable({disabled: false});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
-		$('#div_'+selection).find('img').attr('src',src);
+		$('#div_'+selection).children('img').attr('src',src);
+		console.log($('#div_'+selection).children('img').width());
 		$("#div_"+selection).css('display','inline');
-		$("#div_"+selection).find('img').css('visibility','visible');		
-		$("#div_"+selection).find('img').resizable({disabled: false, aspectRatio: true});
+		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
+
 	});
 	preloadCam(selection);
 }
@@ -278,7 +279,7 @@ function refreshCams(cam_arr){
 			$('#preload_div_ws_'+cam_arr[i][2]+'image_url_x').load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
-				$("#"+cam).find('img').attr('src', src);
+				$("#"+cam).css('background-image','url('+src+')');
 				
 			});
 			//src is set after the .load() function
@@ -288,8 +289,9 @@ function refreshCams(cam_arr){
 	}
 }	
 function preloadCam(selection){
-	var url = $('#div_'+selection).children('p').text();
+	var url = $('#'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
 	$('#preload_div_'+selection).attr('src', url);
+
 }
 function fontSizeChange(direction, id){
 	var fontsize = $('#'+id).css('font-size');
@@ -477,7 +479,7 @@ function data_update(data) {
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
-			$(".imgCamContainer").draggable({disabled: true});
+			$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
 			$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
 			$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
 			$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
@@ -668,50 +670,13 @@ var editWindow =  function() {
 			$("#"+selectedModule).hide();
 			$('.editWindow').hide(150);
 		});
-		// resize event handler
+		// delete event hanlder
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {	
-			var width = $("#"+selectedModule).find('img').get(0).naturalWidth;
-			var height = $("#"+selectedModule).find('img').get(0).naturalHeight;
-			console.log(width+""+height);
-			$("#"+selectedModule).find('img').parent().css('width',width);
-			$("#"+selectedModule).find('img').parent().css('height',height);
-			$("#"+selectedModule).find('img').css('width',width);
-			$("#"+selectedModule).find('img').css('height',height);
-		});	
-		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#cropModule" , function() {	
-			$("#cropModule").hide();
-			$("#endCrop").show();
-			$(".imgCamContainer").draggable({disabled: true});
-			$(".imgCamContainer").find('img').resizable({disabled: true});
-			var imgID = $("#"+selectedModule).find('img').attr('id');
-			var width = $("#"+imgID).css('width');
-			var height = $("#"+imgID).css('width');
-			var top, left, width, height;
-			$('.ui-wrapper > #'+imgID).cropper({
-				aspectRatio: width / height,
-				autoCropArea: .8,
-				dragCrop: false,
-				scaleable: false,
-				movable: false,
-				modal: false,
-				strict: false,
-				crop: function(e) {
-					// Output the result data for cropping image.
-					console.log(e.x);
-					left = e.x;
-					console.log(e.y);
-					top = e.y;
-					console.log(e.width);
-					width = e.width;
-					console.log(e.height);
-					height = e.height;
-				}
-			});
-			$('#endCrop').click( function() {
-				
-			});
+			var width = $("#"+selectedModule).children('img').width();
+			var height = $("#"+selectedModule).children('img').height();
+			$("#"+selectedModule).css('width', width);
+			$("#"+selectedModule).css('height',height);
 		});
 	}
 	else if($(this).hasClass('textBlockContainer')){
@@ -844,7 +809,7 @@ function edit(handler) {
 	$('#masterEdit').attr('onclick', 'nonEdit()');
 	$('.tr').css('cursor','pointer');
 	$('.textBlockContainer').css('cursor','pointer');
-	$('.hide').show();
+	$('.hide').css('visibility','visible');
 	$('.controls').show(200);
 	//delegate events
 	$('.top-container').delegate('.tr','click', editWindow);
@@ -858,8 +823,7 @@ function edit(handler) {
 	$(".jstree-leaf").draggable({
 		helper: "clone"
 	});
-	$(".imgCamContainer").draggable({disabled: false});
-	$(".imgCamContainer").children().children('img').resizable({disabled: false});
+	$(".imgCamContainer").draggable({disabled: false}).resizable({disabled: false});
 	$(".draggable").draggable({ disabled: false}).resizable({disabled:false});
 	$('#ws_status').draggable({disabled: false}).resizable({disabled:false});
 	$('.textBlockContainer').draggable({disabled: false}).resizable({disabled: false});
@@ -870,7 +834,7 @@ function nonEdit(handler) {
 	$('#masterEdit').attr('onclick', 'edit()');
 	$('.tr').css('cursor','initial');
 	$('.textBlockContainer').css('cursor','initial');
-	$('.hide').hide();
+	$('.hide').css('visibility', 'hidden');
 	$('.editWindow').hide(150);
 	$('.controls').hide(200);
 	//delegate events
@@ -881,8 +845,7 @@ function nonEdit(handler) {
 	
 	//disable draggables and resizables
 	$('.ui-icon').hide();
-	$(".imgCamContainer").draggable({disabled: true});
-	$(".imgCamContainer").children().children('img').resizable({disabled: true});
+	$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
 	$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
 	$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
 	$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
@@ -1293,7 +1256,7 @@ function loadState(){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false});//.resizable({disabled: false});
+		disabled: false}).resizable({disabled: false});
 	//makes images draggable and resziable after being loaded
 	$(".imgBlockContainer").draggable({
 		start: function(event, ui) {
