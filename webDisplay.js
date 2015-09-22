@@ -222,7 +222,7 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="display: none;"><p style="display:none;">'+cam_arr[i][1]+'</p><img style="visibility:hidden;" src=""></div>');	
+		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="display: none;"><p style="display:none;">'+cam_arr[i][1]+'</p><img id="camImg'+i+'" style="visibility:hidden;" src=""></div>');	
 		$('#preload').append('<img id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
@@ -679,6 +679,33 @@ var editWindow =  function() {
 			$("#"+selectedModule).find('img').css('width',width);
 			$("#"+selectedModule).find('img').css('height',height);
 		});	
+		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#cropModule" , function() {	
+			$(".imgCamContainer").draggable({disabled: true});
+			$(".imgCamContainer").find('img').resizable({disabled: true});
+			var imgID = $("#"+selectedModule).find('img').attr('id');
+			var width = $("#"+imgID).css('width');
+			var height = $("#"+imgID).css('width');
+			$('.ui-wrapper > #'+imgID).cropper({
+				aspectRatio: width / height,
+				autoCropArea: .8,
+				dragCrop: false,
+				scaleable: false,
+				movable: false,
+				modal: false,
+				strict: false,
+				crop: function(e) {
+					// Output the result data for cropping image.
+					console.log(e.x);
+					console.log(e.y);
+					console.log(e.width);
+					console.log(e.height);
+					console.log(e.rotate);
+					console.log(e.scaleX);
+					console.log(e.scaleY);
+				}
+			});
+		});
 	}
 	else if($(this).hasClass('textBlockContainer')){
 		$('#bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow').show();
