@@ -1,7 +1,7 @@
 /********** Constants ************/
 const HOST_DEFAULT = 'cam.aprsworld.com';
 const TITLE_DEFAULT = 'wsWebDisplay';
-/***** Global variables ********/
+/***** Global variables **********/
 var time; //incremental variable that keeps track of time since last data update
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
 var id_arr = [];
@@ -11,7 +11,7 @@ var savedStates = []; //set of saved table states in the format of a multi Dimen
 var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
-/*******************************/
+/*********************************/
 function config_retr(url) {
 	$.ajax(url, {
 		cache: false,
@@ -222,7 +222,7 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
+		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="display: none;"><p style="display:none;">'+cam_arr[i][1]+'</p><img style="visibility:hidden;" src=""></div>');	
 		$('#preload').append('<img id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
@@ -257,14 +257,13 @@ function createCamFromTree(tree_id){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false}).resizable({disabled: false});
+		disabled: false});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
-		$('#div_'+selection).children('img').attr('src',src);
-		console.log($('#div_'+selection).children('img').width());
+		$('#div_'+selection).find('img').attr('src',src);
 		$("#div_"+selection).css('display','inline');
-		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
-
+		$("#div_"+selection).find('img').css('visibility','visible');		
+		$("#div_"+selection).find('img').resizable({disabled: false, aspectRatio: true});
 	});
 	preloadCam(selection);
 }
@@ -279,7 +278,7 @@ function refreshCams(cam_arr){
 			$('#preload_div_ws_'+cam_arr[i][2]+'image_url_x').load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
-				$("#"+cam).css('background-image','url('+src+')');
+				$("#"+cam).find('img').attr('src', src);
 				
 			});
 			//src is set after the .load() function
@@ -289,9 +288,9 @@ function refreshCams(cam_arr){
 	}
 }	
 function preloadCam(selection){
-	var url = $('#'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
+	//var url = $('#'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
+	var url = $('#div_'+selection).children('p').text();
 	$('#preload_div_'+selection).attr('src', url);
-
 }
 function fontSizeChange(direction, id){
 	var fontsize = $('#'+id).css('font-size');
@@ -479,7 +478,7 @@ function data_update(data) {
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
-			$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
+			$(".imgCamContainer").draggable({disabled: true});//.resizable({disabled: true});
 			$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
 			$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
 			$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
@@ -670,7 +669,7 @@ var editWindow =  function() {
 			$("#"+selectedModule).hide();
 			$('.editWindow').hide(150);
 		});
-		// delete event hanlder
+		// resize event handler
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {	
 			var width = $("#"+selectedModule).children('img').width();
@@ -678,6 +677,8 @@ var editWindow =  function() {
 			$("#"+selectedModule).css('width', width);
 			$("#"+selectedModule).css('height',height);
 		});
+		
+		
 	}
 	else if($(this).hasClass('textBlockContainer')){
 		$('#bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow').show();
@@ -809,7 +810,7 @@ function edit(handler) {
 	$('#masterEdit').attr('onclick', 'nonEdit()');
 	$('.tr').css('cursor','pointer');
 	$('.textBlockContainer').css('cursor','pointer');
-	$('.hide').css('visibility','visible');
+	$('.hide').show();
 	$('.controls').show(200);
 	//delegate events
 	$('.top-container').delegate('.tr','click', editWindow);
@@ -823,7 +824,8 @@ function edit(handler) {
 	$(".jstree-leaf").draggable({
 		helper: "clone"
 	});
-	$(".imgCamContainer").draggable({disabled: false}).resizable({disabled: false});
+	$(".imgCamContainer").draggable({disabled: false});
+	$(".imgCamContainer").children().children('img').resizable({disabled: false});
 	$(".draggable").draggable({ disabled: false}).resizable({disabled:false});
 	$('#ws_status').draggable({disabled: false}).resizable({disabled:false});
 	$('.textBlockContainer').draggable({disabled: false}).resizable({disabled: false});
@@ -834,7 +836,7 @@ function nonEdit(handler) {
 	$('#masterEdit').attr('onclick', 'edit()');
 	$('.tr').css('cursor','initial');
 	$('.textBlockContainer').css('cursor','initial');
-	$('.hide').css('visibility', 'hidden');
+	$('.hide').hide();
 	$('.editWindow').hide(150);
 	$('.controls').hide(200);
 	//delegate events
@@ -845,7 +847,8 @@ function nonEdit(handler) {
 	
 	//disable draggables and resizables
 	$('.ui-icon').hide();
-	$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
+	$(".imgCamContainer").draggable({disabled: true});
+	$(".imgCamContainer").children().children('img').resizable({disabled: true});
 	$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
 	$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
 	$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
@@ -1256,7 +1259,7 @@ function loadState(){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false}).resizable({disabled: false});
+		disabled: false});//.resizable({disabled: false});
 	//makes images draggable and resziable after being loaded
 	$(".imgBlockContainer").draggable({
 		start: function(event, ui) {
