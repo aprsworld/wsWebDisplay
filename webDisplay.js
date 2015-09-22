@@ -678,11 +678,7 @@ var editWindow =  function() {
 			$("#"+selectedModule).find('img').parent().css('height',height);
 			$("#"+selectedModule).find('img').css('width',width);
 			$("#"+selectedModule).find('img').css('height',height);
-			//$("#"+selectedModule).css('width', width);
-			//$("#"+selectedModule).css('height',height);
-		});
-		
-		
+		});	
 	}
 	else if($(this).hasClass('textBlockContainer')){
 		$('#bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow').show();
