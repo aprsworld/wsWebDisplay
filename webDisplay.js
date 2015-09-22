@@ -288,7 +288,6 @@ function refreshCams(cam_arr){
 	}
 }	
 function preloadCam(selection){
-	//var url = $('#'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
 	var url = $('#div_'+selection).children('p').text();
 	$('#preload_div_'+selection).attr('src', url);
 }
@@ -478,7 +477,7 @@ function data_update(data) {
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
-			$(".imgCamContainer").draggable({disabled: true});//.resizable({disabled: true});
+			$(".imgCamContainer").draggable({disabled: true});
 			$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
 			$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
 			$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
@@ -672,10 +671,15 @@ var editWindow =  function() {
 		// resize event handler
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {	
-			var width = $("#"+selectedModule).children('img').width();
-			var height = $("#"+selectedModule).children('img').height();
-			$("#"+selectedModule).css('width', width);
-			$("#"+selectedModule).css('height',height);
+			var width = $("#"+selectedModule).find('img').get(0).naturalWidth;
+			var height = $("#"+selectedModule).find('img').get(0).naturalHeight;
+			console.log(width+""+height);
+			$("#"+selectedModule).find('img').parent().css('width',width);
+			$("#"+selectedModule).find('img').parent().css('height',height);
+			$("#"+selectedModule).find('img').css('width',width);
+			$("#"+selectedModule).find('img').css('height',height);
+			//$("#"+selectedModule).css('width', width);
+			//$("#"+selectedModule).css('height',height);
 		});
 		
 		
