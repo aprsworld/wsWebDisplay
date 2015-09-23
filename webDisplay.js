@@ -672,7 +672,9 @@ var editWindow =  function() {
 		});
 		// delete event hanlder
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#resizeModule" , function() {	
+		$( document ).on( "click", "#resizeModule" , function() {
+			$("#"+selectedModule).removeClass("cropped");
+			$("#"+selectedModule).resizable({disabled: false});
 			var width = $("#"+selectedModule).children('img').width();
 			var height = $("#"+selectedModule).children('img').height();
 			$("#"+selectedModule).css('width', width);
@@ -701,27 +703,22 @@ var editWindow =  function() {
 			$('.cropperwrapper > img').cropper({
 				aspectRatio: width / height,
 				autoCropArea: .8,
-				dragCrop: false,
+				dragCrop: true,
 				scaleable: false,
 				movable: false,
-				modal: false,
+				modal: true,
 				strict: false,
+				zoomable: false,
+				mouseWheelZoom: false,
 				crop: function(e) {
-					// Output the result data for cropping image.
-					console.log(e.x);
-					console.log(e.y);
-					console.log(e.width);
-					console.log(e.height);
-					console.log(e.rotate);
-					console.log(e.scaleX);
-					console.log(e.scaleY);
 					cropHeight = e.height;
 					cropWidth = e.width;
 					cropLeft = e.x;
 					cropTop = e.y;
 				}
 			});
-			$('#endCrop').click(function(){
+			$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
+			$( document ).on( "click", "#endCrop" , function() {	
 				width = parseInt((width.slice(0,-2)));
 				height = parseInt((height.slice(0,-2)));
 				var changeWidth = ((((width-cropWidth)/width)));
@@ -738,13 +735,15 @@ var editWindow =  function() {
 				}
 				$("#"+selectedModule).css("top",Math.abs(top)+Math.abs((cropTop*diffFromNatHeight)));
 				$("#"+selectedModule).css("left",Math.abs(left)+Math.abs((cropLeft*diffFromNatWidth)));
-				
 				$("#"+selectedModule).css("width",cropWidth*diffFromNatWidth+"px");
 				$("#"+selectedModule).css("height",cropHeight*diffFromNatHeight+"px");
 				$("#"+selectedModule).css("background-size",width+"px "+height+"px ");
 				console.log($("#"+selectedModule).css("background-position"));
 				console.log("background-size "+$("#"+selectedModule).css("background-size"));
+				$("#"+selectedModule).css("overflow","hidden");
 				$("#"+selectedModule).show();
+				$("#"+selectedModule).addClass("cropped");
+				$(".cropped").resizable({disabled:true});
 			});
 		});
 	}
@@ -893,6 +892,7 @@ function edit(handler) {
 		helper: "clone"
 	});
 	$(".imgCamContainer").draggable({disabled: false}).resizable({disabled: false});
+	$(".cropped").resizable({disabled:true});
 	$(".draggable").draggable({ disabled: false}).resizable({disabled:false});
 	$('#ws_status').draggable({disabled: false}).resizable({disabled:false});
 	$('.textBlockContainer').draggable({disabled: false}).resizable({disabled: false});
