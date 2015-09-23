@@ -684,6 +684,8 @@ var editWindow =  function() {
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
+			$('#cropModule').hide();
+			$('#endCrop').show();
 			var nativeWidth = $("#"+selectedModule).children('img').width();
 			var nativeHeight = $("#"+selectedModule).children('img').height();
 			$("#"+selectedModule).hide();
@@ -718,7 +720,9 @@ var editWindow =  function() {
 				}
 			});
 			$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
-			$( document ).on( "click", "#endCrop" , function() {	
+			$( document ).on( "click", "#endCrop" , function() {
+				$('#cropModule').show();
+				$('#endCrop').hide();
 				width = parseInt((width.slice(0,-2)));
 				height = parseInt((height.slice(0,-2)));
 				var changeWidth = ((((width-cropWidth)/width)));
