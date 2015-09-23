@@ -682,16 +682,22 @@ var editWindow =  function() {
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
+			var nativeWidth = $("#"+selectedModule).children('img').width();
+			var nativeHeight = $("#"+selectedModule).children('img').height();
 			$("#"+selectedModule).hide();
 			var cropWidth, cropHeight, cropLeft, cropTop;
+			var thismodule = $("#"+selectedModule);
+			console.log(nativeWidth+" x "+nativeHeight);
 			var width = $("#"+selectedModule).css('width');
 			var height = $("#"+selectedModule).css('height');
 			var left = $("#"+selectedModule).css('left');
 			var top = $("#"+selectedModule).css('top');
 			var src = $("#"+selectedModule).find('img').attr('src');
-			$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" src="'+src+'"></div>');
+			var diffFromNatHeight = (height.slice(0,-2))/nativeHeight;
+			var diffFromNatWidth = (width.slice(0,-2))/nativeWidth;
+			console.log(diffFromNatWidth+" x "+diffFromNatHeight);
+			$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width.slice(0,-2)*diffFromNatWidth)+' " height="'+(height.slice(0,-2)*diffFromNatHeight)+' "src="'+src+'"></div>');
 			$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
-			$('.cropperWrapperImg').css({"width": width, "height": height});
 			$('.cropperwrapper > img').cropper({
 				aspectRatio: width / height,
 				autoCropArea: .8,
@@ -716,12 +722,28 @@ var editWindow =  function() {
 				}
 			});
 			$('#endCrop').click(function(){
+				width = parseInt((width.slice(0,-2)));
+				height = parseInt((height.slice(0,-2)));
+				var changeWidth = ((((width-cropWidth)/width)));
+				var changeHeight = (((height-cropHeight)/height));
+				var changeLeft = ((((top-cropTop)/1))*100);
+				var changeTop = (((left-cropLeft)/1)*100);
+				console.log(cropTop+" X "+cropLeft);
 				$('.cropperWrapper').remove();
-				$("#"+selectedModule).css("background-position", "-"+(cropLeft)+"px -"+(cropTop)+"px");
-				$("#"+selectedModule).css("width",cropWidth);
-				$("#"+selectedModule).css("height",cropHeight);
-				$("#"+selectedModule).css("background-size","auto");
+				if(cropTop == 0 || cropLeft == 0){
+					$("#"+selectedModule).css("background-position", ""+(cropLeft*diffFromNatWidth)+"px "+(cropTop*diffFromNatHeight)+"px");
+				}
+				else{
+					$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+				}
+				$("#"+selectedModule).css("top",Math.abs(top)+Math.abs((cropTop*diffFromNatHeight)));
+				$("#"+selectedModule).css("left",Math.abs(left)+Math.abs((cropLeft*diffFromNatWidth)));
+				
+				$("#"+selectedModule).css("width",cropWidth*diffFromNatWidth+"px");
+				$("#"+selectedModule).css("height",cropHeight*diffFromNatHeight+"px");
+				$("#"+selectedModule).css("background-size",width+"px "+height+"px ");
 				console.log($("#"+selectedModule).css("background-position"));
+				console.log("background-size "+$("#"+selectedModule).css("background-size"));
 				$("#"+selectedModule).show();
 			});
 		});
