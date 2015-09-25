@@ -1069,7 +1069,7 @@ function captureState(){
 	var jsonString = JSON.stringify(saved_state);
 	savedStates.push(jsonString);
 		//for testing purposes
-	$('#json').val(jsonString);
+		//$('#json').val(jsonString);
 	config_send("http://cam.aprsworld.com:8888/.config");
 }
 /* grabs the latest saved state and populates the select field for loading */
