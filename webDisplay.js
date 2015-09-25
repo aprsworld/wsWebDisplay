@@ -473,7 +473,8 @@ function data_update(data) {
 					cellCount++;
 					}
 				}
-			});		
+			});	
+			$( document ).tooltip( {effect: "drop"});
         });
 		var layout = getUrlVars()["layout"];
 		if(layout != undefined){
