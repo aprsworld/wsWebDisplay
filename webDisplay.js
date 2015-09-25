@@ -657,16 +657,25 @@ var editWindow =  function() {
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
 	
-	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #resizeModule').hide();
+	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150).draggable({});
 	selectedModule = $(this).attr('id');
 	console.log($(this));
 	if($(this).hasClass('imgCamContainer')){
+		$('#cropModule').show();
 		$('#resizeModule').show();
 		$('.editWindow h2').text("Edit Camera");
 		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#deleteModule" , function() {	
+		$( document ).on( "click", "#deleteModule" , function() {
+			$("#"+selectedModule).removeClass("cropped");
+			$("#"+selectedModule).resizable({disabled: false});
+			var width = $("#"+selectedModule).children('img').width();
+			var height = $("#"+selectedModule).children('img').height();
+			$("#"+selectedModule).css('width', width);
+			$("#"+selectedModule).css('height',height);
+			$("#"+selectedModule).css("background-size","contain");
+			$("#"+selectedModule).css("background-position","50% 50%");
 			$("#"+selectedModule).hide();
 			$('.editWindow').hide(150);
 		});
