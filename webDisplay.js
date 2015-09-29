@@ -84,6 +84,133 @@ function table_generate(data) {
     }
     return $dtable;
 }
+//initilizes all draggables and resizables to avoid uninitlized errors
+function initJqueryUI(){
+	$(".draggable").draggable({ //makes our data cells draggable
+		disabled: true,
+		grid: [1, 1],
+		snap: true,
+		snapTolerance: 10,
+		start: function(event, ui) {
+			$(this).addClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '10px'
+			},100);
+			$('.editWindow').animate({
+				width: '0px',
+				margin: '0',
+				padding: '0'
+			},50);
+			$('.controlRow').hide();
+			$('.controls h2').hide();
+		},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+	}).resizable({});
+	$(".textBlockContainer").draggable({
+		disabled: false,
+		start: function(event, ui) {
+					$(this).addClass('draggable_focus_in');
+					$('.controls').animate({
+						width: '10px'
+					},100);
+					$('.editWindow').animate({
+						width: '0px',
+						margin: '0',
+						padding: '0'
+					},50);
+					$('.controlRow').hide();
+					$('.controls h2').hide();
+				},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+		}).resizable({
+			disabled: false,
+			handles: 'all'
+		});
+	$(".imgBlockContainer").draggable({
+			grid: [1, 1],
+			snap: true,
+			snapTolerance: 10,
+			start: function(event, ui) {
+			$(this).addClass('draggable_focus_in');
+				$('.controls').animate({
+					width: '10px'
+				},100);
+				$('.editWindow').animate({
+					width: '0px',
+					margin: '0',
+					padding: '0'
+				},50);
+				$('.controlRow').hide();
+				$('.controls h2').hide();
+			},
+		stop: function(event, ui) {
+			$(this).removeClass('draggable_focus_in');
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		}
+		});
+	$('.imgCamContainer').draggable({
+		grid: [1, 1],
+		snap: true,
+		snapTolerance: 10,
+		start: function(event, ui) {
+			$('.controls').animate({
+				width: '10px'
+			},100);
+			$('.editWindow').animate({
+				width: '0px',
+				margin: '0',
+				padding: '0'
+			},50);
+			$('.controlRow').hide();
+			$('.controls h2').hide();
+		},
+		stop: function(event, ui) {
+			$('.controls').animate({
+				width: '250px'
+			},200);
+			$('.editWindow').animate({
+				width: '280px',
+				margin: '10px',
+				padding: '20px'
+			},200);
+			$('.controlRow').show();
+			$('.controls h2').show();
+		},
+		disabled: false}).resizable({disabled: false, handles: 'all'});
+}
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
@@ -257,7 +384,7 @@ function createCamFromTree(tree_id){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false}).resizable({disabled: false});
+		disabled: false}).resizable({disabled: false, handles: 'all'});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
 		$('#div_'+selection).children('img').attr('src',src);
@@ -340,7 +467,6 @@ function data_update(data) {
                 $(this).removeClass('draggable_focus_in');
             }
         });
-        $("#ws_status").draggable({}); //makes the little green "connected" span draggable
         $(".controls").resizable({ //makes our controls div resizable and draggable
             minHeight: 70,
 			maxWidth: 250	
@@ -388,6 +514,7 @@ function data_update(data) {
 					}
 				});
 			});
+			initJqueryUI();
 			$( document ).on( "click", "#refreshTree" , function() {	
 				iterateStations(data, "", jsonArray, lastk);
 				refreshTree();
@@ -433,7 +560,7 @@ function data_update(data) {
 					cellCount++;
 					}
 					else{
-						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ title +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + id_arr[cellCount] + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label">'+ units +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
+						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ title +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + id_arr[cellCount] + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
 						$(".draggable").draggable({ //makes our data cells draggable
 							disabled: true,
 							grid: [1, 1],
@@ -466,7 +593,7 @@ function data_update(data) {
 								$('.controls h2').show();
 							}
 						}).resizable({});						
-						$(".draggable").draggable({ disabled: false});
+						$(".draggable").draggable( "option", "disabled", false )
 						$('#'+cellCount).css('position', 'absolute');
 						$('#'+cellCount).css('top',pageY);
 						$('#'+cellCount).css('left',pageX);
@@ -480,11 +607,11 @@ function data_update(data) {
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
-			$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
-			$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
-			$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
-			$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
-			$('.imgBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
+			$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+			$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+			$('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+			$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+			$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		}
 	}
     started = true; //sets our boolean to true so the above only executes once
@@ -905,12 +1032,11 @@ function edit(handler) {
 	$(".jstree-leaf").draggable({
 		helper: "clone"
 	});
-	$(".imgCamContainer").draggable({disabled: false}).resizable({disabled: false});
+	$(".imgCamContainer").draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 	$(".cropped").resizable({disabled:true});
-	$(".draggable").draggable({ disabled: false}).resizable({disabled:false});
-	$('#ws_status').draggable({disabled: false}).resizable({disabled:false});
-	$('.textBlockContainer').draggable({disabled: false}).resizable({disabled: false});
-	$('.imgBlockContainer').draggable({disabled: false}).resizable({disabled: false});
+	$(".draggable").draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
+	$('.textBlockContainer').draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
+	$('.imgBlockContainer').draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 }
 function nonEdit(handler) {
 	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
@@ -928,11 +1054,10 @@ function nonEdit(handler) {
 	
 	//disable draggables and resizables
 	$('.ui-icon').hide();
-	$(".imgCamContainer").draggable({disabled: true}).resizable({disabled: true});
-	$(".draggable").draggable({ disabled: true}).resizable({ disabled: true });
-	$('#ws_status').draggable({disabled: true}).resizable({ disabled: true});
-	$('.textBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
-	$('.imgBlockContainer').draggable({disabled: true}).resizable({disabled: true});	
+	$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+	$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+	$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+	$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 }
 function hideModule(id) {
 	console.log(id);
@@ -1280,7 +1405,7 @@ function loadState(){
 			$('.controls h2').show();
 		}
 		}).resizable({});						
-		$(".draggable").draggable({ disabled: false});
+		$(".draggable").draggable( "option", "disabled", false )
 	//makes text blocks draggable and resizable after being loaded
 	$(".textBlockContainer").draggable({
 		disabled: false,
@@ -1311,7 +1436,8 @@ function loadState(){
 			$('.controls h2').show();
 		}
 		}).resizable({
-			disabled: false
+			disabled: false,
+			handles: 'all'
 		});
 	//makes cameras draggable and resizable after being loaded
 	$('.imgCamContainer').draggable({
@@ -1339,7 +1465,7 @@ function loadState(){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false}).resizable({disabled: false});
+		disabled: false}).resizable({disabled: false, handles: 'all'});
 	//makes images draggable and resziable after being loaded
 	$(".imgBlockContainer").draggable({
 		start: function(event, ui) {
@@ -1373,6 +1499,7 @@ function loadState(){
 					disabled: false,
 					minHeight: 70,
 					minWidth: 150,
-					aspectRatio: true
+					aspectRatio: true,
+					handles: 'all'
 		});	
 }
