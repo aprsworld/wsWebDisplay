@@ -496,7 +496,7 @@ function data_update(data) {
 			var jsonArray = [];
 			var json = iterateStations(data, "", jsonArray, lastk);
 			//sets up our tree
-			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray}})});
+			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray},"plugins" : [ "sort" ]})});
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				$(".jstree-leaf").draggable({
 					helper: "clone",
