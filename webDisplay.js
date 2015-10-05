@@ -515,10 +515,6 @@ function data_update(data) {
 				});
 			});
 			initJqueryUI();
-			$( document ).on( "click", "#refreshTree" , function() {	
-				iterateStations(data, "", jsonArray, lastk);
-				refreshTree();
-			});
 			$(".top-container").droppable({
         		accept: '.jstree-leaf',
 				drop: function( event, ui ) {
@@ -615,6 +611,12 @@ function data_update(data) {
 		}
 	}
     started = true; //sets our boolean to true so the above only executes once
+	$(document).ready(function() {
+		$( document ).off( "click", "#refreshTree" );
+		$( document ).on( "click", "#refreshTree" , function() {	
+				refreshTree(data);
+		});	
+	});
 	refreshCams(cams);
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
 }
@@ -765,7 +767,11 @@ function submitURL(){
 		});	
 	}
 }
-function refreshTree(){
+function refreshTree(newData){
+	var lastk = "#";
+	var jsonArray = [];
+	var json = iterateStations(newData, "", jsonArray, lastk);
+	$('#stationTree').jstree(true).settings.core.data = jsonArray;
 	$('#stationTree').jstree(true).refresh();
 }
 /* function that removes an image if it returns a 404 error.*/
