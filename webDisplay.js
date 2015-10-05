@@ -228,8 +228,16 @@ function iterateStations(obj, stack, arr, lastk) {
 				}
 				jsonItem ["id"] = id;
 				jsonItem ["parent"] = parent;
+				if('undefined' !== typeof obj[property]['title'] && 'undefined' == typeof obj[property]['value'] && 'undefined' == typeof obj[property]['units'] && typeof obj[property] == "object"){
+					jsonItem ["text"] = obj[property]['title'];
+					jsonItem ["id"] = id;
+					jsonItem ["parent"] = parent;
+					arr.push(jsonItem)
+					lastk = property; //keeps track of last property which is stored in a global variable
+					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
+				}
 				//checks for specific child properties of nested object - this will allow for dynamically adding units and titles to the cells
-				if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units']){
+				else if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units']){
 					jsonItem ["id"] = id;
 					jsonItem ["parent"] = parent;
 					//case for all three child properties existing
@@ -284,8 +292,11 @@ function iterateStations(obj, stack, arr, lastk) {
 				jsonItem ["id"] = id;
 				jsonItem ["parent"] = parent;
 				jsonItem ["text"] = property;
-				jsonItem ["obj"] = {"path": stack + '.' + property};
-                arr.push(jsonItem);
+				//case for when we are setting title of station with a child title node
+				if(property !== 'title'){
+					jsonItem ["obj"] = {"path": stack + '.' + property};
+					arr.push(jsonItem);
+				}
             }
         }
     }
@@ -452,6 +463,7 @@ function timer(){
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
+	console.log(data);
 	var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
         //path_arr = iteratePath(data, '');
