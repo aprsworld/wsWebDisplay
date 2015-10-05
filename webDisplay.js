@@ -811,7 +811,24 @@ var editWindow =  function() {
 	$('.editWindow').show(150).draggable({});
 	selectedModule = $(this).attr('id');
 	console.log($(this));
-	if($(this).hasClass('imgCamContainer')){
+	$('#hideModule,#deleteModule').show();
+	if($(this).attr('id') == 'pageEdit'){
+		console.log('blah');
+		$('#titleRow,#backgroundColorRow').show();
+		$('#hideModule,#deleteModule').hide();
+		//background color input change event handler
+		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
+			var enteredColor = bgColor.val();
+			$('.top-container').css('background-color', enteredColor);				
+		});
+		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.titleChange" , function() {	
+			var newTitle = titleChange.val();
+			document.title = newTitle;
+		});
+	}
+	else if($(this).hasClass('imgCamContainer')){
 		$('#cropModule').show();
 		$('#resizeModule').show();
 		$('.editWindow h2').text("Edit Camera");
@@ -1048,7 +1065,7 @@ function edit(handler) {
 	$('#content').delegate('.textBlockContainer','click', editWindow);	
 	$('#content').delegate('.imgBlockContainer','click',editWindow);
 	$('#content').delegate('.imgCamContainer','click',editWindow);
-
+	$('.controls').delegate('#pageEdit','click',editWindow);
 	
 	//enable draggables and resizables
 	$('.ui-icon').show();
@@ -1075,7 +1092,8 @@ function nonEdit(handler) {
 	$('.top-container').undelegate('.tr','click', editWindow);
 	$('#content').undelegate('.imgBlockContainer','click',editWindow);
 	$('#content').undelegate('.imgCamContainer','click',editWindow);
-	
+	$('.controls').undelegate('#pageEdit','click',editWindow);
+
 	//disable draggables and resizables
 	$('.ui-icon').hide();
 	$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
