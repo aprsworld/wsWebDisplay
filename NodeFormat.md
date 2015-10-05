@@ -97,5 +97,9 @@ Code:
     }
 }
 ```
-Result:
+Resulting structure:
 ![example](images/example.png)
+
+Resulting tree:
+
+![example](images/example2.png)
