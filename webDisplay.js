@@ -2,6 +2,7 @@
 const HOST_DEFAULT = 'cam.aprsworld.com';
 const TITLE_DEFAULT = 'wsWebDisplay';
 /***** Global variables ********/
+var editMode = false;
 var time; //incremental variable that keeps track of time since last data update
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
 var id_arr = [];
@@ -616,6 +617,9 @@ function data_update(data) {
 		$( document ).on( "click", "#refreshTree" , function() {	
 				refreshTree(data);
 		});	
+		if(editMode == false){
+			refreshTree(data);	
+		}
 	});
 	refreshCams(cams);
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
@@ -1020,6 +1024,7 @@ var editWindow =  function() {
 	}
 };
 function edit(handler) {
+	editMode = true;
 	$('#masterEdit').css('background-color','green');
 	$('#masterEdit').attr('onclick', 'nonEdit()');
 	$('.tr').css('cursor','pointer');
@@ -1045,6 +1050,7 @@ function edit(handler) {
 	$('.imgBlockContainer').draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 }
 function nonEdit(handler) {
+	editMode = false;
 	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
 	$('#masterEdit').attr('onclick', 'edit()');
 	$('.tr').css('cursor','initial');
