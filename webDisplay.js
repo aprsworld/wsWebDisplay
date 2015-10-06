@@ -994,11 +994,17 @@ var editWindow =  function() {
 		});
 	}
 	else if($(this).hasClass('imgBlockContainer')){
+		//show appropriate parts of edit window
 		$('#urlRow').show();
+		//change title of edit window 
 		$('.editWindow h2').text("Edit Image");
+		//find parts of the image and assign them to variables
 		selectedModule = $(this).children().children('img').attr('id');
 		url = $(this).find('img');
+		//populate input fields with image specific information
 		$(urlChange).val(url.attr('src'));
+		
+		//delegate event handler for url change
 		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
 		$( document ).on( "paste", "input.urlChange" , function() {	
 			console.log('fired');
@@ -1007,9 +1013,8 @@ var editWindow =  function() {
 				url.attr('src', urlChange.val());
 			}, 100);	 
 		});
-		
-		// delete event hanlder
-		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
+		//unbind old events, and bind a new one
+		$( document ).off( "click", "#deleteModule"); 
 		$( document ).on( "click", "#deleteModule" , function() {
 			$("#"+selectedModule).parent().parent().remove();
 			$('.editWindow').hide(150);
@@ -1017,8 +1022,11 @@ var editWindow =  function() {
 		
 	}
 	else if($(this).hasClass('tr')){
+		//show the appropriate parts of the edit window
 		$('#titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow').show();
+		//change title of edit window
 		$('.editWindow h2').text("Edit Cell");
+		//find parts of the data cell and assign them to a variable
 		title = $(this).children('.myTableTitle').children('p');
 		label = $(this).children('.myTableValue').children('.label');
 		value = $(this).children('.myTableValue');
@@ -1027,9 +1035,11 @@ var editWindow =  function() {
 		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
+		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
 		$('.textColorChange').val($('#'+id).children('p').css('color'));
 		
+		//delegate even handler for mousing over 
 		$(".textColorChange").off("mouseover.color");
 		$(".textColorChange").on("mouseover.color", function(event, color){
 			$('#'+id).children('p').css('color',color);

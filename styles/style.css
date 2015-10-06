@@ -437,7 +437,7 @@ div.logo_container{
 .container .myTableValue{
 	width: 65%;
 	float: left;
-	height: 15px;
+	height: auto;
 	padding-top: 2px;
 	width: 100%;
 	color: #ddd !important;
@@ -467,8 +467,10 @@ div.logo_container{
 .container .tr{
 	padding: 1px;
 	font-size: 12px;
-	width: 12.2%;
-	height: 75px;
+	/*width: 12.2%;
+	height: 75px;*/
+	width: auto;
+	height: auto;
 	display: inline-block;
 	border-radius: 5px;
 	z-index: 2;
