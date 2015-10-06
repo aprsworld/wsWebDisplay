@@ -463,7 +463,6 @@ function timer(){
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
-	console.log(data);
 	var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
         //path_arr = iteratePath(data, '');
@@ -610,7 +609,6 @@ function data_update(data) {
 					}
 				}
 			});	
-			$( document ).tooltip( {effect: "drop"});
         });
 		var layout = getUrlVars()["layout"];
 		if(layout != undefined){
@@ -810,12 +808,26 @@ var editWindow =  function() {
 	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150).draggable({});
 	selectedModule = $(this).attr('id');
-	console.log($(this));
+	
+	//color picker setup
+	$('.backgroundColorChange, .textColorChange').colorpicker({
+		hideButton: true,
+		defaultPalette: 'web',
+		showOn: "click"
+	});
+	$(".backgroundColorChange").off("mouseover.color");
+	$(".backgroundColorChange").on("mouseover.color", function(event, color){
+    	$('#'+selectedModule).css('background-color', color);
+	});
 	$('#hideModule,#deleteModule').show();
 	if($(this).attr('id') == 'pageEdit'){
 		console.log('blah');
 		$('#titleRow,#backgroundColorRow').show();
 		$('#hideModule,#deleteModule').hide();
+		$(".backgroundColorChange").off("mouseover.color");
+		$(".backgroundColorChange").on("mouseover.color", function(event, color){
+			$('.top-container').css('background-color', color);
+		});
 		//background color input change event handler
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
@@ -939,6 +951,10 @@ var editWindow =  function() {
 		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
+		$(".textColorChange").off("mouseover.color");
+		$(".textColorChange").on("mouseover.color", function(event, color){
+			$('#'+selectedModule).children('p').css('color',color);
+		});
 		
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
@@ -997,7 +1013,7 @@ var editWindow =  function() {
 		
 	}
 	else if($(this).hasClass('tr')){
-		$('#titleRow, #labelRow, #fontSizeRow').show();
+		$('#titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow').show();
 		$('.editWindow h2').text("Edit Cell");
 		title = $(this).children('.myTableTitle').children('p');
 		label = $(this).children('.myTableValue').children('.label');
@@ -1009,6 +1025,12 @@ var editWindow =  function() {
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
 
+		$(".textColorChange").off("mouseover.color");
+		$(".textColorChange").on("mouseover.color", function(event, color){
+			$('#'+id).children('p').css('color',color);
+			$('#'+id).children('span').css('color',color);
+			$('#'+id).parent().children('.myTableTitle').children('p').css('color',color);
+		});	
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input#fontSize" , function() {	
@@ -1037,6 +1059,18 @@ var editWindow =  function() {
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).remove();
 			$('.editWindow').hide(150);
+		});
+		//background color input change event handler
+		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
+			var enteredColor = bgColor.val();
+			$('#'+selectedModule).css('background-color', enteredColor);				
+		});
+		//color input change event handler
+		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.textColorChange" , function() {	
+			var enteredTextColor = textColor.val();
+			$('#'+id).children('p').css('color', enteredTextColor);				
 		});
 		//tool tip shows original title
 		$(titleChange).attr('title','Original Title: '+originalTitle);
@@ -1428,7 +1462,7 @@ function loadState(){
 			$('.editWindow').animate({
 				width: '0px',
 				margin: '0',
-				padding: '0'
+				padding: '0',
 			},50);
 			$('.controlRow').hide();
 			$('.controls h2').hide();
@@ -1441,7 +1475,7 @@ function loadState(){
 			$('.editWindow').animate({
 				width: '280px',
 				margin: '10px',
-				padding: '20px'
+				padding: '20px',
 			},200);
 			$('.controlRow').show();
 			$('.controls h2').show();
