@@ -442,7 +442,6 @@ div.logo_container{
 	width: 100%;
 	color: #ddd !important;
 	font-weight: 700;
-	text-shadow: 0px 0px 2px black;
 	font-size: 14px;
 }
 .container .myTableValue p{
@@ -578,9 +577,9 @@ div.logo_container{
 .editWindow{
 	position: absolute;	
 	right: 0px;
-	top: 100px;
+	top: 0px;
 	width: 280px;
-	height: auto;
+	height: 100vh;
 	display: none;
 	background-color: rgba(0,0,0,.5);
 	border: 1px solid #000;
@@ -590,6 +589,7 @@ div.logo_container{
 	color: #333;
 	text-align: center;
 	box-shadow: 0px 0px 3px #222;
+	overflow: hidden;
 }
 .editWindowRow{
 	height: 30px;

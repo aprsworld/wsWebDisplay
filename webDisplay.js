@@ -122,18 +122,18 @@ function initJqueryUI(){
 	$(".textBlockContainer").draggable({
 		disabled: false,
 		start: function(event, ui) {
-					$(this).addClass('draggable_focus_in');
-					$('.controls').animate({
-						width: '10px'
-					},100);
-					$('.editWindow').animate({
-						width: '0px',
-						margin: '0',
-						padding: '0'
-					},50);
-					$('.controlRow').hide();
-					$('.controls h2').hide();
-				},
+				$(this).addClass('draggable_focus_in');
+				$('.controls').animate({
+					width: '10px'
+				},100);
+				$('.editWindow').animate({
+					width: '0px',
+					margin: '0',
+					padding: '0'
+				},50);
+				$('.controlRow').hide();
+				$('.controls h2').hide();
+			},
 		stop: function(event, ui) {
 			$(this).removeClass('draggable_focus_in');
 			$('.controls').animate({
@@ -813,7 +813,7 @@ var editWindow =  function() {
 	$('.backgroundColorChange, .textColorChange').colorpicker({
 		hideButton: true,
 		defaultPalette: 'web',
-		showOn: "click"
+		showOn: "focus"
 	});
 	$(".backgroundColorChange").off("mouseover.color");
 	$(".backgroundColorChange").on("mouseover.color", function(event, color){
@@ -821,9 +821,13 @@ var editWindow =  function() {
 	});
 	$('#hideModule,#deleteModule').show();
 	if($(this).attr('id') == 'pageEdit'){
-		console.log('blah');
+		$('.editWindow h2').text("Edit Page");
 		$('#titleRow,#backgroundColorRow').show();
 		$('#hideModule,#deleteModule').hide();
+		$('.titleChange').val(document.title);
+		$('.backgroundColorChange').val($('.top-container').css('background-color'));
+		
+		//delegate event handler for color picker
 		$(".backgroundColorChange").off("mouseover.color");
 		$(".backgroundColorChange").on("mouseover.color", function(event, color){
 			$('.top-container').css('background-color', color);
@@ -834,6 +838,7 @@ var editWindow =  function() {
 			var enteredColor = bgColor.val();
 			$('.top-container').css('background-color', enteredColor);				
 		});
+		//delegate title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.titleChange" , function() {	
 			var newTitle = titleChange.val();
@@ -994,7 +999,6 @@ var editWindow =  function() {
 		selectedModule = $(this).children().children('img').attr('id');
 		url = $(this).find('img');
 		$(urlChange).val(url.attr('src'));
-		
 		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
 		$( document ).on( "paste", "input.urlChange" , function() {	
 			console.log('fired');
@@ -1020,11 +1024,12 @@ var editWindow =  function() {
 		value = $(this).children('.myTableValue');
 		id = $(this).children('.myTableValue').attr('id');
 		originalTitle = $(this).children('.myTableID').children('span').text();
-
 		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
-
+		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
+		$('.textColorChange').val($('#'+id).children('p').css('color'));
+		
 		$(".textColorChange").off("mouseover.color");
 		$(".textColorChange").on("mouseover.color", function(event, color){
 			$('#'+id).children('p').css('color',color);
@@ -1070,7 +1075,9 @@ var editWindow =  function() {
 		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.textColorChange" , function() {	
 			var enteredTextColor = textColor.val();
-			$('#'+id).children('p').css('color', enteredTextColor);				
+			$('#'+id).children('p').css('color',enteredTextColor);
+			$('#'+id).children('span').css('color',enteredTextColor);
+			$('#'+id).parent().children('.myTableTitle').children('p').css('color',enteredTextColor);
 		});
 		//tool tip shows original title
 		$(titleChange).attr('title','Original Title: '+originalTitle);
