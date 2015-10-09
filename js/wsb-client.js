@@ -5,8 +5,9 @@
  *	a broadcast server.
  *
  * config object
- *	url_ws is the WebSocket url used.
- *	url_ajax is the AJAX url used.
+ *	url is the base HTTP or HTTPS url used for both AJAX and WS connections.
+ *	url_ws is an optional different websocket server url.
+ *	subscriptions is the uri to receive updates for (TODO: array).
  *	delay_inc is the amount of seconds added after each failed connection
  *	delay_max is the longest delay waited after each failed connection
  *	poll_freq is the frequency at which AJAX polls will happen 
@@ -44,8 +45,8 @@
 function BroadcastClient(config) {
 
 	// Set Defaults
-	this.url_ws = 'ws://' + window.location.hostname + ':' + 1228 + '/.data';	// XXX: port
-	this.url_ajax = 'http://' + window.location.hostname + ":" + window.location.port + '/.data';
+	// XXX: protocol (HTTP or HTTPS)
+	this.url = 'http://' + window.location.hostname + ':' + window.location.port + '/.data/';
 	this.delay_inc = 10;		// 10 seconds
 	this.delay_max = 60 * 5;	// 5 minute default
 	this.poll_freq = 20;		// 20 second default
@@ -60,11 +61,6 @@ function BroadcastClient(config) {
 
 	// merge in config object
 	$.extend(this, config);	
-
-	// Set initial properties
-	this.delay = 0;	// delay after connection failure
-	this.ws = null; // current WebSocket
-	this.ws_error = false;	// false if no WebSocket error, otherwise the error
 
 	// Clean up logger
 	if (!this.logger) {
@@ -88,6 +84,26 @@ function BroadcastClient(config) {
 		}
 	}
 
+	// Handle subscriptions and urls
+	// XXX: Array
+	this.uri = '';
+	if (this.subscriptions) {
+		this.uri = subscriptions;
+	}
+	if (!this.url_ws) {
+		if (this.url.search('/^http:\\/\\//i')) {
+			this.url_ws = this.url.replace('http', 'ws');
+		} else {
+			this.logger.error('wsb-client: Invalid URL!');
+			return false;
+		}
+	}
+
+	// Set initial properties
+	this.connect = false;
+	this.delay = 0;	// delay after connection failure
+	this.ws = null; // current WebSocket
+	this.ws_error = false;	// false if no WebSocket error, otherwise the error
 	// Make a Connection
 	if (!this.Connect()) {
 		this.delay = -1;
@@ -124,6 +140,10 @@ BroadcastClient.prototype.onMessage = function(text) {
  */
 BroadcastClient.prototype.onData = function(data) {
 	this.logger.debug('wsb-client: Received new data.');
+	// XXX:
+	if (data.wsb_update) {
+		data = data.data;
+	}
 	try {
 		this.callback_update(data);
 	} catch (e) {
@@ -168,13 +188,20 @@ BroadcastClient.prototype.ConnectThrottle = function (reset) {
  * AJAX Polling
  */
 BroadcastClient.prototype.AJAXConnect = function () {
+
+	// Disconnect
+	if (!this.connect) {
+		return false;
+	}
+
 	this.logger.debug('wsb-client: Making JQuery AJAX Request...');
 
-	// XXX: TODO: IE Workaround (append '.dat' to url)
-	$.ajax(this.url_ajax, {
-		context: this,
-		cache: 'false',
-		dataType: 'json',
+	$.ajax(this.url + this.uri, {
+		context:	this,
+		cache:		false,
+		dataType:	'json',
+		ifModified:	true,
+		headers:	{}	// XXX: Last Modification Time
 	}).done(function (data, status, XHR) {
 		// XXX: status, XHR?
 		this.onData(data);
@@ -194,6 +221,12 @@ BroadcastClient.prototype.AJAXConnect = function () {
  * WebSocket Connection
  */
 BroadcastClient.prototype.WSConnect = function() {
+
+	// Disconnect
+	if (!this.connect) {
+		return false;
+	}
+
 	this.logger.log('wsb-client: Connecting via WebSockets...');
 
 	// Sanity
@@ -210,7 +243,7 @@ BroadcastClient.prototype.WSConnect = function() {
 	// Standard WebSockets Implementation
 	if (!this.method || this.method == 'WebSocket') {
 		try {
-			this.ws = new WebSocket(this.url_ws);
+			this.ws = new WebSocket(this.url_ws + this.uri);
 		} finally {
 			if (!this.ws && this.method) {
 				this.logger.error('wsb-client: WebSockets unavailable!');
@@ -222,7 +255,7 @@ BroadcastClient.prototype.WSConnect = function() {
 	// Mozilla WebSockets Implementation
 	if (!this.ws && (!this.method || this.method == 'MozWebSocket')) {
 		try {
-			this.ws = new MozWebSocket(this.url_ws);
+			this.ws = new MozWebSocket(this.url_ws + this.uri);
 		} finally {
 			if (!this.ws && this.method) {
 				this.logger.error('wsb-client: MozWebSockets unavailable!');
@@ -235,7 +268,7 @@ BroadcastClient.prototype.WSConnect = function() {
 	if (!this.ws && (!this.method || this.method == 'FlashWebSocket')) {
 		try {
 			this.logger.info('wsb-client: FlashWebSocket is broken!');
-			//this.ws = new FlashWebSocket(this.url_ws);
+			//this.ws = new FlashWebSocket(this.url_ws + this.uri);
 		} finally {
 			if (!this.ws && this.method) {
 				this.logger.error('wsb-client: FlashWebSocket unavailable!');
@@ -305,6 +338,9 @@ BroadcastClient.prototype.WSConnect = function() {
  */
 BroadcastClient.prototype.Connect = function() {
 
+	// We are connecting
+	this.connect = true;
+
 	// WebSockets methods
 	if (!this.method || this.method.search('WebSocket$') != -1) {
 		if (this.WSConnect()) {
@@ -328,4 +364,76 @@ BroadcastClient.prototype.Connect = function() {
 	// Some method we don't support was requested
 	this.logger.error('wsb-client: Connection method ' + this.method + ' does not exist!');
 	return false;
+};
+
+
+/*
+ * Disconnect
+ */
+BroadcastClient.prototype.Disconnect = function() {
+	
+	this.logger.info('wsb-client: Disconnecting.');
+
+	// Prevent attempts to reconnect
+	this.connect = false;
+
+	// Disconnect active connections
+	if (this.ws) {
+		this.ws.close();
+	}
+};
+
+
+/*
+ * AJAX Response Handler
+ */
+BroadcastClient.prototype.Response = function(XHR, status, data, error) {
+	return {
+		client: {
+			XHR:	XHR,
+			status:	status,
+			error:	error
+		},
+		data:	data,
+		error:	(error) ? true : undefined
+	};
+};
+
+/*
+ * Get Value
+ */
+BroadcastClient.prototype.ValueGet = function(callback, uri) {
+	$.ajax(this.url + uri, {
+		context:	this,
+		cache:		false,
+		dataType:	'json'
+	}).done(function (data, status, XHR) {
+		callback(this.Response(XHR, status, data, undefined));
+	}).fail(function (XHR, status, error) {
+		callback(this.Response(XHR, status, undefined, error));
+	});
+};
+
+
+/*
+ * Set Value
+ */
+BroadcastClient.prototype.ValueSet = function(callback, uri, value, expire) {
+	$.ajax(this.url + uri, {
+		context:	this,
+		cache:		false,
+		dataType:	'json',
+		contentType:	'application/json',
+		method:		'POST',
+		data:		JSON.stringify({
+					wsb_update:	0,
+					uri:		uri,
+					data:		value,
+					expire:		expire
+				})
+	}).done(function (data, status, XHR) {
+		callback(this.Response(XHR, status, data, undefined));
+	}).fail(function (XHR, status, error) {
+		callback(this.Response(XHR, status, undefined, error));
+	});
 };

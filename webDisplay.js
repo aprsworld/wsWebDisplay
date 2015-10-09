@@ -13,7 +13,7 @@ var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
 /*******************************/
-function config_retr(url) {
+/*function config_retr(url) {
 	$.ajax(url, {
 		cache: false,
 		dataType: 'json',
@@ -51,7 +51,8 @@ function config_send(url) {
 	}).fail(function (XHR, status, error) {
 		//alert('Failed to save configurations to server.');
 	});
-}
+}*/
+
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -645,6 +646,7 @@ function getUrlVars() {
     });
     return vars;
   }
+var data_object;
 /*function initiates the data transfer*/
 function data_start() {
 	//user defined host via url get parameter
@@ -652,15 +654,29 @@ function data_start() {
 	if(host == undefined){
 		host = HOST_DEFAULT;
 	}
-	config_retr("http://"+host+":8888/.config");
+	//config_retr("http://"+host+":8888/.config");
 	console.log(host);
     data_object = new BroadcastClient({
         callback_update: data_update,
         callback_error: data_error,
         // XXX: These are temporary
-        url_ajax: 'http://'+host+':8888/.data',
-        url_ws: 'ws://'+host+':8889/.data'
+        //url_ajax: 'http://'+host+':8888/.data',
+		//url: 'http://'+host+':8888/.data',
+        //url_ws: 'ws://'+host+':8888/.data'
     });
+	data_object.ValueGet(function(rsp){
+		if(rsp.data){
+			savedStates = rsp.data;
+		}
+		$('#stateSelect').empty();
+		var i;
+		for (i = 0; i < savedStates.length; i++) {
+			var option = document.createElement("option");
+        		option.text = "Layout#" + i;
+    			option.value = i;
+			$('#stateSelect').append(option);
+		}
+	},'webdisplay/configs');
 	var title = getUrlVars()["title"];
 	if(title == undefined){
     	document.title = TITLE_DEFAULT;
@@ -1289,7 +1305,10 @@ function captureState(){
 	savedStates.push(jsonString);
 		//for testing purposes
 		//$('#json').val(jsonString);
-	config_send("http://cam.aprsworld.com:8888/.config");
+	//config_send("http://cam.aprsworld.com:8888/.config");
+	data_object.ValueSet(function(rsp){
+		alert(JSON.stringify(rsp));
+	},'webdisplay/configs',savedStates,0);
 }
 /* grabs the latest saved state and populates the select field for loading */
 function populateSelection(){
