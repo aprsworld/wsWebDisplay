@@ -466,6 +466,7 @@ function data_update(data) {
 	time=0;
 	var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
+    	started = true; //sets our boolean to true so the above only executes once
         //path_arr = iteratePath(data, '');
 		var cellCount = 0;
         $(".draggable").draggable({ //makes our data cells draggable
@@ -622,7 +623,6 @@ function data_update(data) {
 			$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		}
 	}
-    started = true; //sets our boolean to true so the above only executes once
 	$(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
 		$( document ).on( "click", "#refreshTree" , function() {	
@@ -665,9 +665,10 @@ function data_start() {
         //url_ws: 'ws://'+host+':8888/.data'
     });
 	data_object.ValueGet(function(rsp){
-		if(rsp.data){
-			savedStates = rsp.data;
+		if(!rsp.data){
+			return;
 		}
+		savedStates = rsp.data;
 		$('#stateSelect').empty();
 		var i;
 		for (i = 0; i < savedStates.length; i++) {

@@ -1,0 +1,3 @@
+[submodule "res/wsBroadcast-WebClient"]
+	path = res/wsBroadcast-WebClient
+	url = https://github.com/aprsworld/wsBroadcast-WebClient
