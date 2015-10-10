@@ -646,6 +646,14 @@ function getUrlVars() {
     });
     return vars;
   }
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 var data_object;
 /*function initiates the data transfer*/
 function data_start() {
@@ -665,7 +673,8 @@ function data_start() {
         //url_ws: 'ws://'+host+':8888/.data'
     });
 	data_object.ValueGet(function(rsp){
-		if(!rsp.data){
+		if(!rsp.data || rsp.error){
+			// Couldn't get configuration data from server
 			return;
 		}
 		savedStates = rsp.data;
@@ -676,6 +685,14 @@ function data_start() {
         		option.text = "Layout#" + i;
     			option.value = i;
 			$('#stateSelect').append(option);
+		}
+
+		// If ?display=x is specified in the URL, load that one
+		var load = getParameterByName('display');
+		if (load) {
+			load = parseInt(load);
+			$( "#stateSelect" ).val(load); 
+			loadState();
 		}
 	},'webdisplay/configs');
 	var title = getUrlVars()["title"];
@@ -1308,7 +1325,9 @@ function captureState(){
 		//$('#json').val(jsonString);
 	//config_send("http://cam.aprsworld.com:8888/.config");
 	data_object.ValueSet(function(rsp){
-		alert(JSON.stringify(rsp));
+		if (rsp.error) {
+			alert('Failed to save configuration to server!');
+		}
 	},'webdisplay/configs',savedStates,0);
 }
 /* grabs the latest saved state and populates the select field for loading */
