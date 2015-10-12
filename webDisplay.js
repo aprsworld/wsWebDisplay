@@ -474,7 +474,8 @@ function data_update(data) {
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
     	started = true; //sets our boolean to true so the above only executes once
         //path_arr = iteratePath(data, '');
-		var cellCount = 0;
+		
+		
         $(".draggable").draggable({ //makes our data cells draggable
             disabled: true,
 			grid: [1, 1],
@@ -495,7 +496,7 @@ function data_update(data) {
 			//attempts to grab the get parameter to set background color
 			var bgColor = getUrlVars()["bgColor"];
 			if(bgColor !== undefined){
-				$('.top-container').css('background-color',bgColor);
+				$('html').css('background-color',bgColor);
 			}
 			setInterval(timer,1000);
 			populateCams(cams);
@@ -541,6 +542,7 @@ function data_update(data) {
 					var $element, $me, $newElement;
 					
 					$element = $(ui.draggable);
+					console.log($element);
 					var id = $($element).attr('id');
 					var new_id = "div_"+id;
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
@@ -576,7 +578,7 @@ function data_update(data) {
 					cellCount++;
 					}
 					else{
-						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ title +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + id_arr[cellCount] + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
+						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ title +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
 						$(".draggable").draggable({ //makes our data cells draggable
 							disabled: true,
 							grid: [1, 1],
@@ -617,8 +619,8 @@ function data_update(data) {
 					}
 				}
 			});	
-        });
 		var layout = getUrlVars()["layout"];
+		var cellCount = 0;
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
@@ -627,7 +629,10 @@ function data_update(data) {
                        $('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
                        $('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
                        $('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+			var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
+			cellCount = parseInt(lastCell, 10)+1;
 		}
+        });
 	}
 	$(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
@@ -696,9 +701,14 @@ function data_start() {
 		// If ?display=x is specified in the URL, load that one
 		var load = getParameterByName('display');
 		if (load) {
-			load = parseInt(load);
-			$( "#stateSelect" ).val(load); 
-			loadState();
+				load = parseInt(load);
+				$( "#stateSelect" ).val(load); 
+				loadState();
+				$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+				$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+				$('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+				$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+				$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		}
 	},'webdisplay/configs');
 	var title = getUrlVars()["title"];
@@ -865,18 +875,18 @@ var editWindow =  function() {
 		$('#titleRow,#backgroundColorRow').show();
 		$('#hideModule,#deleteModule').hide();
 		$('.titleChange').val(document.title);
-		$('.backgroundColorChange').val($('.top-container').css('background-color'));
+		$('.backgroundColorChange').val($('html').css('background-color'));
 		
 		//delegate event handler for color picker
 		$(".backgroundColorChange").off("mouseover.color");
 		$(".backgroundColorChange").on("mouseover.color", function(event, color){
-			$('.top-container').css('background-color', color);
+			$('html').css('background-color', color);
 		});
 		//background color input change event handler
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$('.top-container').css('background-color', enteredColor);				
+			$('html').css('background-color', enteredColor);				
 		});
 		//delegate title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
@@ -1363,6 +1373,8 @@ function loadState(){
 	console.log(index);
 	console.log(jsonString);
 	console.log(stateObject);
+	id_arr.length = 0;
+	path_arr.length = 0;
 	$('.tr, .textBlockContainer, .imgBlockContainer').remove();
 	$('.imgCamContainer').hide();
 	//iterate over all keys in the saved state object

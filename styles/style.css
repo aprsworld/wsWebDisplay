@@ -1,4 +1,7 @@
 /* CSS file */
+html{
+	background-color: #333;	
+}
 body{
 	margin: 0;
 	padding: 0;
@@ -67,7 +70,7 @@ select{
 .top-container{
 	clear: both;
 	height: 100vh;
-	background-color: #333333;
+	background-color: transparent;
 	z-index: 0;
 }
 .top-container h2{
@@ -155,7 +158,6 @@ select{
 #content{
 	display: block;
 	height: auto;
-	background-color: #333333;
 }
 div.logo_container{
 	height: 60px;
