@@ -886,7 +886,8 @@ var editWindow =  function() {
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$('html').css('background-color', enteredColor);				
+			$console.log($('html').css('background-color'));
+			$('html').css('background-color', enteredColor);
 		});
 		//delegate title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
@@ -1138,6 +1139,24 @@ var editWindow =  function() {
 			$('#'+id).children('p').css('color',enteredTextColor);
 			$('#'+id).children('span').css('color',enteredTextColor);
 			$('#'+id).parent().children('.myTableTitle').children('p').css('color',enteredTextColor);
+		});
+		$('#opacitySlider').slider({
+			min: 0,
+			max: 100,
+			value: 100,
+			step: 10,
+			stop: function( event, ui ) {
+				var opacity = $(this).slider('value', ui.value);
+				console.log(opacity);
+				opacity = opacity.toString();
+				if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
+					var currentColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+				}
+				else{
+					//TODO
+				}
+				$('#'+selectedModule).css('background-color', currentColor);
+			}
 		});
 		//tool tip shows original title
 		$(titleChange).attr('title','Original Title: '+originalTitle);
