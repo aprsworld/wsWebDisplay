@@ -308,6 +308,9 @@ function iterateStations(obj, stack, arr, lastk) {
 function ref(obj, str) {
     str = str.split("."); //splits the dot notation
     for (var i = 1; i < str.length; i++) {
+	if (obj === undefined) {
+		return undefined;
+	}
         obj = obj[str[i]];
     }
     return obj;
@@ -317,6 +320,9 @@ function ref(obj, str) {
 function dynamicUpdate($id_arr, $path_arr, data) {
     for ($i = 0; $i < $id_arr.length; $i++) {
 		var value = ref(data, $path_arr[$i]); //finds value of object
+	if (value === undefined) {
+		value = 'MISSING DATA!';
+	}
         $('div#' + $id_arr[$i] + '').children('p').text(value);
     }
 }
@@ -616,11 +622,11 @@ function data_update(data) {
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
-			$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+                       $(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+                       $(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+                       $('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+                       $('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+                       $('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		}
 	}
 	$(document).ready(function() {
