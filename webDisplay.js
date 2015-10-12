@@ -616,11 +616,6 @@ function data_update(data) {
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
-			$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		}
 	}
 	$(document).ready(function() {
