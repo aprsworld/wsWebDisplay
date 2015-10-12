@@ -685,7 +685,6 @@ function data_start() {
         		option.text = "Layout#" + i;
     			option.value = i;
 			$('#stateSelect').append(option);
-			refreshTree();
 		}
 
 		// If ?display=x is specified in the URL, load that one
