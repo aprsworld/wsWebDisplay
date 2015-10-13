@@ -1141,21 +1141,26 @@ var editWindow =  function() {
 			$('#'+id).parent().children('.myTableTitle').children('p').css('color',enteredTextColor);
 		});
 		$('#opacitySlider').slider({
-			min: 0,
+			min: 1,
 			max: 100,
 			value: 100,
-			step: 10,
 			stop: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
 				console.log(opacity);
 				opacity = opacity.toString();
+				var newColor;
 				if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
-					var currentColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+					newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
 				}
 				else{
-					//TODO
+					var currentColor = $('#'+selectedModule).css('background-color');
+					var splitColor = currentColor.split(',');
+					console.log(splitColor);
+					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (ui.value*.01) + ')';
+					$('#opacityPercent').text(' '+ui.value+'%');
 				}
-				$('#'+selectedModule).css('background-color', currentColor);
+				$('#'+selectedModule).css('background-color', newColor);
+				$('.backgroundColorChange').val(''+newColor);
 			}
 		});
 		//tool tip shows original title

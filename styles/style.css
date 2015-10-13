@@ -469,14 +469,13 @@ div.logo_container{
 .container .tr{
 	padding: 1px;
 	font-size: 12px;
-	/*width: 12.2%;
-	height: 75px;*/
 	width: auto;
 	height: auto;
 	display: inline-block;
 	border-radius: 5px;
 	z-index: 2;
 	cursor: pointer;
+	background-color: rgba(0,0,0,0.01);
 }
 .cam-drag-handle{
 	display: none;
@@ -721,6 +720,12 @@ div.logo_container{
 	width: 75px;
 	float: left;
 	text-align: left;
+}
+#opacityRow{
+	width: 95%;	
+}
+#opacityLabel{
+	width: 100%;	
 }
 #stationTree{
 	padding-top: 10px;
