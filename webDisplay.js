@@ -868,14 +868,18 @@ var editWindow =  function() {
 	$(".backgroundColorChange").off("mouseover.color");
 	$(".backgroundColorChange").on("mouseover.color", function(event, color){
     	$('#'+selectedModule).css('background-color', color);
+		$('#opacitySlider .ui-slider-range').css('background', color );
+  		$('#opacitySlider .ui-slider-handle').css('border-color', color);
 	});
 	$('#hideModule,#deleteModule').show();
 	if($(this).attr('id') == 'pageEdit'){
 		$('.editWindow h2').text("Edit Page");
-		$('#titleRow,#backgroundColorRow').show();
+		$('#titleRow,#backgroundColorRow,#opacityRow').show();
 		$('#hideModule,#deleteModule').hide();
 		$('.titleChange').val(document.title);
 		$('.backgroundColorChange').val($('html').css('background-color'));
+		var backgroundColor = $('html').css('background-color');
+
 		
 		//delegate event handler for color picker
 		$(".backgroundColorChange").off("mouseover.color");
@@ -886,14 +890,52 @@ var editWindow =  function() {
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$console.log($('html').css('background-color'));
 			$('html').css('background-color', enteredColor);
+			$('#opacitySlider .ui-slider-range').css('background', enteredColor );
+  			$('#opacitySlider .ui-slider-handle').css('border-color', enteredColor);
 		});
 		//delegate title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.titleChange" , function() {	
 			var newTitle = titleChange.val();
 			document.title = newTitle;
+		});
+		var sliderValue;
+		if(backgroundColor.indexOf('rgba') >= 0){
+			var splitColor =  backgroundColor.split(',');
+			sliderValue = Math.round(parseFloat(splitColor[3].slice(0, - 1), 10)*100);
+		}
+		else{
+			sliderValue = 100;
+		}
+		$('#opacitySlider .ui-slider-range').css('background', backgroundColor );
+  		$('#opacitySlider .ui-slider-handle').css('border-color', backgroundColor);
+		$('#opacityPercent').text(' '+sliderValue+'%');
+		//opacity slider setup
+		$('#opacitySlider').slider({
+			min: 1,
+			max: 100,
+			range: "min",
+			value: sliderValue,
+			slide: function( event, ui ) {
+				var opacity = $(this).slider('value', ui.value);
+				console.log(opacity);
+				opacity = opacity.toString();
+				var newColor;
+				if($('html').css('background-color').indexOf("rgba") < 0){
+					newColor = $('html').css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+				}
+				else{
+					var currentColor = $('html').css('background-color');
+					var splitColor = currentColor.split(',');
+					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
+					$('#opacityPercent').text(' '+ui.value+'%');
+				}
+				$('html').css('background-color', newColor);
+				$('.backgroundColorChange').val(''+newColor);
+				$('#opacitySlider .ui-slider-range').css('background', newColor );
+  				$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
+			}
 		});
 	}
 	else if($(this).hasClass('imgCamContainer')){
@@ -1023,7 +1065,9 @@ var editWindow =  function() {
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$('#'+id).css('background-color', enteredColor);				
+			$('#'+id).css('background-color', enteredColor);	
+			$('#opacitySlider .ui-slider-range').css('background', enteredColor );
+  			$('#opacitySlider .ui-slider-handle').css('border-color', enteredColor);
 		});
 		//color input change event handler
 		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
@@ -1137,6 +1181,8 @@ var editWindow =  function() {
 			$('#'+id).children('p').css('color',color);
 			$('#'+id).children('span').css('color',color);
 			$('#'+id).parent().children('.myTableTitle').children('p').css('color',color);
+			$('#opacitySlider .ui-slider-range').css('background', color );
+  			$('#opacitySlider .ui-slider-handle').css('border-color', color);
 		});	
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
@@ -1171,7 +1217,9 @@ var editWindow =  function() {
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$('#'+selectedModule).css('background-color', enteredColor);				
+			$('#'+selectedModule).css('background-color', enteredColor);
+			$('#opacitySlider .ui-slider-range').css('background', enteredColor );
+  			$('#opacitySlider .ui-slider-handle').css('border-color', enteredColor);
 		});
 		//color input change event handler
 		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
