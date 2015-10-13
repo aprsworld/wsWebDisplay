@@ -368,8 +368,8 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
-		$('#preload').append('<img id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
+		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src="/res/external/dist/themes/default/throbber.gif"></div>');
+		$('#preload').append('<img alt="camimage" src="/res/external/dist/themes/default/throbber.gif" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
 function createCamFromTree(tree_id){
@@ -406,13 +406,15 @@ function createCamFromTree(tree_id){
 		disabled: false}).resizable({disabled: false, handles: 'all'});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
-		$('#div_'+selection).children('img').attr('src',src);
+		console.log($(this));
 		console.log($('#div_'+selection).children('img').width());
-		$("#div_"+selection).css('display','inline');
+		console.log($('#div_'+selection).children('img').attr('src'));
 		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
-
+		$('#div_'+selection).children('img').attr('src',src);
+		$("#div_"+selection).css('display','inline');
 	});
-	preloadCam(selection);
+	var url = $('#div_'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
+	$('#preload_div_'+selection).attr('src', url);
 }
 	
 //function that refreshes cams and preloads the refreshed image before displaying it	
@@ -434,11 +436,6 @@ function refreshCams(cam_arr){
 		}
 	}
 }	
-function preloadCam(selection){
-	var url = $('#'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
-	$('#preload_div_'+selection).attr('src', url);
-
-}
 function fontSizeChange(direction, id){
 	var fontsize = $('#'+id).css('font-size');
 	if(direction == 'decrease'){
@@ -571,10 +568,10 @@ function data_update(data) {
 					var pageY = event.pageY;
 					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
 					if(id.indexOf("image_url") >= 0){
-						createCamFromTree(id);
 						$('#div_'+id).css('position', 'absolute');
 						$('#div_'+id).css('top',pageY);
 						$('#div_'+id).css('left',pageX);
+						createCamFromTree(id);
 					cellCount++;
 					}
 					else{
@@ -856,7 +853,7 @@ var editWindow =  function() {
 	textColor= $('.textColorChange');
 	
 	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
-	$('.editWindow').show(150).draggable({});
+	$('.editWindow').show(150);
 	selectedModule = $(this).attr('id');
 	
 	//color picker setup

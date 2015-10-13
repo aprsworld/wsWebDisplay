@@ -422,7 +422,7 @@ div.logo_container{
 	top: 15%;
 	left: 20%;
 	z-index: 1;
-
+	background-image: url(../res/external/dist/themes/default/throbber.gif);
 	background-repeat: no-repeat;
 	background-position: center; 
 	background-size: contain;
