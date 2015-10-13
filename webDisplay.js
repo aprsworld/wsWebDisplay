@@ -1119,6 +1119,9 @@ var editWindow =  function() {
 		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
+		var backgroundColor = $('#'+selectedModule).css('background-color');
+
+		
 		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
 		$('.textColorChange').val($('#'+id).children('p').css('color'));
@@ -1173,10 +1176,20 @@ var editWindow =  function() {
 			$('#'+id).children('span').css('color',enteredTextColor);
 			$('#'+id).parent().children('.myTableTitle').children('p').css('color',enteredTextColor);
 		});
+		var sliderValue;
+		if(backgroundColor.indexOf('rgba') >= 0){
+			var splitColor =  backgroundColor.split(',');
+			sliderValue = Math.round(parseFloat(splitColor[3].slice(0, - 1), 10)*100);
+		}
+		else{
+			sliderValue = 100;
+		}
+		$('#opacityPercent').text(' '+sliderValue+'%');
+		//opacity slider setup
 		$('#opacitySlider').slider({
 			min: 1,
 			max: 100,
-			value: 100,
+			value: sliderValue,
 			stop: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
 				console.log(opacity);
@@ -1188,8 +1201,7 @@ var editWindow =  function() {
 				else{
 					var currentColor = $('#'+selectedModule).css('background-color');
 					var splitColor = currentColor.split(',');
-					console.log(splitColor);
-					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (ui.value*.01) + ')';
+					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
 					$('#opacityPercent').text(' '+ui.value+'%');
 				}
 				$('#'+selectedModule).css('background-color', newColor);
