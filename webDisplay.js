@@ -855,7 +855,7 @@ var editWindow =  function() {
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
 	
-	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150).draggable({});
 	selectedModule = $(this).attr('id');
 	
@@ -996,7 +996,7 @@ var editWindow =  function() {
 		});
 	}
 	else if($(this).hasClass('textBlockContainer')){
-		$('#bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow').show();
+		$('#bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
 		$('.editWindow h2').text("Edit Text Block");
 		id = $(this).attr('id');
 		body = $(this).children('p');
@@ -1043,6 +1043,29 @@ var editWindow =  function() {
 			enteredText = enteredText.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/\n/g,  "<br>");
 			$(body).html(enteredText);
 		});
+		$('#opacitySlider').slider({
+			min: 1,
+			max: 100,
+			value: 100,
+			stop: function( event, ui ) {
+				var opacity = $(this).slider('value', ui.value);
+				console.log(opacity);
+				opacity = opacity.toString();
+				var newColor;
+				if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
+					newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+				}
+				else{
+					var currentColor = $('#'+selectedModule).css('background-color');
+					var splitColor = currentColor.split(',');
+					console.log(splitColor);
+					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (ui.value*.01) + ')';
+					$('#opacityPercent').text(' '+ui.value+'%');
+				}
+				$('#'+selectedModule).css('background-color', newColor);
+				$('.backgroundColorChange').val(''+newColor);
+			}
+		});
 	}
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
@@ -1074,7 +1097,7 @@ var editWindow =  function() {
 	}
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
-		$('#titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow').show();
+		$('#titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #opacityRow').show();
 		//change title of edit window
 		$('.editWindow h2').text("Edit Cell");
 		//find parts of the data cell and assign them to a variable
