@@ -1052,13 +1052,16 @@ var editWindow =  function() {
 		else{
 			sliderValue = 100;
 		}
+		$('#opacitySlider .ui-slider-range').css('background', backgroundColor );
+  		$('#opacitySlider .ui-slider-handle').css('border-color', backgroundColor);
 		$('#opacityPercent').text(' '+sliderValue+'%');
 		//opacity slider setup
 		$('#opacitySlider').slider({
 			min: 1,
 			max: 100,
+			range: "min",
 			value: sliderValue,
-			stop: function( event, ui ) {
+			slide: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
 				console.log(opacity);
 				opacity = opacity.toString();
@@ -1074,6 +1077,8 @@ var editWindow =  function() {
 				}
 				$('#'+selectedModule).css('background-color', newColor);
 				$('.backgroundColorChange').val(''+newColor);
+				$('#opacitySlider .ui-slider-range').css('background', newColor );
+  				$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
 			}
 		});
 	}
@@ -1184,13 +1189,16 @@ var editWindow =  function() {
 		else{
 			sliderValue = 100;
 		}
+		$('#opacitySlider .ui-slider-range').css('background', backgroundColor );
+  		$('#opacitySlider .ui-slider-handle').css('border-color', backgroundColor);
 		$('#opacityPercent').text(' '+sliderValue+'%');
 		//opacity slider setup
 		$('#opacitySlider').slider({
 			min: 1,
 			max: 100,
+			range: "min",
 			value: sliderValue,
-			stop: function( event, ui ) {
+			slide: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
 				console.log(opacity);
 				opacity = opacity.toString();
@@ -1206,6 +1214,8 @@ var editWindow =  function() {
 				}
 				$('#'+selectedModule).css('background-color', newColor);
 				$('.backgroundColorChange').val(''+newColor);
+				$('#opacitySlider .ui-slider-range').css('background', newColor );
+  				$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
 			}
 		});
 		//tool tip shows original title
