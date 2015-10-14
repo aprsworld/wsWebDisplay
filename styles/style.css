@@ -414,6 +414,7 @@ div.logo_container{
 	top: 15%;
 	left: 20%;
 	width: auto;
+	height: auto;
 	z-index: 1;
 	display: inline;
 }

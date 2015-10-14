@@ -770,7 +770,7 @@ function createText(){
 		});	
 }
 //function that expands inputs for creating images	
-function createImage(){
+/*function createImage(){
 //unhide inputs
 	$('#createTextTitle').hide();
 	$('#createTextBody').hide();
@@ -781,14 +781,14 @@ function createImage(){
 //change function of button
     $('#createText').attr('onclick', 'createText()');
     $('#createImg').attr('onclick', 'submitURL()');
-}
-function submitURL(){
+}*/
+function createImage(){
 	var imgURL, index;
 	index = imgBlocks.length;
 	imgBlocks.push("img"+index);
 	imgURL = $('#createImageURL').val();
 	if(imgURL != ""){
-		$('#content').append('<div class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src='+imgURL+'></img></div>');
+		$('#content').append('<div class="imgBlockContainer"><div class="cam-drag-handle"></div><img width="320" height="240" onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src="images/insert_image.svg"></img></div>');
 		$(".imgBlockContainer").draggable({
 			grid: [1, 1],
 			snap: true,
@@ -1125,7 +1125,7 @@ var editWindow =  function() {
 	}
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#urlRow').show();
+		$('#urlRow , #resizeModule').show();
 		//change title of edit window 
 		$('.editWindow h2').text("Edit Image");
 		//find parts of the image and assign them to variables
@@ -1137,17 +1137,43 @@ var editWindow =  function() {
 		//delegate event handler for url change
 		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
 		$( document ).on( "paste", "input.urlChange" , function() {	
-			console.log('fired');
-			var element = this;
- 			setTimeout(function () {
+			var tempImg = document.createElement('img');
+			console.log(tempImg);			
+			$(tempImg).load(function() {
+				var width = tempImg.naturalWidth;
+				var height = tempImg.naturalHeight;
+				url.attr('width',width);
+				url.attr('height',height);
+				$("#"+selectedModule).css('width', width);
+				$("#"+selectedModule).css('height',height);
+				$("#"+selectedModule).parent().css('width', width);
+				$("#"+selectedModule).parent().css('height',height);
 				url.attr('src', urlChange.val());
-			}, 100);	 
+			});
+			//wait split second for paste of new url
+			setTimeout(function () {
+				//reset image attributes
+				url.attr('width','0');
+				url.attr('height','0');
+				tempImg.src = urlChange.val();
+			}, 100); 
 		});
 		//unbind old events, and bind a new one
 		$( document ).off( "click", "#deleteModule"); 
 		$( document ).on( "click", "#deleteModule" , function() {
 			$("#"+selectedModule).parent().parent().remove();
 			$('.editWindow').hide(150);
+		});
+		// unbind old event handler
+		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizeModule" , function() {
+			console.log(selectedModule);
+			var width = document.getElementById(selectedModule).naturalWidth;
+			var height = document.getElementById(selectedModule).naturalHeight;
+			$("#"+selectedModule).css('width', width);
+			$("#"+selectedModule).css('height',height);
+			$("#"+selectedModule).parent().css('width', width);
+			$("#"+selectedModule).parent().css('height',height);
 		});
 		
 	}

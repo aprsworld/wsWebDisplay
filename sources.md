@@ -12,3 +12,6 @@ This document contains licenses and sources for all content that was taken from 
 	* **URL:** [wikimedia](https://commons.wikimedia.org/wiki/File%3AFeedbin-Icon-home-edit.svg)
 	* **author:** [Feedbin, Inc.](https://github.com/feedbin/feedbin/tree/master/app/assets/images)
 	* **attribution:** By Feedbin, Inc. [<a href="http://opensource.org/licenses/mit-license.php">MIT</a>], <a href="https://commons.wikimedia.org/wiki/File%3AFeedbin-Icon-home-edit.svg">via Wikimedia Commons</a> 
+4.	* **image** ![drag](images/insert_image.svg)
+	* **url:** [wikimedia](https://commons.wikimedia.org/wiki/File:-Insert_image_here-.svg)
+	* **author:** [Diego Grez-Cañete](https://commons.wikimedia.org/wiki/User:Diego_Grez-Ca%C3%B1ete)
