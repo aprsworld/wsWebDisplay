@@ -677,7 +677,7 @@ function data_start() {
         callback_error: data_error,
         // XXX: These are temporary
         //url_ajax: 'http://'+host+':8888/.data',
-		url: 'http://'+host+':8888/.data',
+		url: 'http://'+host+':8888/.data/',
         //url_ws: 'ws://'+host+':8888/.data'
     });
 	data_object.ValueGet(function(rsp){
