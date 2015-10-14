@@ -100,7 +100,7 @@ select{
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 2;
+	z-index: 101;
 	box-shadow: 0px 0px 4px #222;
 	text-align: center;
 	display: none;
@@ -589,14 +589,15 @@ div.logo_container{
 	border: 1px solid #000;
 	padding: 20px;
 	padding-top: 10px;
-	z-index: 2;
+	z-index: 101;
 	color: #333;
 	text-align: center;
 	box-shadow: 0px 0px 3px #222;
 	overflow: hidden;
 }
 .editWindowRow{
-	height: 30px;
+	height: auto;
+	min-height: 35px;
 	width: 250px;
 	display: inline-block;
 	text-align: center;
@@ -691,7 +692,7 @@ div.logo_container{
 	margin-top: 15px;
 	width: 35%;
 }
-#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
+#zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
 	display:none;	
 }
 #bodyRow{

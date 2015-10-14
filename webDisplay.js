@@ -677,7 +677,7 @@ function data_start() {
         callback_error: data_error,
         // XXX: These are temporary
         //url_ajax: 'http://'+host+':8888/.data',
-		//url: 'http://'+host+':8888/.data',
+		url: 'http://'+host+':8888/.data',
         //url_ws: 'ws://'+host+':8888/.data'
     });
 	data_object.ValueGet(function(rsp){
@@ -769,26 +769,13 @@ function createText(){
 			disabled: false
 		});	
 }
-//function that expands inputs for creating images	
-/*function createImage(){
-//unhide inputs
-	$('#createTextTitle').hide();
-	$('#createTextBody').hide();
-	$('#createImageURL').show();
-	$('#createImageURL').val('');
-	$('#createImg').text('Submit URL');
-	$('#createText').text('Create Text');
-//change function of button
-    $('#createText').attr('onclick', 'createText()');
-    $('#createImg').attr('onclick', 'submitURL()');
-}*/
 function createImage(){
 	var imgURL, index;
 	index = imgBlocks.length;
 	imgBlocks.push("img"+index);
 	imgURL = $('#createImageURL').val();
 	if(imgURL != ""){
-		$('#content').append('<div class="imgBlockContainer"><div class="cam-drag-handle"></div><img width="320" height="240" onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src="images/insert_image.svg"></img></div>');
+		$('#content').append('<div id=img'+index+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img width="320" height="240" onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src="images/insert_image.svg"></img></div>');
 		$(".imgBlockContainer").draggable({
 			grid: [1, 1],
 			snap: true,
@@ -837,11 +824,10 @@ function refreshTree(newData){
 }
 /* function that removes an image if it returns a 404 error.*/
 function brokenImg(id){
-	alert('invalid URL');
-	$(id).closest('.imgBlockContainer').remove();
+	alert('invalid URL - please paste a valid URL');
 }
 var editWindow =  function() {
-	var selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
+	var moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
 	labelChange = $('.labelChange');
 	bodyChange = $('.bodyChange');
@@ -851,8 +837,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	
-	$('#titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150);
 	selectedModule = $(this).attr('id');
 	
@@ -936,10 +921,10 @@ var editWindow =  function() {
 		});
 	}
 	else if($(this).hasClass('imgCamContainer')){
-		$('#cropModule').show();
-		$('#resizeModule').show();
+		$('#cropModule, #resizeModule, #zRow').show();
 		$('.editWindow h2').text("Edit Camera");
 		// delete event hanlder
+		moduleContainer = $(this).attr('id');
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {
 			$("#"+selectedModule).removeClass("cropped");
@@ -1035,10 +1020,11 @@ var editWindow =  function() {
 		});
 	}
 	else if($(this).hasClass('textBlockContainer')){
-		$('#bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
+		$('#zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
 		$('.editWindow h2').text("Edit Text Block");
 		id = $(this).attr('id');
 		body = $(this).children('p');
+		moduleContainer = $(this).attr('id');
 		$(bodyChange).val(body.html());
 		$(bgColor).val($('#'+id).css('background-color'));
 		$(textColor).val($('#'+id).children('p').css('color'));
@@ -1125,7 +1111,8 @@ var editWindow =  function() {
 	}
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#urlRow , #resizeModule').show();
+		$('#zRow, #urlRow , #resizeModule').show();
+		moduleContainer = $(this).attr('id');
 		//change title of edit window 
 		$('.editWindow h2').text("Edit Image");
 		//find parts of the image and assign them to variables
@@ -1179,7 +1166,8 @@ var editWindow =  function() {
 	}
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
-		$('#titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #opacityRow').show();
+		$('#zRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #opacityRow').show();
+		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text("Edit Cell");
 		//find parts of the data cell and assign them to a variable
@@ -1294,6 +1282,16 @@ var editWindow =  function() {
 		$(titleChange).val(title.text());
 		$(labelChange).val(label.text());
 	}
+	var zIndex = $('#'+moduleContainer).css('z-index'); 
+	console.log(zIndex);
+	$('#zSlider').slider({
+			min: 0,
+			max: 100,
+			value: zIndex,
+			slide: function( event, ui ) {
+				$('#'+moduleContainer).css('z-index', ui.value ); 
+			}
+		});
 	if($("#"+selectedModule).hasClass('hide')){
 		$('#hideModule').attr('onclick', "showModule('"+ selectedModule +"')");
 		$('#hideModule').text('Unhide selected');
@@ -1651,7 +1649,7 @@ function loadState(){
 				var savedImgId = savedImg.id; 
 				var savedImgVisibility = savedImg.hidden;
 				//append the image to the content div and set its properties
-				$('#content').append('<div class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg('+savedImgId+')" id='+savedImgId+' alt='+savedImgId+' src='+savedImgSrc+'></img></div>');
+				$('#content').append('<div id='+savedImgId+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg('+savedImgId+')" id='+savedImgId+' alt='+savedImgId+' src='+savedImgSrc+'></img></div>');
 				$("#"+savedImgId).parent().css('top',savedImgTop);
 				$("#"+savedImgId).parent().css('left',savedImgLeft);
 				$("#"+savedImgId).css('width',savedImgWidth);
