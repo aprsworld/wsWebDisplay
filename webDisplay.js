@@ -459,9 +459,6 @@ function timer(){
 	treeRefreshTimer = treeRefreshTimer+1;
 	$('#timer').text("Last data received " + time + " seconds ago ");
 	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
-	if(treeRefreshTimer > 15){
-		treeRefreshTimer = 0;
-	}
 	if(time > 30){
 		$('#timer').text("30+ seconds since last data received. Try refreshing your browser window.");
 	}
@@ -639,7 +636,7 @@ function data_update(data) {
 			refreshTree(data);
 		});	
 		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
-		if(editMode == false && treeRefreshTimer == 14){
+		if(editMode == false && treeRefreshTimer >= 14){
 			refreshTree(data);	
 			console.log('refreshed');
 			treeRefreshTimer = 0;
