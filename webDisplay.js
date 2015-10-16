@@ -5,6 +5,7 @@ const TITLE_DEFAULT = 'wsWebDisplay';
 var editMode = false;
 var time; //incremental variable that keeps track of time since last data update
 var	treeRefreshTimer = 0;
+var loadedTime = 0;
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
 var id_arr = [];
 var path_arr = [];
@@ -454,18 +455,23 @@ function fontSizeChange(direction, id){
 	$('#fontSize').val((fontsize).slice(0,-2));
 }
 function timer(){
+	loadedTime = loadedTime+1;
 	camTime = camTime+1;
 	time = time+1;
 	treeRefreshTimer = treeRefreshTimer+1;
-	$('#timer').text("Last data received " + time + " seconds ago ");
+	$('#timer').text("Last data received " + time + " seconds ago. Page loaded "+loadedTime+" seconds ago");
 	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
 	if(time > 30){
 		$('#timer').text("30+ seconds since last data received. Try refreshing your browser window.");
+	}
+	if(loadedTime%30 == 0){
+		console.log(loadedTime+' seconds since page was loaded');	
 	}
 	if(camTime > 90){
 		//$('#camTimer').text("90+ seconds since last camera image received. Try refreshing your browser window.");	
 	}
 }
+
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
@@ -473,8 +479,7 @@ function data_update(data) {
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
     	started = true; //sets our boolean to true so the above only executes once
         //path_arr = iteratePath(data, '');
-		
-		
+	
         $(".draggable").draggable({ //makes our data cells draggable
             disabled: true,
 			grid: [1, 1],
@@ -628,6 +633,32 @@ function data_update(data) {
 			var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 			cellCount = parseInt(lastCell, 10)+1;
 		}
+		//allows images to be hoverable outside of edit function
+			var hoverTimeout;
+			var hoverImg = document.createElement('img');
+			$('.imgCamContainer').hover(function(){
+				var camID = $(this).attr('id');
+				var camWidth = $(this).children('img').width();
+				var camHeight = $(this).children('img').height();
+				var camSrc = $(this).children('img').attr('src');
+						if(editMode == false){	
+							hoverTimeout = setTimeout(function() {
+								hoverImg.className = 'expandedCam';
+								$(hoverImg).width(camWidth);
+								$(hoverImg).height(camHeight);
+								hoverImg.src = camSrc;
+								$('#content').append(hoverImg);
+							}, 2000);
+						}
+					}, function () {
+						if(editMode == false){	
+							clearTimeout(hoverTimeout);
+							hoverImg.remove();
+						}
+					}
+			
+			);	
+		//end of hoverable event 
         });
 	}
 	$(document).ready(function() {

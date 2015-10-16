@@ -746,7 +746,12 @@ div.logo_container{
 	text-align: left !important;
 	border: 3px solid #555;
 }
-
+.expandedCam{
+	position: absolute;
+	z-index: 102;
+	top: 0;
+	left: 0;
+}
 /*Plugin fixes*/
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
