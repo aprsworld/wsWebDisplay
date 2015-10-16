@@ -118,6 +118,7 @@ select{
 	margin-right: auto;
 	margin-top: 5px;
 	height: auto;
+	
 }
 .verticalAlign{
 	height: 50px;
@@ -217,11 +218,12 @@ div.logo_container{
 	border-color: black;
 }
 #saveState{
+	margin-left: 2px;
 }
 #saveAs{
 	text-align: center;
-	width: 93px;
-	display: none;
+	width: 94px;
+	height: 30px;
 }
 .fontContainer{
 	width: 65px;	
@@ -389,6 +391,8 @@ div.logo_container{
 	transition: width 1s;
 	width: 82%;
 	clear: both;	
+}
+#refreshTree{
 }
 #createImageURL:focus{
 	width: 100%;	

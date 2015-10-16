@@ -4,6 +4,7 @@ const TITLE_DEFAULT = 'wsWebDisplay';
 /***** Global variables ********/
 var editMode = false;
 var time; //incremental variable that keeps track of time since last data update
+var	treeRefreshTimer = 0;
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
 var id_arr = [];
 var path_arr = [];
@@ -216,6 +217,7 @@ function initJqueryUI(){
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
+
 function iterateStations(obj, stack, arr, lastk) {
 	for (var property in obj) {
         if (obj.hasOwnProperty(property)) {
@@ -318,7 +320,8 @@ function ref(obj, str) {
 
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate($id_arr, $path_arr, data) {
-    for ($i = 0; $i < $id_arr.length; $i++) {
+	var idLength = $id_arr.length;
+    for ($i = 0; $i < idLength; $i++) {
 		var value = ref(data, $path_arr[$i]); //finds value of object
 	if (value === undefined) {
 		value = 'MISSING DATA!';
@@ -374,7 +377,6 @@ function populateCams(cam_arr){
 }
 function createCamFromTree(tree_id){
 	var selection = tree_id;
-	console.log('create ' + tree_id);
 	$('.imgCamContainer').draggable({
 		grid: [1, 1],
 		snap: true,
@@ -406,9 +408,7 @@ function createCamFromTree(tree_id){
 		disabled: false}).resizable({disabled: false, handles: 'all'});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
-		console.log($(this));
-		console.log($('#div_'+selection).children('img').width());
-		console.log($('#div_'+selection).children('img').attr('src'));
+		
 		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
 		$('#div_'+selection).children('img').attr('src',src);
 		$("#div_"+selection).css('display','inline');
@@ -420,7 +420,8 @@ function createCamFromTree(tree_id){
 //function that refreshes cams and preloads the refreshed image before displaying it	
 function refreshCams(cam_arr){
 	//iterates through known cams
-	for(var i =0; i<cam_arr.length; i++){
+	var camLength = cam_arr.length;
+	for(var i =0; i<camLength; i++){
 		//only finds cams that are visible
 		if($('#div_ws_'+cam_arr[i][2]+'image_url_x').is(":visible")){
 			//the camera image is not displayed until the image is done loading
@@ -455,8 +456,12 @@ function fontSizeChange(direction, id){
 function timer(){
 	camTime = camTime+1;
 	time = time+1;
+	treeRefreshTimer = treeRefreshTimer+1;
 	$('#timer').text("Last data received " + time + " seconds ago ");
 	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
+	if(treeRefreshTimer > 15){
+		treeRefreshTimer = 0;
+	}
 	if(time > 30){
 		$('#timer').text("30+ seconds since last data received. Try refreshing your browser window.");
 	}
@@ -539,7 +544,6 @@ function data_update(data) {
 					var $element, $me, $newElement;
 					
 					$element = $(ui.draggable);
-					console.log($element);
 					var id = $($element).attr('id');
 					var new_id = "div_"+id;
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
@@ -562,8 +566,6 @@ function data_update(data) {
 					}
 					path_arr.push(path);
 					id_arr.push(new_id);
-					console.log("IDs " + id_arr);
-					console.log("paths " + path_arr);
 					var pageX = event.pageX;
 					var pageY = event.pageY;
 					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
@@ -634,10 +636,13 @@ function data_update(data) {
 	$(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
 		$( document ).on( "click", "#refreshTree" , function() {	
-				refreshTree(data);
+			refreshTree(data);
 		});	
-		if(editMode == false){
+		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
+		if(editMode == false && treeRefreshTimer == 14){
 			refreshTree(data);	
+			console.log('refreshed');
+			treeRefreshTimer = 0;
 		}
 	});
 	refreshCams(cams);
@@ -671,7 +676,6 @@ function data_start() {
 		host = HOST_DEFAULT;
 	}
 	//config_retr("http://"+host+":8888/.config");
-	console.log(host);
     data_object = new BroadcastClient({
         callback_update: data_update,
         callback_error: data_error,
@@ -694,7 +698,6 @@ function data_start() {
     			option.value = i;
 			$('#stateSelect').append(option);
 		}
-
 		// If ?display=x is specified in the URL, load that one
 		var load = getParameterByName('display');
 		if (load) {
@@ -901,7 +904,6 @@ var editWindow =  function() {
 			value: sliderValue,
 			slide: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
-				console.log(opacity);
 				opacity = opacity.toString();
 				var newColor;
 				if($('html').css('background-color').indexOf("rgba") < 0){
@@ -959,7 +961,6 @@ var editWindow =  function() {
 			$("#"+selectedModule).hide();
 			var cropWidth, cropHeight, cropLeft, cropTop;
 			var thismodule = $("#"+selectedModule);
-			console.log(nativeWidth+" x "+nativeHeight);
 			var width = $("#"+selectedModule).css('width');
 			var height = $("#"+selectedModule).css('height');
 			var left = $("#"+selectedModule).css('left');
@@ -967,7 +968,6 @@ var editWindow =  function() {
 			var src = $("#"+selectedModule).find('img').attr('src');
 			var diffFromNatHeight = (height.slice(0,-2))/nativeHeight;
 			var diffFromNatWidth = (width.slice(0,-2))/nativeWidth;
-			console.log(diffFromNatWidth+" x "+diffFromNatHeight);
 			$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width.slice(0,-2)*diffFromNatWidth)+' " height="'+(height.slice(0,-2)*diffFromNatHeight)+' "src="'+src+'"></div>');
 			$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 			$('.cropperwrapper > img').cropper({
@@ -997,7 +997,6 @@ var editWindow =  function() {
 				var changeHeight = (((height-cropHeight)/height));
 				var changeLeft = ((((top-cropTop)/1))*100);
 				var changeTop = (((left-cropLeft)/1)*100);
-				console.log(cropTop+" X "+cropLeft);
 				$('.cropperWrapper').remove();
 				if(cropTop == 0 || cropLeft == 0){
 					$("#"+selectedModule).css("background-position", ""+(cropLeft*diffFromNatWidth)+"px "+(cropTop*diffFromNatHeight)+"px");
@@ -1010,8 +1009,6 @@ var editWindow =  function() {
 				$("#"+selectedModule).css("width",cropWidth*diffFromNatWidth+"px");
 				$("#"+selectedModule).css("height",cropHeight*diffFromNatHeight+"px");
 				$("#"+selectedModule).css("background-size",width+"px "+height+"px ");
-				console.log($("#"+selectedModule).css("background-position"));
-				console.log("background-size "+$("#"+selectedModule).css("background-size"));
 				$("#"+selectedModule).css("overflow","hidden");
 				$("#"+selectedModule).show();
 				$("#"+selectedModule).addClass("cropped");
@@ -1090,7 +1087,6 @@ var editWindow =  function() {
 			value: sliderValue,
 			slide: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
-				console.log(opacity);
 				opacity = opacity.toString();
 				var newColor;
 				if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
@@ -1125,7 +1121,6 @@ var editWindow =  function() {
 		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
 		$( document ).on( "paste", "input.urlChange" , function() {	
 			var tempImg = document.createElement('img');
-			console.log(tempImg);			
 			$(tempImg).load(function() {
 				var width = tempImg.naturalWidth;
 				var height = tempImg.naturalHeight;
@@ -1154,7 +1149,6 @@ var editWindow =  function() {
 		// unbind old event handler
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {
-			console.log(selectedModule);
 			var width = document.getElementById(selectedModule).naturalWidth;
 			var height = document.getElementById(selectedModule).naturalHeight;
 			$("#"+selectedModule).css('width', width);
@@ -1259,7 +1253,6 @@ var editWindow =  function() {
 			value: sliderValue,
 			slide: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
-				console.log(opacity);
 				opacity = opacity.toString();
 				var newColor;
 				if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
@@ -1283,7 +1276,6 @@ var editWindow =  function() {
 		$(labelChange).val(label.text());
 	}
 	var zIndex = $('#'+moduleContainer).css('z-index'); 
-	console.log(zIndex);
 	$('#zSlider').slider({
 			min: 0,
 			max: 100,
@@ -1351,7 +1343,6 @@ function nonEdit(handler) {
 	$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 }
 function hideModule(id) {
-	console.log(id);
 	$("#"+id).addClass('hide');
 	$("#"+id).css('opacity','.2');
 	$('#hideModule').attr('onclick', "showModule('"+ id +"')");	
@@ -1368,6 +1359,7 @@ function htmlEntities(str) {
    	var decoded = $('<div/>').html(str).text();
 	return decoded
 }
+
 /*function that iterates through all instances of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" class selectors
 and records all relevant data from the elements with these classes, create objects using the data as properties, and then loads the objects into
 individual arrays for each type of selector class. once Each array has been created, a saved state array encompasses all of the data.*/
@@ -1509,7 +1501,6 @@ function deleteState(){
 	var index = $( "#stateSelect option:selected" ).attr("value"); 
 	savedStates.splice(index, 1);
 	$("select#stateSelect option[value='"+index+"']").remove();
-	console.log(savedStates);
 }
 /*A function that is passed a json string that holds elements and their properties from a saved state of a layout. Once it takes in the json string
 it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
@@ -1518,9 +1509,6 @@ function loadState(){
 	var index = $( "#stateSelect option:selected" ).attr("value"); 
 	var jsonString = savedStates[index];
 	var stateObject = $.parseJSON(jsonString);
-	console.log(index);
-	console.log(jsonString);
-	console.log(stateObject);
 	id_arr.length = 0;
 	path_arr.length = 0;
 	$('.tr, .textBlockContainer, .imgBlockContainer').remove();
@@ -1558,7 +1546,6 @@ function loadState(){
 
 				}
 				else{
-					console.log('false');
 					if($("#"+savedCellDivID).hasClass('hide')){
 						$("#"+savedCellDivID).removeClass('hide');
 						$("#"+savedCellDivID).css('opacity','1.0');
@@ -1598,7 +1585,6 @@ function loadState(){
 
 				}
 				else{
-					console.log('false');
 					if($("#"+savedTbDivID).hasClass('hide')){
 						$("#"+savedTbDivID).removeClass('hide');
 						$("#"+savedTbDivID).css('opacity','1.0');
@@ -1627,7 +1613,6 @@ function loadState(){
 
 				}
 				else{
-					console.log('false');
 					if($("#"+savedCamDivID).hasClass('hide')){
 						$("#"+savedCamDivID).removeClass('hide');
 						$("#"+savedCamDivID).css('opacity','1.0');
@@ -1660,7 +1645,6 @@ function loadState(){
 
 				}
 				else{
-					console.log('false');
 					if($("#"+savedImgId).hasClass('hide')){
 						$("#"+savedImgId).removeClass('hide');
 						$("#"+savedImgId).css('opacity','1.0');
