@@ -424,16 +424,21 @@ function refreshCams(cam_arr){
 	var camLength = cam_arr.length;
 	for(var i =0; i<camLength; i++){
 		//only finds cams that are visible
+		var currentCam;
 		if($('#div_ws_'+cam_arr[i][2]+'image_url_x').is(":visible")){
 			//the camera image is not displayed until the image is done loading
-			$('#preload_div_ws_'+cam_arr[i][2]+'image_url_x').load(function() {
+			currentCam = $('#div_ws_'+cam_arr[i][2]+'image_url_x');
+			currentCam = currentCam.attr('id');
+			$('#preload_'+currentCam).unbind()
+			$('#preload_'+currentCam).load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
-				$("#"+cam).css('background-image','url('+src+')');
+				console.log(cam);
+				document.getElementById(cam).style.backgroundImage = 'url('+src+')';
 				
 			});
 			//src is set after the .load() function
-			$('#preload_div_ws_'+cam_arr[i][2]+'image_url_x').attr('src',cam_arr[i][1]);		
+			$('#preload_'+currentCam).attr('src',cam_arr[i][1]);		
 
 		}
 	}
@@ -707,10 +712,7 @@ function data_start() {
     data_object = new BroadcastClient({
         callback_update: data_update,
         callback_error: data_error,
-        // XXX: These are temporary
-        //url_ajax: 'http://'+host+':8888/.data',
 		url: 'http://'+host+':8888/.data/',
-        //url_ws: 'ws://'+host+':8888/.data'
     });
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
@@ -852,6 +854,9 @@ function refreshTree(newData){
 	var json = iterateStations(newData, "", jsonArray, lastk);
 	$('#stationTree').jstree(true).settings.core.data = jsonArray;
 	$('#stationTree').jstree(true).refresh();
+	//empty array for the sake of performance
+	jsonArray.length = 0;
+	console.log(path_arr);
 }
 /* function that removes an image if it returns a 404 error.*/
 function brokenImg(id){
