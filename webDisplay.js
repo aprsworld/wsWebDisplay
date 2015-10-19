@@ -373,8 +373,8 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src="/res/external/dist/themes/default/throbber.gif"></div>');
-		$('#preload').append('<img alt="camimage" src="/res/external/dist/themes/default/throbber.gif" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
+		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
+		$('#preload').append('<img alt="camimage" src="" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
 function createCamFromTree(tree_id){
@@ -649,20 +649,23 @@ function data_update(data) {
 				var camID = $(this).attr('id');
 				var camWidth = $(this).children('img').width();
 				var camHeight = $(this).children('img').height();
-				var camSrc = $(this).children('img').attr('src');
+				var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 						if(editMode == false){	
 							hoverTimeout = setTimeout(function() {
 								hoverImg.className = 'expandedCam';
 								$(hoverImg).width(camWidth);
 								$(hoverImg).height(camHeight);
 								hoverImg.src = camSrc;
-								$('#content').append(hoverImg);
+								console.log(hoverImg);
+								$('#'+camID).append(hoverImg);
+								$('#'+camID).addClass('focusedCam');
 							}, 2000);
 						}
 					}, function () {
 						if(editMode == false){	
 							clearTimeout(hoverTimeout);
 							hoverImg.remove();
+							$('.imgCamContainer').removeClass('focusedCam');
 						}
 					}
 			
@@ -1639,10 +1642,14 @@ function loadState(){
 				var savedCamHeight = savedCam.height;
 				var savedCamDivID = savedCam.divID;
 				var savedCamVisibility = savedCam.hidden;
+				var src = $("#"+savedCamDivID).css('background-image');
+				src = src.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 				$("#"+savedCamDivID).css('top',savedCamTop);
 				$("#"+savedCamDivID).css('left',savedCamLeft);
 				$("#"+savedCamDivID).css('width',savedCamWidth);
 				$("#"+savedCamDivID).css('height',savedCamHeight);
+				$("#"+savedCamDivID).children('img').attr('src',src);
+
 				if(savedCamVisibility == true){
 					$("#"+savedCamDivID).addClass('hide');
 					$("#"+savedCamDivID).css('opacity','0.2');
@@ -1670,7 +1677,7 @@ function loadState(){
 				var savedImgId = savedImg.id; 
 				var savedImgVisibility = savedImg.hidden;
 				//append the image to the content div and set its properties
-				$('#content').append('<div id='+savedImgId+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg('+savedImgId+')" id='+savedImgId+' alt='+savedImgId+' src='+savedImgSrc+'></img></div>');
+				$('#content').append('<div id='+savedImgId+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img onerror="brokenImg('+savedImgId+')" id='+savedImgId+' alt='+savedImgId+' src='+savedImgSrc+'></div>');
 				$("#"+savedImgId).parent().css('top',savedImgTop);
 				$("#"+savedImgId).parent().css('left',savedImgLeft);
 				$("#"+savedImgId).css('width',savedImgWidth);
