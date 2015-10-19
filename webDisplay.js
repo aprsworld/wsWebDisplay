@@ -277,6 +277,8 @@ function iterateStations(obj, stack, arr, lastk) {
 						jsonItem ["obj"] = {"path": stack + '.' + property, "units": obj[property]['units']};												
 					}
 					arr.push(jsonItem);
+					delete jsonItem;
+
 				}
 				//if not child properties, recurssively call function once more to find next level of objects/properties
 				else{
@@ -284,7 +286,9 @@ function iterateStations(obj, stack, arr, lastk) {
 					jsonItem ["parent"] = parent;
 					jsonItem ["text"] = property;
 					jsonItem ["obj"] = {"path": stack + '.' + property};
-					arr.push(jsonItem)
+					arr.push(jsonItem);
+					delete jsonItem;
+
 					lastk = property; //keeps track of last property which is stored in a global variable
 					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
 				}
@@ -304,8 +308,6 @@ function iterateStations(obj, stack, arr, lastk) {
             }
         }
     }
-	var jsonString = JSON.stringify(arr);
-    return jsonString;
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
 function ref(obj, str) {
@@ -332,7 +334,6 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 }
 function getStations(data){
 	var stations = [];
-	var stationData =[];
 	var lastk = "#";
 	var i = 0;
 	for(var k in data){
@@ -442,6 +443,9 @@ function refreshCams(cam_arr){
 
 		}
 	}
+	//empty array
+	camLength = null;
+	cam_arr.length = 0;
 }	
 function fontSizeChange(direction, id){
 	var fontsize = $('#'+id).css('font-size');
@@ -851,12 +855,11 @@ function createImage(){
 function refreshTree(newData){
 	var lastk = "#";
 	var jsonArray = [];
-	var json = iterateStations(newData, "", jsonArray, lastk);
+	iterateStations(newData, "", jsonArray, lastk);
 	$('#stationTree').jstree(true).settings.core.data = jsonArray;
 	$('#stationTree').jstree(true).refresh();
 	//empty array for the sake of performance
 	jsonArray.length = 0;
-	console.log(path_arr);
 }
 /* function that removes an image if it returns a 404 error.*/
 function brokenImg(id){
