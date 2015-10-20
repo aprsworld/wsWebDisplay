@@ -434,7 +434,6 @@ function refreshCams(cam_arr){
 			$('#preload_'+currentCam).load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
-				console.log(cam);
 				document.getElementById(cam).style.backgroundImage = 'url('+src+')';
 				
 			});
@@ -650,21 +649,39 @@ function data_update(data) {
 				var camWidth = $(this).children('img').width();
 				var camHeight = $(this).children('img').height();
 				var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-						if(editMode == false){	
+				var isWebkit = 'WebkitAppearance' in document.documentElement.style
+				var hoverImgID = camID+'hover';
+					if(editMode == false){	
 							hoverTimeout = setTimeout(function() {
-								hoverImg.className = 'expandedCam';
+															
 								$(hoverImg).width(camWidth);
 								$(hoverImg).height(camHeight);
 								hoverImg.src = camSrc;
 								console.log(hoverImg);
 								$('#'+camID).append(hoverImg);
 								$('#'+camID).addClass('focusedCam');
+								if (isWebkit) {
+									hoverImg.className = 'webKitCam';
+									hoverImg.id = hoverImgID;
+									var top = ''+$('#'+camID).css('top');
+									var left = ''+$('#'+camID).css('left');
+									$('#'+hoverImgID).css('left','50% ');
+									$('#'+hoverImgID).css('top','50%');
+									top = '-'+$('#'+camID).css('top');
+									left= '-'+$('#'+camID).css('left');
+									$('#'+hoverImgID).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
+									console.log(top);
+									
+								}
+								else{
+									hoverImg.className = 'expandedCam';
+								}	
 							}, 2000);
 						}
 					}, function () {
 						if(editMode == false){	
 							clearTimeout(hoverTimeout);
-							hoverImg.remove();
+							$(hoverImg).remove();
 							$('.imgCamContainer').removeClass('focusedCam');
 						}
 					}

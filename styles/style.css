@@ -751,6 +751,12 @@ div.logo_container{
 	left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%); /* IE 9 */
+	box-shadow: 0px 0px 50px black;
+	border: 1px solid black;
+}
+.webKitCam{
+	position: fixed;
 	box-shadow: 0px 0px 50px black;
 	border: 1px solid black;
 }
