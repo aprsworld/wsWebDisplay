@@ -718,6 +718,7 @@ function data_update(data) {
 			
 			);	
 		//end of hoverable event 
+			
         });
 	}
 	$(document).ready(function() {

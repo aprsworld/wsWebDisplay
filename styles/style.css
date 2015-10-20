@@ -754,11 +754,8 @@ div.logo_container{
     -ms-transform: translate(-50%, -50%); /* IE 9 */
 	box-shadow: 0px 0px 50px black;
 	border: 1px solid black;
-}
-.webKitCam{
-	position: fixed;
-	box-shadow: 0px 0px 50px black;
-	border: 1px solid black;
+	max-height: 92vh;
+	max-width: 92vw;
 }
 .focusedCam{
 	z-index: 102;	
