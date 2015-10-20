@@ -441,6 +441,8 @@ function createCamFromTree(tree_id){
 		
 		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
 		$('#div_'+selection).children('img').attr('src',src);
+		//proof of concept
+		$('#div_'+selection).children('img').attr('alt','1');
 		$("#div_"+selection).css('display','inline');
 	});
 	var url = $('#div_'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
@@ -681,6 +683,8 @@ function data_update(data) {
 				var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 				var isWebkit = 'WebkitAppearance' in document.documentElement.style
 				var hoverImgID = camID+'hover';
+				var timeOut = 1000;
+				timeOut = parseInt($('#'+camID).children('img').attr('alt'), 10)*1000;
 				var enabled = $('#'+camID).hasClass('hoverables');
 					if(editMode == false && enabled == true){	
 							hoverTimeout = setTimeout(function() {						
@@ -706,7 +710,7 @@ function data_update(data) {
 								else{
 									hoverImg.className = 'expandedCam';
 								}	
-							}, 2000);
+							}, timeOut);
 						}
 					}, function () {
 						if(editMode == false){	
@@ -975,7 +979,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#hoverRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#hoverTimeRow, #hoverRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150);
 	selectedModule = $(this).attr('id');
 	
@@ -1061,11 +1065,13 @@ var editWindow =  function() {
 		$('#cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text("Edit Camera");
 		moduleContainer = $(this).attr('id');
+		
 		//checks to see if image has added hoverables class and checks appropriate radio button
 		var radiobtn
 		if($('#'+selectedModule).hasClass('hoverables')){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
+			$('#hoverTimeRow').show();
 		}
 		else{
 			radiobtn = document.getElementById("hoverDisabled");
@@ -1077,10 +1083,18 @@ var editWindow =  function() {
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
 				$('#'+selectedModule).addClass('hoverables');
+				$('#hoverTimeRow').show();
 			}
 			else{
 				$('#'+selectedModule).removeClass('hoverables');
+				$('#hoverTimeRow').hide();
 			}
+		});
+		
+		//proof of concept change later
+		$( document ).off( "keyup", "input#hoverTime");
+		$( document ).on( "keyup", "input#hoverTime" , function() {
+			$('#'+selectedModule).children('img').attr('alt',$('input#hoverTime').val());
 		});
 		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
@@ -1288,9 +1302,12 @@ var editWindow =  function() {
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
 				$('#'+moduleContainer).addClass('hoverables');
+				$('#hoverTimeRow').show();
+
 			}
 			else{
 				$('#'+moduleContainer).removeClass('hoverables');
+				$('#hoverTimeRow').hide();
 			}
 		});
 		
