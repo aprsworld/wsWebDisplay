@@ -681,9 +681,9 @@ function data_update(data) {
 				var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 				var isWebkit = 'WebkitAppearance' in document.documentElement.style
 				var hoverImgID = camID+'hover';
-					if(editMode == false){	
-							hoverTimeout = setTimeout(function() {
-															
+				var enabled = $('#'+camID).hasClass('hoverables');
+					if(editMode == false && enabled == true){	
+							hoverTimeout = setTimeout(function() {						
 								$(hoverImg).width(camWidth);
 								$(hoverImg).height(camHeight);
 								hoverImg.src = camSrc;
@@ -912,7 +912,8 @@ function createImage(){
 				var imgSrc = $('#'+imgID).find('img').attr('src');
 				var isWebkit = 'WebkitAppearance' in document.documentElement.style
 				var hoverImgID = imgID+'hover';
-					if(editMode == false){	
+				var enabled = $('#'+imgID).hasClass('hoverables');
+					if(editMode == false && enabled == true){	
 						console.log(imgSrc);
 							hoverTime = setTimeout(function() {
 								$(hoverImage).width(imgWidth);
@@ -974,7 +975,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#hoverRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150);
 	selectedModule = $(this).attr('id');
 	
@@ -1057,10 +1058,31 @@ var editWindow =  function() {
 		});
 	}
 	else if($(this).hasClass('imgCamContainer')){
-		$('#cropModule, #resizeModule, #zRow').show();
+		$('#cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text("Edit Camera");
-		// delete event hanlder
 		moduleContainer = $(this).attr('id');
+		//checks to see if image has added hoverables class and checks appropriate radio button
+		var radiobtn
+		if($('#'+selectedModule).hasClass('hoverables')){
+			radiobtn = document.getElementById("hoverEnabled");
+			radiobtn.checked = true;
+		}
+		else{
+			radiobtn = document.getElementById("hoverDisabled");
+			radiobtn.checked = true;
+		}
+		var radioChecked;
+		$( document ).off( "change", "input[type=radio][name=hoverToggle]");
+		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
+			radioChecked = $('input[name=hoverToggle]:checked').val();
+			if(radioChecked == 'enabled'){
+				$('#'+selectedModule).addClass('hoverables');
+			}
+			else{
+				$('#'+selectedModule).removeClass('hoverables');
+			}
+		});
+		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {
 			$("#"+selectedModule).removeClass("cropped");
@@ -1241,7 +1263,7 @@ var editWindow =  function() {
 	}
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#zRow, #urlRow , #resizeModule').show();
+		$('#zRow, #urlRow , #resizeModulem, #hoverRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window 
 		$('.editWindow h2').text("Edit Image");
@@ -1250,6 +1272,27 @@ var editWindow =  function() {
 		url = $(this).find('img');
 		//populate input fields with image specific information
 		$(urlChange).val(url.attr('src'));
+		
+		var radiobtn
+		if($('#'+moduleContainer).hasClass('hoverables')){
+			radiobtn = document.getElementById("hoverEnabled");
+			radiobtn.checked = true;
+		}
+		else{
+			radiobtn = document.getElementById("hoverDisabled");
+			radiobtn.checked = true;
+		}
+		var radioChecked;
+		$( document ).off( "change", "input[type=radio][name=hoverToggle]");
+		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
+			radioChecked = $('input[name=hoverToggle]:checked').val();
+			if(radioChecked == 'enabled'){
+				$('#'+moduleContainer).addClass('hoverables');
+			}
+			else{
+				$('#'+moduleContainer).removeClass('hoverables');
+			}
+		});
 		
 		//delegate event handler for url change
 		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
