@@ -69,6 +69,34 @@ $(function() {
 		};
 	})($.ui.resizable.prototype["_mouseStart"]));
 });
+function secToTime(sec){
+	var secs = sec
+	if ( 1 == sec ) {
+		return "1 second ";
+	}
+	if ( sec < 60 ) {
+		return sec + " seconds ";
+	}
+	/* more than one minute */
+	var out = "";
+	var days= Math.floor(sec/(24*60*60));
+	sec = sec - (Math.floor(sec/(24*60*60))*(24*60*60));
+	var hours= Math.floor(sec/(60*60));
+	sec = sec - (Math.floor(sec/(60*60))*(60*60));
+	var minutes= Math.floor(sec/(60));
+	sec = sec - (Math.floor(sec/(60))*(60));
+	out = ('00'+hours).slice(-2)+":"+('00'+minutes).slice(-2)+":"+('00'+sec).slice(-2);
+	if ( 1 == days ) {
+		out = days + " day, "+('00'+hours).slice(-2)+":"+('00'+minutes).slice(-2)+":"+('00'+sec).slice(-2);
+		
+	}
+	if ( days > 1 ) {
+		out = days + " days, "+('00'+hours).slice(-2)+":"+('00'+minutes).slice(-2)+":"+('00'+sec).slice(-2) ;
+	}
+	out+=" (hours:minutes:seconds)";
+	return out;
+	
+}
 function table_generate(data) {
     var $dtable = $('<table border=1></table>');
     for (var p in data) {
@@ -466,14 +494,16 @@ function timer(){
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
 	time = time+1;
+	
 	treeRefreshTimer = treeRefreshTimer+1;
-	$('#timer').text("Last data received " + time + " seconds ago. Page loaded "+loadedTime+" seconds ago");
+	var convertedLoad = secToTime(loadedTime);
+	$('#timer').text("Last data received " + time + " seconds ago - "+convertedLoad+' since page was loaded');
 	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
 	if(time > 30){
 		$('#timer').text("30+ seconds since last data received. Try refreshing your browser window.");
 	}
 	if(loadedTime%30 == 0){
-		console.log(loadedTime+' seconds since page was loaded');	
+		console.log(convertedLoad+' since page was loaded');	
 	}
 	if(camTime > 90){
 		//$('#camTimer').text("90+ seconds since last camera image received. Try refreshing your browser window.");	
