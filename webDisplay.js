@@ -272,7 +272,6 @@ function iterateStations(obj, stack, arr, lastk) {
 					if('undefined' !== typeof obj[property]['type']){
 						type = obj[property]['type'];
 						jsonItem["obj"]["type"] = type;
-						console.log(type);
 					}
 					else{
 						type = null;	
@@ -598,15 +597,30 @@ function data_update(data) {
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
 					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 					var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
-					var units;
+					var units, title, type, typeUnits;
 					
+					//gets typeUnits if there
+					if($('#stationTree').jstree(true).get_node(id).original.obj.typeUnits){
+						typeUnits = $('#stationTree').jstree(true).get_node(id).original.obj.typeUnits;
+					}
+					else{
+						typeUnits = "";
+					}
+					//gets type if there
+					if($('#stationTree').jstree(true).get_node(id).original.obj.type){
+						type = $('#stationTree').jstree(true).get_node(id).original.obj.type;
+					}
+					else{
+						type = "";
+					}
+					//gets units if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.units){
 						units = $('#stationTree').jstree(true).get_node(id).original.obj.units;
 					}
 					else{
 						units = "";
 					}
-					var title;
+					//gets title if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.title){
 						title = $('#stationTree').jstree(true).get_node(id).original.obj.title; 
 					}
