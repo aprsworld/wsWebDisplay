@@ -655,9 +655,11 @@ div.logo_container{
 .labelChange{
 	width: 60%;
 }
-.
 #hoverTime{
-	width: 10%;	
+	width: 10% !important;	
+}
+#hoverTimeRow label{
+	width: 70%;	
 }
 .bodyChange{
 	padding: 3px;

@@ -14,47 +14,6 @@ var savedStates = []; //set of saved table states in the format of a multi Dimen
 var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
-/*******************************/
-/*function config_retr(url) {
-	$.ajax(url, {
-		cache: false,
-		dataType: 'json',
-	}).done(function (data, status, XHR) {
-		// XXX: status, XHR?
-		if (!data || typeof data !== 'object' || data.error || !data.result || typeof data.result !== 'object') {
-			alert('Failed to load configurations from server.');
-			return;
-		}
-		savedStates = data.result;
-		$('#stateSelect').empty();
-		var i;
-		for (i = 0; i < savedStates.length; i++) {
-			var option = document.createElement("option");
-        		option.text = "Layout#" + i;
-    			option.value = i;
-			$('#stateSelect').append(option);
-		}
-	}).fail(function (XHR, status, error) {
-		//alert('Failed to load configurations from server.');
-	});
-}
-function config_send(url) {
-	$.ajax(url, {
-		cache: false,
-		dataType: 'json',
-		method: 'POST',
-		contentType: 'text/plain',	// XXX: application/json but this has complications
-		processData: false,
-		data: JSON.stringify(savedStates)
-	}).done(function (data, status, XHR) {
-		if (!data || typeof data !== 'object' || data.error || !data.result || data.result != "STORED") {
-			//alert('Failed to save configurations to server.');
-		}
-	}).fail(function (XHR, status, error) {
-		//alert('Failed to save configurations to server.');
-	});
-}*/
-
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -248,13 +207,14 @@ function data_error(errors, delay) {
 }
 
 function iterateStations(obj, stack, arr, lastk) {
+	var jsonItem, id, path, parent, value, title, units, typeUnits, type;
 	for (var property in obj) {
         if (obj.hasOwnProperty(property)) {
             if (typeof obj[property] == "object") { //is this property an object? then find next property
-				var jsonItem = {};
-				var id = ("ws_" + stack+property+"_x").replace(/\./g, "");				
-				var path = stack + '.' + property;
-				var parent = ("ws_"+stack+"_x").replace(/\./g, "");
+				jsonItem = {};
+				id = ("ws_" + stack+property+"_x").replace(/\./g, "");				
+				path = stack + '.' + property;
+				parent = ("ws_"+stack+"_x").replace(/\./g, "");
 				if(parent == "ws__x"){ //case for root node
 					parent = "#";	
 				}
@@ -269,9 +229,44 @@ function iterateStations(obj, stack, arr, lastk) {
 					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
 				}
 				//checks for specific child properties of nested object - this will allow for dynamically adding units and titles to the cells
-				else if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units']){
+				else if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units'] || 'undefined' !== typeof obj[property]['type'] || 'undefined' !== typeof obj[property]['typeUnits']){
 					jsonItem ["id"] = id;
 					jsonItem ["parent"] = parent;
+					/*// get title 
+					if('undefined' !== typeof obj[property]['title']){
+						title = obj[property]['title'];	
+					}
+					else{
+						title = property;
+					}
+					// get value 
+					if('undefined' !== typeof obj[property]['value']){
+						value = obj[property]['value'];	
+					}
+					else{
+						value = null;	
+					}
+					// get units 
+					if('undefined' !== typeof obj[property]['units']){
+						units = obj[property]['units'];	
+					}
+					else{
+						units = null;	
+					}
+					// get typeUnits 
+					if('undefined' !== typeof obj[property]['typeUnits']){
+						typeUnits = obj[property]['typeUnits'];
+					}
+					else{
+						typeUnits = null;
+					}
+					// get type 
+					if('undefined' !== typeof obj[property]['type']){
+						type = obj[property]['type'];
+					}
+					else{
+						type = null;	
+					}*/
 					//case for all three child properties existing
 					if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['value'] && 'undefined' !== typeof obj[property]['units']){
 						jsonItem ["text"] = obj[property]['title'];
@@ -917,6 +912,8 @@ function createImage(){
 				var isWebkit = 'WebkitAppearance' in document.documentElement.style
 				var hoverImgID = imgID+'hover';
 				var enabled = $('#'+imgID).hasClass('hoverables');
+				var timeOut = 1000;
+				timeOut = parseInt($('#'+imgID).find('img').attr('alt'), 10)*1000;
 					if(editMode == false && enabled == true){	
 						console.log(imgSrc);
 							hoverTime = setTimeout(function() {
@@ -942,7 +939,7 @@ function createImage(){
 								else{
 									hoverImage.className = 'expandedCam';
 								}	
-							}, 2000);
+							}, timeOut);
 						}
 					}, function () {
 						if(editMode == false){	
@@ -996,6 +993,9 @@ var editWindow =  function() {
   		$('#opacitySlider .ui-slider-handle').css('border-color', color);
 	});
 	$('#hideModule,#deleteModule').show();
+/*****************************************************************
+PAGE EDIT CASE
+******************************************************************/	
 	if($(this).attr('id') == 'pageEdit'){
 		$('.editWindow h2').text("Edit Page");
 		$('#titleRow,#backgroundColorRow,#opacityRow').show();
@@ -1061,6 +1061,9 @@ var editWindow =  function() {
 			}
 		});
 	}
+/*****************************************************************
+CAMERA CASE
+******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
 		$('#cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text("Edit Camera");
@@ -1068,6 +1071,7 @@ var editWindow =  function() {
 		
 		//checks to see if image has added hoverables class and checks appropriate radio button
 		var radiobtn
+		$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
 		if($('#'+selectedModule).hasClass('hoverables')){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
@@ -1083,6 +1087,7 @@ var editWindow =  function() {
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
 				$('#'+selectedModule).addClass('hoverables');
+				$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
 				$('#hoverTimeRow').show();
 			}
 			else{
@@ -1091,7 +1096,6 @@ var editWindow =  function() {
 			}
 		});
 		
-		//proof of concept change later
 		$( document ).off( "keyup", "input#hoverTime");
 		$( document ).on( "keyup", "input#hoverTime" , function() {
 			$('#'+selectedModule).children('img').attr('alt',$('input#hoverTime').val());
@@ -1186,6 +1190,9 @@ var editWindow =  function() {
 			});
 		});
 	}
+/*****************************************************************
+TEXT BLOCKS CASE
+******************************************************************/
 	else if($(this).hasClass('textBlockContainer')){
 		$('#zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
 		$('.editWindow h2').text("Edit Text Block");
@@ -1275,6 +1282,9 @@ var editWindow =  function() {
 			}
 		});
 	}
+/*****************************************************************
+IMG BLOCKS CASE
+******************************************************************/	
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
 		$('#zRow, #urlRow , #resizeModulem, #hoverRow').show();
@@ -1291,6 +1301,9 @@ var editWindow =  function() {
 		if($('#'+moduleContainer).hasClass('hoverables')){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
+			$('#hoverTime').val($('#'+selectedModule).attr('alt'));
+			$('#hoverTimeRow').show();
+
 		}
 		else{
 			radiobtn = document.getElementById("hoverDisabled");
@@ -1309,6 +1322,11 @@ var editWindow =  function() {
 				$('#'+moduleContainer).removeClass('hoverables');
 				$('#hoverTimeRow').hide();
 			}
+		});
+		
+		$( document ).off( "keyup", "input#hoverTime");
+		$( document ).on( "keyup", "input#hoverTime" , function() {
+			$('#'+selectedModule).attr('alt',$('input#hoverTime').val());
 		});
 		
 		//delegate event handler for url change
@@ -1352,6 +1370,9 @@ var editWindow =  function() {
 		});
 		
 	}
+/*****************************************************************
+DATA CELLS CASE
+******************************************************************/
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
 		$('#zRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #opacityRow').show();
@@ -1583,6 +1604,7 @@ function captureState(){
 		SavedElement.prototype.path;
 		SavedElement.prototype.divID;	
 		SavedElement.prototype.hidden;	
+		SavedElement.prototype.hoverToggle;
 		
 	}
 	//iterate through cells currently on screen
@@ -1618,8 +1640,14 @@ function captureState(){
 		savedImg.height = $(this).children('.ui-wrapper').children('img').css('height');
 		savedImg.src = $(this).children('.ui-wrapper').children('img').attr('src');
 		savedImg.id = $(this).children('.ui-wrapper').children('img').attr('id');
+		if($(this).find('img').hasClass('hoverables')){
+			SavedImg.hoverToggle = true;
+		}
+		else{
+			SavedImg.hoverToggle = false;
+		}
 		if($(this).children('.ui-wrapper').children('img').hasClass("hide")){
-				savedImg.hidden = true;
+			savedImg.hidden = true;
 		}
 		//push the object to the img_Blocks array
 		img_Blocks.push(savedImg);
