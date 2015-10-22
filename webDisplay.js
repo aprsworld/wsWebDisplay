@@ -230,18 +230,24 @@ function iterateStations(obj, stack, arr, lastk) {
 				}
 				//checks for specific child properties of nested object - this will allow for dynamically adding units and titles to the cells
 				else if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units'] || 'undefined' !== typeof obj[property]['type'] || 'undefined' !== typeof obj[property]['typeUnits']){
-					jsonItem ["id"] = id;
-					jsonItem ["parent"] = parent;
-					/*// get title 
+					jsonItem["id"] = id;
+					jsonItem["parent"] = parent;
+					jsonItem["obj"] = {};
+					jsonItem["obj"]["path"] = stack + '.' + property;
+					// get title 
 					if('undefined' !== typeof obj[property]['title']){
 						title = obj[property]['title'];	
+						jsonItem["obj"]["title"] = title;
+						jsonItem["text"] = title;
 					}
 					else{
-						title = property;
+						jsonItem["text"] = property;
 					}
 					// get value 
 					if('undefined' !== typeof obj[property]['value']){
 						value = obj[property]['value'];	
+						jsonItem["obj"]["value"] = value;
+						jsonItem["obj"]["path"] = stack + '.' + property + ".value";
 					}
 					else{
 						value = null;	
@@ -249,6 +255,7 @@ function iterateStations(obj, stack, arr, lastk) {
 					// get units 
 					if('undefined' !== typeof obj[property]['units']){
 						units = obj[property]['units'];	
+						jsonItem["obj"]["units"] = units;
 					}
 					else{
 						units = null;	
@@ -256,6 +263,7 @@ function iterateStations(obj, stack, arr, lastk) {
 					// get typeUnits 
 					if('undefined' !== typeof obj[property]['typeUnits']){
 						typeUnits = obj[property]['typeUnits'];
+						jsonItem["obj"]["typeUnits"] = typeUnits;
 					}
 					else{
 						typeUnits = null;
@@ -263,10 +271,13 @@ function iterateStations(obj, stack, arr, lastk) {
 					// get type 
 					if('undefined' !== typeof obj[property]['type']){
 						type = obj[property]['type'];
+						jsonItem["obj"]["type"] = type;
+						console.log(type);
 					}
 					else{
 						type = null;	
-					}*/
+					}
+						/*
 					//case for all three child properties existing
 					if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['value'] && 'undefined' !== typeof obj[property]['units']){
 						jsonItem ["text"] = obj[property]['title'];
@@ -299,6 +310,7 @@ function iterateStations(obj, stack, arr, lastk) {
 						jsonItem ["text"] = property;
 						jsonItem ["obj"] = {"path": stack + '.' + property, "units": obj[property]['units']};												
 					}
+					*/
 					arr.push(jsonItem);
 					delete jsonItem;
 
