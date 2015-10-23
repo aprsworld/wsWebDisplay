@@ -130,7 +130,7 @@ var SpeedConvert = {
 		else{
 			return value;
 		}
-	}
+	}  
 };
 var LengthConvert = {
 	toIN: function(cUnit, value) {
