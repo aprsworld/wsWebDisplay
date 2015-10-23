@@ -52,7 +52,6 @@ var TemperatureConvert = {
 		}
 	}
 };
-// {KM/HR, MI/HR, M/S, KTS}
 var SpeedConvert = {
 	init: function(cUnit, fUnit, value){
 		var result = {};
@@ -132,24 +131,179 @@ var SpeedConvert = {
 		}
 	}  
 };
+
+//{IN, FT, MI, MM, CM, M, KM}
 var LengthConvert = {
+	init: function(cUnit, fUnit, value){
+		var result = {};
+		value = parseFloat(value);
+		if(fUnit == 'IN'){
+			result.value = this.toIN(cUnit, value); 
+			result.label = 'IN';
+		}
+		else if(fUnit == 'FT'){
+			result.value = this.toFT(cUnit, value); 
+			result.label = 'FT';
+		}
+		else if(fUnit == 'MI'){
+			result.value = this.toMI(cUnit, value); 
+			result.label = 'MI';
+		}
+		else if(fUnit == 'MM'){
+			result.value = this.toMM(cUnit, value); 
+			result.label = 'MM';
+		}
+		else if(fUnit == 'CM'){
+			result.value = this.toCM(cUnit, value); 
+			result.label = 'CM';
+		}
+		else if(fUnit == 'M'){
+			result.value = this.toM(cUnit, value); 
+			result.label = 'M';
+		}
+		else if(fUnit == 'KM'){
+			result.value = this.toKM(cUnit, value); 
+			result.label = 'HM';
+		}
+		return result;
+	},
 	toIN: function(cUnit, value) {
-        alert("baz");
-    },
+		if(cUnit == 'FT'){
+			return (value/12);
+		}
+		else if(cUnit == 'MI'){
+			return (value*63360);
+		}
+		else if(cUnit == 'MM'){
+			return (value*0.0393701);
+		}
+		else if(cUnit == 'cm'){
+			return (value*0.393701);
+		}
+		else if(cUnit == 'm'){
+			return (value*39.3701);
+		}
+		else if(cUnit == 'km'){
+			return (value*39370.1);
+		}
+		else{
+			return value;	
+		}
+	},
 	toFT: function(cUnit, value) {
-        alert("baz");
+        if(cUnit == 'IN'){
+			return (value*12);
+		}
+		else if(cUnit == 'MI'){
+			return value*5280;
+		}
+		else if(cUnit == 'MM'){
+			return value*0.00328084;
+		}
+		else if(cUnit == 'CM'){
+			return value*0.0328084;
+		}
+		else if(cUnit == 'M'){
+			return value*3.28084;
+		}
+		else if(cUnit == 'KM'){
+			return  value*3280.84;
+		}
+		else{
+			return value;	
+		}
     },
 	toMI: function(cUnit, value) {
-		alert("baz");	
+		if(cUnit == 'FT'){
+			return (value/5280);
+		}
+		else if(cUnit == 'IN'){
+			return (value*0.0000157828);
+		}
+		else if(cUnit == 'MM'){
+			return (value*0.000000621371);
+		}
+		else if(cUnit == 'CM'){
+			return (value*0.00000621371);
+		}
+		else if(cUnit == 'M'){
+			return (value*0.000621371);
+		}
+		else if(cUnit == 'KM'){
+			return (value*0.621371);
+		}
+		else{
+			return value;	
+		}	
 	},
 	toMM: function(cUnit, value) {
-		alert("baz");	
+		if(cUnit == 'FT'){
+			return (value*304.8);
+		}
+		else if(cUnit == 'M'){
+			return (value*1000);
+		}
+		else if(cUnit == 'CM'){
+			return (value*10);
+		}
+		else if(cUnit == 'KM'){
+			return (value*1000000);
+		}
+		else if(cUnit == 'IN'){
+			return (value*25.4);
+		}
+		else if(cUnit == 'MI'){
+			return (value*1609000);
+		}
+		else{
+			return value;	
+		}
 	},
 	toCM: function(cUnit, value) {
-		alert("baz");	
+		if(cUnit == 'FT'){
+			return (value*30.48);
+		}
+		else if(cUnit == 'IN'){
+			return (value*2.54);			
+		}
+		else if(cUnit == 'MI'){
+			return (value*160934);
+		}
+		else if(cUnit == 'KM'){
+			return (value*100000);
+		}
+		else if(cUnit == 'MM'){
+			return (value*0.1);
+		}
+		else if(cUnit == 'M'){
+			return (value*100);
+		}
+		else{
+			return value;	
+		}
 	},
 	toKM: function(cUnit, value) {
-		alert("baz");	
+		if(cUnit == 'FT'){
+			return (value*0.0003048);
+		}
+		else if(cUnit == 'IN'){
+			return (value*0.0000254);
+		}
+		else if(cUnit == 'MM'){
+			return (value*0.000001);
+		}
+		else if(cUnit == 'CM'){
+			return (value*0.00001);
+		}
+		else if(cUnit == 'M'){
+			return (value*0.001);
+		}
+		else if(cUnit == 'MI'){
+			return (value*1.60934);
+		}
+		else{
+			return value;	
+		}
 	}	
 };
 var TimeConvert = {
