@@ -1109,6 +1109,8 @@ function populateConversions(id){
 			console.log('fail1');
 			return;	
 		}
+		console.log("hi "+currentUnits);
+		$("#unitSelect").val(currentUnits);
 	}
 }
 

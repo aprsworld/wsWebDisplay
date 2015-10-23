@@ -177,13 +177,13 @@ var LengthConvert = {
 		else if(cUnit == 'MM'){
 			return (value*0.0393701);
 		}
-		else if(cUnit == 'cm'){
+		else if(cUnit == 'CM'){
 			return (value*0.393701);
 		}
-		else if(cUnit == 'm'){
+		else if(cUnit == 'M'){
 			return (value*39.3701);
 		}
-		else if(cUnit == 'km'){
+		else if(cUnit == 'KM'){
 			return (value*39370.1);
 		}
 		else{
