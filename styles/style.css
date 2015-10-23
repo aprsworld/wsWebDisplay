@@ -655,8 +655,14 @@ div.logo_container{
 .labelChange{
 	width: 60%;
 }
+#unitSelect{
+	width: 60%;	
+}
 #hoverTime{
 	width: 10% !important;	
+}
+#hoverRadios span{
+	color: #ccc;
 }
 #hoverTimeRow label{
 	width: 70%;	
@@ -702,7 +708,7 @@ div.logo_container{
 	margin-top: 15px;
 	width: 35%;
 }
-#zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
+#zRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
 	display:none;	
 }
 #bodyRow{

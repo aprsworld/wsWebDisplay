@@ -10,6 +10,7 @@ var camTime = 0; //incremental variable that keeps track of time since last came
 var id_arr = [];
 var path_arr = [];
 var name_arr = [];
+var cell_arr = [];
 var savedStates = []; //set of saved table states in the format of a multi Dimensional array consisting of coordinates of each cell
 var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
@@ -592,16 +593,20 @@ function data_update(data) {
 					var $element, $me, $newElement;
 					
 					$element = $(ui.draggable);
+					var tree_item = {};
 					var id = $($element).attr('id');
 					var new_id = "div_"+id;
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
 					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 					var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
 					var units, title, type, typeUnits;
-					
+					tree_item["path"] = path;
+					tree_item["id"] = id;
+
 					//gets typeUnits if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.typeUnits){
 						typeUnits = $('#stationTree').jstree(true).get_node(id).original.obj.typeUnits;
+						tree_item["typeUnits"] = typeUnits;
 					}
 					else{
 						typeUnits = "";
@@ -609,6 +614,7 @@ function data_update(data) {
 					//gets type if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.type){
 						type = $('#stationTree').jstree(true).get_node(id).original.obj.type;
+						tree_item["type"] = type;
 					}
 					else{
 						type = "";
@@ -616,6 +622,7 @@ function data_update(data) {
 					//gets units if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.units){
 						units = $('#stationTree').jstree(true).get_node(id).original.obj.units;
+						tree_item["units"] = units;
 					}
 					else{
 						units = "";
@@ -623,12 +630,16 @@ function data_update(data) {
 					//gets title if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.title){
 						title = $('#stationTree').jstree(true).get_node(id).original.obj.title; 
+						tree_item["title"] = title;
 					}
 					else{
 						title = $($element).text();
 					}
 					path_arr.push(path);
 					id_arr.push(new_id);
+					cell_arr.push(tree_item);
+					console.log(tree_item);
+					console.log(cell_arr);
 					var pageX = event.pageX;
 					var pageY = event.pageY;
 					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
@@ -991,6 +1002,82 @@ function refreshTree(newData){
 function brokenImg(id){
 	alert('invalid URL - please paste a valid URL');
 }
+//populates the conversion dropdown based on the id
+function populateConversions(id){
+	$('#unitRow').hide();
+	var temperatureUnits = ['C','F','K'];
+	var speedUnits = ['KM/HR','MI/HR','M/S','KTS'];
+	var lengthUnits = ['IN','FT','MI','MM','CM','M','KM'];
+	var timeUnits = ['UNIX','MYSQL'];
+	id = id.replace('div_', '');	
+	var cellObj = $.grep(cell_arr, function(e){ return e.id === id});
+	var type = cellObj[0].type;
+	var label = cellObj[0].units;
+	var currentUnits = cellObj[0].typeUnits;
+	//empty selection list in case there was elements in it from the last click
+	$("#unitSelect").empty();
+	//leave function if either undefined
+	if(currentUnits == 'undefined' || type == 'undefined'){
+		console.log('fail');
+		return;	
+	}
+	else{
+		if(type == 'temperature'){
+			var i = 0;
+			var length = temperatureUnits.length;
+			for(i; i<length; i++){
+				console.log(temperatureUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: temperatureUnits[i],
+					text: ''+temperatureUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'speed'){
+			var i = 0;
+			var length = speedUnits.length;
+			for(i; i<length; i++){
+				console.log(speedUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: speedUnits[i],
+					text: ''+speedUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'length'){
+			var i = 0;
+			var length = lengthUnits.length;
+			for(i; i<length; i++){
+				console.log(lengthUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: lengthUnits[i],
+					text: ''+lengthUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'time'){
+			var i = 0;
+			var length = timeUnits.length;
+			for(i; i<length; i++){
+				console.log(timeUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: timeUnits[i],
+					text: ''+timeUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		//leave function due to incorrect format of object.type
+		else{
+			console.log('fail1');
+			return;	
+		}
+	}
+}
+
 var editWindow =  function() {
 	var moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
@@ -1415,7 +1502,8 @@ DATA CELLS CASE
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
 		var backgroundColor = $('#'+selectedModule).css('background-color');
-
+		
+		populateConversions(id);
 		
 		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
