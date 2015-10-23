@@ -359,7 +359,7 @@ function ref(obj, str) {
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate($id_arr, $path_arr, data) {
 	var idLength = $id_arr.length;
-	var value, cellObj, id;
+	var value, cellObj, id, label;
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
 		id = id.replace('div_', '');	
@@ -370,7 +370,10 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 			var type = objectFound.type;
 			var typeUnits = objectFound.typeUnits;
 			var typeChange = objectFound.typeChange;
-			value = chooseConversion(type, typeUnits, value, typeChange);
+			var result = chooseConversion(type, typeUnits, value, typeChange);
+			value = result.value;
+			label = result.label;
+			$('div#div_' + id + '').children('.label').html(label);
 		}
 	if (value === undefined) {
 		value = 'MISSING DATA!';

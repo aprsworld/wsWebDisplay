@@ -1,15 +1,18 @@
 //cUnit = current units, value = current value
 var TemperatureConvert = {
 	init: function(cUnit, fUnit, value){
-		var result;
+		var result = {};
 		if(fUnit == 'F'){
-			result = this.toF(cUnit, value); 
+			result.value = this.toF(cUnit, value); 
+			result.label = '&deg;F';
 		}
 		else if(fUnit == 'C'){
-			result = this.toC(cUnit, value); 
+			result.value = this.toC(cUnit, value); 
+			result.label = '&deg;C';
 		}
 		else if(fUnit == 'K'){
-			result = this.toK(cUnit, value); 
+			result.value = this.toK(cUnit, value); 
+			result.label = '&deg;K';
 		}
 		return result;
 	},	
@@ -21,7 +24,7 @@ var TemperatureConvert = {
 			return (value*(9/5))-459.67;
 		}
 		else{
-			return;	
+			return value;	
 		}
     },
 	toC: function(cUnit, value) {
@@ -30,10 +33,10 @@ var TemperatureConvert = {
 
 		}
 		else if(cUnit == 'K'){
-			return value - 273.15;
+			return (value - 273.15)*1;
 		}
 		else{
-			return;	
+			return value;	
 		}
     },
 	toK: function(cUnit, value) {
@@ -41,13 +44,14 @@ var TemperatureConvert = {
 			return (value + 459.67) * 5/9;
 		}
 		else if(cUnit == 'C'){
-			return value + 273.15;
+			return (value + 273.15)*1;
 		}
 		else{
-			return;	
+			return value;	
 		}
 	}
 };
+// {KM/HR, MI/HR, M/S, KTS}
 var SpeedConvert = {
 	toKMHR: function(cUnit, value) {
         alert("baz");
