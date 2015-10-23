@@ -389,7 +389,7 @@ function chooseConversion(type, typeUnits, value, typeChange){
 		return SpeedConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "length"){
-		//todo
+		return LengthConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "time"){
 		//todo

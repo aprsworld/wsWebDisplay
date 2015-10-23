@@ -163,7 +163,7 @@ var LengthConvert = {
 		}
 		else if(fUnit == 'KM'){
 			result.value = this.toKM(cUnit, value); 
-			result.label = 'HM';
+			result.label = 'KM';
 		}
 		return result;
 	},
