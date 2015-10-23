@@ -1022,6 +1022,9 @@ function populateConversions(id){
 		return;	
 	}
 	else{
+		//
+		//logic block that matches type with one of the arrays above. it will then populate the selection list in the edit window and unhide it.
+		//
 		if(type == 'temperature'){
 			var i = 0;
 			var length = temperatureUnits.length;
