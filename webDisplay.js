@@ -623,14 +623,15 @@ function data_update(data) {
 					
 					$element = $(ui.draggable);
 					var tree_item = {};
+					var idArrLen = id_arr.length;
 					var id = $($element).attr('id');
-					var new_id = "div_"+id;
+					var new_id = "div_"+id+"_"+idArrLen;
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
 					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 					var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
 					var units, title, type, typeUnits;
 					tree_item["path"] = path;
-					tree_item["id"] = id;
+					tree_item["id"] = id+"_"+idArrLen;
 
 					//gets typeUnits if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.typeUnits){

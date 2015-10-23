@@ -2,6 +2,7 @@
 var TemperatureConvert = {
 	init: function(cUnit, fUnit, value){
 		var result = {};
+		value = parseFloat(value);
 		if(fUnit == 'F'){
 			result.value = this.toF(cUnit, value); 
 			result.label = '&deg;F';
@@ -54,8 +55,19 @@ var TemperatureConvert = {
 // {KM/HR, MI/HR, M/S, KTS}
 var SpeedConvert = {
 	toKMHR: function(cUnit, value) {
-        alert("baz");
-    },
+        if(cUnit == 'MI/HR'){
+			return (value*1.61);
+		}
+		else if(cUnit == 'M/S'){
+			return (value*3.6);
+		}
+		else if(cUnit == 'KTS'){
+			return (value*1.852);
+		}
+		else{
+			return value;
+		}
+	},
 	toMIHR: function(cUnit, value) {
         alert("baz");
     },
