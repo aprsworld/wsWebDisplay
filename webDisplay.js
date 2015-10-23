@@ -386,7 +386,7 @@ function chooseConversion(type, typeUnits, value, typeChange){
 		return TemperatureConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "speed"){
-		//todo
+		return SpeedConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "length"){
 		//todo
