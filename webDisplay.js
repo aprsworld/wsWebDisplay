@@ -359,13 +359,39 @@ function ref(obj, str) {
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate($id_arr, $path_arr, data) {
 	var idLength = $id_arr.length;
+	var value, cellObj, id;
     for ($i = 0; $i < idLength; $i++) {
-		var value = ref(data, $path_arr[$i]); //finds value of object
+		id = $id_arr[$i];
+		id = id.replace('div_', '');	
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(id);
+		var objectFound = cell_arr[elementPos];
+		value = ref(data, $path_arr[$i]); //finds value of object
+		if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
+			var type = objectFound.type;
+			var typeUnits = objectFound.typeUnits;
+			var typeChange = objectFound.typeChange;
+			value = chooseConversion(type, typeUnits, value, typeChange);
+		}
 	if (value === undefined) {
 		value = 'MISSING DATA!';
 	}
         $('div#' + $id_arr[$i] + '').children('p').text(value);
     }
+}
+function chooseConversion(type, typeUnits, value, typeChange){
+	if(type == "temperature"){
+		return TemperatureConvert.init(typeUnits, typeChange, value);
+	}
+	else if(type == "speed"){
+		//todo
+	}
+	else if(type == "length"){
+		//todo
+	}
+	else if(type == "time"){
+		//todo
+	}
+	
 }
 function getStations(data){
 	var stations = [];
@@ -1009,6 +1035,7 @@ function populateConversions(id){
 	var speedUnits = ['KM/HR','MI/HR','M/S','KTS'];
 	var lengthUnits = ['IN','FT','MI','MM','CM','M','KM'];
 	var timeUnits = ['UNIX','MYSQL'];
+	
 	id = id.replace('div_', '');	
 	var cellObj = $.grep(cell_arr, function(e){ return e.id === id});
 	var type = cellObj[0].type;
@@ -1506,8 +1533,18 @@ DATA CELLS CASE
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
 		var backgroundColor = $('#'+selectedModule).css('background-color');
 		
-		populateConversions(id);
+		var objId = id.replace('div_', '');	
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
+
+		populateConversions(objId);
 		
+		
+		//event handler for converting units
+		$("#unitSelect").off('change');
+		$("#unitSelect").on('change', function() {
+			objectFound.typeChange = $( "#unitSelect" ).val();
+		});	
 		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
 		$('.textColorChange').val($('#'+id).children('p').css('color'));
@@ -1549,6 +1586,8 @@ DATA CELLS CASE
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).remove();
 			$('.editWindow').hide(150);
+			console.log(id);
+			console.log(id_arr);
 		});
 		//background color input change event handler
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one

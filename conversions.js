@@ -1,5 +1,18 @@
 //cUnit = current units, value = current value
 var TemperatureConvert = {
+	init: function(cUnit, fUnit, value){
+		var result;
+		if(fUnit == 'F'){
+			result = this.toF(cUnit, value); 
+		}
+		else if(fUnit == 'C'){
+			result = this.toC(cUnit, value); 
+		}
+		else if(fUnit == 'K'){
+			result = this.toK(cUnit, value); 
+		}
+		return result;
+	},	
     toF: function(cUnit, value) {
         if(cUnit == 'C'){
 			return (value*(9/5))+32;
@@ -77,3 +90,4 @@ var TimeConvert = {
         alert("baz");
     },
 }
+
