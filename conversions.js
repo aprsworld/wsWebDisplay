@@ -307,11 +307,35 @@ var LengthConvert = {
 	}	
 };
 var TimeConvert = {
+	init: function(cUnit, fUnit, value){
+		var result = {};
+		if(fUnit == 'UNIX'){
+			result.value = this.toUNIX(cUnit, value); 
+			result.label = '';
+		}
+		else if(fUnit == 'MYSQL'){
+			result.value = this.toMYSQL(cUnit, value); 
+			result.label = '';
+		}
+		return result;
+	},	
 	toUNIX: function(cUnit, value) {
-        alert("baz");
+       	var date = (new Date(value.replace(' ','T'))).getTime()/1000;
+		console.log(date);
+		return date;
     },
 	toMYSQL: function(cUnit, value) {
-        alert("baz");
+		console.log(value);
+       	var date = new Date(value*1000);
+		console.log(date.toString());
+		var year = date.getUTCFullYear();
+		var month = date.getUTCMonth()+1;
+		var day = date.getUTCDate()+1;
+		var hour = date.getUTCHours();
+		var min = date.getUTCMinutes();
+		var sec = date.getUTCSeconds();
+		var sqlDate = year+"-"+month+"-"+day+" "+hour+":"+min+":"+sec+" UTC";
+	  	return sqlDate;
     },
 }
 

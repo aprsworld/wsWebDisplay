@@ -107,7 +107,6 @@ function initJqueryUI(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -136,7 +135,6 @@ function initJqueryUI(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -170,7 +168,6 @@ function initJqueryUI(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -199,7 +196,6 @@ function initJqueryUI(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -374,8 +370,21 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 			var type = objectFound.type;
 			var typeUnits = objectFound.typeUnits;
 			var typeChange = objectFound.typeChange;
-			var result = chooseConversion(type, typeUnits, value, typeChange);
-			value = round(result.value, objectFound.precision);
+			console.log(typeChange+"?=?"+typeUnits);
+			if(typeChange !== typeUnits){
+				var result = chooseConversion(type, typeUnits, value, typeChange);
+			}
+			else{
+				var result = {};
+				result.value = value;
+				result.label = objectFound.units;
+			}
+			if(type != "time"){
+				value = round(result.value, objectFound.precision);
+			}
+			else{
+				value = result.value;
+			}
 			label = result.label;
 			$('div#div_' + id + '').children('.label').html(label);
 		}
@@ -396,7 +405,7 @@ function chooseConversion(type, typeUnits, value, typeChange){
 		return LengthConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "time"){
-		//todo
+		return TimeConvert.init(typeUnits, typeChange, value);
 	}
 	
 }
@@ -469,7 +478,6 @@ function createCamFromTree(tree_id){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -611,7 +619,6 @@ function data_update(data) {
 						},200);
 						$('.editWindow').animate({
 							width: '280px',
-							margin: '10px',
 							padding: '20px'
 						},200);
 						$('.controlRow').show();
@@ -712,7 +719,6 @@ function data_update(data) {
 								},200);
 								$('.editWindow').animate({
 									width: '280px',
-									margin: '10px',
 									padding: '20px'
 								},200);
 								$('.controlRow').show();
@@ -918,7 +924,6 @@ function createText(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -959,7 +964,6 @@ function createImage(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -2080,7 +2084,6 @@ function loadState(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px',
 			},200);
 			$('.controlRow').show();
@@ -2111,7 +2114,6 @@ function loadState(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -2141,7 +2143,6 @@ function loadState(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
@@ -2170,7 +2171,6 @@ function loadState(){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				margin: '10px',
 				padding: '20px'
 			},200);
 			$('.controlRow').show();
