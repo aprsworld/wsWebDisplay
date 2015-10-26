@@ -1554,7 +1554,9 @@ DATA CELLS CASE
 		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
 			objectFound.precision = $('.roundingChange').val();
-			console.log(objectFound);
+			if($('.roundingChange').val() == ""){
+				objectFound.precision = 0;
+			}
 		});
 		//event handler for converting units
 		$("#unitSelect").off('change');
