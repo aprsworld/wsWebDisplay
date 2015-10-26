@@ -57,6 +57,10 @@ function secToTime(sec){
 	return out;
 	
 }
+//value = number being rounded, decimals = decimal places to round to
+function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
 function table_generate(data) {
     var $dtable = $('<table border=1></table>');
     for (var p in data) {
@@ -371,7 +375,7 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 			var typeUnits = objectFound.typeUnits;
 			var typeChange = objectFound.typeChange;
 			var result = chooseConversion(type, typeUnits, value, typeChange);
-			value = result.value;
+			value = round(result.value, 4);
 			label = result.label;
 			$('div#div_' + id + '').children('.label').html(label);
 		}
