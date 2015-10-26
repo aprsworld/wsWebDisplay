@@ -655,6 +655,9 @@ div.logo_container{
 .labelChange{
 	width: 60%;
 }
+.roundingChange{
+	width: 60%;	
+}
 #unitSelect{
 	width: 60%;	
 }
@@ -708,7 +711,7 @@ div.logo_container{
 	margin-top: 15px;
 	width: 35%;
 }
-#zRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
+#zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
 	display:none;	
 }
 #bodyRow{

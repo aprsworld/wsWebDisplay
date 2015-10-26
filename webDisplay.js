@@ -375,7 +375,7 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 			var typeUnits = objectFound.typeUnits;
 			var typeChange = objectFound.typeChange;
 			var result = chooseConversion(type, typeUnits, value, typeChange);
-			value = round(result.value, 4);
+			value = round(result.value, objectFound.precision);
 			label = result.label;
 			$('div#div_' + id + '').children('.label').html(label);
 		}
@@ -669,6 +669,7 @@ function data_update(data) {
 					else{
 						title = $($element).text();
 					}
+					tree_item["precision"] = 3;
 					path_arr.push(path);
 					id_arr.push(new_id);
 					cell_arr.push(tree_item);
@@ -1528,10 +1529,11 @@ DATA CELLS CASE
 ******************************************************************/
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
-		$('#zRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #opacityRow').show();
+		$('#zRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text("Edit Cell");
+		
 		//find parts of the data cell and assign them to a variable
 		title = $(this).children('.myTableTitle').children('p');
 		label = $(this).children('.myTableValue').children('.label');
@@ -1546,10 +1548,14 @@ DATA CELLS CASE
 		var objId = id.replace('div_', '');	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
-
+		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
-		
+		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.roundingChange" , function() {	
+			objectFound.precision = $('.roundingChange').val();
+			console.log(objectFound);
+		});
 		//event handler for converting units
 		$("#unitSelect").off('change');
 		$("#unitSelect").on('change', function() {
