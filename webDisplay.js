@@ -213,7 +213,7 @@ function iterateStations(obj, stack, arr, lastk) {
         if (obj.hasOwnProperty(property)) {
             if (typeof obj[property] == "object") { //is this property an object? then find next property
 				jsonItem = {};
-				id = ("ws_" + stack+property+"_x").replace(/\./g, "");				
+				id = ("ws_" + stack+property+"_x").replace(/\./g, "");	
 				path = stack + '.' + property;
 				parent = ("ws_"+stack+"_x").replace(/\./g, "");
 				if(parent == "ws__x"){ //case for root node
@@ -370,7 +370,6 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 			var type = objectFound.type;
 			var typeUnits = objectFound.typeUnits;
 			var typeChange = objectFound.typeChange;
-			console.log(typeChange+"?=?"+typeUnits);
 			if(typeChange !== typeUnits){
 				var result = chooseConversion(type, typeUnits, value, typeChange);
 			}
@@ -811,7 +810,9 @@ function data_update(data) {
 		}
 	});
 	refreshCams(cams);
+
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
+
 }
 
 //gets parameters in url
@@ -1911,6 +1912,7 @@ function loadState(){
 	var stateObject = $.parseJSON(jsonString);
 	id_arr.length = 0;
 	path_arr.length = 0;
+	cell_arr.length = 0;
 	$('.tr, .textBlockContainer, .imgBlockContainer').remove();
 	$('.imgCamContainer').hide();
 	//iterate over all keys in the saved state object
@@ -1951,8 +1953,51 @@ function loadState(){
 						$("#"+savedCellDivID).css('opacity','1.0');
 					}
 				}
+				var pos = savedCellID.lastIndexOf('_');
+				var treeID = savedCellID.slice(4,pos);
 				id_arr.push(savedCellID);
 				path_arr.push(savedCellPath);
+				var tree_item = {};
+				tree_item["path"] = savedCellPath;
+				tree_item["id"] = savedCellID.replace('div_', '');
+				var value = $('#stationTree').jstree(true).get_node(treeID).original.obj.value; 
+				var units, title, type, typeUnits;
+
+				//gets typeUnits if there
+				if($('#stationTree').jstree(true).get_node(treeID).original.obj.typeUnits){
+					typeUnits = $('#stationTree').jstree(true).get_node(treeID).original.obj.typeUnits;
+					tree_item["typeUnits"] = typeUnits;
+				}
+				else{
+					typeUnits = "";
+				}
+				//gets type if there
+				if($('#stationTree').jstree(true).get_node(treeID).original.obj.type){
+					type = $('#stationTree').jstree(true).get_node(treeID).original.obj.type;
+					tree_item["type"] = type;
+				}
+				else{
+					type = "";
+				}
+				//gets units if there
+				if($('#stationTree').jstree(true).get_node(treeID).original.obj.units){
+					units = $('#stationTree').jstree(true).get_node(treeID).original.obj.units;
+					tree_item["units"] = units;
+				}
+				else{
+					units = "";
+				}
+				//gets title if there
+				if($('#stationTree').jstree(true).get_node(treeID).original.obj.title){
+					title = $('#stationTree').jstree(true).get_node(treeID).original.obj.title; 
+					tree_item["title"] = title;
+				}
+				else{
+					title = 'blah';
+				}
+				cell_arr.push(tree_item);
+				console.log(path_arr);
+				console.log(id_arr);
 			}
 		}
 		else if(k == 'text_Blocks'){

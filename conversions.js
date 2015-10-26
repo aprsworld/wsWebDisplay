@@ -1,3 +1,13 @@
+/*******************************************************************
+// This is a file that contains four object: TemperatureConvert, LengthConvert, SpeedConvert, TimeConvert
+// All four objects contain a function, init, that detects the future unit, "fUnit" and calls the correct function
+// each object also has a set of functions used to convert values to values of other units.
+// each of these functions returns "result" which is an object that contains two properties, label and value
+// label is the the property which holds the type of units that are being converted to
+// value is the newly converted value to be returned
+********************************************************************/
+
+
 //cUnit = current units, value = current value
 var TemperatureConvert = {
 	init: function(cUnit, fUnit, value){
