@@ -857,8 +857,15 @@ function data_start() {
 		var i;
 		for (i = 0; i < savedStates.length; i++) {
 			var option = document.createElement("option");
-        		option.text = "Layout#" + i;
-    			option.value = i;
+				var entry = JSON.parse(savedStates[i]);
+				console.log(entry['name']);
+				if(entry['name']){
+				option.text = entry['name'];	
+				}
+				else{
+        			option.text = "Layout#" + i;
+				}
+				option.value = i;
 			$('#stateSelect').append(option);
 		}
 		// If ?display=x is specified in the URL, load that one
@@ -1873,15 +1880,23 @@ function captureState(){
 		cameras.push(savedCam);		
 		}
 	});
+	var saveName = $('#saveAs').val();
 	//load our object arrays into the saved state array
-	saved_state = {"cells":cells, "text_Blocks":text_Blocks, "cameras":cameras, "img_Blocks":img_Blocks};
+	if(saveName == ''){
+		saved_state = {"cells":cells, "text_Blocks":text_Blocks, "cameras":cameras, "img_Blocks":img_Blocks};
+	}
+	else{
+		saved_state =   {"name": saveName, "cells":cells, "text_Blocks":text_Blocks, "cameras":cameras, "img_Blocks":img_Blocks};
+	}
 	populateSelection();
 	var jsonString = JSON.stringify(saved_state);
 	savedStates.push(jsonString);
+	console.log(savedStates);
 		//for testing purposes
 		//$('#json').val(jsonString);
 	//config_send("http://cam.aprsworld.com:8888/.config");
 	data_object.ValueSet(function(rsp){
+		console.log(rsp);
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
