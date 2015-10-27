@@ -852,6 +852,7 @@ function data_start() {
 			// Couldn't get configuration data from server
 			return;
 		}
+		console.log(rsp);
 		savedStates = rsp.data;
 		$('#stateSelect').empty();
 		var i;
@@ -860,7 +861,7 @@ function data_start() {
 				var entry = JSON.parse(savedStates[i]);
 				console.log(entry['name']);
 				if(entry['name']){
-				option.text = entry['name'];	
+					option.text = entry['name'];	
 				}
 				else{
         			option.text = "Layout#" + i;
@@ -1809,6 +1810,57 @@ function captureState(){
 		savedCell.divID = $(this).attr('id');
 		savedCell.id = $(this).children('.myTableValue').attr('id');
 		savedCell.path = $(this).children('.myTableValue').children('.path').text();
+			//var value = $('#stationTree').jstree(true).get_node(treeID).original.obj.value; 
+			var units, title, type, typeUnits, typeChange, precision;
+			var pos = savedCell.id.lastIndexOf('_');
+			var treeID = savedCell.id.slice(4,pos);
+			//gets typeUnits if there
+			console.log(cell_arr[0].id);
+			console.log(savedCell.id);
+			var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(savedCell.id.replace('div_',''));
+			var objectFound = cell_arr[elementPos];
+			if(objectFound['typeUnits'] !== undefined){
+				typeUnits = $('#stationTree').jstree(true).get_node(treeID).original.obj.typeUnits;
+				savedCell.typeUnits = typeUnits;
+			}
+			else{
+				typeUnits = "";
+			}
+			if(objectFound['precision'] !== undefined){
+				precision =	objectFound['precision'];
+				savedCell.precision = precision;
+			}
+			if(objectFound['typeChange'] !== undefined){
+				typeChange = objectFound['typeChange'];
+				savedCell.typeChange = typeChange;
+			}
+			else{
+				type = "";
+			}
+			//gets type if there
+			if(objectFound['type'] !== undefined){
+				type = $('#stationTree').jstree(true).get_node(treeID).original.obj.type;
+				savedCell.type = type;
+			}
+			else{
+				type = "";
+			}
+			//gets units if there
+			if(objectFound['units'] !== undefined){
+				units = $('#stationTree').jstree(true).get_node(treeID).original.obj.units;
+				savedCell.units = units;
+			}
+			else{
+				units = "";
+			}
+			//gets title if there
+			if(objectFound['title'] !== undefined){
+				title = $('#stationTree').jstree(true).get_node(treeID).original.obj.title; 
+				savedCell.title = title;
+			}
+			else{
+				title = 'blah';
+			}
 		if($(this).hasClass("hide")){
 				savedCell.hidden = true;
 		}
@@ -1932,7 +1984,10 @@ function loadState(){
 	$('.imgCamContainer').hide();
 	//iterate over all keys in the saved state object
 	for(var k in stateObject){
-		if(k == 'cells'){
+		if(k=='name'){
+			console.log(k);	
+		}
+		else if(k == 'cells'){
 			for(var cells in stateObject[k]){
 				//find the cell object
 				var savedCell = stateObject[k][cells];
@@ -1960,7 +2015,6 @@ function loadState(){
 				if(savedCellVisibility == true){
 					$("#"+savedCellDivID).addClass('hide');
 					$("#"+savedCellDivID).css('opacity','0.2');
-
 				}
 				else{
 					if($("#"+savedCellDivID).hasClass('hide')){
@@ -1968,49 +2022,33 @@ function loadState(){
 						$("#"+savedCellDivID).css('opacity','1.0');
 					}
 				}
+				var tree_item = {};
+				if(savedCell['typeUnits'] !== undefined){
+					tree_item['typeUnits'] = savedCell.typeUnits;
+				}
+				if(savedCell['typeChange'] !== undefined){
+					tree_item['typeChange'] = savedCell.typeChange;
+				}
+				if(savedCell['units'] !== undefined){
+					tree_item['units'] = savedCell.units;
+				}
+				if(savedCell['title'] !== undefined){
+					tree_item['title'] = savedCell.title;
+				}
+				if(savedCell['type'] !== undefined ){
+					tree_item['type'] = savedCell.type;
+				}
+				if(savedCell['precision'] !== undefined ){
+					tree_item['precision'] = savedCell.precision;	
+				}
 				var pos = savedCellID.lastIndexOf('_');
 				var treeID = savedCellID.slice(4,pos);
 				id_arr.push(savedCellID);
 				path_arr.push(savedCellPath);
-				var tree_item = {};
 				tree_item["path"] = savedCellPath;
 				tree_item["id"] = savedCellID.replace('div_', '');
-				var value = $('#stationTree').jstree(true).get_node(treeID).original.obj.value; 
-				var units, title, type, typeUnits;
-
-				//gets typeUnits if there
-				if($('#stationTree').jstree(true).get_node(treeID).original.obj.typeUnits){
-					typeUnits = $('#stationTree').jstree(true).get_node(treeID).original.obj.typeUnits;
-					tree_item["typeUnits"] = typeUnits;
-				}
-				else{
-					typeUnits = "";
-				}
-				//gets type if there
-				if($('#stationTree').jstree(true).get_node(treeID).original.obj.type){
-					type = $('#stationTree').jstree(true).get_node(treeID).original.obj.type;
-					tree_item["type"] = type;
-				}
-				else{
-					type = "";
-				}
-				//gets units if there
-				if($('#stationTree').jstree(true).get_node(treeID).original.obj.units){
-					units = $('#stationTree').jstree(true).get_node(treeID).original.obj.units;
-					tree_item["units"] = units;
-				}
-				else{
-					units = "";
-				}
-				//gets title if there
-				if($('#stationTree').jstree(true).get_node(treeID).original.obj.title){
-					title = $('#stationTree').jstree(true).get_node(treeID).original.obj.title; 
-					tree_item["title"] = title;
-				}
-				else{
-					title = 'blah';
-				}
 				cell_arr.push(tree_item);
+				console.log(tree_item);
 				console.log(path_arr);
 				console.log(id_arr);
 			}
