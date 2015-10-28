@@ -624,7 +624,8 @@ function data_update(data) {
 						},50);
 						$('.controlRow').hide();
 						$('.controls h2').hide();
-						
+						var id = $(this).attr('id');
+						$('#stationTree').jstree(true).open_node(id);
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -665,7 +666,6 @@ function data_update(data) {
 					var tree_item = {};
 					var idArrLen = id_arr.length;
 					var id = $($element).attr('id');
-					var childId = $($element).find("li[id$='image_url_x']").attr('id');
 					var new_id = "div_"+id+"_"+idArrLen;
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
 					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
@@ -716,6 +716,18 @@ function data_update(data) {
 					var pageY = event.pageY;
 					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
 					if( ($($element).hasClass('draggableCamNode'))){
+						var instance = $('#stationTree').jstree(true);
+						var children = instance.get_node(id).children;
+						var clength = children.length;
+						var i;
+						console.log(children);
+						for(i = 0; i < clength; i++) {
+							console.log(children[i]);
+							if (children[i].indexOf("image_url_x") >= 0){
+								var childId = children[i];
+							}
+						}
+						console.log(children);
 						$('#div_'+childId).css('position', 'absolute');
 						$('#div_'+childId).css('top',pageY);
 						$('#div_'+childId).css('left',pageX);
