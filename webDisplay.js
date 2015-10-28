@@ -625,7 +625,7 @@ function data_update(data) {
 						$('.controlRow').hide();
 						$('.controls h2').hide();
 						var id = $(this).attr('id');
-						$('#stationTree').jstree(true).open_node(id);
+						//$('#stationTree').jstree(true).open_node(id);
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -727,6 +727,7 @@ function data_update(data) {
 								var childId = children[i];
 							}
 						}
+						
 						console.log(children);
 						$('#div_'+childId).css('position', 'absolute');
 						$('#div_'+childId).css('top',pageY);
