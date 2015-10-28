@@ -624,8 +624,6 @@ function data_update(data) {
 						},50);
 						$('.controlRow').hide();
 						$('.controls h2').hide();
-						var id = $(this).attr('id');
-						//$('#stationTree').jstree(true).open_node(id);
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
