@@ -8,7 +8,7 @@
 ********************************************************************/
 
 
-//cUnit = current units, value = current value
+//cUnit = current units, fUnit = future units, value = current value
 var TemperatureConvert = {
 	init: function(cUnit, fUnit, value){
 		var result = {};

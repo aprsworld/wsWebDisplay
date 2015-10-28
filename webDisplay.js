@@ -221,7 +221,20 @@ function iterateStations(obj, stack, arr, lastk) {
 				}
 				jsonItem ["id"] = id;
 				jsonItem ["parent"] = parent;
-				if('undefined' !== typeof obj[property]['title'] && 'undefined' == typeof obj[property]['value'] && 'undefined' == typeof obj[property]['units'] && typeof obj[property] == "object"){
+				jsonItem["obj"] = {};
+				jsonItem["obj"]["class"] = "";
+				if('undefined' !== typeof obj[property]['image_url']){
+					jsonItem ["id"] = id;
+					jsonItem ["parent"] = parent;
+					jsonItem ["text"] = property;
+					jsonItem ["obj"] = {"path": stack + '.' + property+".image_url", "class": "draggableCamNode"};
+					arr.push(jsonItem);
+					delete jsonItem;
+
+					lastk = property; //keeps track of last property which is stored in a global variable
+					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
+				}
+				else if('undefined' !== typeof obj[property]['title'] && 'undefined' == typeof obj[property]['value'] && 'undefined' == typeof obj[property]['units'] && typeof obj[property] == "object"){
 					jsonItem ["text"] = obj[property]['title'];
 					jsonItem ["id"] = id;
 					jsonItem ["parent"] = parent;
@@ -277,40 +290,6 @@ function iterateStations(obj, stack, arr, lastk) {
 					else{
 						type = null;	
 					}
-						/*
-					//case for all three child properties existing
-					if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['value'] && 'undefined' !== typeof obj[property]['units']){
-						jsonItem ["text"] = obj[property]['title'];
-						jsonItem ["obj"] = {"path": stack + '.' + property + ".value", "value": obj[property]['value'], "units": obj[property]['units'], "title": obj[property]['title']};
-					}
-					//case for missing title property
-					else if('undefined' !== typeof obj[property]['value'] && 'undefined' !== typeof obj[property]['units']){
-						jsonItem ["text"] = property;
-						jsonItem ["obj"] = {"path": stack + '.' + property + ".value", "value": obj[property]['value'], "units": obj[property]['units']};
-					}
-					//case for missing value property
-					else if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['units']){
-						jsonItem ["obj"] = {"path": stack + '.' + property, "units": obj[property]['units'], "title": obj[property]['title']};
-					}
-					//case for missing units property
-					else if('undefined' !== typeof obj[property]['title'] && 'undefined' !== typeof obj[property]['value']){
-						jsonItem ["obj"] = {"path": stack + '.' + property + ".value", "value": obj[property]['value'], "title": obj[property]['title']};
-					}
-					//case fo rmissing units and value property
-					else if('undefined' !== typeof obj[property]['title']){
-						jsonItem ["obj"] = {"path": stack + '.' + property, "title": obj[property]['title']};						
-					}
-					//case for missing units and title property
-					else if('undefined' !== typeof obj[property]['value']){
-						jsonItem ["text"] = property;
-						jsonItem ["obj"] = {"path": stack + '.' + property + ".value"};						
-					}
-					//case for missing value and title property
-					else if('undefined' !== typeof obj[property]['units']){
-						jsonItem ["text"] = property;
-						jsonItem ["obj"] = {"path": stack + '.' + property, "units": obj[property]['units']};												
-					}
-					*/
 					arr.push(jsonItem);
 					delete jsonItem;
 
@@ -596,6 +575,14 @@ function data_update(data) {
 			var json = iterateStations(data, "", jsonArray, lastk);
 			//sets up our tree
 			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray},"plugins" : [ "sort" ]})});
+			$("#stationTree")
+				.bind('open_node.jstree', function(e, data) {
+					$( "li.jstree-node" ).each(function() {
+						var id = $(this).attr('id');
+						var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
+						$(this).addClass(findClass);
+					});		
+				})
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				$(".jstree-leaf").draggable({
 					helper: "clone",
@@ -624,10 +611,53 @@ function data_update(data) {
 						$('.controls h2').show();
 					}
 				});
+				$( ".draggableCamNode" ).draggable({
+					helper: "clone",
+					start: function (event, ui) {
+						$('.controls').animate({
+							width: '10px'
+						},100);
+						$('.editWindow').animate({
+							width: '0px',
+							margin: '0',
+							padding: '0'
+						},50);
+						$('.controlRow').hide();
+						$('.controls h2').hide();
+						
+					},
+					stop: function (event, ui) {
+						$('.controls').animate({
+							width: '250px'
+						},200);
+						$('.editWindow').animate({
+							width: '280px',
+							padding: '20px'
+						},200);
+						$('.controlRow').show();
+						$('.controls h2').show();
+					}	
+				});
 			});
 			initJqueryUI();
 			$(".top-container").droppable({
-        		accept: '.jstree-leaf',
+        		accept: function(d) { 
+							if(d.hasClass("jstree-leaf")){ 
+								console.log('true');
+								return true;
+							}
+							else if(d.hasClass("draggableCamNode")){
+								console.log('true');
+								return true;
+							}
+							else if(d.hasClass("jstree-node")){
+								var id = $(this).attr('id');
+								var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
+								if(findClass == 'draggableCamNode'){
+									return true;	
+								}
+							}
+						},
 				drop: function( event, ui ) {
 					var $element, $me, $newElement;
 					
@@ -635,6 +665,7 @@ function data_update(data) {
 					var tree_item = {};
 					var idArrLen = id_arr.length;
 					var id = $($element).attr('id');
+					var childId = $($element).find("li[id$='image_url_x']").attr('id');
 					var new_id = "div_"+id+"_"+idArrLen;
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
 					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
@@ -684,7 +715,14 @@ function data_update(data) {
 					var pageX = event.pageX;
 					var pageY = event.pageY;
 					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
-					if(id.indexOf("image_url") >= 0){
+					if( ($($element).hasClass('draggableCamNode'))){
+						$('#div_'+childId).css('position', 'absolute');
+						$('#div_'+childId).css('top',pageY);
+						$('#div_'+childId).css('left',pageX);
+						createCamFromTree(childId);
+					cellCount++;   
+					}
+					else if((id.indexOf("image_url") >= 0)){
 						$('#div_'+id).css('position', 'absolute');
 						$('#div_'+id).css('top',pageY);
 						$('#div_'+id).css('left',pageX);
@@ -1399,7 +1437,7 @@ TEXT BLOCKS CASE
 			var enteredTextColor = textColor.val();
 			$('#'+id).children('p').css('color', enteredTextColor);				
 		});
-		// delete event hanlder
+		// delete event handler
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).remove();
@@ -1698,11 +1736,12 @@ DATA CELLS CASE
 function edit(handler) {
 	editMode = true;
 	$('#masterEdit').css('background-color','green');
-	$('#masterEdit').attr('onclick', 'nonEdit()');
 	$('.tr').css('cursor','pointer');
 	$('.textBlockContainer').css('cursor','pointer');
 	$('.hide').css('visibility','visible');
 	$('.controls').show(200);
+	$('#masterEdit').attr('onclick', 'nonEdit()');
+
 	//delegate events
 	$('.top-container').delegate('.tr','click', editWindow);
 	$('#content').delegate('.textBlockContainer','click', editWindow);	
