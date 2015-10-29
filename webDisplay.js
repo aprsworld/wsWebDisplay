@@ -61,25 +61,6 @@ function secToTime(sec){
 function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
-function table_generate(data) {
-    var $dtable = $('<table border=1></table>');
-    for (var p in data) {
-        var $drow = $('<tr></tr>');
-        var $th = $('<th></th>');
-        $th.text(p);
-        $drow.append($th);
-        // Nest Objects
-        if (typeof data[p] === 'object') {
-            $drow.append(table_generate(data[p]));
-        } else {
-            var $td = $('<td></td>');
-            $td.text(data[p]);
-            $drow.append($td);
-        }
-        $dtable.append($drow);
-    }
-    return $dtable;
-}
 //initilizes all draggables and resizables to avoid uninitlized errors
 function initJqueryUI(){
 	$(".draggable").draggable({ //makes our data cells draggable
@@ -206,7 +187,6 @@ function initJqueryUI(){
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
-
 function iterateStations(obj, stack, arr, lastk) {
 	var jsonItem, id, path, parent, value, title, units, typeUnits, type;
 	for (var property in obj) {
@@ -300,7 +280,8 @@ function iterateStations(obj, stack, arr, lastk) {
 					timeStamp["parent"] = id;
 					timeStamp["text"] = "Age of Data";
 					timeStamp["obj"] = {};
-					timeStamp["obj"]["time"] = 0;
+					timeStamp["obj"]["path"] = 0;
+					//enables dragging on non leaf-node data cells
 					jsonItem["obj"]["class"] = "dataDraggable";
 					arr.push(jsonItem);
 					delete jsonItem;
@@ -331,7 +312,19 @@ function iterateStations(obj, stack, arr, lastk) {
 				//case for when we are setting title of station with a child title node
 				if(property !== 'title'){
 					jsonItem ["obj"] = {"path": stack + '.' + property};
+					//programatically set up timestamp leaf
+					var timeStamp = {};
+					timeStamp["id"] = id+"_timeStamp";
+					timeStamp["parent"] = id;
+					timeStamp["text"] = "Age of Data";
+					timeStamp["obj"] = {};
+					timeStamp["obj"]["path"] = 0;
+					//enables dragging on non leaf-node data cells
+					jsonItem["obj"]["class"] = "dataDraggable";
 					arr.push(jsonItem);
+					delete jsonItem;
+					arr.push(timeStamp);
+					delete timeStamp;
 				}
             }
         }
@@ -339,7 +332,6 @@ function iterateStations(obj, stack, arr, lastk) {
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
 function ref(obj, str) {
-	
     str = str.split("."); //splits the dot notation
     for (var i = 1; i < str.length; i++) {
 	if (obj === undefined) {
@@ -402,22 +394,6 @@ function chooseConversion(type, typeUnits, value, typeChange){
 	}
 	
 }
-function getStations(data){
-	var stations = [];
-	var lastk = "#";
-	var i = 0;
-	for(var k in data){
-		if( i = 0){
-			//do nothing since this is not a station	
-		}
-		else{
-			var station_arr;
-			stations.push(k);
-			iterateStations(k, "",station_arr, lastk);
-		}
-		i++;
-	}
-}	
 function getCamData(data){
 	var pairs = []; //array to hold serial key pairs
 	var serials; //names of each camera
