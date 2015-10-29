@@ -541,6 +541,7 @@ function timer(){
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
+	var incomingData = data;
 	var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
     	started = true; //sets our boolean to true so the above only executes once
@@ -597,6 +598,14 @@ function data_update(data) {
 						},50);
 						$('.controlRow').hide();
 						$('.controls h2').hide();
+						//below code allows preview of image to show up when dragging
+						var id = ui.helper.context.id;
+
+							$(ui.helper).addClass("ui-draggable-helperCell");
+							$(ui.helper).html('');
+							var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+							var title = $('#stationTree').jstree(true).get_node(id).text;
+							$(ui.helper).append('<div class="tr draggable" id="helperTr"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><input title="Original text: title" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>Preview</p><span class="path"></span><span class="label"></span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
 						
 					},
 					stop: function (event, ui) {
@@ -624,6 +633,35 @@ function data_update(data) {
 						},50);
 						$('.controlRow').hide();
 						$('.controls h2').hide();
+						
+						//below code allows preview of image to show up when dragging
+						$(ui.helper).addClass("ui-draggable-helper");
+						$(ui.helper).html('');
+						var id = ui.helper.context.id;
+						var instance = $('#stationTree').jstree(true);
+						var children = instance.get_node(id).children;
+						var clength = children.length;
+						var i;
+						console.log(children);
+						for(i = 0; i < clength; i++) {
+							console.log(children[i]);
+							if (children[i].indexOf("image_url_x") >= 0){
+								var childId = children[i];
+							}
+						}
+						var path = $('#stationTree').jstree(true).get_node(childId).original.obj.path;
+						var value = ref(incomingData, path);
+						console.log(ui.helper);
+						var tempImg = document.createElement('img');
+						$(tempImg).load(function() {
+								var width = tempImg.naturalWidth;
+								var height = tempImg.naturalHeight;
+								$(ui.helper).css('background-image','url('+value+')');
+								$(ui.helper).css('height',height);
+								$(ui.helper).css('width', width);
+								$(ui.helper).css('background-position',"50% 0%");
+							});
+							tempImg.src = value;
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -635,28 +673,29 @@ function data_update(data) {
 						},200);
 						$('.controlRow').show();
 						$('.controls h2').show();
+						$(ui.helper).removeClass("ui-draggable-helper");
 					}	
 				});
 			});
 			initJqueryUI();
 			$(".top-container").droppable({
         		accept: function(d) { 
-							if(d.hasClass("jstree-leaf")){ 
-								console.log('true');
-								return true;
-							}
-							else if(d.hasClass("draggableCamNode")){
-								console.log('true');
-								return true;
-							}
-							else if(d.hasClass("jstree-node")){
-								var id = $(this).attr('id');
-								var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
-								if(findClass == 'draggableCamNode'){
-									return true;	
-								}
-							}
-						},
+					if(d.hasClass("jstree-leaf")){ 
+						console.log('true');
+						return true;
+					}
+					else if(d.hasClass("draggableCamNode")){
+						console.log('true');
+						return true;
+					}
+					else if(d.hasClass("jstree-node")){
+						var id = $(this).attr('id');
+						var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
+						if(findClass == 'draggableCamNode'){
+							return true;	
+						}
+					}
+				},
 				drop: function( event, ui ) {
 					var $element, $me, $newElement;
 					
@@ -710,8 +749,8 @@ function data_update(data) {
 					cell_arr.push(tree_item);
 					console.log(tree_item);
 					console.log(cell_arr);
-					var pageX = event.pageX;
-					var pageY = event.pageY;
+					var pageX = $(ui.helper).css('left');
+					var pageY = $(ui.helper).css('top');
 					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
 					if( ($($element).hasClass('draggableCamNode'))){
 						var instance = $('#stationTree').jstree(true);
@@ -733,13 +772,7 @@ function data_update(data) {
 						createCamFromTree(childId);
 					cellCount++;   
 					}
-					else if((id.indexOf("image_url") >= 0)){
-						$('#div_'+id).css('position', 'absolute');
-						$('#div_'+id).css('top',pageY);
-						$('#div_'+id).css('left',pageX);
-						createCamFromTree(id);
-					cellCount++;
-					}
+
 					else{
 						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ title +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
 						$(".draggable").draggable({ //makes our data cells draggable
