@@ -224,10 +224,14 @@ function iterateStations(obj, stack, arr, lastk) {
 				jsonItem["obj"] = {};
 				jsonItem["obj"]["class"] = "";
 				if('undefined' !== typeof obj[property]['image_url']){
+					console.log(obj[property]);
 					jsonItem ["id"] = id;
 					jsonItem ["parent"] = parent;
 					jsonItem ["text"] = property;
-					jsonItem ["obj"] = {"path": stack + '.' + property+".image_url", "class": "draggableCamNode"};
+					jsonItem ["obj"] = {
+						"path": stack + '.' + property+".image_url", 
+						"class": "draggableCamNode"
+					};
 					arr.push(jsonItem);
 					delete jsonItem;
 
@@ -290,8 +294,18 @@ function iterateStations(obj, stack, arr, lastk) {
 					else{
 						type = null;	
 					}
+					//programatically set up timestamp leaf
+					var timeStamp = {};
+					timeStamp["id"] = id+"_timeStamp";
+					timeStamp["parent"] = id;
+					timeStamp["text"] = "Age of Data";
+					timeStamp["obj"] = {};
+					timeStamp["obj"]["time"] = 0;
+					jsonItem["obj"]["class"] = "dataDraggable";
 					arr.push(jsonItem);
 					delete jsonItem;
+					arr.push(timeStamp);
+					delete timeStamp;
 
 				}
 				//if not child properties, recurssively call function once more to find next level of objects/properties
@@ -325,6 +339,7 @@ function iterateStations(obj, stack, arr, lastk) {
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
 function ref(obj, str) {
+	
     str = str.split("."); //splits the dot notation
     for (var i = 1; i < str.length; i++) {
 	if (obj === undefined) {
@@ -585,7 +600,7 @@ function data_update(data) {
 					});		
 				})
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
-				$(".jstree-leaf").draggable({
+				$(".jstree-leaf, .dataDraggable").draggable({
 					helper: "clone",
 					start: function (event, ui) {
 						$('.controls').animate({
@@ -598,15 +613,13 @@ function data_update(data) {
 						},50);
 						$('.controlRow').hide();
 						$('.controls h2').hide();
-						//below code allows preview of image to show up when dragging
+						//below code allows preview of data cell to show up when dragging
 						var id = ui.helper.context.id;
-
-							$(ui.helper).addClass("ui-draggable-helperCell");
-							$(ui.helper).html('');
-							var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
-							var title = $('#stationTree').jstree(true).get_node(id).text;
-							$(ui.helper).append('<div class="tr draggable" id="helperTr"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><input title="Original text: title" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>Preview</p><span class="path"></span><span class="label"></span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
-						
+						$(ui.helper).addClass("ui-draggable-helperCell");
+						$(ui.helper).html('');
+						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+						var title = $('#stationTree').jstree(true).get_node(id).text;
+						$(ui.helper).append('<div class="tr draggable" id="helperTr"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><input title="Original text: title" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>Preview</p><span class="path"></span><span class="label"></span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');						
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -654,14 +667,14 @@ function data_update(data) {
 						console.log(ui.helper);
 						var tempImg = document.createElement('img');
 						$(tempImg).load(function() {
-								var width = tempImg.naturalWidth;
-								var height = tempImg.naturalHeight;
-								$(ui.helper).css('background-image','url('+value+')');
-								$(ui.helper).css('height',height);
-								$(ui.helper).css('width', width);
-								$(ui.helper).css('background-position',"50% 0%");
-							});
-							tempImg.src = value;
+							var width = tempImg.naturalWidth;
+							var height = tempImg.naturalHeight;
+							$(ui.helper).css('background-image','url('+value+')');
+							$(ui.helper).css('height',height);
+							$(ui.helper).css('width', width);
+							$(ui.helper).css('background-position',"50% 0%");
+						});
+						tempImg.src = value;
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -687,6 +700,10 @@ function data_update(data) {
 					else if(d.hasClass("draggableCamNode")){
 						console.log('true');
 						return true;
+					}
+					else if(d.hasClass("dataDraggable")){
+						console.log('true');
+						return true;	
 					}
 					else if(d.hasClass("jstree-node")){
 						var id = $(this).attr('id');
