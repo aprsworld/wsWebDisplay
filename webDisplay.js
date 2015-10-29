@@ -15,6 +15,7 @@ var savedStates = []; //set of saved table states in the format of a multi Dimen
 var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
+var ageInterval;
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -29,6 +30,22 @@ $(function() {
 		};
 	})($.ui.resizable.prototype["_mouseStart"]));
 });
+//converts seconds into a time format (hours:minutes:seconds)
+function ageTimer(){
+	var length, k, value, id;
+	ageInterval = setInterval(function(){ 
+		length = cell_arr.length;
+		for(k in cell_arr){
+			if('timeStamp' == cell_arr[k]['path']){
+				value = parseInt(cell_arr[k]['value'], 10);
+				value++;
+				cell_arr[k]['value'] = value;
+				id = "div_"+cell_arr[k]['id'];
+				$('div#' + id + '').children('p').text(value+" seconds old");
+			}
+		}
+	}, 1000);
+}
 function secToTime(sec){
 	var secs = sec
 	if ( 1 == sec ) {
@@ -276,11 +293,11 @@ function iterateStations(obj, stack, arr, lastk) {
 					}
 					//programatically set up timestamp leaf
 					var timeStamp = {};
-					timeStamp["id"] = id+"_timeStamp";
+					timeStamp["id"] = id+"_ageOfData";
 					timeStamp["parent"] = id;
 					timeStamp["text"] = "Age of Data";
 					timeStamp["obj"] = {};
-					timeStamp["obj"]["path"] = 0;
+					timeStamp["obj"]["path"] = "timeStamp";
 					//enables dragging on non leaf-node data cells
 					jsonItem["obj"]["class"] = "dataDraggable";
 					arr.push(jsonItem);
@@ -314,11 +331,11 @@ function iterateStations(obj, stack, arr, lastk) {
 					jsonItem ["obj"] = {"path": stack + '.' + property};
 					//programatically set up timestamp leaf
 					var timeStamp = {};
-					timeStamp["id"] = id+"_timeStamp";
+					timeStamp["id"] = id+"_ageOfData";
 					timeStamp["parent"] = id;
 					timeStamp["text"] = "Age of Data";
 					timeStamp["obj"] = {};
-					timeStamp["obj"]["path"] = 0;
+					timeStamp["obj"]["path"] = "timeStamp";
 					//enables dragging on non leaf-node data cells
 					jsonItem["obj"]["class"] = "dataDraggable";
 					arr.push(jsonItem);
@@ -345,38 +362,49 @@ function ref(obj, str) {
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate($id_arr, $path_arr, data) {
 	var idLength = $id_arr.length;
-	var value, cellObj, id, label;
+	var value, cellObj, id, label, cellId;
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
-		id = id.replace('div_', '');	
-		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(id);
-		var objectFound = cell_arr[elementPos];
-		value = ref(data, $path_arr[$i]); //finds value of object
-		if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
-			var type = objectFound.type;
-			var typeUnits = objectFound.typeUnits;
-			var typeChange = objectFound.typeChange;
-			if(typeChange !== typeUnits){
-				var result = chooseConversion(type, typeUnits, value, typeChange);
+		if(id.indexOf("ageOfData") >= 0){
+			value = 0;
+		}
+		else{
+			id = id.replace('div_', '');	
+			var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(id);
+			var objectFound = cell_arr[elementPos];
+			value = ref(data, $path_arr[$i]); //finds value of object
+			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
+				var type = objectFound.type;
+				var typeUnits = objectFound.typeUnits;
+				var typeChange = objectFound.typeChange;
+				if(typeChange !== typeUnits){
+					var result = chooseConversion(type, typeUnits, value, typeChange);
+				}
+				else{
+					var result = {};
+					result.value = value;
+					result.label = objectFound.units;
+				}
+				if(type != "time"){
+					value = round(result.value, objectFound.precision);
+				}
+				else{
+					value = result.value;
+				}
+				label = result.label;
+				$('div#div_' + id + '').children('.label').html(label);
 			}
-			else{
-				var result = {};
-				result.value = value;
-				result.label = objectFound.units;
-			}
-			if(type != "time"){
-				value = round(result.value, objectFound.precision);
-			}
-			else{
-				value = result.value;
-			}
-			label = result.label;
-			$('div#div_' + id + '').children('.label').html(label);
 		}
 	if (value === undefined) {
 		value = 'MISSING DATA!';
 	}
-        $('div#' + $id_arr[$i] + '').children('p').text(value);
+		cellId = id.replace('div_','');
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(cellId);
+		var objectFound = cell_arr[elementPos];
+		objectFound.value = 0;
+		$('div#' + $id_arr[$i] + '').children('p').text(value+" seconds old");
+		clearInterval(ageInterval);						
+		ageTimer();
     }
 }
 function chooseConversion(type, typeUnits, value, typeChange){
@@ -464,8 +492,7 @@ function createCamFromTree(tree_id){
 	});
 	var url = $('#div_'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
 	$('#preload_div_'+selection).attr('src', url);
-}
-	
+}	
 //function that refreshes cams and preloads the refreshed image before displaying it	
 function refreshCams(cam_arr){
 	//iterates through known cams
@@ -528,7 +555,6 @@ function timer(){
 		//$('#camTimer').text("90+ seconds since last camera image received. Try refreshing your browser window.");	
 	}
 }
-
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
@@ -537,7 +563,6 @@ function data_update(data) {
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
     	started = true; //sets our boolean to true so the above only executes once
         //path_arr = iteratePath(data, '');
-	
         $(".draggable").draggable({ //makes our data cells draggable
             disabled: true,
 			grid: [1, 1],
@@ -703,7 +728,9 @@ function data_update(data) {
 					var units, title, type, typeUnits;
 					tree_item["path"] = path;
 					tree_item["id"] = id+"_"+idArrLen;
-
+					if(tree_item["path"] == "timeStamp"){
+						tree_item["value"] = 0;	
+					}
 					//gets typeUnits if there
 					if($('#stationTree').jstree(true).get_node(id).original.obj.typeUnits){
 						typeUnits = $('#stationTree').jstree(true).get_node(id).original.obj.typeUnits;
@@ -889,7 +916,6 @@ function data_update(data) {
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
 
 }
-
 //gets parameters in url
 //called like: var host = getUrlVars()["host"];
 function getUrlVars() {
@@ -911,6 +937,8 @@ function getParameterByName(name) {
 var data_object;
 /*function initiates the data transfer*/
 function data_start() {
+	ageTimer();
+
 	//user defined host via url get parameter
 	var host = getUrlVars()["host"];
 	if(host == undefined){
