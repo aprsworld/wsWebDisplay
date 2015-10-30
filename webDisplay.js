@@ -366,7 +366,7 @@ function dynamicUpdate($id_arr, $path_arr, data) {
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
 		if(id.indexOf("ageOfData") >= 0){
-			value = 0;
+			value = 0+" seconds old";
 		}
 		else{
 			id = id.replace('div_', '');	
@@ -402,7 +402,7 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(cellId);
 		var objectFound = cell_arr[elementPos];
 		objectFound.value = 0;
-		$('div#' + $id_arr[$i] + '').children('p').text(value+" seconds old");
+		$('div#' + $id_arr[$i] + '').children('p').text(value);
 		clearInterval(ageInterval);						
 		ageTimer();
     }
@@ -850,6 +850,7 @@ function data_update(data) {
 		//allows cams to be hoverable outside of edit function
 			var hoverTimeout;
 			var hoverImg = document.createElement('img');
+			var hoverImgLink = document.createElement('a');
 			$('.imgCamContainer').hover(function(){
 				var camID = $(this).attr('id');
 				var camWidth = $(this).children('img').width();
@@ -865,8 +866,11 @@ function data_update(data) {
 								$(hoverImg).width(camWidth);
 								$(hoverImg).height(camHeight);
 								hoverImg.src = camSrc;
+								hoverImgLink.href = camSrc;
+								hoverImgLink.target = '_blank';
+								hoverImgLink.appendChild(hoverImg);
 								console.log(hoverImg);
-								$('#'+camID).append(hoverImg);
+								$('#'+camID).append(hoverImgLink);
 								$('#'+camID).addClass('focusedCam');
 								if (isWebkit) {
 									hoverImg.className = 'webKitCam';
