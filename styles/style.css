@@ -7,6 +7,7 @@ body{
 	padding: 0;
 	font-family: Arial,Helvetica Neue,Helvetica,sans-serif;
 }
+
 button{
 	cursor: pointer;
 	background: #333;
@@ -762,6 +763,12 @@ div.logo_container{
 	text-align: left !important;
 	border: 3px solid #555;
 }
+.webKitCam{
+	box-shadow: 0px 0px 50px black;
+	border: 1px solid black;
+	max-height: 92vh;
+	max-width: 92vw;		
+}
 .expandedCam{
 	position: fixed;
 	left: 50%;
@@ -774,7 +781,8 @@ div.logo_container{
 	max-width: 92vw;
 }
 .focusedCam{
-	z-index: 102;	
+	z-index: 102;
+	
 }
 /*Plugin fixes*/
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }

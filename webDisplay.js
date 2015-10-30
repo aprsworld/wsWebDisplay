@@ -176,6 +176,7 @@ function initJqueryUI(){
 		grid: [1, 1],
 		snap: true,
 		snapTolerance: 10,
+		containment: "parent",
 		start: function(event, ui) {
 			$('.controls').animate({
 				width: '10px'
@@ -874,9 +875,10 @@ function data_update(data) {
 								$('#'+camID).addClass('focusedCam');
 								if (isWebkit) {
 									hoverImg.className = 'webKitCam';
-									hoverImg.id = hoverImgID;
+									hoverImgLink.id = hoverImgID;
 									var top = ''+$('#'+camID).css('top');
 									var left = ''+$('#'+camID).css('left');
+									$('#'+hoverImgID).css('position','absolute');
 									$('#'+hoverImgID).css('left','50% ');
 									$('#'+hoverImgID).css('top','50%');
 									top = '-'+$('#'+camID).css('top');
