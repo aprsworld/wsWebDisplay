@@ -190,6 +190,7 @@ div.logo_container{
 	color: white;
 	display: none;
 }
+/*styling for configuration loading*/
 #stateSelect{
 	height: 65px;
 	width: 100px;
@@ -199,7 +200,7 @@ div.logo_container{
 	border-color: black;
 }
 #saveState{
-	margin-left: 2px;
+	margin-left: 1px;
 }
 #saveAs{
 	text-align: center;
@@ -274,7 +275,7 @@ div.logo_container{
 	padding: 0;
 }
 
-
+/*styling for user created blocks of text*/
 .textBlockContainer{
 	position: absolute;
 	top: 15%;
@@ -285,6 +286,12 @@ div.logo_container{
 	background-color: grey;
 	z-index: 0;
 }
+.textBlockContainer p{
+	color: #333;
+	margin: 0;
+	padding: 0;
+}
+/* styling for the user created images */
 .imgBlockContainer{
 	position: absolute;
 	top: 15%;
@@ -294,6 +301,7 @@ div.logo_container{
 	z-index: 1;
 	display: inline;
 }
+/* styling for camera-feed container */
 .imgCamContainer{
 	position: absolute;
 	top: 15%;
@@ -308,11 +316,7 @@ div.logo_container{
 	-ms-backface-visibility:     hidden;
 	-webkit-transform: translate3d(0, 0, 0);
 }
-.textBlockContainer p{
-	color: #333;
-	margin: 0;
-	padding: 0;
-}
+
 .container .myTableValue{
 	width: 65%;
 	float: left;
@@ -372,26 +376,7 @@ div.logo_container{
 	cursor: default !important;
 
 }
-#footer{
-	display: block;
-	margin-top: 1px;
-	clear: both;
-	background-color: white;
-	height: 30px;
-	margin-bottom:16px;
-}
-#footer p{
-	text-align: center;
-	font-size: 12px;
-	margin: 0;
-	padding: 5px;
-	color: #333;
-}
-#footer hr{
-	clear:both;
-	margin-top: 0;
-	border-top: 0;
-}
+/* styling for grey status bar at the bottom of the screen */
 #statusBar{
 	position: fixed;
 	bottom: 0;
@@ -420,7 +405,16 @@ div.logo_container{
 	color: #333;
 	font-size: 12px;
 	padding-top: 3px;
-	padding-left: 10px;
+	padding-right: 10px;
+}
+#version{
+	display: block;
+	float: right;
+	color: #333;
+	font-size: 12px;
+	padding-top: 3px;
+	padding-right: 10px;
+	font-weight: 700;
 }
 #camTimer{
 	display: block;
@@ -431,6 +425,8 @@ div.logo_container{
 	padding-right: 10px;
 
 }
+
+/* styling for edit window that pops up when elements are clicked on in edit mode */
 .editWindow{
 	position: absolute;	
 	right: 0px;
@@ -473,18 +469,6 @@ div.logo_container{
 	margin-bottom: 5px;
 	margin-right: 15px;
 }
-#fontSizeLabel{
-	float: left;
-	margin-right: 20px !important;
-}
-#bgColorLabel, #textColorLabel{
-	float: left;
-	width: 98% !important;
-	text-align: left !important;
-}
-#editBodyLabel{
-	float: left;
-}
 .editWindow h2{
 	margin-top: 5px;
 	padding-top: 0;
@@ -499,6 +483,19 @@ div.logo_container{
 	height: 1px; 
 	background-image: linear-gradient(to right, rgba(153, 153, 153, 0), rgba(153, 153, 153, 0.75), rgba(153, 153, 153, 0));
 }
+#fontSizeLabel{
+	float: left;
+	margin-right: 20px !important;
+}
+#bgColorLabel, #textColorLabel{
+	float: left;
+	width: 98% !important;
+	text-align: left !important;
+}
+#editBodyLabel{
+	float: left;
+}
+
 .titleChange{
 	width:60%;
 }
@@ -561,6 +558,7 @@ div.logo_container{
 	margin-top: 15px;
 	width: 35%;
 }
+/* all rows are hidden to start with - javascript unhides them when they are necessary */
 #zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
 	display:none;	
 }
@@ -598,6 +596,7 @@ div.logo_container{
 #opacityLabel{
 	width: 100%;	
 }
+/*styling for file tree */
 #stationTree{
 	padding-top: 10px;
 	background-color: rgba(255, 255, 255, 0.5);
@@ -611,12 +610,14 @@ div.logo_container{
 	text-align: left !important;
 	border: 3px solid #555;
 }
+/* class for the hovered cam that appears in chrome and safari*/
 .webKitCam{
 	box-shadow: 0px 0px 50px black;
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;		
 }
+/* class for the hovered cam that appears in firefox and IE*/
 .expandedCam{
 	position: fixed;
 	left: 50%;
