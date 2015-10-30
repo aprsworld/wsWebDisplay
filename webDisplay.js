@@ -222,7 +222,6 @@ function iterateStations(obj, stack, arr, lastk) {
 				jsonItem["obj"] = {};
 				jsonItem["obj"]["class"] = "";
 				if('undefined' !== typeof obj[property]['image_url']){
-					console.log(obj[property]);
 					jsonItem ["id"] = id;
 					jsonItem ["parent"] = parent;
 					jsonItem ["text"] = property;
@@ -563,19 +562,6 @@ function data_update(data) {
 	var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
     	started = true; //sets our boolean to true so the above only executes once
-        //path_arr = iteratePath(data, '');
-        $(".draggable").draggable({ //makes our data cells draggable
-            disabled: true,
-			grid: [1, 1],
-            snap: true,
-            snapTolerance: 10,
-            start: function(event, ui) {
-                $(this).addClass('draggable_focus_in');
-            },
-            stop: function(event, ui) {
-                $(this).removeClass('draggable_focus_in');
-            }
-        });
         $(".controls").resizable({ //makes our controls div resizable and draggable
             minHeight: 70,
 			maxWidth: 250	
@@ -593,6 +579,7 @@ function data_update(data) {
 			var json = iterateStations(data, "", jsonArray, lastk);
 			//sets up our tree
 			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray},"plugins" : [ "sort" ]})});
+			//adds classes from object properties to certain nodes in the tree - this allows for certain nodes to be dragged out of tree and 
 			$("#stationTree")
 				.bind('open_node.jstree', function(e, data) {
 					$( "li.jstree-node" ).each(function() {
@@ -601,6 +588,7 @@ function data_update(data) {
 						$(this).addClass(findClass);
 					});		
 				})
+			//sets up the drag and drop for the tree
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				$(".jstree-leaf, .dataDraggable").draggable({
 					helper: "clone",
@@ -621,7 +609,7 @@ function data_update(data) {
 						$(ui.helper).html('');
 						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 						var title = $('#stationTree').jstree(true).get_node(id).text;
-						$(ui.helper).append('<div class="tr draggable" id="helperTr"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><input title="Original text: title" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>Preview</p><span class="path"></span><span class="label"></span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');						
+						$(ui.helper).append('<div class="tr draggable" id="helperTr"><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>Preview</p><span class="path"></span><span class="label"></span></div></div>');						
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -692,6 +680,7 @@ function data_update(data) {
 					}	
 				});
 			});
+			//makes everything draggable
 			initJqueryUI();
 			$(".top-container").droppable({
         		accept: function(d) { 
@@ -795,7 +784,7 @@ function data_update(data) {
 					}
 
 					else{
-						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ title +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
+						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
 						$(".draggable").draggable({ //makes our data cells draggable
 							disabled: true,
 							grid: [1, 1],
@@ -835,8 +824,10 @@ function data_update(data) {
 					}
 				}
 			});	
+		//grabs layout parameter fromt he url
 		var layout = getUrlVars()["layout"];
 		var cellCount = 0;
+		//if layout parameter found, load that layout
 		if(layout != undefined){
 			$("#stateSelect").val(layout);
 			loadState();
@@ -918,7 +909,6 @@ function data_update(data) {
 		}
 	});
 	refreshCams(cams);
-
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
 
 }
@@ -968,7 +958,6 @@ function data_start() {
 		for (i = 0; i < savedStates.length; i++) {
 			var option = document.createElement("option");
 				var entry = JSON.parse(savedStates[i]);
-				console.log(entry['name']);
 				if(entry['name']){
 					option.text = entry['name'];	
 				}
@@ -2115,7 +2104,7 @@ function loadState(){
 				var savedCellPath = savedCell.path;
 				var savedCellVisibility = savedCell.hidden;
 				//append a cell with these properties to the top-container div
-				$('.top-container').append('<div class="tr draggable" id="' + savedCellDivID + '"><div class="td dg-arrange-table-rows-drag-icon"></div><div class="td myTableID"> ID: <span>' + savedCellDivID + '</span> </div><div class="td myTableTitle"><input title="Original text: '+ savedCellOriginalTitle +'" class="titleEdit" type="text"></input><input title="Add a unit label -- Example: &deg;C" class="labelEdit" placeholder="Add a unit label" type="text"></input><p class="titleText">' + savedCellTitle + '</p></div><div class="td myTableValue" id="' + savedCellID + '"><p>Loading...</p><span class="path">'+ savedCellPath +'</span><span class="label">'+ savedCellLabel +'</span></div><div class="td dg-arrange-table-rows-close-icon"><span>Hide:</span><input autocomplete="off" class="checkBox" type="checkbox"></div></div>');
+				$('.top-container').append('<div class="tr draggable" id="' + savedCellDivID + '"><div class="td myTableID"> ID: <span>' + savedCellDivID + '</span> </div><div class="td myTableTitle"><p class="titleText">' + savedCellTitle + '</p></div><div class="td myTableValue" id="' + savedCellID + '"><p>Loading...</p><span class="path">'+ savedCellPath +'</span><span class="label">'+ savedCellLabel +'</span></div></div>');
 				$("#"+savedCellDivID).css('position','absolute');
 				$("#"+savedCellDivID).css('top', savedCellTop);
 				$("#"+savedCellDivID).css('left',savedCellLeft);
