@@ -935,7 +935,7 @@ var data_object;
 function data_start() {
 	ageTimer();
 	$('#version').text(wdVersion);
-	//user defined host via url get parameter
+	//user defined host via url get parameter 
 	var host = getUrlVars()["host"];
 	if(host == undefined){
 		host = HOST_DEFAULT;
