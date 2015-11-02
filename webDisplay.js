@@ -54,7 +54,7 @@ function secToTime(sec){
 	if ( sec < 60 ) {
 		return sec + " seconds ";
 	}
-	/* more than one minute */       
+	/* more than one minute */        
 	var out = "";
 	var days= Math.floor(sec/(24*60*60));
 	sec = sec - (Math.floor(sec/(24*60*60))*(24*60*60));
