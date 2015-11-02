@@ -1241,7 +1241,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#hoverTimeRow, #hoverRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#hoverTimeRow, #hoverRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150);
 	selectedModule = $(this).attr('id');
 	
@@ -1640,7 +1640,7 @@ DATA CELLS CASE
 ******************************************************************/
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
-		$('#zRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow').show();
+		$('#zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text("Edit Cell");
