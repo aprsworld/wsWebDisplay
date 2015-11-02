@@ -76,7 +76,7 @@ function secToTime(sec){
 }
 //value = number being rounded, decimals = decimal places to round to
 function round(value, decimals) {
-    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
 }
 //initilizes all draggables and resizables to avoid uninitlized errors
 function initJqueryUI(){
