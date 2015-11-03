@@ -2338,7 +2338,7 @@ function loadState(jsonString){
 			$('.controlRow').show();
 			$('.controls h2').show();
 		},
-		disabled: false}).resizable({disabled: false, handles: 'all'});
+		disabled: false}).resizable({disabled: false, aspectRatio: true, handles: 'all'});
 	//makes images draggable and resziable after being loaded
 	$(".imgBlockContainer").draggable({
 		start: function(event, ui) {
