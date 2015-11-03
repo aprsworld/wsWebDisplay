@@ -1890,7 +1890,7 @@ function captureState(){
 		SavedElement.prototype.divID;	
 		SavedElement.prototype.hidden;	
 		SavedElement.prototype.hoverToggle;
-		
+		SavedElement.prototype.zIndex;
 	}
 	//iterate through cells currently on screen
 	$( '.tr' ).each(function( index ) {
@@ -1908,6 +1908,7 @@ function captureState(){
 		savedCell.divID = $(this).attr('id');
 		savedCell.id = $(this).children('.myTableValue').attr('id');
 		savedCell.path = $(this).children('.myTableValue').children('.path').text();
+		savedCell.zIndex = $(this).css('z-index');
 			//var value = $('#stationTree').jstree(true).get_node(treeID).original.obj.value; 
 			var units, title, type, typeUnits, typeChange, precision;
 			var pos = savedCell.id.lastIndexOf('_');
@@ -1976,11 +1977,12 @@ function captureState(){
 		savedImg.height = $(this).children('.ui-wrapper').children('img').css('height');
 		savedImg.src = $(this).children('.ui-wrapper').children('img').attr('src');
 		savedImg.id = $(this).children('.ui-wrapper').children('img').attr('id');
+		savedImg.zIndex = $(this).css('z-index');
 		if($(this).find('img').hasClass('hoverables')){
-			SavedImg.hoverToggle = true;
+			savedImg.hoverToggle = true;
 		}
 		else{
-			SavedImg.hoverToggle = false;
+			savedImg.hoverToggle = false;
 		}
 		if($(this).children('.ui-wrapper').children('img').hasClass("hide")){
 			savedImg.hidden = true;
@@ -2002,6 +2004,7 @@ function captureState(){
 		savedText.bgColor = $(this).css('background-color');
 		savedText.divID = $(this).attr('id');
 		savedText.innerHTML = $(this).children('p').html();
+		savedText.zIndex = $(this).css('z-index');
 		if($(this).hasClass("hide")){
 				savedText.hidden = true;
 		}
@@ -2017,6 +2020,7 @@ function captureState(){
 			savedCam.width = $(this).css('width');
 			savedCam.height = $(this).css('height');
 			savedCam.divID = $(this).attr('id');
+			savedCam.zIndex = $(this).css('z-index');
 		cameras.push(savedCam);	
 		}
 		else if($(this).hasClass("hide")){
@@ -2025,6 +2029,7 @@ function captureState(){
 			savedCam.width = $(this).css('width');
 			savedCam.height = $(this).css('height');
 			savedCam.divID = $(this).attr('id');
+			savedCam.zIndex = $(this).css('z-index');
 			savedCam.hidden = true;
 			
 		cameras.push(savedCam);		
@@ -2075,6 +2080,7 @@ function loadState(jsonString){
 				var savedCellLeft = savedCell.left; 
 				var savedCellWidth = savedCell.width; 
 				var savedCellHeight = savedCell.height; 
+				var savedCellzIndex = savedCell.zIndex;
 				var savedCellTitle = savedCell.title; 
 				var savedCellOriginalTitle = savedCell.originalTitle; 
 				var savedCellLabel = savedCell.label; 
@@ -2090,6 +2096,7 @@ function loadState(jsonString){
 				$("#"+savedCellDivID).css('left',savedCellLeft);
 				$("#"+savedCellDivID).css('width',savedCellWidth);
 				$("#"+savedCellDivID).css('height',savedCellHeight);
+				$("#"+savedCellDivID).css('z-index',savedCellzIndex);
 				$("#"+savedCellDivID).children('.myTableValue').css('font-size', savedCellFontSize);
 				if(savedCellVisibility == true){
 					$("#"+savedCellDivID).addClass('hide');
@@ -2140,7 +2147,8 @@ function loadState(jsonString){
 				var savedTbTop = savedText.top; 
 				var savedTbLeft = savedText.left; 
 				var savedTbWidth = savedText.width; 
-				var savedTbHeight = savedText.height; 
+				var savedTbHeight = savedText.height;
+				var savedTbzIndex = savedText.zIndex;
 				var savedTbFontSize = savedText.fontSize;
 				var savedTbFontColor = savedText.fontColor;
 				var savedTbBgColor = savedText.bgColor
@@ -2156,6 +2164,7 @@ function loadState(jsonString){
 				$("#"+savedTbDivID).css('font-size', savedTbFontSize);
 				$("#"+savedTbDivID).children('p').css('color', savedTbFontColor);
 				$("#"+savedTbDivID).css('background-color', savedTbBgColor);
+				$("#"+savedTbDivID).css('z-index',savedTbzIndex);
 				if(savedTbVisibility == true){
 					$("#"+savedTbDivID).addClass('hide');
 					$("#"+savedTbDivID).css('opacity','0.2');
@@ -2180,12 +2189,14 @@ function loadState(jsonString){
 				var savedCamHeight = savedCam.height;
 				var savedCamDivID = savedCam.divID;
 				var savedCamVisibility = savedCam.hidden;
+				var savedCamzIndex = savedCam.zIndex;
 				var src = $("#"+savedCamDivID).css('background-image');
 				src = src.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 				$("#"+savedCamDivID).css('top',savedCamTop);
 				$("#"+savedCamDivID).css('left',savedCamLeft);
 				$("#"+savedCamDivID).css('width',savedCamWidth);
 				$("#"+savedCamDivID).css('height',savedCamHeight);
+				$("#"+savedCamDivID).css('z-index',savedCamzIndex);
 				$("#"+savedCamDivID).children('img').attr('src',src);
 
 				if(savedCamVisibility == true){
@@ -2212,6 +2223,7 @@ function loadState(jsonString){
 				var savedImgWidth = savedImg.width; 
 				var savedImgHeight = savedImg.height; 
 				var savedImgSrc = savedImg.src; 
+				var savedImgzIndex = savedImg.zIndex;				
 				var savedImgId = savedImg.id; 
 				var savedImgVisibility = savedImg.hidden;
 				//append the image to the content div and set its properties
@@ -2220,6 +2232,7 @@ function loadState(jsonString){
 				$("#"+savedImgId).parent().css('left',savedImgLeft);
 				$("#"+savedImgId).css('width',savedImgWidth);
 				$("#"+savedImgId).css('height',savedImgHeight);
+				$("#"+savedImgId).css('z-index',savedImgzIndex);
 				if(savedImgVisibility == true){
 					$("#"+savedImgId).addClass('hide');
 					$("#"+savedImgId).css('opacity','0.2');
