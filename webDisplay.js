@@ -827,17 +827,34 @@ function data_update(data) {
 		//grabs layout parameter fromt he url
 		var layout = getUrlVars()["layout"];
 		var cellCount = 0;
+		data_object.ValueGet(function(rsp){
+				if(!rsp.data || rsp.error){
+					// Couldn't get configuration data from server
+					return;
+				}
+				console.log(rsp);
+				$('#stateSelect').empty();
+				var loadedLayout = JSON.stringify(rsp.data[layout]);
+				console.log(loadedLayout);
+				if (layout) {
+					/*load = parseInt(load);
+					$( "#stateSelect" ).val(load); */
+					loadState(loadedLayout);
+					$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+					$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+					$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+					$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
+					cellCount = parseInt(lastCell, 10)+1;
+				}
+			},'webdisplay/configs');			
 		//if layout parameter found, load that layout
 		if(layout != undefined){
-			$("#stateSelect").val(layout);
-			loadState();
                        $(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
                        $(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-                       $('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
                        $('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
                        $('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-			var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
-			cellCount = parseInt(lastCell, 10)+1;
+
 		}
 		//allows cams to be hoverable outside of edit function
 			var hoverTimeout;
@@ -952,9 +969,10 @@ function data_start() {
 			return;
 		}
 		console.log(rsp);
-		savedStates = rsp.data;
+		//savedStates = rsp.data;
+		console.log(savedStates);
 		$('#stateSelect').empty();
-		var i;
+		/*var i;
 		for (i = 0; i < savedStates.length; i++) {
 			var option = document.createElement("option");
 				var entry = JSON.parse(savedStates[i]);
@@ -966,13 +984,15 @@ function data_start() {
 				}
 				option.value = i;
 			$('#stateSelect').append(option);
-		}
+		}*/
 		// If ?display=x is specified in the URL, load that one
 		var load = getParameterByName('display');
+		var loadedConfig = JSON.stringify(rsp.data[load]);
+		console.log(loadedConfig);
 		if (load) {
-				load = parseInt(load);
-				$( "#stateSelect" ).val(load); 
-				loadState();
+				/*load = parseInt(load);
+				$( "#stateSelect" ).val(load); */
+				loadState(loadedConfig);
 				$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 				$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 				$('#ws_status').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -2041,7 +2061,7 @@ function captureState(){
 	}
 	populateSelection();
 	var jsonString = JSON.stringify(saved_state);
-	savedStates.push(jsonString);
+	//savedStates.push(jsonString);
 	console.log(savedStates);
 		//for testing purposes
 		//$('#json').val(jsonString);
@@ -2051,7 +2071,7 @@ function captureState(){
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs',savedStates,0);
+	},'webdisplay/configs/'+saveName,saved_state,0);
 }
 /* grabs the latest saved state and populates the select field for loading */
 function populateSelection(){
@@ -2072,9 +2092,9 @@ function deleteState(){
 /*A function that is passed a json string that holds elements and their properties from a saved state of a layout. Once it takes in the json string
 it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
 the saved state*/
-function loadState(){
-	var index = $( "#stateSelect option:selected" ).attr("value"); 
-	var jsonString = savedStates[index];
+function loadState(jsonString){
+	//var index = $( "#stateSelect option:selected" ).attr("value"); 
+	//var jsonString = savedStates[index];
 	var stateObject = $.parseJSON(jsonString);
 	id_arr.length = 0;
 	path_arr.length = 0;
