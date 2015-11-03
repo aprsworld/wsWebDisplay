@@ -833,12 +833,9 @@ function data_update(data) {
 					return;
 				}
 				console.log(rsp);
-				$('#stateSelect').empty();
 				var loadedLayout = JSON.stringify(rsp.data[layout]);
 				console.log(loadedLayout);
 				if (layout) {
-					/*load = parseInt(load);
-					$( "#stateSelect" ).val(load); */
 					loadState(loadedLayout);
 					$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 					$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -969,29 +966,11 @@ function data_start() {
 			return;
 		}
 		console.log(rsp);
-		//savedStates = rsp.data;
-		console.log(savedStates);
-		$('#stateSelect').empty();
-		/*var i;
-		for (i = 0; i < savedStates.length; i++) {
-			var option = document.createElement("option");
-				var entry = JSON.parse(savedStates[i]);
-				if(entry['name']){
-					option.text = entry['name'];	
-				}
-				else{
-        			option.text = "Layout#" + i;
-				}
-				option.value = i;
-			$('#stateSelect').append(option);
-		}*/
 		// If ?display=x is specified in the URL, load that one
 		var load = getParameterByName('display');
 		var loadedConfig = JSON.stringify(rsp.data[load]);
 		console.log(loadedConfig);
 		if (load) {
-				/*load = parseInt(load);
-				$( "#stateSelect" ).val(load); */
 				loadState(loadedConfig);
 				$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 				$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -2073,28 +2052,10 @@ function captureState(){
 		}
 	},'webdisplay/configs/'+saveName,saved_state,0);
 }
-/* grabs the latest saved state and populates the select field for loading */
-function populateSelection(){
-	var option = document.createElement("option");
-	if ($('#saveAs').val() !== '') {
-        option.text = $('#saveAs').val();
-    } else {
-        option.text = "Layout#" + savedStates.length;
-    }
-    option.value = savedStates.length;
-    $('#stateSelect').append(option);
-}
-function deleteState(){
-	var index = $( "#stateSelect option:selected" ).attr("value"); 
-	savedStates.splice(index, 1);
-	$("select#stateSelect option[value='"+index+"']").remove();
-}
 /*A function that is passed a json string that holds elements and their properties from a saved state of a layout. Once it takes in the json string
 it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
 the saved state*/
 function loadState(jsonString){
-	//var index = $( "#stateSelect option:selected" ).attr("value"); 
-	//var jsonString = savedStates[index];
 	var stateObject = $.parseJSON(jsonString);
 	id_arr.length = 0;
 	path_arr.length = 0;
