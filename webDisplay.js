@@ -2038,7 +2038,6 @@ function captureState(){
 	else{
 		saved_state =   {"name": saveName, "cells":cells, "text_Blocks":text_Blocks, "cameras":cameras, "img_Blocks":img_Blocks};
 	}
-	populateSelection();
 	var jsonString = JSON.stringify(saved_state);
 	//savedStates.push(jsonString);
 	console.log(savedStates);
