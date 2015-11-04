@@ -507,8 +507,7 @@ function refreshCams(cam_arr){
 			$('#preload_'+currentCam).load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
-				document.getElementById(cam).style.backgroundImage = 'url('+src+')';
-				
+				document.getElementById(cam).style.backgroundImage = 'url('+src+')';	
 			});
 			//src is set after the .load() function
 			$('#preload_'+currentCam).attr('src',cam_arr[i][1]);		
@@ -2036,7 +2035,7 @@ function captureState(){
 		cameras.push(savedCam);		
 		}
 	});
-	var saveName = $('#saveAs').val();
+	var saveName = $('#saveAs').val().replace(' ','%20');
 	//load our object arrays into the saved state array
 	if(saveName == ''){
 		saved_state = {"cells":cells, "text_Blocks":text_Blocks, "cameras":cameras, "img_Blocks":img_Blocks};
