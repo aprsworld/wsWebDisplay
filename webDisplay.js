@@ -208,141 +208,143 @@ function data_error(errors, delay) {
 function iterateStations(obj, stack, arr, lastk) {
 	var jsonItem, id, path, parent, value, title, units, typeUnits, type;
 	for (var property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (typeof obj[property] == "object") { //is this property an object? then find next property
-				jsonItem = {};
-				id = ("ws_" + stack+property+"_x").replace(/\./g, "");	
-				path = stack + '.' + property;
-				parent = ("ws_"+stack+"_x").replace(/\./g, "");
-				if(parent == "ws__x"){ //case for root node
-					parent = "#";	
-				}
-				jsonItem ["id"] = id;
-				jsonItem ["parent"] = parent;
-				jsonItem["obj"] = {};
-				jsonItem["obj"]["class"] = "";
-				if('undefined' !== typeof obj[property]['image_url']){
-					jsonItem ["id"] = id;
-					jsonItem ["parent"] = parent;
-					jsonItem ["text"] = property;
-					jsonItem ["obj"] = {
-						"path": stack + '.' + property+".image_url", 
-						"class": "draggableCamNode"
-					};
-					arr.push(jsonItem);
-					delete jsonItem;
-
-					lastk = property; //keeps track of last property which is stored in a global variable
-					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
-				}
-				else if('undefined' !== typeof obj[property]['title'] && 'undefined' == typeof obj[property]['value'] && 'undefined' == typeof obj[property]['units'] && typeof obj[property] == "object"){
-					jsonItem ["text"] = obj[property]['title'];
-					jsonItem ["id"] = id;
-					jsonItem ["parent"] = parent;
-					arr.push(jsonItem)
-					lastk = property; //keeps track of last property which is stored in a global variable
-					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
-				}
-				//checks for specific child properties of nested object - this will allow for dynamically adding units and titles to the cells
-				else if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units'] || 'undefined' !== typeof obj[property]['type'] || 'undefined' !== typeof obj[property]['typeUnits']){
-					jsonItem["id"] = id;
-					jsonItem["parent"] = parent;
-					jsonItem["obj"] = {};
-					jsonItem["obj"]["path"] = stack + '.' + property;
-					// get title 
-					if('undefined' !== typeof obj[property]['title']){
-						title = obj[property]['title'];	
-						jsonItem["obj"]["title"] = title;
-						jsonItem["text"] = title;
-					}
-					else{
-						jsonItem["text"] = property;
-					}
-					// get value 
-					if('undefined' !== typeof obj[property]['value']){
-						value = obj[property]['value'];	
-						jsonItem["obj"]["value"] = value;
-						jsonItem["obj"]["path"] = stack + '.' + property + ".value";
-					}
-					else{
-						value = null;	
-					}
-					// get units 
-					if('undefined' !== typeof obj[property]['units']){
-						units = obj[property]['units'];	
-						jsonItem["obj"]["units"] = units;
-					}
-					else{
-						units = null;	
-					}
-					// get typeUnits 
-					if('undefined' !== typeof obj[property]['typeUnits']){
-						typeUnits = obj[property]['typeUnits'];
-						jsonItem["obj"]["typeUnits"] = typeUnits;
-					}
-					else{
-						typeUnits = null;
-					}
-					// get type 
-					if('undefined' !== typeof obj[property]['type']){
-						type = obj[property]['type'];
-						jsonItem["obj"]["type"] = type;
-					}
-					else{
-						type = null;	
-					}
-					//programatically set up timestamp leaf
-					var timeStamp = {};
-					timeStamp["id"] = id+"_ageOfData";
-					timeStamp["parent"] = id;
-					timeStamp["text"] = "Age of Data";
-					timeStamp["obj"] = {};
-					timeStamp["obj"]["path"] = "timeStamp";
-					//enables dragging on non leaf-node data cells
-					jsonItem["obj"]["class"] = "dataDraggable";
-					arr.push(jsonItem, timeStamp);
-					delete jsonItem;
-					delete timeStamp;
-
-				}
-				//if not child properties, recurssively call function once more to find next level of objects/properties
-				else{
-					jsonItem ["id"] = id;
-					jsonItem ["parent"] = parent;
-					jsonItem ["text"] = property;
-					jsonItem ["obj"] = {"path": stack + '.' + property};
-					arr.push(jsonItem);
-					delete jsonItem;
-
-					lastk = property; //keeps track of last property which is stored in a global variable
-					iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
-				}
-            } else {
-				var jsonItem = {};
-				var id = ("ws_" + stack+property+"_x").replace(/\./g, "");
-				var path = stack + '.' + property;
-				var parent = ("ws_"+stack+"_x").replace(/\./g, "");
+		//main if block
+		if (typeof obj[property] == "object") { //is this property an object? then find next property
+			jsonItem = {};
+			id = ("ws_" + stack+property+"_x").replace(/\./g, "");	
+			path = stack + '.' + property;
+			parent = ("ws_"+stack+"_x").replace(/\./g, "");
+			//case for root node
+			if(parent == "ws__x"){ 
+				parent = "#";	
+			}
+			jsonItem ["id"] = id;
+			jsonItem ["parent"] = parent;
+			jsonItem["obj"] = {};
+			jsonItem["obj"]["class"] = "";
+			if('undefined' !== typeof obj[property]['image_url']){
 				jsonItem ["id"] = id;
 				jsonItem ["parent"] = parent;
 				jsonItem ["text"] = property;
-				//case for when we are setting title of station with a child title node
-				if(property !== 'title'){
-					jsonItem ["obj"] = {"path": stack + '.' + property};
-					//programatically set up timestamp leaf
-					var timeStamp = {};
-					timeStamp["id"] = id+"_ageOfData";
-					timeStamp["parent"] = id;
-					timeStamp["text"] = "Age of Data";
-					timeStamp["obj"] = {};
-					timeStamp["obj"]["path"] = "timeStamp";
-					//enables dragging on non leaf-node data cells
-					jsonItem["obj"]["class"] = "dataDraggable";
-					arr.push(jsonItem, timeStamp);
-					delete jsonItem;
-					delete timeStamp;
+				jsonItem ["obj"] = {
+					"path": stack + '.' + property+".image_url", 
+					"class": "draggableCamNode"
+				};
+				arr.push(jsonItem);
+				delete jsonItem;
+
+				lastk = property; //keeps track of last property which is stored in a global variable
+				iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
+			}
+			else if('undefined' !== typeof obj[property]['title'] && 'undefined' == typeof obj[property]['value'] && 'undefined' == typeof obj[property]['units'] && typeof obj[property] == "object"){
+				jsonItem ["text"] = obj[property]['title'];
+				jsonItem ["id"] = id;
+				jsonItem ["parent"] = parent;
+				arr.push(jsonItem)
+				lastk = property; //keeps track of last property which is stored in a global variable
+				iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
+			}
+			//checks for specific child properties of nested object - this will allow for dynamically adding units and titles to the cells
+			else if('undefined' !== typeof obj[property]['title'] || 'undefined' !== typeof obj[property]['value'] || 'undefined' !== typeof obj[property]['units'] || 'undefined' !== typeof obj[property]['type'] || 'undefined' !== typeof obj[property]['typeUnits']){
+				jsonItem["id"] = id;
+				jsonItem["parent"] = parent;
+				jsonItem["obj"] = {};
+				jsonItem["obj"]["path"] = stack + '.' + property;
+				// get title 
+				if('undefined' !== typeof obj[property]['title']){
+					title = obj[property]['title'];	
+					jsonItem["obj"]["title"] = title;
+					jsonItem["text"] = title;
 				}
-            }
-        }
+				else{
+					jsonItem["text"] = property;
+				}
+				// get value 
+				if('undefined' !== typeof obj[property]['value']){
+					value = obj[property]['value'];	
+					jsonItem["obj"]["value"] = value;
+					jsonItem["obj"]["path"] = stack + '.' + property + ".value";
+				}
+				else{
+					value = null;	
+				}
+				// get units 
+				if('undefined' !== typeof obj[property]['units']){
+					units = obj[property]['units'];	
+					jsonItem["obj"]["units"] = units;
+				}
+				else{
+					units = null;	
+				}
+				// get typeUnits 
+				if('undefined' !== typeof obj[property]['typeUnits']){
+					typeUnits = obj[property]['typeUnits'];
+					jsonItem["obj"]["typeUnits"] = typeUnits;
+				}
+				else{
+					typeUnits = null;
+				}
+				// get type 
+				if('undefined' !== typeof obj[property]['type']){
+					type = obj[property]['type'];
+					jsonItem["obj"]["type"] = type;
+				}
+				else{
+					type = null;	
+				}
+				//programatically set up timestamp leaf
+				var timeStamp = {};
+				timeStamp["id"] = id+"_ageOfData";
+				timeStamp["parent"] = id;
+				timeStamp["text"] = "Age of Data";
+				timeStamp["obj"] = {};
+				timeStamp["obj"]["path"] = "timeStamp";
+				//enables dragging on non leaf-node data cells
+				jsonItem["obj"]["class"] = "dataDraggable";
+				arr.push(jsonItem, timeStamp);
+				delete jsonItem;
+				delete timeStamp;
+
+			}
+			//if not child properties, recurssively call function once more to find next level of objects/properties
+			else{
+				jsonItem ["id"] = id;
+				jsonItem ["parent"] = parent;
+				jsonItem ["text"] = property;
+				jsonItem ["obj"] = {"path": stack + '.' + property};
+				arr.push(jsonItem);
+				delete jsonItem;
+
+				lastk = property; //keeps track of last property which is stored in a global variable
+				iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
+			}
+		// if property is not an object AKA leaf node
+		} else {
+			var jsonItem = {};
+			var id = ("ws_" + stack+property+"_x").replace(/\./g, "");
+			var path = stack + '.' + property;
+			var parent = ("ws_"+stack+"_x").replace(/\./g, "");
+			jsonItem ["id"] = id;
+			jsonItem ["parent"] = parent;
+			jsonItem ["text"] = property;
+			//case for when we are setting title of station with a child title node
+			if(property !== 'title'){
+				jsonItem ["obj"] = {"path": stack + '.' + property};
+				//programatically set up timestamp leaf
+				var timeStamp = {};
+				timeStamp["id"] = id+"_ageOfData";
+				timeStamp["parent"] = id;
+				timeStamp["text"] = "Age of Data";
+				timeStamp["obj"] = {};
+				timeStamp["obj"]["path"] = "timeStamp";
+				//enables dragging on non leaf-node data cells
+				jsonItem["obj"]["class"] = "dataDraggable";
+				arr.push(jsonItem, timeStamp);
+				delete jsonItem;
+				delete timeStamp;
+			}
+		}
+
     }
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
