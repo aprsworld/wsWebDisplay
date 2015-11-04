@@ -300,9 +300,8 @@ function iterateStations(obj, stack, arr, lastk) {
 					timeStamp["obj"]["path"] = "timeStamp";
 					//enables dragging on non leaf-node data cells
 					jsonItem["obj"]["class"] = "dataDraggable";
-					arr.push(jsonItem);
+					arr.push(jsonItem, timeStamp);
 					delete jsonItem;
-					arr.push(timeStamp);
 					delete timeStamp;
 
 				}
@@ -338,9 +337,8 @@ function iterateStations(obj, stack, arr, lastk) {
 					timeStamp["obj"]["path"] = "timeStamp";
 					//enables dragging on non leaf-node data cells
 					jsonItem["obj"]["class"] = "dataDraggable";
-					arr.push(jsonItem);
+					arr.push(jsonItem, timeStamp);
 					delete jsonItem;
-					arr.push(timeStamp);
 					delete timeStamp;
 				}
             }
@@ -363,6 +361,7 @@ function ref(obj, str) {
 function dynamicUpdate($id_arr, $path_arr, data) {
 	var idLength = $id_arr.length;
 	var value, cellObj, id, label, cellId;
+	console.log($path_arr);
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
 		if(id.indexOf("ageOfData") >= 0){
@@ -833,7 +832,7 @@ function data_update(data) {
 					return;
 				}
 				console.log(rsp);
-				var loadedLayout = JSON.stringify(rsp.data[layout]);
+				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
 				if (layout) {
 					loadState(loadedLayout);
@@ -910,7 +909,7 @@ function data_update(data) {
 		
         });
 	}
-	$(document).ready(function() {
+	var x = $(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
 		$( document ).on( "click", "#refreshTree" , function() {	
 			refreshTree(data);
@@ -920,8 +919,10 @@ function data_update(data) {
 			refreshTree(data);	
 			console.log('refreshed');
 			treeRefreshTimer = 0;
+			console.log('blah');
 		}
 	});
+	x = null;
 	refreshCams(cams);
     dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
 
@@ -2054,13 +2055,13 @@ function captureState(){
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs/'+saveName,saved_state,0);
+	},'webdisplay/configs/'+saveName,jsonString,0);
 }
 /*A function that is passed a json string that holds elements and their properties from a saved state of a layout. Once it takes in the json string
 it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
 the saved state*/
 function loadState(jsonString){
-	var stateObject = $.parseJSON(jsonString);
+	var stateObject = JSON.parse(jsonString);
 	id_arr.length = 0;
 	path_arr.length = 0;
 	cell_arr.length = 0;
@@ -2068,7 +2069,8 @@ function loadState(jsonString){
 	$('.imgCamContainer').hide();
 	//iterate over all keys in the saved state object
 	for(var k in stateObject){
-		if(k=='name'){
+		console.log(k);
+		if(k.hasOwnProperty('name')){
 			console.log(k);	
 		}
 		else if(k == 'cells'){
@@ -2165,6 +2167,7 @@ function loadState(jsonString){
 				$("#"+savedTbDivID).children('p').css('color', savedTbFontColor);
 				$("#"+savedTbDivID).css('background-color', savedTbBgColor);
 				$("#"+savedTbDivID).css('z-index',savedTbzIndex);
+				console.log(savedTbDivID+" has a top of "+savedTbTop+" and a left of "+savedTbLeft);
 				if(savedTbVisibility == true){
 					$("#"+savedTbDivID).addClass('hide');
 					$("#"+savedTbDivID).css('opacity','0.2');
