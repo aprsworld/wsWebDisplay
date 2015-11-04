@@ -361,7 +361,6 @@ function ref(obj, str) {
 function dynamicUpdate($id_arr, $path_arr, data) {
 	var idLength = $id_arr.length;
 	var value, cellObj, id, label, cellId;
-	console.log($path_arr);
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
 		if(id.indexOf("ageOfData") >= 0){
@@ -1909,6 +1908,7 @@ function captureState(){
 		savedCell.id = $(this).children('.myTableValue').attr('id');
 		savedCell.path = $(this).children('.myTableValue').children('.path').text();
 		savedCell.zIndex = $(this).css('z-index');
+		console.log($(this).children('.myTableTitle').find('.titleText').text());
 			//var value = $('#stationTree').jstree(true).get_node(treeID).original.obj.value; 
 			var units, title, type, typeUnits, typeChange, precision;
 			var pos = savedCell.id.lastIndexOf('_');
@@ -1953,12 +1953,13 @@ function captureState(){
 				units = "";
 			}
 			//gets title if there
-			if(objectFound['title'] !== undefined){
+			if(objectFound['title'] == 'undefined'){
 				title = $('#stationTree').jstree(true).get_node(treeID).original.obj.title; 
 				savedCell.title = title;
+				console.log('TITLE ' + objectFound['title']);
 			}
 			else{
-				title = 'blah';
+
 			}
 		if($(this).hasClass("hide")){
 				savedCell.hidden = true;
@@ -2068,9 +2069,8 @@ function loadState(jsonString){
 	$('.imgCamContainer').hide();
 	//iterate over all keys in the saved state object
 	for(var k in stateObject){
-		console.log(k);
 		if(k.hasOwnProperty('name')){
-			console.log(k);	
+			//do nothing
 		}
 		else if(k == 'cells'){
 			for(var cells in stateObject[k]){
