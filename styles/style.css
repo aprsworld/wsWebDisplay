@@ -123,11 +123,22 @@ select{
 	display: inline-block;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 5px;
-	height: auto;
+	margin-top: 10px;
+	width: 100%;
+	clear:both;
+	height: 25px;
 	
 }
-
+#refreshControlRow{
+	width: 100%;
+	clear:both;
+	height: 25px;
+	margin-top: 0;
+}
+#refreshTree{
+	width: 100%;
+	height: 30px;
+}
 .controls input{
 	vertical-align: middle;
 	display: inline-block;
@@ -139,9 +150,17 @@ select{
 .controls button{
 	vertical-align: middle;
 	display: inline-block;
-	height: 50px;
-	width: 100px;
+	height: 30px;
+	width: 100%;
 	color: #333;
+}
+.controls button span{
+	float: left;
+	margin-left: 10px;
+}
+.controls button i{
+	float: left;
+	margin-left: 5px;
 }
 .controls p{
 	vertical-align: middle;
@@ -550,7 +569,7 @@ div.logo_container{
 	width: 35%;
 }
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
-#zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
+#configRow, #staticRow, #zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
 	display:none;	
 }
 #bodyRow{

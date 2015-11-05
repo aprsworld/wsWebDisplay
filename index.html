@@ -20,6 +20,7 @@
 <script type="text/javascript" src="webDisplay.js"></script>
 <link rel="stylesheet" type="text/css" href="styles/style.css">
 <link rel="stylesheet" type="text/css" href="res/external/evol.colorpicker.min.css">
+<link rel="stylesheet" href="res/external/font-awesome/css/font-awesome.min.css">
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 </head>
 
@@ -33,17 +34,21 @@
 				<h2> Station Tree </h2>
 				<hr>
 				<div id="stationTree"></div>
-				<div class="controlRow">
-					<button id="refreshTree"> Refresh Tree </button>	
-					<button id="pageEdit" onclick=""> Page Edit </button>	
+				<div id="refreshControlRow" class="controlRow">
+					<button id="refreshTree"><i class="fa fa-refresh"></i><span> Refresh Tree </span></button>	
 				</div>	
 				<div class="controlRow">
-					<button id="createText" onclick="createText()"> Create Text </button>
-					<button id="createImg" onclick="createImage()"> Create Image </button>						
+					<button id="pageEdit" onclick=""><i class="fa fa-pencil-square-o"></i><span> Edit Page </span></button>	
+				</div>	
+				<div class="controlRow">
+					<button id="createStatic"><i class="fa fa-magic"></i><span> Create Static Element </span></button>
+					<!--<button id="createText" onclick="createText()"> Create Text </button>
+					<button id="createImg" onclick="createImage()"> Create Image </button>-->						
 				</div>
 				<div class="controlRow">
-					<input id="saveAs" type="textfield" value="" placeholder="Save as..."></input>
-					<button id="saveState" onclick="captureState()">Save Layout</button>
+					<button id="configMenu"><i class="fa fa-cloud-download"></i><span> Configurations </span></button>
+					<!--<input id="saveAs" type="textfield" value="" placeholder="Save as..."></input>
+					<button id="saveState" onclick="captureState()">Save Layout</button>-->
 				</div>
 				<div class="controlRow">
 				</div>
@@ -71,6 +76,14 @@
 <div class="editWindow " class="editWindowRow">
 	<h2> Edit Cell </h2>
 	<hr>
+	<div id="configRow" class="editWindowRow">
+		<input id="saveAs" type="textfield" value="" placeholder="Save as..."></input>
+		<button id="saveState" onclick="captureState()">Save Layout</button>
+	</div>
+	<div id="staticRow" class="editWindowRow">
+		<button id="createText" onclick="createText()"> Create Text </button>
+		<button id="createImg" onclick="createImage()"> Create Image </button>	
+	</div>
 	<div id="titleRow" class="editWindowRow">
 		<label> Edit Title </label><input title="" class="titleChange" type="text"></input>
 	</div>	

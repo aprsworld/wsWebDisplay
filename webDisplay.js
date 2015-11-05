@@ -1241,7 +1241,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#hoverTimeRow, #hoverRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#configRow, #staticRow, #hoverTimeRow, #hoverRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150);
 	selectedModule = $(this).attr('id');
 	
@@ -1259,9 +1259,21 @@ var editWindow =  function() {
 	});
 	$('#hideModule,#deleteModule').show();
 /*****************************************************************
+CREATE STATIC ELEMENTS CASE
+******************************************************************/	
+	if($(this).attr('id') == 'createStatic'){ 
+		$('#staticRow').show();
+	}
+/*****************************************************************
+CONFIGRATIONS CASE
+******************************************************************/	
+	else if($(this).attr('id') == 'configMenu'){
+		$('#configRow').show();
+	}
+/*****************************************************************
 PAGE EDIT CASE
 ******************************************************************/	
-	if($(this).attr('id') == 'pageEdit'){
+	else if($(this).attr('id') == 'pageEdit'){
 		$('.editWindow h2').text("Edit Page");
 		$('#titleRow,#backgroundColorRow,#opacityRow').show();
 		$('#hideModule,#deleteModule').hide();
@@ -1804,10 +1816,11 @@ function edit(handler) {
 
 	//delegate events
 	$('.top-container').delegate('.tr','click', editWindow);
-	$('#content').delegate('.textBlockContainer','click', editWindow);	
-	$('#content').delegate('.imgBlockContainer','click',editWindow);
-	$('#content').delegate('.imgCamContainer','click',editWindow);
-	$('.controls').delegate('#pageEdit','click',editWindow);
+	$('#content').delegate('.textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);	
+	//$('#content').delegate('.imgBlockContainer','click',editWindow);
+	//$('#content').delegate('.imgCamContainer','click',editWindow);
+	$('.controls').delegate('#pageEdit, #createStatic, #configMenu','click',editWindow);
+
 	
 	//enable draggables and resizables
 	$('.ui-icon').show();
@@ -1830,12 +1843,12 @@ function nonEdit(handler) {
 	$('.editWindow').hide(150);
 	$('.controls').hide(200);
 	//delegate events
-	$('#content').undelegate('.textBlockContainer','click', editWindow);
+	$('#content').undelegate('.textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);
 	$('.top-container').undelegate('.tr','click', editWindow);
-	$('#content').undelegate('.imgBlockContainer','click',editWindow);
-	$('#content').undelegate('.imgCamContainer','click',editWindow);
-	$('.controls').undelegate('#pageEdit','click',editWindow);
-
+	//$('#content').undelegate('.imgBlockContainer','click',editWindow);
+	//$('#content').undelegate('.imgCamContainer','click',editWindow);
+	$('.controls').delegate('#pageEdit, #createStatic, #configMenu','click',editWindow);
+	
 	//disable draggables and resizables
 	$('.ui-icon').hide();
 	$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
