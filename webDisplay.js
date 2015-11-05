@@ -301,7 +301,7 @@ function iterateStations(obj, stack, arr, lastk) {
 				timeStamp["obj"]["path"] = "timeStamp";
 				//enables dragging on non leaf-node data cells
 				jsonItem["obj"]["class"] = "dataDraggable";
-				arr.push(jsonItem, timeStamp);
+				arr.push(jsonItem/*, timeStamp*/);
 				delete jsonItem;
 				delete timeStamp;
 
@@ -339,7 +339,7 @@ function iterateStations(obj, stack, arr, lastk) {
 				timeStamp["obj"]["path"] = "timeStamp";
 				//enables dragging on non leaf-node data cells
 				jsonItem["obj"]["class"] = "dataDraggable";
-				arr.push(jsonItem, timeStamp);
+				arr.push(jsonItem/*, timeStamp*/);
 				delete jsonItem;
 				delete timeStamp;
 			}
