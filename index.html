@@ -81,8 +81,8 @@
 		<button id="saveState" onclick="captureState()">Save Layout</button>
 	</div>
 	<div id="staticRow" class="editWindowRow">
-		<button id="createText" onclick="createText()"> Create Text </button>
-		<button id="createImg" onclick="createImage()"> Create Image </button>	
+		<button id="createText" onclick="createText()"> <i class="fa fa-align-left fa-2x"></i> Create Text </button>
+		<button id="createImg" onclick="createImage()"> <i class="fa fa-file-image-o fa-2x"></i> Create Image </button>	
 	</div>
 	<div id="titleRow" class="editWindowRow">
 		<label> Edit Title </label><input title="" class="titleChange" type="text"></input>
@@ -137,14 +137,14 @@
 
 		</div>
 	</div>
-	<div>
-		<button id="resizeModule"> Reset Image </button>
-		<button id="cropModule"> Crop <br>image </button>
-		<button id="endCrop"> Finish Cropping </button>
+	<div id="cropRow" class="editWindowRow">
+		<button id="resizeModule"><i class="fa fa-undo fa-2x"></i> Reset Image </button>
+		<button id="cropModule"><i class="fa fa-crop fa-2x"></i> Crop image </button>
+		<button id="endCrop"><i class="fa fa-thumbs-up fa-2x"></i> Finish Cropping </button>
 	</div>
-	<div >
-		<button id="hideModule"> Hide Selected</button>
-		<button id="deleteModule"> Delete Selected </button>
+	<div id="hideDelRow"class="editWindowRow">
+		<button id="hideModule"> <i class="fa fa-trash fa-2x"></i> Hide Selected</button>
+		<button id="deleteModule"> <i class="fa fa-trash fa-2x"></i>Delete Selected </button>
 	</div>
 </div>
 </body>

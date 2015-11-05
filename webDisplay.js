@@ -1241,7 +1241,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#configRow, #staticRow, #hoverTimeRow, #hoverRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').show(150);
 	selectedModule = $(this).attr('id');
 	
@@ -1263,6 +1263,7 @@ CREATE STATIC ELEMENTS CASE
 ******************************************************************/	
 	if($(this).attr('id') == 'createStatic'){ 
 		$('#staticRow').show();
+		
 	}
 /*****************************************************************
 CONFIGRATIONS CASE
@@ -1342,7 +1343,7 @@ PAGE EDIT CASE
 CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
-		$('#cropModule, #resizeModule, #zRow, #hoverRow').show();
+		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text("Edit Camera");
 		moduleContainer = $(this).attr('id');
 		
@@ -1471,7 +1472,7 @@ CAMERA CASE
 TEXT BLOCKS CASE
 ******************************************************************/
 	else if($(this).hasClass('textBlockContainer')){
-		$('#zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
+		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
 		$('.editWindow h2').text("Edit Text Block");
 		id = $(this).attr('id');
 		body = $(this).children('p');
@@ -1564,7 +1565,7 @@ IMG BLOCKS CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#zRow, #urlRow , #resizeModulem, #hoverRow').show();
+		$('#hideDelRow, #zRow, #urlRow , #resizeModulem, #hoverRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window 
 		$('.editWindow h2').text("Edit Image");
@@ -1652,7 +1653,7 @@ DATA CELLS CASE
 ******************************************************************/
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
-		$('#zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow').show();
+		$('#hideDelRow, #zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text("Edit Cell");
@@ -1798,11 +1799,11 @@ DATA CELLS CASE
 		});
 	if($("#"+selectedModule).hasClass('hide')){
 		$('#hideModule').attr('onclick', "showModule('"+ selectedModule +"')");
-		$('#hideModule').text('Unhide selected');
+		$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');
 	}
 	else{
 		$('#hideModule').attr('onclick', "hideModule('"+ selectedModule +"')");
-		$('#hideModule').text('Hide selected');
+		$('#hideModule').html('<i class="fa fa-eye-slash fa-2x"></i> Hide Selected');
 	}
 };
 function edit(handler) {
@@ -1860,13 +1861,13 @@ function hideModule(id) {
 	$("#"+id).addClass('hide');
 	$("#"+id).css('opacity','.2');
 	$('#hideModule').attr('onclick', "showModule('"+ id +"')");	
-	$('#hideModule').text('unhide selected');
+	$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');
 }
 function showModule(id) {
 	$("#"+id).css('opacity','1.0');
 	$("#"+id).removeClass('hide');
 	$('#hideModule').attr('onclick', "hideModule('"+ id +"')");
-	$('#hideModule').text('hide selected');
+	$('#hideModule').html('<i class="fa fa-eye-slash fa-2x"></i> Hide Selected');
 }
 //function that allows for the safe decoding of html entities	
 function htmlEntities(str) {
