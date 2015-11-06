@@ -206,6 +206,8 @@ function initJqueryUI(){
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
+
+//structure for jsonItem used in iterateStations
 function treeitem(){
 	this.id;
 	this.parent;
@@ -921,23 +923,24 @@ function data_update(data) {
 		
         });
 	}
-	var x = $(document).ready(function() {
-		$( document ).off( "click", "#refreshTree" );
-		$( document ).on( "click", "#refreshTree" , function() {	
-			refreshTree(data);
-		});	
-		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
-		if(editMode == false && treeRefreshTimer >= 14){
-			refreshTree(data);	
-			console.log('refreshed');
-			treeRefreshTimer = 0;
-			console.log('blah');
-		}
-	});
-	x = null;
-	refreshCams(cams);
-    dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
-
+		var x = $(document).ready(function() {
+			$( document ).off( "click", "#refreshTree" );
+			$( document ).on( "click", "#refreshTree" , function() {	
+				refreshTree(data);
+			});	
+			//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
+			if(editMode == false && treeRefreshTimer >= 14){
+				refreshTree(data);	
+				console.log('refreshed');
+				treeRefreshTimer = 0;
+				console.log('blah');
+			}
+		});
+		x = null;
+		refreshCams(cams);
+		dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
+		console.log('new data');
+	
 }
 //gets parameters in url
 //called like: var host = getUrlVars()["host"];
@@ -1437,7 +1440,7 @@ CAMERA CASE
 			$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 			$('.cropperwrapper > img').cropper({
 				aspectRatio: width / height,
-				autoCropArea: .8,
+				autoCropArea: 1.0,
 				dragCrop: true,
 				scaleable: false,
 				movable: false,
@@ -1464,7 +1467,16 @@ CAMERA CASE
 				var changeTop = (((left-cropLeft)/1)*100);
 				$('.cropperWrapper').remove();
 				if(cropTop == 0 || cropLeft == 0){
-					$("#"+selectedModule).css("background-position", ""+(cropLeft*diffFromNatWidth)+"px "+(cropTop*diffFromNatHeight)+"px");
+					if(cropTop == 0){
+						$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px "+(cropTop*diffFromNatHeight)+"px");
+					}
+					else if(cropLeft == 0){
+						$("#"+selectedModule).css("background-position", ""+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+					}
+					else if(cropLeft == 0 && cropTop ==0){
+						$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+					}
+					console.log($("#"+selectedModule).css("background-position"));
 				}
 				else{
 					$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");

@@ -456,9 +456,8 @@ div.logo_container{
 	display: none;
 	background-color: rgba(0,0,0,.5);
 	border: 1px solid #000;
-	padding: 10px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-left: 0px;
+	padding-right: 0px;
 	z-index: 101;
 	color: #333;
 	text-align: center;
