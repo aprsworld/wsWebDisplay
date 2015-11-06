@@ -16,6 +16,7 @@ var textBlocks = []; //array to keep track of ids of generated text blocks
 var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
 var ageInterval;
+var staticRegexPeriod = /\./g; //global declaration to reduce overhead
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -205,15 +206,17 @@ function initJqueryUI(){
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
+
 function iterateStations(obj, stack, arr, lastk) {
 	var jsonItem, id, path, parent, value, title, units, typeUnits, type;
+	console.log(lastk);
 	for (var property in obj) {
 		//main if block
 		if (typeof obj[property] == "object") { //is this property an object? then find next property
 			jsonItem = {};
-			id = ("ws_" + stack+property+"_x").replace(/\./g, "");	
+			id = ("ws_" + stack+property+"_x").replace(staticRegexPeriod, "");	
 			path = stack + '.' + property;
-			parent = ("ws_"+stack+"_x").replace(/\./g, "");
+			parent = ("ws_"+stack+"_x").replace(staticRegexPeriod, "");
 			//case for root node
 			if(parent == "ws__x"){ 
 				parent = "#";	
@@ -301,7 +304,7 @@ function iterateStations(obj, stack, arr, lastk) {
 				timeStamp["obj"]["path"] = "timeStamp";
 				//enables dragging on non leaf-node data cells
 				jsonItem["obj"]["class"] = "dataDraggable";
-				arr.push(jsonItem/*, timeStamp*/);
+				arr.push(jsonItem, timeStamp);
 				delete jsonItem;
 				delete timeStamp;
 
@@ -339,7 +342,7 @@ function iterateStations(obj, stack, arr, lastk) {
 				timeStamp["obj"]["path"] = "timeStamp";
 				//enables dragging on non leaf-node data cells
 				jsonItem["obj"]["class"] = "dataDraggable";
-				arr.push(jsonItem/*, timeStamp*/);
+				arr.push(jsonItem, timeStamp);
 				delete jsonItem;
 				delete timeStamp;
 			}
@@ -1261,14 +1264,15 @@ var editWindow =  function() {
 /*****************************************************************
 CREATE STATIC ELEMENTS CASE
 ******************************************************************/	
-	if($(this).attr('id') == 'createStatic'){ 
+	if($(this).attr('id') == 'createStatic'){
+		$('.editWindow h2').text("Static Elements");
 		$('#staticRow').show();
-		
 	}
 /*****************************************************************
 CONFIGRATIONS CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'configMenu'){
+		$('.editWindow h2').text("Configurations");
 		$('#configRow').show();
 	}
 /*****************************************************************
