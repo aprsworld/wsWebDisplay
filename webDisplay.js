@@ -206,14 +206,22 @@ function initJqueryUI(){
 function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
-
+function treeitem(){
+	this.id;
+	this.parent;
+	this.text;
+	this.obj = function obj(){
+		this.path;
+		this.class;
+		this.value;
+	};
+}
 function iterateStations(obj, stack, arr, lastk) {
-	var jsonItem, id, path, parent, value, title, units, typeUnits, type;
-	console.log(lastk);
+	var jsonItem, jsonItem2, id, path, parent, value, title, units, typeUnits, type;
 	for (var property in obj) {
 		//main if block
 		if (typeof obj[property] == "object") { //is this property an object? then find next property
-			jsonItem = {};
+			jsonItem = new treeitem();
 			id = ("ws_" + stack+property+"_x").replace(staticRegexPeriod, "");	
 			path = stack + '.' + property;
 			parent = ("ws_"+stack+"_x").replace(staticRegexPeriod, "");
@@ -221,8 +229,8 @@ function iterateStations(obj, stack, arr, lastk) {
 			if(parent == "ws__x"){ 
 				parent = "#";	
 			}
-			jsonItem ["id"] = id;
-			jsonItem ["parent"] = parent;
+			jsonItem["id"] = id;
+			jsonItem["parent"] = parent;
 			jsonItem["obj"] = {};
 			jsonItem["obj"]["class"] = "";
 			if('undefined' !== typeof obj[property]['image_url']){
@@ -323,7 +331,7 @@ function iterateStations(obj, stack, arr, lastk) {
 			}
 		// if property is not an object AKA leaf node
 		} else {
-			var jsonItem = {};
+			var jsonItem = new treeitem();
 			var id = ("ws_" + stack+property+"_x").replace(/\./g, "");
 			var path = stack + '.' + property;
 			var parent = ("ws_"+stack+"_x").replace(/\./g, "");
@@ -610,6 +618,7 @@ function data_update(data) {
 						$(ui.helper).addClass("ui-draggable-helperCell");
 						$(ui.helper).html('');
 						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+						console.log($('#stationTree').jstree(true).get_node(id).original.obj);
 						var title = $('#stationTree').jstree(true).get_node(id).text;
 						$(ui.helper).append('<div class="tr draggable" id="helperTr"><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>Preview</p><span class="path"></span><span class="label"></span></div></div>');						
 					},
