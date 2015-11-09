@@ -1422,7 +1422,7 @@ CAMERA CASE
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
-			$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow').hide();
+			$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').hide();
 			$('#endCrop, #cancelCrop').show();
 			var nativeWidth = $("#"+selectedModule).children('img').width();
 			var nativeHeight = $("#"+selectedModule).children('img').height();
@@ -1457,7 +1457,7 @@ CAMERA CASE
 			});
 			$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
 			$( document ).on( "click", "#endCrop" , function() {
-				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow').show();
+				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
 				$('#endCrop, #cancelCrop').hide();
 				width = parseInt((width.slice(0,-2)));
 				height = parseInt((height.slice(0,-2)));
@@ -1494,7 +1494,7 @@ CAMERA CASE
 			$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
 			$( document ).on( "click", "#cancelCrop" , function() {
 				$("#"+selectedModule).show();
-				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow').show();
+				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
 				$('#endCrop, #cancelCrop').hide();
 				$('.cropperWrapper').remove();
 			});
