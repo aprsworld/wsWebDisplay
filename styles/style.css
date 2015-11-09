@@ -555,18 +555,24 @@ div.logo_container{
 .urlChange{
 	width: 100%;
 }
-#createText, #resizeModule, #cropModule, #endCrop, #hideModule, #deleteModule, #createImg{
+#createText, #resizeModule, #cancelCrop, #cropModule, #endCrop, #hideModule, #deleteModule, #createImg{
 	width: 45%;
 	height: 100px;
 	float: left;
 	font-size: 14px;
 	margin-left: 10px;
 }
-#createText i, #hideModule i, #cropModule i, #resizeModule i, #endCrop i, #deleteModule i, #createImg i{
+#createText i, #hideModule i, #cancelCrop i, #cropModule i, #resizeModule i, #endCrop i, #deleteModule i, #createImg i{
 	display: block; 
 	height: 40px;
 }
-
+#cancelCrop{
+	margin-top: 15px;
+	display: none;	
+}
+#cancelCrop i{
+	color: #700000 !important;	
+}
 #hideModule{
 	margin-top: 15px;
 }
@@ -583,6 +589,9 @@ div.logo_container{
 #endCrop{
 	display:none;
 	margin-top: 15px;
+}
+#endCrop i{
+	color: green !important;
 }
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
 #cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{

@@ -1422,8 +1422,8 @@ CAMERA CASE
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
-			$('#cropModule').hide();
-			$('#endCrop').show();
+			$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow').hide();
+			$('#endCrop, #cancelCrop').show();
 			var nativeWidth = $("#"+selectedModule).children('img').width();
 			var nativeHeight = $("#"+selectedModule).children('img').height();
 			$("#"+selectedModule).hide();
@@ -1457,8 +1457,8 @@ CAMERA CASE
 			});
 			$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
 			$( document ).on( "click", "#endCrop" , function() {
-				$('#cropModule').show();
-				$('#endCrop').hide();
+				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow').show();
+				$('#endCrop, #cancelCrop').hide();
 				width = parseInt((width.slice(0,-2)));
 				height = parseInt((height.slice(0,-2)));
 				var changeWidth = ((((width-cropWidth)/width)));
@@ -1490,6 +1490,13 @@ CAMERA CASE
 				$("#"+selectedModule).show();
 				$("#"+selectedModule).addClass("cropped");
 				$(".cropped").resizable({disabled:true});
+			});
+			$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
+			$( document ).on( "click", "#cancelCrop" , function() {
+				$("#"+selectedModule).show();
+				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow').show();
+				$('#endCrop, #cancelCrop').hide();
+				$('.cropperWrapper').remove();
 			});
 		});
 	}
