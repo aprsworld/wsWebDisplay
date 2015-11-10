@@ -1428,12 +1428,11 @@ CAMERA CASE
 			var nativeHeight = $("#"+selectedModule).children('img').height();
 			$("#"+selectedModule).hide();
 			var cropWidth, cropHeight, cropLeft, cropTop;
-			var thismodule = $("#"+selectedModule);
 			var width = $("#"+selectedModule).css('width');
 			var height = $("#"+selectedModule).css('height');
 			var left = $("#"+selectedModule).css('left');
 			var top = $("#"+selectedModule).css('top');
-			var src = $("#"+selectedModule).find('img').attr('src');
+			var src = $("#"+selectedModule).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //.find('img').attr('src');
 			var diffFromNatHeight = (height.slice(0,-2))/nativeHeight;
 			var diffFromNatWidth = (width.slice(0,-2))/nativeWidth;
 			$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width.slice(0,-2)*diffFromNatWidth)+' " height="'+(height.slice(0,-2)*diffFromNatHeight)+' "src="'+src+'"></div>');
@@ -1461,14 +1460,16 @@ CAMERA CASE
 				$('#endCrop, #cancelCrop').hide();
 				width = parseInt((width.slice(0,-2)));
 				height = parseInt((height.slice(0,-2)));
-				var changeWidth = ((((width-cropWidth)/width)));
+				/*var changeWidth = ((((width-cropWidth)/width)));
 				var changeHeight = (((height-cropHeight)/height));
 				var changeLeft = ((((top-cropTop)/1))*100);
-				var changeTop = (((left-cropLeft)/1)*100);
+				var changeTop = (((left-cropLeft)/1)*100);*/
 				$('.cropperWrapper').remove();
+				console.log(diffFromNatHeight);
+				console.log(diffFromNatWidth);
 				if(cropTop == 0 || cropLeft == 0){
 					if(cropTop == 0){
-						$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px "+(cropTop*diffFromNatHeight)+"px");
+						$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px "+((cropTop*diffFromNatHeight))+"px");
 					}
 					else if(cropLeft == 0){
 						$("#"+selectedModule).css("background-position", ""+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
@@ -1481,8 +1482,8 @@ CAMERA CASE
 				else{
 					$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
 				}
-				$("#"+selectedModule).css("top",Math.abs(top)+Math.abs((cropTop*diffFromNatHeight)));
-				$("#"+selectedModule).css("left",Math.abs(left)+Math.abs((cropLeft*diffFromNatWidth)));
+				$("#"+selectedModule).css("top",top+(cropTop*diffFromNatHeight));
+				$("#"+selectedModule).css("left",left+(cropLeft*diffFromNatWidth));
 				$("#"+selectedModule).css("width",cropWidth*diffFromNatWidth+"px");
 				$("#"+selectedModule).css("height",cropHeight*diffFromNatHeight+"px");
 				$("#"+selectedModule).css("background-size",width+"px "+height+"px ");

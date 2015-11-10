@@ -593,6 +593,10 @@ div.logo_container{
 #endCrop i{
 	color: green !important;
 }
+.cropperWrapper{
+	z-index: 200;
+	box-shadow: 0px 0px 10px black;
+}
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
 #cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
 	display:none;	
