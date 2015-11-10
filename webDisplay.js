@@ -378,14 +378,18 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 	var value, cellObj, id, label, cellId;
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
+		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
 		if(id.indexOf("ageOfData") >= 0){
 			value = 0+" seconds old";
 		}
+		//for other elements...
 		else{
 			id = id.replace('div_', '');	
 			var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(id);
 			var objectFound = cell_arr[elementPos];
-			value = ref(data, $path_arr[$i]); //finds value of object
+			//finds value of object
+			value = ref(data, $path_arr[$i]);
+			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
 				var typeUnits = objectFound.typeUnits;
@@ -406,6 +410,9 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 				}
 				label = result.label;
 				$('div#div_' + id + '').children('.label').html(label);
+			}
+			else if(!isNaN(value)){
+				value = round(parseFloat(value), objectFound.precision);
 			}
 		}
 	if (value === undefined) {
@@ -1237,7 +1244,6 @@ function populateConversions(id){
 		}
 		//leave function due to incorrect format of object.type
 		else{
-			console.log('fail1');
 			return;	
 		}
 		console.log("hi "+currentUnits);
@@ -1695,6 +1701,9 @@ DATA CELLS CASE
 		title = $(this).children('.myTableTitle').children('p');
 		label = $(this).children('.myTableValue').children('.label');
 		value = $(this).children('.myTableValue');
+		if(isNaN(value.find('p').text())){
+			$('#roundingRow').hide();	
+		}
 		id = $(this).children('.myTableValue').attr('id');
 		originalTitle = $(this).children('.myTableID').children('span').text();
 		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
