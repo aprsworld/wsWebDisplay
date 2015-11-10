@@ -781,6 +781,17 @@ function data_update(data) {
 					}
 					else{
 						title = $($element).text();
+						if(title == 'Age of Data'){
+							var parentId = $('#stationTree').jstree(true).get_node(id).original.parent;
+							var parentPath =  $('#stationTree').jstree(true).get_node(parentId).original.obj.path;
+							var tooltipSplit = parentPath.substring(1).split(staticRegexPeriod);
+							tooltip = '';
+							for(var i =0; i<tooltipSplit.length; i++){
+								tooltip = tooltip+tooltipSplit[i]+' >> ';	
+							}
+							tooltip = tooltip+title;
+							console.log(tooltipSplit);
+						}
 					}
 					tree_item["precision"] = 3;
 					path_arr.push(path);
@@ -2351,7 +2362,6 @@ function loadState(jsonString){
 			$('.editWindow').animate({
 				width: '0px',
 				margin: '0',
-				padding: '0',
 			},50);
 			$('.controlRow').hide();
 			$('.controls h2').hide();
@@ -2363,7 +2373,6 @@ function loadState(jsonString){
 			},200);
 			$('.editWindow').animate({
 				width: '280px',
-				padding: '20px',
 			},200);
 			$('.controlRow').show();
 			$('.controls h2').show();
