@@ -506,7 +506,6 @@ function createCamFromTree(tree_id){
 		
 		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
 		$('#div_'+selection).children('img').attr('src',src);
-		//proof of concept
 		$('#div_'+selection).children('img').attr('alt','1');
 		$("#div_"+selection).css('display','inline');
 	});
@@ -734,6 +733,7 @@ function data_update(data) {
 					var new_id = "div_"+id+"_"+idArrLen;
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
 					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+					var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
 					var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
 					var units, title, type, typeUnits;
 					tree_item["path"] = path;
@@ -769,6 +769,13 @@ function data_update(data) {
 					if($('#stationTree').jstree(true).get_node(id).original.obj.title){
 						title = $('#stationTree').jstree(true).get_node(id).original.obj.title; 
 						tree_item["title"] = title;
+						var tooltipSplit = path.substring(1).split(staticRegexPeriod);
+						tooltip = '';
+						for(var i =0; i<tooltipSplit.length-2; i++){
+							tooltip = tooltip+tooltipSplit[i]+' >> ';	
+						}
+						tooltip = tooltip+title;
+						console.log(tooltipSplit);
 					}
 					else{
 						title = $($element).text();
@@ -802,9 +809,8 @@ function data_update(data) {
 						createCamFromTree(childId);
 					cellCount++;   
 					}
-
 					else{
-						$('.top-container').append('<div class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
+						$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
 						$(".draggable").draggable({ //makes our data cells draggable
 							disabled: true,
 							grid: [1, 1],
