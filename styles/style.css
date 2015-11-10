@@ -463,6 +463,30 @@ div.logo_container{
 	text-align: center;
 	box-shadow: 0px 0px 3px #222;
 	overflow: hidden;
+	max-height: 100vh;
+}
+#editMinimize{
+	position: absolute;
+	bottom:22;
+	right: 35;
+	color: white;
+	cursor: pointer;
+	width: 200px;
+	z-index: 102;
+	display:none;
+}
+#editMaximize{
+	position: absolute;
+	bottom:22;
+	right: 2;
+	color: white;
+	cursor: pointer;
+	width: 32px;
+	z-index: 102;
+	display:none;
+}
+.hide{
+	display: none !important;	
 }
 .editWindowRow{
 	height: auto;
@@ -473,6 +497,7 @@ div.logo_container{
 	margin: 10px;
 	margin-top: 10px;
 	margin-bottom: 10px;
+	
 }
 .editWindowRow input{
 	height: 28px;	

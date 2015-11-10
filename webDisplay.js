@@ -1280,6 +1280,26 @@ var editWindow =  function() {
 		defaultPalette: 'web',
 		showOn: "focus"
 	});
+	if($('.editWindow').hasClass('hide')){
+		$("#editMaximize").show();
+		$("#editMinimize").hide();
+	}
+	else{
+		$("#editMaximize").hide();
+		$("#editMinimize").show();	
+	}
+	$("#editMinimize").off("click");
+	$("#editMinimize").on("click", function(event, color){
+    	$('.editWindow').addClass('hide');
+		$("#editMaximize").show();
+		$("#editMinimize").hide();
+	});
+	$("#editMaximize").off("click");
+	$("#editMaximize").on("click", function(event, color){
+    	$('.editWindow').removeClass('hide');
+		$("#editMaximize").hide();
+		$("#editMinimize").show();	
+	});
 	$(".backgroundColorChange").off("mouseover.color");
 	$(".backgroundColorChange").on("mouseover.color", function(event, color){
     	$('#'+selectedModule).css('background-color', color);
@@ -1864,7 +1884,6 @@ function edit(handler) {
 	$('.hide').css('visibility','visible');
 	$('.controls').show(200);
 	$('#masterEdit').attr('onclick', 'nonEdit()');
-
 	//delegate events
 	$('.top-container').delegate('.tr','click', editWindow);
 	$('#content').delegate('.textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);	
@@ -1893,6 +1912,8 @@ function nonEdit(handler) {
 	$('.hide').css('visibility', 'hidden');
 	$('.editWindow').hide(150);
 	$('.controls').hide(200);
+	$("#editMaximize").hide();
+	$("#editMinimize").hide();
 	//delegate events
 	$('#content').undelegate('.textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);
 	$('.top-container').undelegate('.tr','click', editWindow);
