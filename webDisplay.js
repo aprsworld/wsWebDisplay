@@ -471,7 +471,7 @@ function populateCams(cam_arr){
 		$('#preload').append('<img alt="camimage" src="" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
-function createCamFromTree(tree_id){
+function createCamFromTree(tree_id, tooltip){
 	var selection = tree_id;
 	$('.imgCamContainer').draggable({
 		grid: [1, 1],
@@ -509,8 +509,10 @@ function createCamFromTree(tree_id){
 		$('#div_'+selection).children('img').attr('alt','1');
 		$("#div_"+selection).css('display','inline');
 	});
+	
 	var url = $('#div_'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
 	$('#preload_div_'+selection).attr('src', url);
+	$('#div_'+selection).attr('title',tooltip);
 }	
 //function that refreshes cams and preloads the refreshed image before displaying it	
 function refreshCams(cam_arr){
@@ -806,7 +808,7 @@ function data_update(data) {
 						$('#div_'+childId).css('position', 'absolute');
 						$('#div_'+childId).css('top',pageY);
 						$('#div_'+childId).css('left',pageX);
-						createCamFromTree(childId);
+						createCamFromTree(childId, tooltip);
 					cellCount++;   
 					}
 					else{
