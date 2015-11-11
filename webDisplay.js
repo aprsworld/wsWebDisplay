@@ -529,7 +529,7 @@ function createCamFromTree(tree_id, tooltip){
 				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 				$('#resizeSpan').css({
 					top: event.clientY,
-					left: (event.clientX)-500
+					left: (event.clientX)
 				});
 				$(this).append(posSpan);
 				handleTarget = $(event.originalEvent.target);
@@ -544,7 +544,6 @@ function createCamFromTree(tree_id, tooltip){
 					top: event.clientY,
 					left: event.clientX
 				}); 
-				console.log($(this).data('ui-resizable'));
 				$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
 				//console.log(event.pageY);
 			},

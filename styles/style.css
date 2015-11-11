@@ -387,7 +387,7 @@ div.logo_container{
 	color: #ddd !important;
 	font-weight: 900;
 	text-align: center;
-	z-index:101;
+	z-index:104;
 }
 #positionSpan{
 	display: inline-block;
@@ -408,6 +408,8 @@ div.logo_container{
 	color: #ddd !important;
 	font-weight: 900;
 	text-align: center;
+	width: 300px;
+	height: 20px;
 }
 .container .th{
 	padding: 5px;
