@@ -9,7 +9,6 @@ var loadedTime = 0;
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
 var id_arr = [];
 var path_arr = [];
-var name_arr = [];
 var cell_arr = [];
 var savedStates = []; //set of saved table states in the format of a multi Dimensional array consisting of coordinates of each cell
 var textBlocks = []; //array to keep track of ids of generated text blocks
@@ -571,9 +570,6 @@ function timer(){
 	if(loadedTime%30 == 0){
 		console.log(convertedLoad+' since page was loaded');	
 	}
-	if(camTime > 90){
-		//$('#camTimer').text("90+ seconds since last camera image received. Try refreshing your browser window.");	
-	}
 }
 /*function that periodically updates the data */
 function data_update(data) {
@@ -612,6 +608,7 @@ function data_update(data) {
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				$(".jstree-leaf, .dataDraggable").draggable({
 					helper: "clone",
+					delay: 150,
 					start: function (event, ui) {
 						$('.controls').animate({
 							width: '10px'
@@ -646,6 +643,7 @@ function data_update(data) {
 				});
 				$( ".draggableCamNode" ).draggable({
 					helper: "clone",
+					delay: 150,
 					start: function (event, ui) {
 						$('.controls').animate({
 							width: '10px'
@@ -779,6 +777,7 @@ function data_update(data) {
 						tooltip = tooltip+title;
 						console.log(tooltipSplit);
 					}
+					//case for elements with no valid path
 					else{
 						title = $($element).text();
 						if(title == 'Age of Data'){
@@ -1906,7 +1905,8 @@ function edit(handler) {
 	//enable draggables and resizables
 	$('.ui-icon').show();
 	$(".jstree-leaf").draggable({
-		helper: "clone"
+		helper: "clone",
+		delay: 300
 	});
 	$(".imgCamContainer").draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 	$(".cropped").resizable({disabled:true});
