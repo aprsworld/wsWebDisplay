@@ -381,6 +381,15 @@ div.logo_container{
 .draggable_focus_in{
 	box-shadow: 0px 0px 20px #0550a5;
 }
+#positionSpan{
+	display: inline-block;
+	position: absolute;
+	top: -20;
+	left: -55;
+	color: white !important;
+	font-weight: 900;
+	text-align: center;
+}
 .container .th{
 	padding: 5px;
 	width: 20%;

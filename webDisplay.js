@@ -487,7 +487,18 @@ function createCamFromTree(tree_id, tooltip){
 			},50);
 			$('.controlRow').hide();
 			$('.controls h2').hide();
+			var posLeft = ui.position.left;
+			var posTop = ui.position.top;
+			var posSpan = document.createElement("SPAN"); 
+			posSpan.id = 'positionSpan';
+			posSpan.textContent = "("+posLeft+"x, "+posTop+"y)";
+			$(this).append(posSpan);
 		},
+		drag: function( event, ui ) {
+			var posLeft = ui.position.left;	
+			var posTop = ui.position.top;
+			$('#positionSpan').text("("+posLeft+"x, "+posTop+"y)");
+		},		
 		stop: function(event, ui) {
 			$('.controls').animate({
 				width: '250px'
@@ -498,8 +509,28 @@ function createCamFromTree(tree_id, tooltip){
 			},200);
 			$('.controlRow').show();
 			$('.controls h2').show();
+			$('#positionSpan').remove();
 		},
-		disabled: false}).resizable({disabled: false, handles: 'all'});
+		disabled: false}).resizable({
+			disabled: false, 
+			handles: 'all',
+			start: function(event, ui) {
+				var width = $(this).css('width');
+				var height = $(this).css('height');
+				var posSpan = document.createElement("SPAN"); 
+				posSpan.id = 'positionSpan';
+				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+				$(this).append(posSpan);
+			},
+			resize: function(event, ui) {
+				var width = $(this).css('width');
+				var height = $(this).css('height');
+				$('#positionSpan').text("Width: "+width+"  Height: "+height+"");
+			},
+			stop: function(event, ui) {
+				$('#positionSpan').remove();
+			}
+		});
 	$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
 		
@@ -609,6 +640,7 @@ function data_update(data) {
 				$(".jstree-leaf, .dataDraggable").draggable({
 					helper: "clone",
 					delay: 150,
+					opacity: 0.75,
 					start: function (event, ui) {
 						$('.controls').animate({
 							width: '10px'
@@ -644,6 +676,7 @@ function data_update(data) {
 				$( ".draggableCamNode" ).draggable({
 					helper: "clone",
 					delay: 150,
+					opacity: 0.75,
 					start: function (event, ui) {
 						$('.controls').animate({
 							width: '10px'
@@ -840,6 +873,17 @@ function data_update(data) {
 								},50);
 								$('.controlRow').hide();
 								$('.controls h2').hide();
+								var posLeft = ui.position.left;
+								var posTop = ui.position.top;
+								var posSpan = document.createElement("SPAN"); 
+								posSpan.id = 'positionSpan';
+								posSpan.textContent = "("+posLeft+"x, "+posTop+"y)";
+								$(this).append(posSpan);
+							},
+							drag: function( event, ui ) {
+								var posLeft = ui.position.left;	
+								var posTop = ui.position.top;
+								$('#positionSpan').text("("+posLeft+"x, "+posTop+"y)");
 							},
 							stop: function(event, ui) {
 								$(this).removeClass('draggable_focus_in');
@@ -852,8 +896,28 @@ function data_update(data) {
 								},200);
 								$('.controlRow').show();
 								$('.controls h2').show();
+								$('#positionSpan').remove();
 							}
-						}).resizable({});						
+						}).resizable({
+							disabled: false, 
+							handles: 'all',
+							start: function(event, ui) {
+								var width = $(this).css('width');
+								var height = $(this).css('height');
+								var posSpan = document.createElement("SPAN"); 
+								posSpan.id = 'positionSpan';
+								posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+								$(this).append(posSpan);
+							},
+							resize: function(event, ui) {
+								var width = $(this).css('width');
+								var height = $(this).css('height');
+								$('#positionSpan').text("Width: "+width+"  Height: "+height+"");
+							},
+							stop: function(event, ui) {
+								$('#positionSpan').remove();
+							}
+						});			
 						$(".draggable").draggable( "option", "disabled", false )
 						$('#'+cellCount).css('position', 'absolute');
 						$('#'+cellCount).css('top',pageY);
