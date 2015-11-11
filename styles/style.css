@@ -375,7 +375,6 @@ div.logo_container{
 	display: inline-block;
 	border-radius: 5px;
 	z-index: 2;
-	cursor: pointer;
 	background-color: rgba(0,0,0,0.01);
 }
 .draggable_focus_in{
@@ -388,12 +387,12 @@ div.logo_container{
 	color: #ddd !important;
 	font-weight: 900;
 	text-align: center;
+	z-index:101;
 }
 #positionSpan{
 	display: inline-block;
 	color: #ddd !important;
 	font-weight: 900;
-	text-align: center;
 	margin-left: 5px;
 }
 #positionDiv i{

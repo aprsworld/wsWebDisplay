@@ -472,10 +472,12 @@ function populateCams(cam_arr){
 }
 function createCamFromTree(tree_id, tooltip){
 	var selection = tree_id;
+	var handleTarget;
 	$('.imgCamContainer').draggable({
 		grid: [1, 1],
 		snap: true,
 		snapTolerance: 10,
+		cursor: "move",
 		start: function(event, ui) {
 			$('.controls').animate({
 				width: '10px'
@@ -518,18 +520,33 @@ function createCamFromTree(tree_id, tooltip){
 		disabled: false}).resizable({
 			disabled: false, 
 			handles: 'all',
+			aspectRatio: true,
 			start: function(event, ui) {
 				var width = $(this).css('width');
 				var height = $(this).css('height');
 				var posSpan = document.createElement("SPAN"); 
 				posSpan.id = 'resizeSpan';
 				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+				$('#resizeSpan').css({
+					top: event.clientY,
+					left: (event.clientX)-500
+				});
 				$(this).append(posSpan);
+				handleTarget = $(event.originalEvent.target);
+
 			},
 			resize: function(event, ui) {
 				var width = $(this).css('width');
 				var height = $(this).css('height');
+				var top = $('#positionDiv').css('top');
+				var left = $('#positionDiv').css('left');
+				$('#resizeSpan').css({
+					top: event.clientY,
+					left: event.clientX
+				}); 
+				console.log($(this).data('ui-resizable'));
 				$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+				//console.log(event.pageY);
 			},
 			stop: function(event, ui) {
 				$('#resizeSpan').remove();
@@ -865,6 +882,7 @@ function data_update(data) {
 							grid: [1, 1],
 							snap: true,
 							snapTolerance: 10,
+							cursor: "move",
 							start: function(event, ui) {
 								$(this).addClass('draggable_focus_in');
 								$('.controls').animate({
@@ -1354,7 +1372,9 @@ var editWindow =  function() {
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
 	$('#cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
-	$('.editWindow').show(150);
+	$('.editWindow').removeClass('hide').show(150);
+	$("#editMaximize").hide();
+	$("#editMinimize").show();
 	selectedModule = $(this).attr('id');
 	
 	//color picker setup
@@ -1363,6 +1383,7 @@ var editWindow =  function() {
 		defaultPalette: 'web',
 		showOn: "focus"
 	});
+	/*//commented out in case jim changes mind
 	if($('.editWindow').hasClass('hide')){
 		$("#editMaximize").show();
 		$("#editMinimize").hide();
@@ -1370,7 +1391,7 @@ var editWindow =  function() {
 	else{
 		$("#editMaximize").hide();
 		$("#editMinimize").show();	
-	}
+	}*/
 	$("#editMinimize").off("click");
 	$("#editMinimize").on("click", function(event, color){
     	$('.editWindow').addClass('hide');
