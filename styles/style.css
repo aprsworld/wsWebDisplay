@@ -335,8 +335,8 @@ div.logo_container{
 	-moz-backface-visibility:    hidden;
 	-ms-backface-visibility:     hidden;
 	-webkit-transform: translate3d(0, 0, 0);
+	overflow: hidden;
 }
-
 .container .myTableValue{
 	width: 65%;
 	float: left;
@@ -385,8 +385,8 @@ div.logo_container{
 	display: inline-block;
 	position: absolute;
 	top: -20;
-	left: -55;
-	color: white !important;
+	left: 0;
+	color: #ddd !important;
 	font-weight: 900;
 	text-align: center;
 }
