@@ -490,14 +490,18 @@ function createCamFromTree(tree_id, tooltip){
 			var posLeft = ui.position.left;
 			var posTop = ui.position.top;
 			var posSpan = document.createElement("SPAN"); 
-			posSpan.id = 'positionSpan';
-			posSpan.textContent = "("+posLeft+"x, "+posTop+"y)";
-			$(this).append(posSpan);
+			var posDiv = document.createElement("DIV");
+			posDiv.id = 'positionDiv';
+			$(this).append(posDiv);
+			$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
+			posSpan.textContent = "("+posLeft+", "+posTop+")";
+			posSpan.id = 'positionSpan';			
+			$('#positionDiv').append(posSpan);
 		},
 		drag: function( event, ui ) {
 			var posLeft = ui.position.left;	
 			var posTop = ui.position.top;
-			$('#positionSpan').text("("+posLeft+"x, "+posTop+"y)");
+			$('#positionSpan').text("("+posLeft+", "+posTop+")");
 		},		
 		stop: function(event, ui) {
 			$('.controls').animate({
@@ -509,7 +513,7 @@ function createCamFromTree(tree_id, tooltip){
 			},200);
 			$('.controlRow').show();
 			$('.controls h2').show();
-			$('#positionSpan').remove();
+			$('#positionDiv').remove();
 		},
 		disabled: false}).resizable({
 			disabled: false, 
@@ -518,17 +522,17 @@ function createCamFromTree(tree_id, tooltip){
 				var width = $(this).css('width');
 				var height = $(this).css('height');
 				var posSpan = document.createElement("SPAN"); 
-				posSpan.id = 'positionSpan';
+				posSpan.id = 'resizeSpan';
 				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 				$(this).append(posSpan);
 			},
 			resize: function(event, ui) {
 				var width = $(this).css('width');
 				var height = $(this).css('height');
-				$('#positionSpan').text("Width: "+width+"  Height: "+height+"");
+				$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
 			},
 			stop: function(event, ui) {
-				$('#positionSpan').remove();
+				$('#resizeSpan').remove();
 			}
 		});
 	$('#preload_div_'+selection).load(function() {
@@ -876,14 +880,19 @@ function data_update(data) {
 								var posLeft = ui.position.left;
 								var posTop = ui.position.top;
 								var posSpan = document.createElement("SPAN"); 
-								posSpan.id = 'positionSpan';
-								posSpan.textContent = "("+posLeft+"x, "+posTop+"y)";
-								$(this).append(posSpan);
+								var posDiv = document.createElement("DIV");
+								posDiv.id = 'positionDiv';
+								$(this).append(posDiv);
+								$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
+								posSpan.textContent = "("+posLeft+", "+posTop+")";
+								posSpan.id = 'positionSpan';			
+								$('#positionDiv').append(posSpan);
+								
 							},
 							drag: function( event, ui ) {
 								var posLeft = ui.position.left;	
 								var posTop = ui.position.top;
-								$('#positionSpan').text("("+posLeft+"x, "+posTop+"y)");
+								$('#positionSpan').text("("+posLeft+", "+posTop+")");
 							},
 							stop: function(event, ui) {
 								$(this).removeClass('draggable_focus_in');
@@ -896,7 +905,7 @@ function data_update(data) {
 								},200);
 								$('.controlRow').show();
 								$('.controls h2').show();
-								$('#positionSpan').remove();
+								$('#positionDiv').remove();
 							}
 						}).resizable({
 							disabled: false, 
@@ -905,17 +914,17 @@ function data_update(data) {
 								var width = $(this).css('width');
 								var height = $(this).css('height');
 								var posSpan = document.createElement("SPAN"); 
-								posSpan.id = 'positionSpan';
+								posSpan.id = 'resizeSpan';
 								posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 								$(this).append(posSpan);
 							},
 							resize: function(event, ui) {
 								var width = $(this).css('width');
 								var height = $(this).css('height');
-								$('#positionSpan').text("Width: "+width+"  Height: "+height+"");
+								$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
 							},
 							stop: function(event, ui) {
-								$('#positionSpan').remove();
+								$('#resizeSpan').remove();
 							}
 						});			
 						$(".draggable").draggable( "option", "disabled", false )
