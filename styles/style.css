@@ -710,7 +710,8 @@ div.logo_container{
 	box-shadow: 0px 0px 50px black;
 	border: 1px solid black;
 	max-height: 92vh;
-	max-width: 92vw;		
+	max-width: 92vw;
+
 }
 /* class for the hovered cam that appears in firefox and IE*/
 .expandedCam{
@@ -723,11 +724,15 @@ div.logo_container{
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;
+
 }
 .focusedCam{
-	z-index: 102;
-	
+	z-index: 2147483647;
 }
+.selectedShadow {
+    box-shadow: 0px 0px 20px #0550a5;
+}
+
 /*Plugin fixes*/
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }

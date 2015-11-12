@@ -466,7 +466,7 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
+		$('#content').append('<div class="imgCamContainer hoverables" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
 		$('#preload').append('<img alt="camimage" src="" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
@@ -1051,23 +1051,22 @@ function data_update(data) {
 		
         });
 	}
-		var x = $(document).ready(function() {
-			$( document ).off( "click", "#refreshTree" );
-			$( document ).on( "click", "#refreshTree" , function() {	
-				refreshTree(data);
-			});	
-			//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
-			if(editMode == false && treeRefreshTimer >= 14){
-				refreshTree(data);	
-				console.log('refreshed');
-				treeRefreshTimer = 0;
-				console.log('blah');
-			}
-		});
-		x = null;
-		refreshCams(cams);
-		dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
-		console.log('new data');
+	var x = $(document).ready(function() {
+		$( document ).off( "click", "#refreshTree" );
+		$( document ).on( "click", "#refreshTree" , function() {	
+			refreshTree(data);
+		});	
+		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
+		if(editMode == false && treeRefreshTimer >= 14){
+			refreshTree(data);	
+			console.log('refreshed');
+			treeRefreshTimer = 0;
+		}
+	});
+	// clears document ready function
+	x = null;
+	refreshCams(cams);
+	dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
 	
 }
 //gets parameters in url
@@ -1385,6 +1384,7 @@ var editWindow =  function() {
 	textColor= $('.textColorChange');
 	$('#cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
 	$('.editWindow').removeClass('editHide').show(150);
+	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 	$("#editMaximize").hide();
 	$("#editMinimize").show();
 	selectedModule = $(this).attr('id');
@@ -1395,15 +1395,6 @@ var editWindow =  function() {
 		defaultPalette: 'web',
 		showOn: "focus"
 	});
-	/*//commented out in case jim changes mind
-	if($('.editWindow').hasClass('hide')){
-		$("#editMaximize").show();
-		$("#editMinimize").hide();
-	}
-	else{
-		$("#editMaximize").hide();
-		$("#editMinimize").show();	
-	}*/
 	$("#editMinimize").off("click");
 	$("#editMinimize").on("click", function(event, color){
     	$('.editWindow').addClass('editHide');
@@ -1414,7 +1405,7 @@ var editWindow =  function() {
 	$("#editMaximize").on("click", function(event, color){
     	$('.editWindow').removeClass('editHide');
 		$("#editMaximize").hide();
-		$("#editMinimize").show();	
+		$("#editMinimize").show();
 	});
 	$(".backgroundColorChange").off("mouseover.color");
 	$(".backgroundColorChange").on("mouseover.color", function(event, color){
@@ -1511,6 +1502,7 @@ CAMERA CASE
 	else if($(this).hasClass('imgCamContainer')){
 		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text("Edit Camera");
+		$(this).addClass('selectedShadow');
 		moduleContainer = $(this).attr('id');
 		
 		//checks to see if image has added hoverables class and checks appropriate radio button
@@ -1664,7 +1656,7 @@ TEXT BLOCKS CASE
 		$(bgColor).val($('#'+id).css('background-color'));
 		$(textColor).val($('#'+id).children('p').css('color'));
 		var backgroundColor = $('#'+selectedModule).css('background-color');
-
+		$(this).addClass('selectedShadow');
 		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
@@ -1752,6 +1744,7 @@ IMG BLOCKS CASE
 		moduleContainer = $(this).attr('id');
 		//change title of edit window 
 		$('.editWindow h2').text("Edit Image");
+		$(this).addClass('selectedShadow');
 		//find parts of the image and assign them to variables
 		selectedModule = $(this).children().children('img').attr('id');
 		url = $(this).find('img');
@@ -1840,7 +1833,8 @@ DATA CELLS CASE
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text("Edit Cell");
-		
+		$(this).addClass('selectedShadow');
+
 		//find parts of the data cell and assign them to a variable
 		title = $(this).children('.myTableTitle').children('p');
 		label = $(this).children('.myTableValue').children('.label');
@@ -2023,6 +2017,7 @@ function edit(handler) {
 function nonEdit(handler) {
 	editMode = false;
 	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
+	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 	$('#masterEdit').attr('onclick', 'edit()');
 	$('.tr').css('cursor','initial');
 	$('.textBlockContainer').css('cursor','initial');
