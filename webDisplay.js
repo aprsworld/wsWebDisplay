@@ -1432,7 +1432,7 @@ CONFIGRATIONS CASE
 PAGE EDIT CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'pageEdit'){
-		$('.editWindow h2').text("Edit Page");
+		$('.editWindow h2').text("Page");
 		$('#titleRow,#backgroundColorRow,#opacityRow').show();
 		$('#hideModule,#deleteModule').hide();
 		$('.titleChange').val(document.title);
@@ -1501,7 +1501,7 @@ CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
 		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
-		$('.editWindow h2').text("Edit Camera");
+		$('.editWindow h2').text($(this).attr('title'));
 		$(this).addClass('selectedShadow');
 		moduleContainer = $(this).attr('id');
 		
@@ -1648,8 +1648,8 @@ TEXT BLOCKS CASE
 ******************************************************************/
 	else if($(this).hasClass('textBlockContainer')){
 		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
-		$('.editWindow h2').text("Edit Text Block");
 		id = $(this).attr('id');
+		$('.editWindow h2').text("Text "+id);
 		body = $(this).children('p');
 		moduleContainer = $(this).attr('id');
 		$(bodyChange).val(body.html());
@@ -1743,7 +1743,7 @@ IMG BLOCKS CASE
 		$('#hideDelRow, #zRow, #urlRow , #resizeModulem, #hoverRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window 
-		$('.editWindow h2').text("Edit Image");
+		$('.editWindow h2').text("Image "+moduleContainer);
 		$(this).addClass('selectedShadow');
 		//find parts of the image and assign them to variables
 		selectedModule = $(this).children().children('img').attr('id');
@@ -1832,7 +1832,7 @@ DATA CELLS CASE
 		$('#hideDelRow, #zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
-		$('.editWindow h2').text("Edit Cell");
+		$('.editWindow h2').text($(this).attr('title'));
 		$(this).addClass('selectedShadow');
 
 		//find parts of the data cell and assign them to a variable

@@ -544,11 +544,19 @@ div.logo_container{
 	margin-bottom: 5px;
 	margin-right: 15px;
 }
+.editWindow h1{
+	font-size: 28px;
+	margin: 2px;
+	padding: 0;
+	text-align: center;
+	color: #999;
+
+}
 .editWindow h2{
 	margin-top: 5px;
 	padding-top: 0;
 	text-align: center;
-	font-size: 32px;
+	font-size: 14px;
 	text-transform:capitalize;
 	color: #999;
 	margin-bottom: 0;
