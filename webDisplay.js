@@ -528,8 +528,8 @@ function createCamFromTree(tree_id, tooltip){
 				posSpan.id = 'resizeSpan';
 				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 				$('#resizeSpan').css({
-					top: event.clientY,
-					left: (event.clientX)
+					top: event.clientY+5,
+					left: event.clientX+5
 				});
 				$(this).append(posSpan);
 				handleTarget = $(event.originalEvent.target);
@@ -541,8 +541,8 @@ function createCamFromTree(tree_id, tooltip){
 				var top = $('#positionDiv').css('top');
 				var left = $('#positionDiv').css('left');
 				$('#resizeSpan').css({
-					top: event.clientY,
-					left: event.clientX
+					top: event.clientY+5,
+					left: event.clientX+5
 				}); 
 				$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
 				//console.log(event.pageY);
@@ -933,12 +933,25 @@ function data_update(data) {
 								var posSpan = document.createElement("SPAN"); 
 								posSpan.id = 'resizeSpan';
 								posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+								$('#resizeSpan').css({
+									top: event.clientY+5,
+									left: event.clientX+5
+								});
 								$(this).append(posSpan);
+								handleTarget = $(event.originalEvent.target);
+
 							},
 							resize: function(event, ui) {
 								var width = $(this).css('width');
 								var height = $(this).css('height');
+								var top = $('#positionDiv').css('top');
+								var left = $('#positionDiv').css('left');
+								$('#resizeSpan').css({
+									top: event.clientY+5,
+									left: event.clientX+5
+								}); 
 								$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+								//console.log(event.pageY);
 							},
 							stop: function(event, ui) {
 								$('#resizeSpan').remove();
