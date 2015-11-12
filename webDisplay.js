@@ -1384,7 +1384,7 @@ var editWindow =  function() {
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
 	$('#cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
-	$('.editWindow').removeClass('hide').show(150);
+	$('.editWindow').removeClass('editHide').show(150);
 	$("#editMaximize").hide();
 	$("#editMinimize").show();
 	selectedModule = $(this).attr('id');
@@ -1406,13 +1406,13 @@ var editWindow =  function() {
 	}*/
 	$("#editMinimize").off("click");
 	$("#editMinimize").on("click", function(event, color){
-    	$('.editWindow').addClass('hide');
+    	$('.editWindow').addClass('editHide');
 		$("#editMaximize").show();
 		$("#editMinimize").hide();
 	});
 	$("#editMaximize").off("click");
 	$("#editMaximize").on("click", function(event, color){
-    	$('.editWindow').removeClass('hide');
+    	$('.editWindow').removeClass('editHide');
 		$("#editMaximize").hide();
 		$("#editMinimize").show();	
 	});
