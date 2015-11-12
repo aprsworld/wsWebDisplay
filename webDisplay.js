@@ -375,6 +375,7 @@ function ref(obj, str) {
 function dynamicUpdate($id_arr, $path_arr, data) {
 	var idLength = $id_arr.length;
 	var value, cellObj, id, label, cellId;
+	console.log(cell_arr);
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
@@ -659,6 +660,7 @@ function data_update(data) {
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				$(".jstree-leaf, .dataDraggable").draggable({
 					helper: "clone",
+					grid: [1,1],
 					delay: 150,
 					opacity: 0.75,
 					start: function (event, ui) {
@@ -695,6 +697,7 @@ function data_update(data) {
 				});
 				$( ".draggableCamNode" ).draggable({
 					helper: "clone",
+					grid: [1,1],
 					delay: 150,
 					opacity: 0.75,
 					start: function (event, ui) {
@@ -1910,6 +1913,7 @@ DATA CELLS CASE
 			$('.editWindow').hide(150);
 			console.log(id);
 			console.log(id_arr);
+			console.log(cell_arr);
 		});
 		//background color input change event handler
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
