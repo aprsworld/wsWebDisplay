@@ -112,9 +112,15 @@
 	<div id="hoverRow" class="editWindowRow">
 		<label id="hoverLabel"> Hoverable </label>
 		<div id="hoverRadios">
-			<input id="hoverEnabled" type="radio" name="hoverToggle" value="enabled" checked> <span> enabled</span> </input>
-			<input id="hoverDisabled" type="radio" name="hoverToggle" value="disabled"><span> disabled</span> </input>	
+			<input id="hoverEnabled" type="radio" name="hoverToggle" value="enabled" checked> <span> Enabled</span> </input>
+			<input id="hoverDisabled" type="radio" name="hoverToggle" value="disabled"><span> Disabled</span> </input>	
 		</div>
+	<div id="suppressHoverable">
+		<label>Suppress When Size &ge; Native</label>
+		<input id="suppressHover" type="radio" name="suppressHover" value="enabled" checked><span> Enabled </span> </input>
+		<input id="unsuppressHover" type="radio" name="suppressHover" value="disabled" ><span> Disabled </span> </input>
+
+	</div>
 	</div>
 	<div id="hoverTimeRow" class="editWindowRow">
 		<label> Hover Delay (Seconds)</label>

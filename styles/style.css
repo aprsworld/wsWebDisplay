@@ -9,7 +9,12 @@ body{
 	padding: 0;
 	font-family: Arial,Helvetica Neue,Helvetica,sans-serif;
 }
-
+input[type="radio"]{
+    vertical-align: middle;
+}
+input[type="checkbox"]{
+    vertical-align: middle;
+}
 /*styling for most buttons */
 button{
 	cursor: pointer;
@@ -41,7 +46,7 @@ button:hover{
 	text-decoration: none;	
 }
 input{
-	background-color: #AAA;	
+	background-color: white;	
 	color: #333;
 	border-color: #333;
 }
@@ -594,11 +599,11 @@ div.logo_container{
 #hoverTime{
 	width: 10% !important;	
 }
-#hoverRadios span{
-	color: #ccc;
+#hoverRadios span, #suppressHoverable span{
+	color: #ccc !important;
 }
-#hoverTimeRow label{
-	width: 70%;	
+#hoverTimeRow label, #hoverRow label{
+	width: 90%;	
 }
 .bodyChange{
 	padding: 3px;

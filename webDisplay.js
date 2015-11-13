@@ -467,7 +467,7 @@ function getCamData(data){
 }
 function populateCams(cam_arr){
 	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer hoverables" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
+		$('#content').append('<div class="imgCamContainer suppressHover hoverables" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
 		$('#preload').append('<img alt="camimage" src="" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
@@ -1006,14 +1006,20 @@ function data_update(data) {
 			$('.imgCamContainer').hover(function(){
 				var camID = $(this).attr('id');
 				var camWidth = $(this).children('img').width();
+				var divWidth = parseInt($(this).css('width').slice(0,-2));
 				var camHeight = $(this).children('img').height();
 				var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 				var isWebkit = 'WebkitAppearance' in document.documentElement.style
 				var hoverImgID = camID+'hover';
 				var timeOut = 1000;
+				var suppress = false;
+				if((camWidth >= divWidth) && $(this).hasClass('suppressHover')){
+					suppress = true;
+				}
 				timeOut = parseInt($('#'+camID).children('img').attr('alt'), 10)*1000;
 				var enabled = $('#'+camID).hasClass('hoverables');
-					if(editMode == false && enabled == true){	
+				console.log(camWidth+" , "+divWidth);
+					if(editMode == false && enabled == true && suppress == false){	
 							hoverTimeout = setTimeout(function() {						
 								$(hoverImg).width(camWidth);
 								$(hoverImg).height(camHeight);
@@ -1506,9 +1512,10 @@ PAGE EDIT CASE
 CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
-		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
+		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow, #suppressHoverable').show();
 		$('.editWindow h2').text($(this).attr('title'));
 		$(this).addClass('selectedShadow');
+		var camera = $(this);
 		moduleContainer = $(this).attr('id');
 		
 		//checks to see if image has added hoverables class and checks appropriate radio button
@@ -1523,6 +1530,17 @@ CAMERA CASE
 			radiobtn = document.getElementById("hoverDisabled");
 			radiobtn.checked = true;
 		}
+		var suppressButton;
+		if($(this).hasClass('suppressHover')){
+			suppressButton = document.getElementById("suppressHover");
+			suppressButton.checked = true;
+			camera.addClass('suppressHover');
+		}
+		else{
+			suppressButton = document.getElementById("unsuppressHover");
+			suppressButton.checked = true;
+			camera.removeClass('suppressHover');
+		}
 		var radioChecked;
 		$( document ).off( "change", "input[type=radio][name=hoverToggle]");
 		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
@@ -1531,13 +1549,26 @@ CAMERA CASE
 				$('#'+selectedModule).addClass('hoverables');
 				$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
 				$('#hoverTimeRow').show();
+				$('#suppressHoverable').show();
 			}
 			else{
 				$('#'+selectedModule).removeClass('hoverables');
 				$('#hoverTimeRow').hide();
+				$('#suppressHoverable').hide();
+
 			}
 		});
-		
+		var suppressedChecked;
+		$( document ).off( "change", "input[type=radio][name=suppressHover]");
+		$( document ).on( "change", "input[type=radio][name=suppressHover]", function(){
+			suppressedChecked = $('input[name=suppressHover]:checked').val();
+			if(suppressedChecked == 'enabled'){
+				$('#'+selectedModule).addClass('suppressHover');
+			}
+			else{
+				$('#'+selectedModule).removeClass('suppressHover');
+			}
+		});
 		$( document ).off( "keyup", "input#hoverTime");
 		$( document ).on( "keyup", "input#hoverTime" , function() {
 			$('#'+selectedModule).children('img').attr('alt',$('input#hoverTime').val());
