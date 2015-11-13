@@ -521,6 +521,7 @@ function createCamFromTree(tree_id, tooltip){
 		disabled: false}).resizable({
 			disabled: false, 
 			handles: 'all',
+			grid: [1,1],
 			aspectRatio: true,
 			start: function(event, ui) {
 				var width = $(this).css('width');
@@ -930,6 +931,7 @@ function data_update(data) {
 						}).resizable({
 							disabled: false, 
 							handles: 'all',
+							grid: [1,1],			
 							start: function(event, ui) {
 								var width = $(this).css('width');
 								var height = $(this).css('height');
@@ -1484,6 +1486,7 @@ PAGE EDIT CASE
 				opacity = opacity.toString();
 				var newColor;
 				if($('html').css('background-color').indexOf("rgba") < 0){
+					
 					newColor = $('html').css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
 				}
 				else{
