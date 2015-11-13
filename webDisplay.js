@@ -216,6 +216,14 @@ function treeitem(){
 		this.class;
 		this.value;
 	};
+	this.style;
+	this.containerId;
+	this.src;
+	this.innerHtml;
+	this.classes = function classes(){
+		var classList = this.className.split(' ');
+		return classList;
+	};
 }
 function iterateStations(obj, stack, arr, lastk) {
 	var jsonItem, jsonItem2, id, path, parent, value, title, units, typeUnits, type;
@@ -358,6 +366,7 @@ function iterateStations(obj, stack, arr, lastk) {
 		}
 
     }
+	console.log(jsonItem);
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
 function ref(obj, str) {
@@ -2269,7 +2278,6 @@ function captureState(){
 			savedCam.divID = $(this).attr('id');
 			savedCam.zIndex = $(this).css('z-index');
 			savedCam.hidden = true;
-			
 		cameras.push(savedCam);		
 		}
 	});
