@@ -630,22 +630,10 @@ function extend(ChildClass, ParentClass) {
 	ChildClass.prototype = new ParentClass();
 	ChildClass.prototype.constructor = ChildClass;
 }
-
+//general object for element on the page
 var pageElement = function(){
 	this.elementType = 'generalElement';	
-}
-pageElement.prototype = {
-	setType: function(elementType) {
-		this.elementType = elementType;	
-	},
-	getType: function(){
-		return this.elementType;
-	}
-}
-
-var pageCell = function(){
-	this.units = '';
-	this.setType('pageCell');
+	//gets style
 	Object.defineProperty(this, 'getStyle', {
 		value: function(){
 			var thisElement = $('#'+this.containerId+'');
@@ -654,6 +642,7 @@ var pageCell = function(){
 		},
 		enumerable: false
 	});
+	//sets the style
 	Object.defineProperty(this, 'setStyle', {
 		value: function(stylelist){
 			this.style = stylelist;
@@ -661,19 +650,43 @@ var pageCell = function(){
 		},
 		enumerable: false
 	});
+}
+//functions to be used in all pageElement objects
+pageElement.prototype = {
+	//sets type of element to be a data cell, image block, textblock, camera, etc.
+	setType: function(elementType) {
+		this.elementType = elementType;	
+	},
+	//gets the type
+	getType: function(){
+		return this.elementType;
+	}
+}
+//object representing the datacells on the page
+var pageCell = function(){
+	this.units = '';
+	this.setType('pageCell');
+	//generates html using object properties
 	Object.defineProperty(this, 'createHtml', {
 		value: function(cellCount){
 			$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
-		console.log(cellCount);
-			console.log(this.text);
 		},
 		enumberable: false				
   	});					  
 }
 extend(pageCell,pageElement);
-function PageCam(){
-	
+var pageCam = function(){
+	this.setType('pageCam');
+	this.hoverable = true;
+	this.suppressed = true;
+	this.hoverDelay = 1;
+	this.cropped = false;	
+	this.naturalWidth;
+	this.naturalHeight;
+	this.src;
+	this.hidden;
 }
+extend(pageCam,pageElement);
 function PageImg(){
 	
 }
