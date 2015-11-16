@@ -665,6 +665,7 @@ pageElement.prototype = {
 //object representing the datacells on the page
 var pageCell = function(){
 	this.units = '';
+	this.hidden = false;
 	this.setType('pageCell');
 	//generates html using object properties
 	Object.defineProperty(this, 'createHtml', {
@@ -681,10 +682,18 @@ var pageCam = function(){
 	this.suppressed = true;
 	this.hoverDelay = 1;
 	this.cropped = false;	
+	this.hidden = false;
 	this.naturalWidth;
 	this.naturalHeight;
-	this.src;
-	this.hidden;
+	this.id;
+	this.path;
+	this.containerId;
+	Object.defineProperty(this, 'createHtml', {
+		value: function(cellCount){
+			$('#content').append('<div class="imgCamContainer suppressHover hoverables" id=div_ws_'+this.id+'image_url_x style="background-image:url('+this.path+'); display: none;"><img style="visibility:hidden;" src=""></div>');
+		},
+		enumberable: false				
+  	});	
 }
 extend(pageCam,pageElement);
 function PageImg(){
