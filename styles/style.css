@@ -288,10 +288,10 @@ div.logo_container{
 	width: 100%;
 	float: left;
 	clear: both;
-	height:20px;
-	font-size: 14px;
+	height:auto;
+	font-size: inherit;
 	font-weight: bold;
-	color: #efefef !important;
+	color: inherit !important;
 	background-color: rgba(0,0,0,.35);
 	border-radius: .25em;
 }
@@ -348,9 +348,9 @@ div.logo_container{
 	height: auto;
 	padding-top: 2px;
 	width: 100%;
-	color: #ddd !important;
+	color: inherit !important;
 	font-weight: 700;
-	font-size: 14px;
+	font-size: inherit;
 }
 .container .myTableValue p{
 	margin:0;
@@ -374,12 +374,13 @@ div.logo_container{
 }
 .container .tr{
 	padding: 1px;
-	font-size: 12px;
+	font-size: 14px;
 	width: auto;
 	height: auto;
 	display: inline-block;
 	border-radius: 5px;
 	z-index: 2;
+	color: #efefef;	
 	background-color: rgba(0,0,0,0.01);
 }
 .draggable_focus_in{

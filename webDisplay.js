@@ -213,7 +213,7 @@ function treeitem(){
 	this.text;
 	this.obj = function obj(){
 		this.path;
-		this.class;
+		this.class = 'blah';
 		this.value;
 	};
 	this.style;
@@ -366,7 +366,6 @@ function iterateStations(obj, stack, arr, lastk) {
 		}
 
     }
-	console.log(jsonItem);
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
 function ref(obj, str) {
@@ -379,12 +378,10 @@ function ref(obj, str) {
     }
     return obj;
 }
-
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate($id_arr, $path_arr, data) {
 	var idLength = $id_arr.length;
 	var value, cellObj, id, label, cellId;
-	console.log(cell_arr);
     for ($i = 0; $i < idLength; $i++) {
 		id = $id_arr[$i];
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
@@ -458,10 +455,6 @@ function getCamData(data){
 	var path
 	var i = 0;
 	for(var k in data){
-		if( i = 0){
-			//do nothing since this is not a station	
-		}
-		else{
 			for(var c in data[k]['cameras']){
 				var stationName = k;
 				var camNumber = c;
@@ -470,7 +463,6 @@ function getCamData(data){
 				path = stationName+"cameras"+camNumber;
 				pairs.push([serials, keys, path]);
 			}
-		}
 	}
 	return pairs;
 }
@@ -633,6 +625,61 @@ function timer(){
 		console.log(convertedLoad+' since page was loaded');	
 	}
 }
+//function used for extending "sub-classes" from a "main class"
+function extend(ChildClass, ParentClass) {
+	ChildClass.prototype = new ParentClass();
+	ChildClass.prototype.constructor = ChildClass;
+}
+
+var pageElement = function(){
+	this.elementType = 'generalElement';	
+}
+pageElement.prototype = {
+	setType: function(elementType) {
+		this.elementType = elementType;	
+	},
+	getType: function(){
+		return this.elementType;
+	}
+}
+
+var pageCell = function(){
+	this.units = '';
+	this.setType('pageCell');
+	Object.defineProperty(this, 'getStyle', {
+		value: function(){
+			var thisElement = $('#'+this.containerId+'');
+			var style =  $('#'+this.containerId).parent().attr('style');
+			return style;		
+		},
+		enumerable: false
+	});
+	Object.defineProperty(this, 'setStyle', {
+		value: function(stylelist){
+			this.style = stylelist;
+			console.log(this.style);
+		},
+		enumerable: false
+	});
+	Object.defineProperty(this, 'createHtml', {
+		value: function(cellCount){
+			$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+		console.log(cellCount);
+			console.log(this.text);
+		},
+		enumberable: false				
+  	});					  
+}
+extend(pageCell,pageElement);
+function PageCam(){
+	
+}
+function PageImg(){
+	
+}
+function PageText(){
+	
+}
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
@@ -793,7 +840,9 @@ function data_update(data) {
 					var $element, $me, $newElement;
 					
 					$element = $(ui.draggable);
-					var tree_item = {};
+					var tree_item = new pageCell();
+					//tree_item.prototype = pageElement;
+					console.log(tree_item);
 					var idArrLen = id_arr.length;
 					var id = $($element).attr('id');
 					var new_id = "div_"+id+"_"+idArrLen;
@@ -804,6 +853,8 @@ function data_update(data) {
 					var units, title, type, typeUnits;
 					tree_item["path"] = path;
 					tree_item["id"] = id+"_"+idArrLen;
+					tree_item["containerId"] = new_id;
+					tree_item["fullId"] = new_id;
 					if(tree_item["path"] == "timeStamp"){
 						tree_item["value"] = 0;	
 					}
@@ -841,11 +892,13 @@ function data_update(data) {
 							tooltip = tooltip+tooltipSplit[i]+' >> ';	
 						}
 						tooltip = tooltip+title;
+						tree_item["toolTip"] = tooltip;
 						console.log(tooltipSplit);
 					}
 					//case for elements with no valid path
 					else{
 						title = $($element).text();
+						tree_item["title"] = title;
 						if(title == 'Age of Data'){
 							var parentId = $('#stationTree').jstree(true).get_node(id).original.parent;
 							var parentPath =  $('#stationTree').jstree(true).get_node(parentId).original.obj.path;
@@ -855,6 +908,7 @@ function data_update(data) {
 								tooltip = tooltip+tooltipSplit[i]+' >> ';	
 							}
 							tooltip = tooltip+title;
+							tree_item["toolTip"] = tooltip;
 							console.log(tooltipSplit);
 						}
 					}
@@ -879,8 +933,6 @@ function data_update(data) {
 								var childId = children[i];
 							}
 						}
-						
-						console.log(children);
 						$('#div_'+childId).css('position', 'absolute');
 						$('#div_'+childId).css('top',pageY);
 						$('#div_'+childId).css('left',pageX);
@@ -888,7 +940,8 @@ function data_update(data) {
 					cellCount++;   
 					}
 					else{
-						$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
+						//$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
+						tree_item.createHtml(cellCount);
 						$(".draggable").draggable({ //makes our data cells draggable
 							disabled: true,
 							grid: [1, 1],
@@ -923,6 +976,7 @@ function data_update(data) {
 								var posLeft = ui.position.left;	
 								var posTop = ui.position.top;
 								$('#positionSpan').text("("+posLeft+", "+posTop+")");
+
 							},
 							stop: function(event, ui) {
 								$(this).removeClass('draggable_focus_in');
@@ -936,6 +990,11 @@ function data_update(data) {
 								$('.controlRow').show();
 								$('.controls h2').show();
 								$('#positionDiv').remove();
+								var style = tree_item.getStyle();
+								tree_item.setStyle(style);
+								console.log(tree_item);
+								console.log(JSON.stringify(cell_arr));
+								
 							}
 						}).resizable({
 							disabled: false, 
@@ -1920,17 +1979,15 @@ DATA CELLS CASE
 		//delegate even handler for mousing over 
 		$(".textColorChange").off("mouseover.color");
 		$(".textColorChange").on("mouseover.color", function(event, color){
-			$('#'+id).children('p').css('color',color);
-			$('#'+id).children('span').css('color',color);
-			$('#'+id).parent().children('.myTableTitle').children('p').css('color',color);
+			$('#'+moduleContainer).css('color', color+' !important');
 			$('#opacitySlider .ui-slider-range').css('background', color );
   			$('#opacitySlider .ui-slider-handle').css('border-color', color);
 		});	
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input#fontSize" , function() {	
-			fontsize = $('#'+id).css('font-size');
-			$('#'+id).css('font-size', fontSize.val());				
+			fontsize = $('#'+moduleContainer).css('font-size');
+			$('#'+moduleContainer).css('font-size', fontSize.val());				
 		});
 		//title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
@@ -1970,9 +2027,10 @@ DATA CELLS CASE
 		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.textColorChange" , function() {	
 			var enteredTextColor = textColor.val();
-			$('#'+id).children('p').css('color',enteredTextColor);
+			$('#'+moduleContainer).css('color', enteredTextColor);
+			/*$('#'+id).children('p').css('color',enteredTextColor);
 			$('#'+id).children('span').css('color',enteredTextColor);
-			$('#'+id).parent().children('.myTableTitle').children('p').css('color',enteredTextColor);
+			$('#'+id).parent().children('.myTableTitle').children('p').css('color',enteredTextColor);*/
 		});
 		var sliderValue;
 		if(backgroundColor.indexOf('rgba') >= 0){
