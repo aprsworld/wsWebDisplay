@@ -582,7 +582,6 @@ function timer(){
 		console.log(convertedLoad+' since page was loaded');	
 	}
 }
-
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
@@ -1498,9 +1497,16 @@ CAMERA CASE
 		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow, #suppressHoverable').show();
 		$('.editWindow h2').text($(this).attr('title'));
 		$(this).addClass('selectedShadow');
-		var camera = $(this);
-		moduleContainer = $(this).attr('id');
 		
+		moduleContainer = $(this).attr('id');
+		console.log(moduleContainer);
+		var objId = moduleContainer.replace('div_','');	
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
+		console.log(objectFound);
+
+		var camera = $(this);
+				
 		//checks to see if image has added hoverables class and checks appropriate radio button
 		var radiobtn
 		$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
@@ -1671,13 +1677,20 @@ TEXT BLOCKS CASE
 		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
 		id = $(this).attr('id');
 		$('.editWindow h2').text("Text "+id);
+		$(this).addClass('selectedShadow');
+
 		body = $(this).children('p');
 		moduleContainer = $(this).attr('id');
+		
+		var objId = moduleContainer;	
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
+		console.log(objectFound);
+		
 		$(bodyChange).val(body.html());
 		$(bgColor).val($('#'+id).css('background-color'));
 		$(textColor).val($('#'+id).children('p').css('color'));
 		var backgroundColor = $('#'+selectedModule).css('background-color');
-		$(this).addClass('selectedShadow');
 		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
 		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
@@ -1763,11 +1776,18 @@ IMG BLOCKS CASE
 		//show appropriate parts of edit window
 		$('#hideDelRow, #zRow, #urlRow , #resizeModulem, #hoverRow').show();
 		moduleContainer = $(this).attr('id');
+		selectedModule = $(this).children().children('img').attr('id');
+
 		//change title of edit window 
 		$('.editWindow h2').text("Image "+moduleContainer);
 		$(this).addClass('selectedShadow');
-		//find parts of the image and assign them to variables
-		selectedModule = $(this).children().children('img').attr('id');
+		
+		var objId = selectedModule;
+		console.log(moduleContainer);
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
+		console.log(objectFound);
+		
 		url = $(this).find('img');
 		//populate input fields with image specific information
 		$(urlChange).val(url.attr('src'));
@@ -1874,6 +1894,7 @@ DATA CELLS CASE
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		console.log(objectFound);
+		
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
