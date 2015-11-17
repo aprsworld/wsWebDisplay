@@ -385,6 +385,8 @@ function dynamicUpdate(data) {
 	
     for ($i = 0; $i < idLength; $i++) {
 		objectFound = cell_arr[$i];
+		// since the object array has textblocks and img blocks, we need to weed them out
+		if(objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell'){
 		id = objectFound.id;
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
 		if(id.indexOf("ageOfData") >= 0){
@@ -447,6 +449,7 @@ function dynamicUpdate(data) {
 		clearInterval(ageInterval);						
 		ageTimer();
     }
+	}
 	
 }
 function chooseConversion(type, typeUnits, value, typeChange){
@@ -1192,9 +1195,11 @@ function data_start() {
 }
 function createText(){
 	var textBlock, textTitle, textContent, title, index;
-	textBlock = new pageText(cell_arr.length);
-	index = textBlocks.length;
+	textBlock = new pageText();
+	index = cell_arr.length;
 	textBlock.createHtml(index);
+	cell_arr.push(textBlock);
+
 	$(".textBlockContainer").draggable({
 		disabled: false,
 		grid: [1, 1],
@@ -1230,12 +1235,15 @@ function createText(){
 		});	
 }
 function createImage(){
-	var imgURL, index;
-	index = imgBlocks.length;
-	imgBlocks.push("img"+index);
+	var imgBlock, imgURL, index;
+	index = cell_arr.length;
+	imgBlock = new pageImg();
+	imgBlock.id = 'img'+index;
 	imgURL = $('#createImageURL').val();
+	cell_arr.push(imgBlock);
 	if(imgURL != ""){
-		$('#content').append('<div id=img'+index+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src="images/insert_image.svg"></img></div>');
+		//$('#content').append('<div id=img'+index+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src="images/insert_image.svg"></img></div>');
+		imgBlock.createHtml(index);
 		$(".imgBlockContainer").draggable({
 			grid: [1, 1],
 			snap: true,
@@ -1926,6 +1934,7 @@ DATA CELLS CASE
 		var objId = id.replace('div_', '');	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
+		console.log(objectFound);
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		

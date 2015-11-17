@@ -1,9 +1,14 @@
-//function used for extending "sub-classes" from a "main class"
+/*
+* function used for extending "sub-classes" from a "main class"
+*/
 function extend(ChildClass, ParentClass) {
 	ChildClass.prototype = new ParentClass();
 	ChildClass.prototype.constructor = ChildClass;
 }
-//general object for element on the page
+
+/*
+* general object for element on the page
+*/
 var pageElement = function(){
 	this.elementType = 'generalElement';	
 	//gets style
@@ -24,7 +29,10 @@ var pageElement = function(){
 		enumerable: false
 	});
 }
-//functions to be used in all pageElement objects
+
+/*
+* functions to be used in all pageElement objects
+*/
 pageElement.prototype = {
 	//sets type of element to be a data cell, image block, textblock, camera, etc.
 	setType: function(elementType) {
@@ -36,7 +44,9 @@ pageElement.prototype = {
 	}
 }
 
-//object representing the datacells on the page
+/*
+* object representing the datacells on the page
+*/
 var pageCell = function(){
 	this.units = '';
 	this.hidden = false;
@@ -51,7 +61,10 @@ var pageCell = function(){
   	});					  
 }
 extend(pageCell,pageElement);
-//object representing the cameras on the page
+
+/*
+* object representing the cameras on the page
+*/
 var pageCam = function(){
 	this.setType('pageCam');
 	this.hoverable = true;
@@ -85,9 +98,26 @@ var pageCam = function(){
   	});	
 }
 extend(pageCam,pageElement);
+
+/*
+* object representing the static images on the page
+*/
 function pageImg(){
+	this.setType('pageImg');
 	
+	Object.defineProperty(this, 'createHtml', {
+		value: function(cellCount){
+			$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+cellCount+')" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
+		},
+		enumberable: false				
+  	});	
 }
+extend(pageImg,pageElement);
+
+
+/*
+* object representing the static text blocks on the page
+*/
 function pageText(){
 	this.setType('pageText');
 	this.id;
