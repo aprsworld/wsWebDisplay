@@ -467,30 +467,7 @@ function chooseConversion(type, typeUnits, value, typeChange){
 	}
 	
 }
-function getCamData(data){
-	var pairs = []; //array to hold serial key pairs
-	var serials; //names of each camera
-	var keys; //image url source for each camera
-	var path
-	var i = 0;
-	for(var k in data){
-			for(var c in data[k]['cameras']){
-				var stationName = k;
-				var camNumber = c;
-				keys = (data[k]['cameras'][c]['image_url']);
-				serials = (data[k]['cameras'][c]['source_serial']);
-				path = stationName+"cameras"+camNumber;
-				pairs.push([serials, keys, path]);
-			}
-	}
-	return pairs;
-}
-function populateCams(cam_arr){
-	for(var i =0; i<cam_arr.length; i++){
-		$('#content').append('<div class="imgCamContainer suppressHover hoverables" id=div_ws_'+cam_arr[i][2]+'image_url_x style="background-image:url('+cam_arr[i][1]+'); display: none;"><img style="visibility:hidden;" src=""></div>');
-		$('#preload').append('<img alt="camimage" src="" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
-	}	
-}
+
 function createCamFromTree(){
 	var handleTarget;
 	$('.imgCamContainer').draggable({
@@ -572,44 +549,6 @@ function createCamFromTree(){
 				$('#resizeSpan').remove();
 			}
 		});
-	/*$('#preload_div_'+selection).load(function() {
-		var src = $(this).attr("src");
-		
-		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
-		$('#div_'+selection).children('img').attr('src',src);
-		$('#div_'+selection).children('img').attr('alt','1');
-		$("#div_"+selection).css('display','inline');
-	});
-	
-	var url = $('#div_'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
-	$('#preload_div_'+selection).attr('src', url);
-	$('#div_'+selection).attr('title',tooltip);*/
-}	
-//function that refreshes cams and preloads the refreshed image before displaying it	
-function refreshCams(cam_arr){
-	//iterates through known cams
-	var camLength = cam_arr.length;
-	for(var i =0; i<camLength; i++){
-		//only finds cams that are visible
-		var currentCam;
-		if($('#div_ws_'+cam_arr[i][2]+'image_url_x').is(":visible")){
-			//the camera image is not displayed until the image is done loading
-			currentCam = $('#div_ws_'+cam_arr[i][2]+'image_url_x');
-			currentCam = currentCam.attr('id');
-			$('#preload_'+currentCam).unbind()
-			$('#preload_'+currentCam).load(function() {
-				var src = $(this).attr('src');
-				var cam = $(this).attr('id').replace("preload_","");
-				document.getElementById(cam).style.backgroundImage = 'url('+src+')';	
-			});
-			//src is set after the .load() function
-			$('#preload_'+currentCam).attr('src',cam_arr[i][1]);		
-
-		}
-	}
-	//empty array
-	camLength = null;
-	cam_arr.length = 0;
 }	
 function fontSizeChange(direction, id){
 	var fontsize = $('#'+id).css('font-size');
