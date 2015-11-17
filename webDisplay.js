@@ -474,7 +474,7 @@ function populateCams(cam_arr){
 		$('#preload').append('<img alt="camimage" src="" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
-function createCamFromTree(tree_id, tooltip){
+function createCamFromTree(tree_id, tooltip, camObject){
 	var selection = tree_id;
 	var handleTarget;
 	$('.imgCamContainer').draggable({
@@ -556,7 +556,7 @@ function createCamFromTree(tree_id, tooltip){
 				$('#resizeSpan').remove();
 			}
 		});
-	$('#preload_div_'+selection).load(function() {
+	/*$('#preload_div_'+selection).load(function() {
 		var src = $(this).attr("src");
 		
 		$('.imgCamContainer').resizable( "option", "aspectRatio", true );
@@ -567,7 +567,7 @@ function createCamFromTree(tree_id, tooltip){
 	
 	var url = $('#div_'+selection).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //gets url from background-image prop
 	$('#preload_div_'+selection).attr('src', url);
-	$('#div_'+selection).attr('title',tooltip);
+	$('#div_'+selection).attr('title',tooltip);*/
 }	
 //function that refreshes cams and preloads the refreshed image before displaying it	
 function refreshCams(cam_arr){
@@ -691,8 +691,14 @@ var pageCam = function(){
 	this.path;
 	this.containerId;
 	Object.defineProperty(this, 'createHtml', {
-		value: function(cellCount){
-			$('#content').append('<div class="imgCamContainer suppressHover hoverables" id=div_ws_'+this.id+'image_url_x style="background-image:url('+this.path+'); display: none;"><img style="visibility:hidden;" src=""></div>');
+		value: function(cellCount, value){
+			console.log('HERE');
+			$('#preload').append('<img alt="camimage" src="" id="preload_div_'+this.id+'image_url_x1'+cellCount+'" >');
+			$('#preload_div_'+this.id+'image_url_x1'+cellCount).load(function() {
+				var src = $(this).attr("src");
+				$('#content').append('<div class="imgCamContainer suppressHover hoverables" id=div_'+this.id+'image_url_x+'+cellCount+' style="background-image:url('+value+')"><img style="visibility:hidden;" src="'+value+'"></div>');
+			});	
+			$('#preload_div_'+this.id+'image_url_x1'+cellCount).attr('src', value);
 		},
 		enumberable: false				
   	});	
@@ -708,7 +714,7 @@ function PageText(){
 function data_update(data) {
 	time=0;
 	var incomingData = data;
-	var cams = getCamData(data);
+	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
     	started = true; //sets our boolean to true so the above only executes once
         $(".controls").resizable({ //makes our controls div resizable and draggable
@@ -722,7 +728,7 @@ function data_update(data) {
 				$('html').css('background-color',bgColor);
 			}
 			setInterval(timer,1000);
-			populateCams(cams);
+			//populateCams(cams);
 			var lastk = "#";
 			var jsonArray = [];
 			var json = iterateStations(data, "", jsonArray, lastk);
@@ -860,21 +866,30 @@ function data_update(data) {
 						}
 					}
 				},
+				//drop event
 				drop: function( event, ui ) {
 					var $element, $me, $newElement;
 					$element = $(ui.draggable);
-										//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
-
-					if( ($($element).hasClass('draggableCamNode'))){
+					var pageX = $(ui.helper).css('left');
+					var pageY = $(ui.helper).css('top');
+/*------------------------  if cam	------------------------------*/									
+					if(($($element).hasClass('draggableCamNode'))){
+						var tree_item = new pageCam();
+						//tree_item.prototype = pageElement;
+						console.log(tree_item);
+						var idArrLen = cell_arr.length;
 						var instance = $('#stationTree').jstree(true);
 						var id = $($element).attr('id');
+						var new_id = "div_"+id+"_"+idArrLen;
 						var children = instance.get_node(id).children;
 						var clength = children.length;
 						var i;
 						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
-
 						var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
-
+						
+						tree_item["containerId"] = new_id;
+						tree_item["fullId"] = new_id;
+						tree_item["id"] = id+"_"+idArrLen;
 						console.log(children);
 						for(i = 0; i < clength; i++) {
 							console.log(children[i]);
@@ -885,188 +900,191 @@ function data_update(data) {
 						$('#div_'+childId).css('position', 'absolute');
 						$('#div_'+childId).css('top',pageY);
 						$('#div_'+childId).css('left',pageX);
-						createCamFromTree(childId, tooltip);
+						cell_arr.push(tree_item);
+						var sendPath = ref(data, path);
+						console.log(tree_item);
+						tree_item.createHtml(cellCount, sendPath);
+						createCamFromTree(childId, tooltip, tree_item);
 					cellCount++;   
 					}
+/*------------------------  if not cam	------------------------------*/				
 					else{
-					var tree_item = new pageCell();
-					//tree_item.prototype = pageElement;
-					console.log(tree_item);
-					var idArrLen = id_arr.length;
-					var id = $($element).attr('id');
-					var new_id = "div_"+id+"_"+idArrLen;
-					var treeNode = $.jstree.reference('#stationTree').get_node(id);
-					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
-					var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
-					console.log(tooltip);
-					var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
-					var units, title, type, typeUnits;
-					tree_item["path"] = path;
-					tree_item["id"] = id+"_"+idArrLen;
-					tree_item["containerId"] = new_id;
-					tree_item["fullId"] = new_id;
-					tree_item["toolTip"] = tooltip;
-					if(tree_item["path"] == "timeStamp"){
-						tree_item["value"] = 0;	
-					}
-					//gets typeUnits if there
-					if($('#stationTree').jstree(true).get_node(id).original.obj.typeUnits){
-						typeUnits = $('#stationTree').jstree(true).get_node(id).original.obj.typeUnits;
-						tree_item["typeUnits"] = typeUnits;
-					}
-					else{
-						typeUnits = "";
-					}
-					//gets type if there
-					if($('#stationTree').jstree(true).get_node(id).original.obj.type){
-						type = $('#stationTree').jstree(true).get_node(id).original.obj.type;
-						tree_item["type"] = type;
-					}
-					else{
-						type = "";
-					}
-					//gets units if there
-					if($('#stationTree').jstree(true).get_node(id).original.obj.units){
-						units = $('#stationTree').jstree(true).get_node(id).original.obj.units;
-						tree_item["units"] = units;
-					}
-					else{
-						units = "";
-					}
-					//gets title if there
-					if($('#stationTree').jstree(true).get_node(id).original.obj.title){
-						title = $('#stationTree').jstree(true).get_node(id).original.obj.title; 
-						tree_item["title"] = title;
-						var tooltipSplit = path.substring(1).split(staticRegexPeriod);
-						tooltip = '';
-						for(var i =0; i<tooltipSplit.length-2; i++){
-							tooltip = tooltip+tooltipSplit[i]+' >> ';	
-						}
-						tooltip = tooltip+title;
+						var tree_item = new pageCell();
+						//tree_item.prototype = pageElement;
+						console.log(tree_item);
+						var idArrLen = cell_arr.length;
+						var id = $($element).attr('id');
+						var new_id = "div_"+id+"_"+idArrLen;
+						var treeNode = $.jstree.reference('#stationTree').get_node(id);
+						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+						var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
+						console.log(tooltip);
+						var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
+						var units, title, type, typeUnits;
+						tree_item["path"] = path;
+						tree_item["id"] = id+"_"+idArrLen;
+						tree_item["containerId"] = new_id;
+						tree_item["fullId"] = new_id;
 						tree_item["toolTip"] = tooltip;
-						console.log(tooltipSplit);
-					}
-					//case for elements with no valid path
-					else{
-						title = $($element).text();
-						tree_item["title"] = title;
-						if(title == 'Age of Data'){
-							var parentId = $('#stationTree').jstree(true).get_node(id).original.parent;
-							var parentPath =  $('#stationTree').jstree(true).get_node(parentId).original.obj.path;
-							var tooltipSplit = parentPath.substring(1).split(staticRegexPeriod);
+						if(tree_item["path"] == "timeStamp"){
+							tree_item["value"] = 0;	
+						}
+						//gets typeUnits if there
+						if($('#stationTree').jstree(true).get_node(id).original.obj.typeUnits){
+							typeUnits = $('#stationTree').jstree(true).get_node(id).original.obj.typeUnits;
+							tree_item["typeUnits"] = typeUnits;
+						}
+						else{
+							typeUnits = "";
+						}
+						//gets type if there
+						if($('#stationTree').jstree(true).get_node(id).original.obj.type){
+							type = $('#stationTree').jstree(true).get_node(id).original.obj.type;
+							tree_item["type"] = type;
+						}
+						else{
+							type = "";
+						}
+						//gets units if there
+						if($('#stationTree').jstree(true).get_node(id).original.obj.units){
+							units = $('#stationTree').jstree(true).get_node(id).original.obj.units;
+							tree_item["units"] = units;
+						}
+						else{
+							units = "";
+						}
+						//gets title if there
+						if($('#stationTree').jstree(true).get_node(id).original.obj.title){
+							title = $('#stationTree').jstree(true).get_node(id).original.obj.title; 
+							tree_item["title"] = title;
+							var tooltipSplit = path.substring(1).split(staticRegexPeriod);
 							tooltip = '';
-							for(var i =0; i<tooltipSplit.length; i++){
+							for(var i =0; i<tooltipSplit.length-2; i++){
 								tooltip = tooltip+tooltipSplit[i]+' >> ';	
 							}
 							tooltip = tooltip+title;
-							console.log(tooltip);
 							tree_item["toolTip"] = tooltip;
 							console.log(tooltipSplit);
 						}
-					}
-					tree_item["precision"] = 3;
-					path_arr.push(path);
-					id_arr.push(new_id);
-					cell_arr.push(tree_item);
-					console.log(tree_item);
-					console.log(cell_arr);
-					var pageX = $(ui.helper).css('left');
-					var pageY = $(ui.helper).css('top');
-						//$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
-						tree_item.createHtml(cellCount);
-						$(".draggable").draggable({ //makes our data cells draggable
-							disabled: true,
-							grid: [1, 1],
-							snap: true,
-							snapTolerance: 10,
-							cursor: "move",
-							start: function(event, ui) {
-								$(this).addClass('draggable_focus_in');
-								$('.controls').animate({
-									width: '10px'
-								},100);
-								$('.editWindow').animate({
-									width: '0px',
-									margin: '0',
-									padding: '0'
-								},50);
-								$('.controlRow').hide();
-								$('.controls h2').hide();
-								var posLeft = ui.position.left;
-								var posTop = ui.position.top;
-								var posSpan = document.createElement("SPAN"); 
-								var posDiv = document.createElement("DIV");
-								posDiv.id = 'positionDiv';
-								$(this).append(posDiv);
-								$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
-								posSpan.textContent = "("+posLeft+", "+posTop+")";
-								posSpan.id = 'positionSpan';			
-								$('#positionDiv').append(posSpan);
-								
-							},
-							drag: function( event, ui ) {
-								var posLeft = ui.position.left;	
-								var posTop = ui.position.top;
-								$('#positionSpan').text("("+posLeft+", "+posTop+")");
-
-							},
-							stop: function(event, ui) {
-								$(this).removeClass('draggable_focus_in');
-								$('.controls').animate({
-									width: '250px'
-								},200);
-								$('.editWindow').animate({
-									width: '280px',
-									padding: '20px'
-								},200);
-								$('.controlRow').show();
-								$('.controls h2').show();
-								$('#positionDiv').remove();
-								var style = tree_item.getStyle();
-								tree_item.setStyle(style);
-								console.log(tree_item);
-								console.log(JSON.stringify(cell_arr));
-								
+						//case for elements with no valid path
+						else{
+							title = $($element).text();
+							tree_item["title"] = title;
+							if(title == 'Age of Data'){
+								var parentId = $('#stationTree').jstree(true).get_node(id).original.parent;
+								var parentPath =  $('#stationTree').jstree(true).get_node(parentId).original.obj.path;
+								var tooltipSplit = parentPath.substring(1).split(staticRegexPeriod);
+								tooltip = '';
+								for(var i =0; i<tooltipSplit.length; i++){
+									tooltip = tooltip+tooltipSplit[i]+' >> ';	
+								}
+								tooltip = tooltip+title;
+								console.log(tooltip);
+								tree_item["toolTip"] = tooltip;
+								console.log(tooltipSplit);
 							}
-						}).resizable({
-							disabled: false, 
-							handles: 'all',
-							grid: [1,1],			
-							start: function(event, ui) {
-								var width = $(this).css('width');
-								var height = $(this).css('height');
-								var posSpan = document.createElement("SPAN"); 
-								posSpan.id = 'resizeSpan';
-								posSpan.textContent = "Width: "+width+"  Height: "+height+")";
-								$('#resizeSpan').css({
-									top: event.clientY+5,
-									left: event.clientX+5
-								});
-								$(this).append(posSpan);
-								handleTarget = $(event.originalEvent.target);
+						}
+						tree_item["precision"] = 3;
+						path_arr.push(path);
+						id_arr.push(new_id);
+						cell_arr.push(tree_item);
+						console.log(tree_item);
+						console.log(cell_arr);
+							//$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
+							tree_item.createHtml(cellCount);
+							$(".draggable").draggable({ //makes our data cells draggable
+								disabled: true,
+								grid: [1, 1],
+								snap: true,
+								snapTolerance: 10,
+								cursor: "move",
+								start: function(event, ui) {
+									$(this).addClass('draggable_focus_in');
+									$('.controls').animate({
+										width: '10px'
+									},100);
+									$('.editWindow').animate({
+										width: '0px',
+										margin: '0',
+										padding: '0'
+									},50);
+									$('.controlRow').hide();
+									$('.controls h2').hide();
+									var posLeft = ui.position.left;
+									var posTop = ui.position.top;
+									var posSpan = document.createElement("SPAN"); 
+									var posDiv = document.createElement("DIV");
+									posDiv.id = 'positionDiv';
+									$(this).append(posDiv);
+									$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
+									posSpan.textContent = "("+posLeft+", "+posTop+")";
+									posSpan.id = 'positionSpan';			
+									$('#positionDiv').append(posSpan);
 
-							},
-							resize: function(event, ui) {
-								var width = $(this).css('width');
-								var height = $(this).css('height');
-								var top = $('#positionDiv').css('top');
-								var left = $('#positionDiv').css('left');
-								$('#resizeSpan').css({
-									top: event.clientY+5,
-									left: event.clientX+5
-								}); 
-								$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
-								//console.log(event.pageY);
-							},
-							stop: function(event, ui) {
-								$('#resizeSpan').remove();
-							}
-						});			
-						$(".draggable").draggable( "option", "disabled", false )
-						$('#'+cellCount).css('position', 'absolute');
-						$('#'+cellCount).css('top',pageY);
-						$('#'+cellCount).css('left',pageX);
-					cellCount++;
+								},
+								drag: function( event, ui ) {
+									var posLeft = ui.position.left;	
+									var posTop = ui.position.top;
+									$('#positionSpan').text("("+posLeft+", "+posTop+")");
+
+								},
+								stop: function(event, ui) {
+									$(this).removeClass('draggable_focus_in');
+									$('.controls').animate({
+										width: '250px'
+									},200);
+									$('.editWindow').animate({
+										width: '280px',
+										padding: '20px'
+									},200);
+									$('.controlRow').show();
+									$('.controls h2').show();
+									$('#positionDiv').remove();
+									var style = tree_item.getStyle();
+									tree_item.setStyle(style);
+									console.log(tree_item);
+									console.log(JSON.stringify(cell_arr));
+
+								}
+							}).resizable({
+								disabled: false, 
+								handles: 'all',
+								grid: [1,1],			
+								start: function(event, ui) {
+									var width = $(this).css('width');
+									var height = $(this).css('height');
+									var posSpan = document.createElement("SPAN"); 
+									posSpan.id = 'resizeSpan';
+									posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+									$('#resizeSpan').css({
+										top: event.clientY+5,
+										left: event.clientX+5
+									});
+									$(this).append(posSpan);
+									handleTarget = $(event.originalEvent.target);
+
+								},
+								resize: function(event, ui) {
+									var width = $(this).css('width');
+									var height = $(this).css('height');
+									var top = $('#positionDiv').css('top');
+									var left = $('#positionDiv').css('left');
+									$('#resizeSpan').css({
+										top: event.clientY+5,
+										left: event.clientX+5
+									}); 
+									$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+									//console.log(event.pageY);
+								},
+								stop: function(event, ui) {
+									$('#resizeSpan').remove();
+								}
+							});			
+							$(".draggable").draggable( "option", "disabled", false )
+							$('#'+cellCount).css('position', 'absolute');
+							$('#'+cellCount).css('top',pageY);
+							$('#'+cellCount).css('left',pageX);
+						cellCount++;
 					}
 				}
 			});	
@@ -1176,7 +1194,7 @@ function data_update(data) {
 	});
 	// clears document ready function
 	x = null;
-	refreshCams(cams);
+	//refreshCams(cams);
 	dynamicUpdate( data); //updates all data cells to their current values
 	
 }
