@@ -379,11 +379,11 @@ function ref(obj, str) {
     return obj;
 }
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
-function dynamicUpdate($id_arr, $path_arr, data) {
-	var idLength = $id_arr.length;
+function dynamicUpdate(data) {
+	var idLength = cell_arr.length;
 	var value, cellObj, id, label, cellId;
     for ($i = 0; $i < idLength; $i++) {
-		id = $id_arr[$i];
+		id = cell_arr[$i].id;
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
 		if(id.indexOf("ageOfData") >= 0){
 			value = 0+" seconds old";
@@ -394,7 +394,7 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 			var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(id);
 			var objectFound = cell_arr[elementPos];
 			//finds value of object
-			value = ref(data, $path_arr[$i]);
+			value = ref(data, cell_arr[$i].path);
 			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
@@ -421,14 +421,14 @@ function dynamicUpdate($id_arr, $path_arr, data) {
 				value = round(parseFloat(value), objectFound.precision);
 			}
 		}
-	if (value === undefined) {
-		value = 'MISSING DATA!';
-	}
+		if (value === undefined) {
+			value = 'MISSING DATA!';
+		}
 		cellId = id.replace('div_','');
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(cellId);
 		var objectFound = cell_arr[elementPos];
 		objectFound.value = 0;
-		$('div#' + $id_arr[$i] + '').children('p').text(value);
+		$('div#div_' + cell_arr[$i].id + '').children('p').text(value);
 		clearInterval(ageInterval);						
 		ageTimer();
     }
@@ -871,12 +871,14 @@ function data_update(data) {
 					var treeNode = $.jstree.reference('#stationTree').get_node(id);
 					var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 					var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
+					console.log(tooltip);
 					var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
 					var units, title, type, typeUnits;
 					tree_item["path"] = path;
 					tree_item["id"] = id+"_"+idArrLen;
 					tree_item["containerId"] = new_id;
 					tree_item["fullId"] = new_id;
+					tree_item["toolTip"] = tooltip;
 					if(tree_item["path"] == "timeStamp"){
 						tree_item["value"] = 0;	
 					}
@@ -930,6 +932,7 @@ function data_update(data) {
 								tooltip = tooltip+tooltipSplit[i]+' >> ';	
 							}
 							tooltip = tooltip+title;
+							console.log(tooltip);
 							tree_item["toolTip"] = tooltip;
 							console.log(tooltipSplit);
 						}
@@ -1167,7 +1170,7 @@ function data_update(data) {
 	// clears document ready function
 	x = null;
 	refreshCams(cams);
-	dynamicUpdate(id_arr, path_arr, data); //updates all data cells to their current values
+	dynamicUpdate( data); //updates all data cells to their current values
 	
 }
 //gets parameters in url
