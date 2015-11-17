@@ -50,8 +50,8 @@ var pageCell = function(){
 		enumberable: false				
   	});					  
 }
-
 extend(pageCell,pageElement);
+//object representing the cameras on the page
 var pageCam = function(){
 	this.setType('pageCam');
 	this.hoverable = true;
@@ -65,13 +65,20 @@ var pageCam = function(){
 	this.path;
 	this.containerId;
 	Object.defineProperty(this, 'createHtml', {
-		value: function(cellCount, value){
-			$('#preload').append('<img alt="camimage" src="" id="preload_div_'+this.fullId+'" >');
-			$('#preload_div_'+this.fullId).load(function() {
+		value: function(cellCount, value, pageX, pageY){
+			var camId = this.fullId;
+			console.log(camId);
+			$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
+			$('#preload_'+camId).load(function() {
 				var src = $(this).attr("src");
-				$('#content').append('<div class="imgCamContainer suppressHover hoverables" id=div_'+this.fullId+' style="background-image:url('+value+')"><img style="visibility:hidden;" src="'+value+'"></div>');
+				$('#content').append('<div class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img style="visibility:hidden;" src="'+value+'"></div>');
+				$('#'+camId).css('position', 'absolute');
+				$('#'+camId).css('display','inline-block');
+				$('#'+camId).css('top',pageY);
+				$('#'+camId).css('left',pageX);
+				createCamFromTree();
 			});	
-			$('#preload_div_'+this.fullId).attr('src', value);
+			$('#preload_'+camId).attr('src', value);
 		},
 		enumberable: false				
   	});	

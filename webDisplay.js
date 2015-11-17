@@ -381,19 +381,32 @@ function ref(obj, str) {
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate(data) {
 	var idLength = cell_arr.length;
-	var value, cellObj, id, label, cellId, objectFound;
+	var value, cellObj, id, label, objectFound;
+	
     for ($i = 0; $i < idLength; $i++) {
 		objectFound = cell_arr[$i];
 		id = objectFound.id;
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
 		if(id.indexOf("ageOfData") >= 0){
 			value = 0+" seconds old";
+			objectFound.value = 0;
+			$('div#div_' + objectFound.id + '').children('p').text(value);
 		}
-		/* //future cam update spot
-		else if(id.indexOf("image_url") >= 0){
-			
+		//cam update
+		else if(id.indexOf("pageCam") >= 0){
+			var currentCam;
+			value = ref(data, objectFound.path);
+			currentCam = $("#"+objectFound.fullId);
+			currentCam = currentCam.attr('id');
+			$('#preload_'+currentCam).unbind()
+			$('#preload_'+currentCam).load(function() {
+				var src = $(this).attr('src');
+				var cam = $(this).attr('id').replace("preload_","");
+				document.getElementById(cam).style.backgroundImage = 'url('+src+')';	
+			});
+			//src is set after the .load() function
+			$('#preload_'+currentCam).attr('src',value);		
 		}
-		*/
 		//for other elements...
 		else{
 			id = id.replace('div_', '');	
@@ -424,16 +437,17 @@ function dynamicUpdate(data) {
 			else if(!isNaN(value)){
 				value = round(parseFloat(value), objectFound.precision);
 			}
+			objectFound.value = 0;
+			$('div#div_' + objectFound.id + '').children('p').text(value);
 		}
 		if (value === undefined) {
 			value = 'MISSING DATA!';
 		}
-		cellId = id.replace('div_','');
-		objectFound.value = 0;
-		$('div#div_' + objectFound.id + '').children('p').text(value);
+		
 		clearInterval(ageInterval);						
 		ageTimer();
     }
+	
 }
 function chooseConversion(type, typeUnits, value, typeChange){
 	if(type == "temperature"){
@@ -474,8 +488,7 @@ function populateCams(cam_arr){
 		$('#preload').append('<img alt="camimage" src="" id="preload_div_ws_'+cam_arr[i][2]+'image_url_x" >');
 	}	
 }
-function createCamFromTree(tree_id, tooltip, camObject){
-	var selection = tree_id;
+function createCamFromTree(){
 	var handleTarget;
 	$('.imgCamContainer').draggable({
 		grid: [1, 1],
@@ -761,7 +774,7 @@ function data_update(data) {
 				});
 			});
 			//makes everything draggable
-			initJqueryUI();
+			//initJqueryUI();
 			$(".top-container").droppable({
         		accept: function(d) { 
 					if(d.hasClass("jstree-leaf")){ 
@@ -798,16 +811,17 @@ function data_update(data) {
 						var idArrLen = cell_arr.length;
 						var instance = $('#stationTree').jstree(true);
 						var id = $($element).attr('id');
-						var new_id = "div_"+id+"_"+idArrLen;
+						var new_id = "div_"+id+"_pageCam_"+idArrLen;
 						var children = instance.get_node(id).children;
 						var clength = children.length;
 						var i;
 						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 						var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
 						
+						tree_item["path"] = path;
 						tree_item["containerId"] = new_id;
 						tree_item["fullId"] = new_id;
-						tree_item["id"] = id+"_"+idArrLen;
+						tree_item["id"] = id+"_pageCam_"+idArrLen;
 						console.log(children);
 						for(i = 0; i < clength; i++) {
 							console.log(children[i]);
@@ -815,14 +829,14 @@ function data_update(data) {
 								var childId = children[i];
 							}
 						}
-						$('#div_'+childId).css('position', 'absolute');
-						$('#div_'+childId).css('top',pageY);
-						$('#div_'+childId).css('left',pageX);
+						
 						cell_arr.push(tree_item);
 						var sendPath = ref(data, path);
 						console.log(tree_item);
-						tree_item.createHtml(cellCount, sendPath);
-						createCamFromTree(childId, tooltip, tree_item);
+						tree_item.createHtml(cellCount, sendPath, pageX, pageY);
+						createCamFromTree();
+						console.log($('#'+new_id));
+						
 					cellCount++;   
 					}
 /*------------------------  if not cam	------------------------------*/				
