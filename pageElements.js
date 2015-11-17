@@ -67,11 +67,12 @@ var pageCam = function(){
 	Object.defineProperty(this, 'createHtml', {
 		value: function(cellCount, value, pageX, pageY){
 			var camId = this.fullId;
+			var camObj = this;
 			console.log(camId);
 			$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
 			$('#preload_'+camId).load(function() {
 				var src = $(this).attr("src");
-				$('#content').append('<div class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img style="visibility:hidden;" src="'+value+'"></div>');
+				$('#content').append('<div class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
 				$('#'+camId).css('position', 'absolute');
 				$('#'+camId).css('display','inline-block');
 				$('#'+camId).css('top',pageY);
@@ -84,9 +85,32 @@ var pageCam = function(){
   	});	
 }
 extend(pageCam,pageElement);
-function PageImg(){
+function pageImg(){
 	
 }
-function PageText(){
-	
+function pageText(){
+	this.setType('pageText');
+	this.id;
+	this.text;
+	this.style;
+	this.hidden = false;
+	Object.defineProperty(this, 'createHtml', {
+		value: function(cellCount){
+			var textBlock, textTitle, textContent, title;
+			//create a div to hold the text
+			textBlock = document.createElement("div");
+			textBlock.className = "textBlockContainer";
+			textContent = "Click to change text";
+			this.text = textContent;
+			//incremental ID attribute
+			textBlock.id = "block"+cellCount;
+			this.id = "block"+cellCount;
+			//appends a textblock to the div with our default text
+			$(textBlock).append('<p>'+textContent+'</p>');
+			//appends the textblock to the page
+			$('#content').append(textBlock);
+		},
+		enumberable: false				
+  	});	
 }
+extend(pageText,pageElement);

@@ -834,7 +834,6 @@ function data_update(data) {
 						var sendPath = ref(data, path);
 						console.log(tree_item);
 						tree_item.createHtml(cellCount, sendPath, pageX, pageY);
-						createCamFromTree();
 						console.log($('#'+new_id));
 						
 					cellCount++;   
@@ -1193,22 +1192,9 @@ function data_start() {
 }
 function createText(){
 	var textBlock, textTitle, textContent, title, index;
-	
+	textBlock = new pageText(cell_arr.length);
 	index = textBlocks.length;
-	//set default text
-	textContent = "Click to change text";
-	//create a div to hold the text
-	textBlock = document.createElement("div");
-	textBlock.className = "textBlockContainer";
-	//incremental ID attribute
-	textBlock.id = "block"+index;
-	//appends a textblock to the div with our default text
-	$(textBlock).append('<p>'+textContent+'</p>');
-	//appends the textblock to the page
-	$('#content').append(textBlock);
-	//pushes our id to the global array
-	textBlocks.push("block"+index);
-	//makes block draggable and resizable
+	textBlock.createHtml(index);
 	$(".textBlockContainer").draggable({
 		disabled: false,
 		grid: [1, 1],
