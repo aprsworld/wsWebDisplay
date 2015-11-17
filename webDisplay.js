@@ -582,6 +582,68 @@ function timer(){
 		console.log(convertedLoad+' since page was loaded');	
 	}
 }
+function hoverCamInit(){
+	//allows cams to be hoverable outside of edit function
+	var hoverTimeout;
+	var hoverImg = document.createElement('img');
+	var hoverImgLink = document.createElement('a');
+	$('.imgCamContainer').hover(function(){
+	var camID = $(this).attr('id');
+	var camWidth = $(this).children('img').width();
+	var divWidth = parseInt($(this).css('width').slice(0,-2));
+	var camHeight = $(this).children('img').height();
+	var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+	var isWebkit = 'WebkitAppearance' in document.documentElement.style
+	var hoverImgID = camID+'hover';
+	var timeOut = 1000;
+	var suppress = false;
+	if((camWidth <= divWidth) && $(this).hasClass('suppressHover')){
+		suppress = true;
+	}
+	timeOut = parseInt($('#'+camID).children('img').attr('alt'), 10)*1000;
+	var enabled = $('#'+camID).hasClass('hoverables');
+	console.log(camWidth+" , "+divWidth);
+		if(editMode == false && enabled == true && suppress == false){	
+				hoverTimeout = setTimeout(function() {						
+					$(hoverImg).width(camWidth);
+					$(hoverImg).height(camHeight);
+					hoverImg.src = camSrc;
+					hoverImgLink.href = camSrc;
+					hoverImgLink.target = '_blank';
+					hoverImgLink.appendChild(hoverImg);
+					console.log(hoverImg);
+					$('#'+camID).append(hoverImgLink);
+					$('#'+camID).addClass('focusedCam');
+					if (isWebkit) {
+						hoverImg.className = 'webKitCam';
+						hoverImgLink.id = hoverImgID;
+						var top = ''+$('#'+camID).css('top');
+						var left = ''+$('#'+camID).css('left');
+						$('#'+hoverImgID).css('position','absolute');
+						$('#'+hoverImgID).css('left','50% ');
+						$('#'+hoverImgID).css('top','50%');
+						top = '-'+$('#'+camID).css('top');
+						left= '-'+$('#'+camID).css('left');
+						$('#'+hoverImgID).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
+						console.log(top);
+
+					}
+					else{
+						hoverImg.className = 'expandedCam';
+					}	
+				}, timeOut);
+			}
+		}, function () {
+			if(editMode == false){	
+				clearTimeout(hoverTimeout);
+				$(hoverImg).remove();
+				$('.imgCamContainer').removeClass('focusedCam');
+			}
+		}
+
+	);	
+		//end of cam hoverable event 	
+}
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
@@ -989,66 +1051,7 @@ function data_update(data) {
                        $('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 
 		}
-		//allows cams to be hoverable outside of edit function
-			var hoverTimeout;
-			var hoverImg = document.createElement('img');
-			var hoverImgLink = document.createElement('a');
-			$('.imgCamContainer').hover(function(){
-				var camID = $(this).attr('id');
-				var camWidth = $(this).children('img').width();
-				var divWidth = parseInt($(this).css('width').slice(0,-2));
-				var camHeight = $(this).children('img').height();
-				var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-				var isWebkit = 'WebkitAppearance' in document.documentElement.style
-				var hoverImgID = camID+'hover';
-				var timeOut = 1000;
-				var suppress = false;
-				if((camWidth >= divWidth) && $(this).hasClass('suppressHover')){
-					suppress = true;
-				}
-				timeOut = parseInt($('#'+camID).children('img').attr('alt'), 10)*1000;
-				var enabled = $('#'+camID).hasClass('hoverables');
-				console.log(camWidth+" , "+divWidth);
-					if(editMode == false && enabled == true && suppress == false){	
-							hoverTimeout = setTimeout(function() {						
-								$(hoverImg).width(camWidth);
-								$(hoverImg).height(camHeight);
-								hoverImg.src = camSrc;
-								hoverImgLink.href = camSrc;
-								hoverImgLink.target = '_blank';
-								hoverImgLink.appendChild(hoverImg);
-								console.log(hoverImg);
-								$('#'+camID).append(hoverImgLink);
-								$('#'+camID).addClass('focusedCam');
-								if (isWebkit) {
-									hoverImg.className = 'webKitCam';
-									hoverImgLink.id = hoverImgID;
-									var top = ''+$('#'+camID).css('top');
-									var left = ''+$('#'+camID).css('left');
-									$('#'+hoverImgID).css('position','absolute');
-									$('#'+hoverImgID).css('left','50% ');
-									$('#'+hoverImgID).css('top','50%');
-									top = '-'+$('#'+camID).css('top');
-									left= '-'+$('#'+camID).css('left');
-									$('#'+hoverImgID).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
-									console.log(top);
-									
-								}
-								else{
-									hoverImg.className = 'expandedCam';
-								}	
-							}, timeOut);
-						}
-					}, function () {
-						if(editMode == false){	
-							clearTimeout(hoverTimeout);
-							$(hoverImg).remove();
-							$('.imgCamContainer').removeClass('focusedCam');
-						}
-					}
-			
-			);	
-		//end of cam hoverable event 
+		
 		
         });
 	}

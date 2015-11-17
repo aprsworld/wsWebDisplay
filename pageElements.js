@@ -91,6 +91,7 @@ var pageCam = function(){
 				$('#'+camId).css('top',pageY);
 				$('#'+camId).css('left',pageX);
 				createCamFromTree();
+				hoverCamInit();
 			});	
 			$('#preload_'+camId).attr('src', value);
 		},
