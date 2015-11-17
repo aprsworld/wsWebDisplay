@@ -1634,6 +1634,7 @@ CAMERA CASE
 			$("#"+selectedModule).css('height',height);
 			$("#"+selectedModule).css("background-size","contain");
 			$("#"+selectedModule).css("background-position","50% 50%");
+			createCamFromTree();
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
