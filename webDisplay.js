@@ -381,20 +381,24 @@ function ref(obj, str) {
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate(data) {
 	var idLength = cell_arr.length;
-	var value, cellObj, id, label, cellId;
+	var value, cellObj, id, label, cellId, objectFound;
     for ($i = 0; $i < idLength; $i++) {
-		id = cell_arr[$i].id;
+		objectFound = cell_arr[$i];
+		id = objectFound.id;
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
 		if(id.indexOf("ageOfData") >= 0){
 			value = 0+" seconds old";
 		}
+		/* //future cam update spot
+		else if(id.indexOf("image_url") >= 0){
+			
+		}
+		*/
 		//for other elements...
 		else{
 			id = id.replace('div_', '');	
-			var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(id);
-			var objectFound = cell_arr[elementPos];
 			//finds value of object
-			value = ref(data, cell_arr[$i].path);
+			value = ref(data, objectFound.path);
 			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
@@ -425,10 +429,8 @@ function dynamicUpdate(data) {
 			value = 'MISSING DATA!';
 		}
 		cellId = id.replace('div_','');
-		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(cellId);
-		var objectFound = cell_arr[elementPos];
 		objectFound.value = 0;
-		$('div#div_' + cell_arr[$i].id + '').children('p').text(value);
+		$('div#div_' + objectFound.id + '').children('p').text(value);
 		clearInterval(ageInterval);						
 		ageTimer();
     }
@@ -860,8 +862,33 @@ function data_update(data) {
 				},
 				drop: function( event, ui ) {
 					var $element, $me, $newElement;
-					
 					$element = $(ui.draggable);
+										//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
+
+					if( ($($element).hasClass('draggableCamNode'))){
+						var instance = $('#stationTree').jstree(true);
+						var id = $($element).attr('id');
+						var children = instance.get_node(id).children;
+						var clength = children.length;
+						var i;
+						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+
+						var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
+
+						console.log(children);
+						for(i = 0; i < clength; i++) {
+							console.log(children[i]);
+							if (children[i].indexOf("image_url_x") >= 0){
+								var childId = children[i];
+							}
+						}
+						$('#div_'+childId).css('position', 'absolute');
+						$('#div_'+childId).css('top',pageY);
+						$('#div_'+childId).css('left',pageX);
+						createCamFromTree(childId, tooltip);
+					cellCount++;   
+					}
+					else{
 					var tree_item = new pageCell();
 					//tree_item.prototype = pageElement;
 					console.log(tree_item);
@@ -945,26 +972,6 @@ function data_update(data) {
 					console.log(cell_arr);
 					var pageX = $(ui.helper).css('left');
 					var pageY = $(ui.helper).css('top');
-					//check if id contains image_url - if it does, then we create a camera feed, if it does not we create a data cell
-					if( ($($element).hasClass('draggableCamNode'))){
-						var instance = $('#stationTree').jstree(true);
-						var children = instance.get_node(id).children;
-						var clength = children.length;
-						var i;
-						console.log(children);
-						for(i = 0; i < clength; i++) {
-							console.log(children[i]);
-							if (children[i].indexOf("image_url_x") >= 0){
-								var childId = children[i];
-							}
-						}
-						$('#div_'+childId).css('position', 'absolute');
-						$('#div_'+childId).css('top',pageY);
-						$('#div_'+childId).css('left',pageX);
-						createCamFromTree(childId, tooltip);
-					cellCount++;   
-					}
-					else{
 						//$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
 						tree_item.createHtml(cellCount);
 						$(".draggable").draggable({ //makes our data cells draggable
