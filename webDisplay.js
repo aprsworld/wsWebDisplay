@@ -469,7 +469,7 @@ function chooseConversion(type, typeUnits, value, typeChange){
 	
 }
 
-function createCamFromTree(){
+function createCamFromTree(camObj){
 	var handleTarget;
 	$('.imgCamContainer').draggable({
 		grid: [1, 1],
@@ -548,6 +548,8 @@ function createCamFromTree(){
 			},
 			stop: function(event, ui) {
 				$('#resizeSpan').remove();
+				camObj.setHover(true, camObj.hoverDelay);
+
 			}
 		});
 }	
@@ -838,7 +840,7 @@ function data_update(data) {
 						var sendPath = ref(data, path);
 						console.log(tree_item);
 						tree_item.createHtml(cellCount, sendPath, pageX, pageY);
-						tree_item.setHover(tree_item.hoverable, tree_item.hoverDelay);
+						tree_item.setHover(true, tree_item.hoverDelay);
 						console.log($('#'+new_id));
 						
 					cellCount++;   
@@ -1538,10 +1540,10 @@ CAMERA CASE
 		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
-				objectFound.setHover(true, objectFound.suppressed);
+				objectFound.setHover(true, objectFound.hoverDelay);
 			}
 			else{
-				objectFound.setHover(false, objectFound.suppressed);
+				objectFound.setHover(false, objectFound.hoverDelay);
 			}
 		});
 		var suppressedChecked;
@@ -1550,10 +1552,15 @@ CAMERA CASE
 			suppressedChecked = $('input[name=suppressHover]:checked').val();
 			if(suppressedChecked == 'enabled'){
 				objectFound.suppressed = true;
+				objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
+
 			}
 			else{
 				objectFound.suppressed = false;
+				objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
+
 			}
+			console.log(objectFound.suppressed);
 		});
 		$( document ).off( "keyup", "input#hoverTime");
 		$( document ).on( "keyup", "input#hoverTime" , function() {
@@ -1564,7 +1571,6 @@ CAMERA CASE
 			else{
 				objectFound.hoverDelay = 0;
 			}
-			console.log( objectFound.hoverDelay);
 		});
 		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
@@ -1619,10 +1625,6 @@ CAMERA CASE
 				$('#endCrop, #cancelCrop').hide();
 				width = parseInt((width.slice(0,-2)));
 				height = parseInt((height.slice(0,-2)));
-				/*var changeWidth = ((((width-cropWidth)/width)));
-				var changeHeight = (((height-cropHeight)/height));
-				var changeLeft = ((((top-cropTop)/1))*100);
-				var changeTop = (((left-cropLeft)/1)*100);*/
 				$('.cropperWrapper').remove();
 				console.log(diffFromNatHeight);
 				console.log(diffFromNatWidth);

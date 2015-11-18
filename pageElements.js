@@ -109,7 +109,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		$('#hoverTimeRow, #suppressHoverable').show();		
 		$('#'+camId).hover(function(){
 			var camSrc = camObj.src;
-
+			console.log(camObj);
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
 			camHeight = parseInt(camObj.natHeight);
@@ -213,7 +213,7 @@ pageCam.prototype.resize = function(){
 	$("#"+camId).css("background-position","50% 50%");
 	var newStyle = $("#"+camId).attr('style');
 	camObj.setStyle(newStyle);
-	createCamFromTree();
+	createCamFromTree(camObj);
 }
 //creates element
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
@@ -228,7 +228,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		$('#'+camId).css('display','inline-block');
 		$('#'+camId).css('top',pageY);
 		$('#'+camId).css('left',pageX);
-		createCamFromTree();
+		createCamFromTree(camObj);
 		var currentMode = editMode
 		var width = $('#'+camId).children('img').width();
 		var height = $('#'+camId).children('img').height();	
