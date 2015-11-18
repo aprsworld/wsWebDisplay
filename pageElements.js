@@ -51,6 +51,7 @@ pageElement.prototype = {
 			console.log(cell_arr);
 		}	
 	}
+	//need a hide function
 }
 
 /***********************************************************************************
@@ -62,6 +63,34 @@ var pageCell = function(){
 				  
 }
 extend(pageCell,pageElement);
+
+pageCell.prototype.setPrecision = function(value){
+	
+}
+
+pageCell.prototype.setUnitType = function(value){
+	
+}
+
+pageCell.prototype.fontColorChange = function(){
+	
+}
+
+pageCell.prototype.backgroundColorChange = function(){
+	
+}
+
+pageCell.prototype.fontSizeChange = function(){
+	
+}
+
+pageCell.prototype.setTitle = function(){
+		
+}
+
+pageCell.prototype.setLabel = function(){
+	
+}
 
 pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');

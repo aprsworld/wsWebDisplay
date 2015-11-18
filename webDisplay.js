@@ -1939,9 +1939,6 @@ DATA CELLS CASE
 			$("#"+selectedModule).remove();
 			objectFound.deleteElement();
 			$('.editWindow').hide(150);
-			console.log(id);
-			console.log(id_arr);
-			console.log(cell_arr);
 		});
 		//background color input change event handler
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
