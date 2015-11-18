@@ -418,7 +418,7 @@ function dynamicUpdate(data) {
 			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
-				var typeUnits = objectFound.typeUnits;
+				var typeUnits = objectFound.typeUnits.toUpperCase();
 				var typeChange = objectFound.typeChange;
 				if(typeChange !== typeUnits){
 					var result = chooseConversion(type, typeUnits, value, typeChange);
@@ -1512,7 +1512,7 @@ CAMERA CASE
 		var camera = $(this);
 		//checks to see if image has added hoverables class and checks appropriate radio button
 		var radiobtn
-		$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
+		$('#hoverTime').val(objectFound.hoverDelay);
 		if(objectFound.hoverable == true){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
@@ -1523,7 +1523,7 @@ CAMERA CASE
 			radiobtn.checked = true;
 		}
 		var suppressButton;
-		if($(this).hasClass('suppressHover')){
+		if(objectFound.suppressed == true){
 			suppressButton = document.getElementById("suppressHover");
 			suppressButton.checked = true;
 			camera.addClass('suppressHover');
@@ -1538,18 +1538,10 @@ CAMERA CASE
 		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
-				//$('#'+selectedModule).addClass('hoverables');
 				objectFound.setHover(true, objectFound.suppressed);
-				$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
-				$('#hoverTimeRow').show();
-				$('#suppressHoverable').show();
 			}
 			else{
 				objectFound.setHover(false, objectFound.suppressed);
-				$('#'+selectedModule).removeClass('hoverables');
-				$('#hoverTimeRow').hide();
-				$('#suppressHoverable').hide();
-
 			}
 		});
 		var suppressedChecked;
@@ -1565,23 +1557,23 @@ CAMERA CASE
 		});
 		$( document ).off( "keyup", "input#hoverTime");
 		$( document ).on( "keyup", "input#hoverTime" , function() {
-			$('#'+selectedModule).children('img').attr('alt',$('input#hoverTime').val());
+			console.log(parseInt($('input#hoverTime').val()));
+			if(!isNaN($('input#hoverTime').val())){
+				objectFound.hoverDelay = $('input#hoverTime').val();
+			}
+			else{
+				console.log('wtf');
+				objectFound.hoverDelay = 0;
+			}
+			console.log( objectFound.hoverDelay);
 		});
 		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#deleteModule" , function() {
-			$("#"+selectedModule).removeClass("cropped");
-			$("#"+selectedModule).resizable({disabled: false});
-			var width = $("#"+selectedModule).children('img').width();
-			var height = $("#"+selectedModule).children('img').height();
-			$("#"+selectedModule).css('width', width);
-			$("#"+selectedModule).css('height',height);
-			$("#"+selectedModule).css("background-size","contain");
-			$("#"+selectedModule).css("background-position","50% 50%");
-			$("#"+selectedModule).hide();
+		$( document ).on( "click", "#deleteModule" , function() {		
+			objectFound.deleteElement();
+			console.log(cell_arr);
 			$('.editWindow').hide(150);
 		});
-		// delete event hanlder
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {
 			$("#"+selectedModule).removeClass("cropped");
@@ -1593,6 +1585,7 @@ CAMERA CASE
 			$("#"+selectedModule).css("background-size","contain");
 			$("#"+selectedModule).css("background-position","50% 50%");
 			createCamFromTree();
+			
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	

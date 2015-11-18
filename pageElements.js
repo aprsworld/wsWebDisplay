@@ -41,6 +41,13 @@ pageElement.prototype = {
 	//gets the type
 	getType: function(){
 		return this.elementType;
+	},
+	deleteElement: function(){
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(this.id);
+		if (elementPos > -1) {
+			document.getElementById(this.containerId).remove();
+			cell_arr.splice(elementPos, 1);	
+		}	
 	}
 }
 
@@ -87,12 +94,11 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 	var camObj, camId, radiobtn ;
 	camObj = this;
 	camId = this.containerId;
-	alert(camObj);
 	console.log(camObj);
 	if(boolHover == false){
 		camObj.hoverable = false;
 		$( '#'+camId ).off("mouseenter mouseleave");
-		$('#hoverTimeRow, #suppressHoverable').show();		
+		$('#hoverTimeRow, #suppressHoverable').hide();		
 		return;	
 	}
 	else{
@@ -100,7 +106,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		camObj.hoverable = true;
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
-		$('#hoverTimeRow, #suppressHoverable').hide();		
+		$('#hoverTimeRow, #suppressHoverable').show();		
 		$('#'+camId).hover(function(){
 			var camSrc = camObj.src;
 
