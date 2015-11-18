@@ -1510,12 +1510,10 @@ CAMERA CASE
 		var objectFound = cell_arr[elementPos];
 	
 		var camera = $(this);
-				
 		//checks to see if image has added hoverables class and checks appropriate radio button
 		var radiobtn
 		$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
-		objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay );
-		if($('#'+selectedModule).hasClass('hoverables')){
+		if(objectFound.hoverable == true){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
 			$('#hoverTimeRow').show();
@@ -1540,12 +1538,14 @@ CAMERA CASE
 		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
-				$('#'+selectedModule).addClass('hoverables');
+				//$('#'+selectedModule).addClass('hoverables');
+				objectFound.setHover(true, objectFound.suppressed);
 				$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
 				$('#hoverTimeRow').show();
 				$('#suppressHoverable').show();
 			}
 			else{
+				objectFound.setHover(false, objectFound.suppressed);
 				$('#'+selectedModule).removeClass('hoverables');
 				$('#hoverTimeRow').hide();
 				$('#suppressHoverable').hide();

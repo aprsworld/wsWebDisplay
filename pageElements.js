@@ -84,40 +84,42 @@ extend(pageCam,pageElement);
 
 //sets class for hover and sets delay time
 pageCam.prototype.setHover = function(boolHover, hoverTime){
-	var camObj = this;
+	var camObj, camId, radiobtn ;
+	camObj = this;
+	camId = this.containerId;
 	alert(camObj);
 	console.log(camObj);
 	if(boolHover == false){
+		camObj.hoverable = false;
+		$( '#'+camId ).off("mouseenter mouseleave");
+		$('#hoverTimeRow, #suppressHoverable').show();		
 		return;	
 	}
 	else{
 		var suppressed, camId, camWidth, divWidth, camHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
-		
+		camObj.hoverable = true;
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
-		camId = this.containerId;
-		
+		$('#hoverTimeRow, #suppressHoverable').hide();		
 		$('#'+camId).hover(function(){
 			var camSrc = camObj.src;
 
-			console.log(" got to hover ");
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
 			camHeight = parseInt(camObj.natHeight);
 			divWidth = parseInt($('#'+camId).css('width').slice(0,-2));
-			console.log(divWidth);
 			isWebkit = 'WebkitAppearance' in document.documentElement.style;
 			hoverImgId = camId+'hover';
 			timeOut = hoverTime*1000;
+			
 			if(camWidth <= divWidth && camObj.suppressed == true){
 
 				suppressed = true;
 			}
 
 			if(editMode == false && suppressed == false){
-							console.log(" got to if ");
-			hoverTimeOut = setTimeout(function() {	
-							console.log(camSrc);
+			
+				hoverTimeOut = setTimeout(function() {	
 
 				$(hoverImg).width(camWidth);
 				$(hoverImg).height(camHeight);
