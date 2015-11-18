@@ -1,14 +1,14 @@
-/*
-* function used for extending "sub-classes" from a "main class"
-*/
+/***********************************************************************************
+* Extends parent object prototype to a child object
+************************************************************************************/
 function extend(ChildClass, ParentClass) {
 	ChildClass.prototype = new ParentClass();
 	ChildClass.prototype.constructor = ChildClass;
 }
 
-/*
-* general object for element on the page
-*/
+/***********************************************************************************
+* GENERAL OBJECT
+************************************************************************************/
 var pageElement = function(){
 	this.elementType = 'generalElement';	
 	//gets style
@@ -30,9 +30,9 @@ var pageElement = function(){
 	});
 }
 
-/*
-* functions to be used in all pageElement objects
-*/
+/***********************************************************************************
+* General object prototype
+************************************************************************************/
 pageElement.prototype = {
 	//sets type of element to be a data cell, image block, textblock, camera, etc.
 	setType: function(elementType) {
@@ -44,9 +44,9 @@ pageElement.prototype = {
 	}
 }
 
-/*
-* object representing the datacells on the page
-*/
+/***********************************************************************************
+* DATA CELL OBJECT
+************************************************************************************/
 var pageCell = function(){
 	this.units = '';
 	this.hidden = false;
@@ -62,9 +62,9 @@ var pageCell = function(){
 }
 extend(pageCell,pageElement);
 
-/*
-* object representing the cameras on the page
-*/
+/***********************************************************************************
+* CAMERA OBJECT
+************************************************************************************/
 var pageCam = function(){
 	this.setType('pageCam');
 	this.hoverable = true;
@@ -72,37 +72,153 @@ var pageCam = function(){
 	this.hoverDelay = 1;
 	this.cropped = false;	
 	this.hidden = false;
-	this.naturalWidth;
-	this.naturalHeight;
+	this.natWidth;
+	this.natHeight;
 	this.id;
 	this.path;
+	this.style;
+	this.src;
 	this.containerId;
-	Object.defineProperty(this, 'createHtml', {
-		value: function(cellCount, value, pageX, pageY){
-			var camId = this.fullId;
-			var camObj = this;
-			console.log(camId);
-			$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
-			$('#preload_'+camId).load(function() {
-				var src = $(this).attr("src");
-				$('#content').append('<div class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
-				$('#'+camId).css('position', 'absolute');
-				$('#'+camId).css('display','inline-block');
-				$('#'+camId).css('top',pageY);
-				$('#'+camId).css('left',pageX);
-				createCamFromTree();
-				hoverCamInit();
-			});	
-			$('#preload_'+camId).attr('src', value);
-		},
-		enumberable: false				
-  	});	
 }
 extend(pageCam,pageElement);
 
-/*
-* object representing the static images on the page
-*/
+//sets class for hover and sets delay time
+pageCam.prototype.setHover = function(boolHover, hoverTime){
+	var camObj = this;
+	alert(camObj);
+	console.log(camObj);
+	if(boolHover == false){
+		return;	
+	}
+	else{
+		var suppressed, camId, camWidth, divWidth, camHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
+		
+		hoverImg = document.createElement('img');
+		hoverImgLink = document.createElement('a');
+		camId = this.containerId;
+		
+		$('#'+camId).hover(function(){
+			var camSrc = camObj.src;
+
+			console.log(" got to hover ");
+			suppressed = false;
+			camWidth = parseInt(camObj.natWidth);
+			camHeight = parseInt(camObj.natHeight);
+			divWidth = parseInt($('#'+camId).css('width').slice(0,-2));
+			console.log(divWidth);
+			isWebkit = 'WebkitAppearance' in document.documentElement.style;
+			hoverImgId = camId+'hover';
+			timeOut = hoverTime*1000;
+			if(camWidth <= divWidth && camObj.suppressed == true){
+
+				suppressed = true;
+			}
+
+			if(editMode == false && suppressed == false){
+							console.log(" got to if ");
+			hoverTimeOut = setTimeout(function() {	
+							console.log(camSrc);
+
+				$(hoverImg).width(camWidth);
+				$(hoverImg).height(camHeight);
+				hoverImg.src = camSrc;
+				hoverImgLink.href = camSrc;
+				hoverImgLink.target = '_blank';
+				hoverImgLink.appendChild(hoverImg);
+				console.log(hoverImg);
+				$('#'+camId).append(hoverImgLink);
+				$('#'+camId).addClass('focusedCam');
+				if (isWebkit) {
+					hoverImg.className = 'webKitCam';
+					hoverImgLink.id = hoverImgId;
+					var top = ''+$('#'+camId).css('top');
+					var left = ''+$('#'+camId).css('left');
+					$('#'+hoverImgId).css('position','absolute');
+					$('#'+hoverImgId).css('left','50% ');
+					$('#'+hoverImgId).css('top','50%');
+					top = '-'+$('#'+camId).css('top');
+					left= '-'+$('#'+camId).css('left');
+					$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
+					console.log(top);
+
+				}
+				else{
+					hoverImg.className = 'expandedCam';
+				}	
+			}, timeOut); //end hoverTimeOut
+			
+			} //end if(editMode == false && suppressed == false)
+		}, function () {
+			if(editMode == false){	
+				clearTimeout(hoverTimeOut);
+				$(hoverImg).remove();
+				$('.imgCamContainer').removeClass('focusedCam');
+			}
+		}
+	);} //end $('#'camId).hover(function()
+} //end set hover
+
+//sets the supression for hover
+pageCam.prototype.setSuppression = function(boolSuppress){
+	this.suppressed = boolSuppress;
+}
+
+//sets the crop area when image is cropped
+pageCam.prototype.setCrop = function(boolCrop){
+	if(boolCrop == true){
+		var style = this.getStyle();
+		this.setStyle(style);
+		this.cropped = true;
+	}
+	else{
+		var style = this.getStyle();
+		this.setStyle(style);
+		this.cropped = false;	
+	}
+}
+
+//gets the natural height of the image
+pageCam.prototype.getWidth = function(){
+	return this.natWidth;
+}
+
+//gets the natural height of the image
+pageCam.prototype.getHeight = function(){
+	return this.natHeight;
+}
+
+//sets the natural width and height of an image
+pageCam.prototype.setNaturalDimensions = function(height, width){
+	this.natHeight = height;
+	this.natWidth = width;
+}
+
+pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
+	var camId = this.fullId;
+	var camObj = this;
+	console.log(camId);
+	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
+	$('#preload_'+camId).load(function() {
+		var src = $(this).attr("src");
+		$('#content').append('<div class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
+		$('#'+camId).css('position', 'absolute');
+		$('#'+camId).css('display','inline-block');
+		$('#'+camId).css('top',pageY);
+		$('#'+camId).css('left',pageX);
+		createCamFromTree();
+		var currentMode = editMode
+		var width = $('#'+camId).children('img').width();
+		var height = $('#'+camId).children('img').height();	
+		var hov = true;
+		var delay = 1;
+		camObj.setNaturalDimensions(height, width);
+
+	});	
+	$('#preload_'+camId).attr('src', value);
+}
+/***********************************************************************************
+* IMG BLOCK OBJECT
+************************************************************************************/
 function pageImg(){
 	this.setType('pageImg');
 	
@@ -115,10 +231,9 @@ function pageImg(){
 }
 extend(pageImg,pageElement);
 
-
-/*
-* object representing the static text blocks on the page
-*/
+/***********************************************************************************
+* TEXT BLOCK OBJECT
+************************************************************************************/
 function pageText(){
 	this.setType('pageText');
 	this.id;

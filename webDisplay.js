@@ -404,6 +404,7 @@ function dynamicUpdate(data) {
 			$('#preload_'+currentCam).load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
+				objectFound.src = src;
 				document.getElementById(cam).style.backgroundImage = 'url('+src+')';	
 			});
 			//src is set after the .load() function
@@ -593,7 +594,7 @@ function hoverCamInit(){
 	var divWidth = parseInt($(this).css('width').slice(0,-2));
 	var camHeight = $(this).children('img').height();
 	var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-	var isWebkit = 'WebkitAppearance' in document.documentElement.style
+	var isWebkit = 'WebkitAppearance' in document.documentElement.style;
 	var hoverImgID = camID+'hover';
 	var timeOut = 1000;
 	var suppress = false;
@@ -837,6 +838,7 @@ function data_update(data) {
 						var sendPath = ref(data, path);
 						console.log(tree_item);
 						tree_item.createHtml(cellCount, sendPath, pageX, pageY);
+						tree_item.setHover(tree_item.hoverable, tree_item.hoverDelay);
 						console.log($('#'+new_id));
 						
 					cellCount++;   
@@ -1506,13 +1508,13 @@ CAMERA CASE
 		var objId = moduleContainer.replace('div_','');	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
-		console.log(objectFound);
-
+	
 		var camera = $(this);
 				
 		//checks to see if image has added hoverables class and checks appropriate radio button
 		var radiobtn
 		$('#hoverTime').val($('#'+selectedModule).children('img').attr('alt'));
+		objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay );
 		if($('#'+selectedModule).hasClass('hoverables')){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
