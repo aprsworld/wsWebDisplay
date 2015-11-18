@@ -1549,10 +1549,10 @@ CAMERA CASE
 		$( document ).on( "change", "input[type=radio][name=suppressHover]", function(){
 			suppressedChecked = $('input[name=suppressHover]:checked').val();
 			if(suppressedChecked == 'enabled'){
-				$('#'+selectedModule).addClass('suppressHover');
+				objectFound.suppressed = true;
 			}
 			else{
-				$('#'+selectedModule).removeClass('suppressHover');
+				objectFound.suppressed = false;
 			}
 		});
 		$( document ).off( "keyup", "input#hoverTime");
@@ -1562,7 +1562,6 @@ CAMERA CASE
 				objectFound.hoverDelay = $('input#hoverTime').val();
 			}
 			else{
-				console.log('wtf');
 				objectFound.hoverDelay = 0;
 			}
 			console.log( objectFound.hoverDelay);
@@ -1576,16 +1575,9 @@ CAMERA CASE
 		});
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {
-			$("#"+selectedModule).removeClass("cropped");
-			$("#"+selectedModule).resizable({disabled: false});
-			var width = $("#"+selectedModule).children('img').width();
-			var height = $("#"+selectedModule).children('img').height();
-			$("#"+selectedModule).css('width', width);
-			$("#"+selectedModule).css('height',height);
-			$("#"+selectedModule).css("background-size","contain");
-			$("#"+selectedModule).css("background-position","50% 50%");
-			createCamFromTree();
 			
+			objectFound.resize();
+			console.log(objectFound);
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	

@@ -200,7 +200,22 @@ pageCam.prototype.setNaturalDimensions = function(height, width){
 	this.natHeight = height;
 	this.natWidth = width;
 }
-
+pageCam.prototype.resize = function(){
+	var camObj = this;
+	var camId = this.containerId;
+	$("#"+camId).removeClass("cropped");
+	$("#"+camId).resizable({disabled: false});
+	var width = camObj.natWidth;
+	var height = camObj.natHeight;
+	$("#"+camId).css('width', width);
+	$("#"+camId).css('height',height);
+	$("#"+camId).css("background-size","contain");
+	$("#"+camId).css("background-position","50% 50%");
+	var newStyle = $("#"+camId).attr('style');
+	camObj.setStyle(newStyle);
+	createCamFromTree();
+}
+//creates element
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	var camId = this.fullId;
 	var camObj = this;
