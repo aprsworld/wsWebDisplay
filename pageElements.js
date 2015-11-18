@@ -35,6 +35,7 @@ var pageElement = function(){
 ************************************************************************************/
 pageElement.prototype = {
 	//sets type of element to be a data cell, image block, textblock, camera, etc.
+	hidden: false,
 	setType: function(elementType) {
 		this.elementType = elementType;	
 	},
@@ -45,8 +46,9 @@ pageElement.prototype = {
 	deleteElement: function(){
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(this.id);
 		if (elementPos > -1) {
-			document.getElementById(this.containerId).remove();
+			$('#'+this.containerId).remove();
 			cell_arr.splice(elementPos, 1);	
+			console.log(cell_arr);
 		}	
 	}
 }
@@ -55,19 +57,15 @@ pageElement.prototype = {
 * DATA CELL OBJECT
 ************************************************************************************/
 var pageCell = function(){
-	this.units = '';
-	this.hidden = false;
 	this.setType('pageCell');
-	
-	//generates html using object properties
-	Object.defineProperty(this, 'createHtml', {
-		value: function(cellCount){
-			$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
-		},
-		enumberable: false				
-  	});					  
+	this.units = '';
+				  
 }
 extend(pageCell,pageElement);
+
+pageCell.prototype.createHtml = function(cellCount){
+	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+}
 
 /***********************************************************************************
 * CAMERA OBJECT
@@ -78,7 +76,6 @@ var pageCam = function(){
 	this.suppressed = true;
 	this.hoverDelay = 1;
 	this.cropped = false;	
-	this.hidden = false;
 	this.natWidth;
 	this.natHeight;
 	this.id;
@@ -223,7 +220,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
 	$('#preload_'+camId).load(function() {
 		var src = $(this).attr("src");
-		$('#content').append('<div class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
+		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
 		$('#'+camId).css('position', 'absolute');
 		$('#'+camId).css('display','inline-block');
 		$('#'+camId).css('top',pageY);
@@ -262,7 +259,6 @@ function pageText(){
 	this.id;
 	this.text;
 	this.style;
-	this.hidden = false;
 	Object.defineProperty(this, 'createHtml', {
 		value: function(cellCount){
 			var textBlock, textTitle, textContent, title;

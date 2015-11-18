@@ -828,6 +828,7 @@ function data_update(data) {
 						tree_item["containerId"] = new_id;
 						tree_item["fullId"] = new_id;
 						tree_item["id"] = id+"_pageCam_"+idArrLen;
+						tree_item["tooltip"] = tooltip;
 						console.log(children);
 						for(i = 0; i < clength; i++) {
 							console.log(children[i]);
@@ -1560,7 +1561,6 @@ CAMERA CASE
 				objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
 
 			}
-			console.log(objectFound.suppressed);
 		});
 		$( document ).off( "keyup", "input#hoverTime");
 		$( document ).on( "keyup", "input#hoverTime" , function() {
@@ -1576,14 +1576,11 @@ CAMERA CASE
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {		
 			objectFound.deleteElement();
-			console.log(cell_arr);
 			$('.editWindow').hide(150);
 		});
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {
-			
 			objectFound.resize();
-			console.log(objectFound);
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
@@ -1688,7 +1685,7 @@ TEXT BLOCKS CASE
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
 		$(".textColorChange").off("mouseover.color");
 		$(".textColorChange").on("mouseover.color", function(event, color){
-			$('#'+selectedModule).children('p').css('color',color);
+			$('#'+selectedModule).css('color',color);
 		});
 		
 		//fontsize input change event handler
@@ -1940,6 +1937,7 @@ DATA CELLS CASE
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).remove();
+			objectFound.deleteElement();
 			$('.editWindow').hide(150);
 			console.log(id);
 			console.log(id_arr);
