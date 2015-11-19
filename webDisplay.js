@@ -1896,18 +1896,11 @@ DATA CELLS CASE
 		//event handler for font plus and minus being clicked
 		$( document ).off("click", "#fontSizePlus, #fontSizeMinus");
 		$( document ).on("click", "#fontSizePlus, #fontSizeMinus", function() {
-			var fontsize;
 			if($(this).attr('id') == 'fontSizeMinus'){
-				fontsize = fontsize.replace("px",'');
-				fontsize = (parseInt(fontsize)-1).toString();
-				fontsize = fontsize+"px";
-				objectFound.fontPlusMinus('plus', fontsize);
+				objectFound.fontPlusMinus('minus')
 			}
 			else{
-				fontsize = fontsize.replace("px",'');
-				fontsize = (parseInt(fontsize)+1).toString();
-				fontsize = fontsize+"px";
-				objectFound.fontPlusMinus('minus', fontsize);
+				objectFound.fontPlusMinus('plus')
 			}
 		});
 		

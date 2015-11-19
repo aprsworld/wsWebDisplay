@@ -1,1 +1,1 @@
-var wdVersion = 'version updated - Wed Nov 18 17:06:42 CST 2015';
+var wdVersion = 'version updated - Thu Nov 19 09:58:23 CST 2015';
