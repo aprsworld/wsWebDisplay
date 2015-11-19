@@ -2055,55 +2055,61 @@ function htmlEntities(str) {
 	return decoded
 }
 
-function saveConfig(){
+function captureState(){
+	var saveName = $('#saveAs').val().replace(' ','%20');
+
 	var jsonString = JSON.stringify(cell_arr);
 	//savedStates.push(jsonString);
 	var configObject = JSON.parse(jsonString);
-	console.log(jsonString);
-	console.log(configObject);
-	console.log(cell_arr);
-	var cell_arr2 = [];
+	
+	data_object.ValueSet(function(rsp){
+		console.log(rsp);
+		if (rsp.error) {
+			alert('Failed to save configuration to server!');
+		}
+	},'webdisplay/configs/'+saveName,jsonString,0);
+}
+function loadState(jsonString){
+		var configObject = JSON.parse(jsonString);
+
 	for(var k in configObject){
 		if(configObject[k].elementType == 'pageCell'){
 			var cell = new pageCell();
 			console.log(cell);
 			configObject[k].__proto__ = cell.__proto__;
-			cell_arr2.push(configObject[k]);
+			cell_arr.push(configObject[k]);
+			configObject[k].loadHtml();
+
 		}
 		else if(configObject[k].elementType == 'pageCam'){
 			var cam = new pageCam();
 			console.log(cell);
 			configObject[k].__proto__ = cam.__proto__;
-			cell_arr2.push(configObject[k]);
+			cell_arr.push(configObject[k]);
+			configObject[k].loadHtml();
+
 		}
 		else if(configObject[k].elementType == 'pageImg'){
 			var img = new pageImg();
 			console.log(cell);
 			configObject[k].__proto__ = img.__proto__;
-			cell_arr2.push(configObject[k]);
+			cell_arr.push(configObject[k]);
+			configObject[k].loadHtml();
+
 		}
 		else if(configObject[k].elementType == 'pageText'){
 			var text = new pageText();
 			configObject[k].__proto__ = text.__proto__;
-			cell_arr2.push(configObject[k]);
-			console.log(configObject[k].getType());
+			cell_arr.push(configObject[k]);
+			configObject[k].loadHtml();
 		}
 	}
-	console.log( cell_arr2 );
-	
-	/*data_object.ValueSet(function(rsp){
-		console.log(rsp);
-		if (rsp.error) {
-			alert('Failed to save configuration to server!');
-		}
-	},'webdisplay/configs/'+saveName,jsonString,0);	*/
-	
+	console.log( cell_arr );
 }
-
 /*function that iterates through all instances of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" class selectors
 and records all relevant data from the elements with these classes, create objects using the data as properties, and then loads the objects into
 individual arrays for each type of selector class. once Each array has been created, a saved state array encompasses all of the data.*/
-function captureState(){
+function captureState1(){
 	//saved_state array to hold individual object arrays
 	var saved_State = [];
 	//object arrays for different types of objects
@@ -2300,7 +2306,7 @@ function captureState(){
 /*A function that is passed a json string that holds elements and their properties from a saved state of a layout. Once it takes in the json string
 it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" elements and create them as they were in 
 the saved state*/
-function loadState(jsonString){
+function loadState1(jsonString){
 	var stateObject = JSON.parse(jsonString);
 	console.log(stateObject);
 	id_arr.length = 0;

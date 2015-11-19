@@ -359,6 +359,10 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	});	
 	$('#preload_'+camId).attr('src', value);
 }
+
+pageCam.prototype.loadHtml = function(){
+	$('#content').append('<div title="'+this.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+this.parentId+' style="background-image:url('+this.path+')"><img alt="1" style="visibility:hidden;" src="'+this.path+'"></div>');
+}
 /***********************************************************************************
 * IMG BLOCK OBJECT
 ************************************************************************************/
@@ -438,7 +442,10 @@ pageImg.prototype.createHtml = function(cellCount){
 	$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+cellCount+')" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
 }
-
+pageImg.prototype.loadHtml = function(){
+	$('#content').append('<div id=img'+this.parentId+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+this.parentId+')" id=img'+this.parentId+' alt=img'+this.parentId+' src="images/insert_image.svg"></img></div>');
+	this.src = "images/insert_image.svg";	
+}
 /***********************************************************************************
 * TEXT BLOCK OBJECT
 ************************************************************************************/
@@ -469,6 +476,23 @@ pageText.prototype.createHtml = function(cellCount){
 	$('#content').append(textBlock);
 }
 
+pageText.prototype.loadHtml = function(){
+	var textBlock, textTitle, textContent, title;
+	//create a div to hold the text
+	textBlock = document.createElement("div");
+	textBlock.className = "textBlockContainer";
+	textContent = this.text;
+	this.text = textContent;
+	//incremental ID attribute
+	textBlock.id = this.parentId;
+	this.id = this.parentId;
+	this.parentId = this.parentId;
+	//appends a textblock to the div with our default text
+	$(textBlock).append('<p>'+textContent+'</p>');
+	//appends the textblock to the page
+	$('#content').append(textBlock);
+	$('#'+this.parentId).attr('style', this.style);
+}
 pageText.prototype.fontSizeChange = function(size){
 	if(size == ''){
 		size =  12;	
