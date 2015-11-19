@@ -2056,6 +2056,9 @@ function htmlEntities(str) {
 }
 
 function captureState(){
+	for(var k in cell_arr){
+		cell_arr[k].onChangeStyle();
+	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
 
 	var jsonString = JSON.stringify(cell_arr);
