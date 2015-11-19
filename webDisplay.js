@@ -1704,6 +1704,11 @@ TEXT BLOCKS CASE
 			}
 		});
 		
+		//delegate even handler for mousing over 
+		$(".textColorChange").off("mouseover.color");
+		$(".textColorChange").on("mouseover.color", function(event, color){
+			objectFound.fontColorChange(color);
+		});	
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input#fontSize" , function() {	
@@ -1714,13 +1719,13 @@ TEXT BLOCKS CASE
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			pageText.backgroundColorChange(enteredColor);
+			objectFound.backgroundColorChange(enteredColor);
 		});
 		//color input change event handler
 		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.textColorChange" , function() {	
-			var enteredColor = bgColor.val();
-			pageText.fontColorChange(enteredColor);;				
+			var enteredColor = textColor.val();
+			objectFound.fontColorChange(enteredColor);				
 		});
 		// delete event handler
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
@@ -2044,22 +2049,55 @@ function nonEdit(handler) {
 	$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 	$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 }
-/*function hideModule(id) {
-	$("#"+id).addClass('hide');
-	$("#"+id).css('opacity','.2');
-	$('#hideModule').attr('onclick', "showModule('"+ id +"')");	
-	$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');
-}
-function showModule(id) {
-	$("#"+id).css('opacity','1.0');
-	$("#"+id).removeClass('hide');
-	$('#hideModule').attr('onclick', "hideModule('"+ id +"')");
-	$('#hideModule').html('<i class="fa fa-eye-slash fa-2x"></i> Hide Selected');
-}*/
 //function that allows for the safe decoding of html entities	
 function htmlEntities(str) {
    	var decoded = $('<div/>').html(str).text();
 	return decoded
+}
+
+function saveConfig(){
+	var jsonString = JSON.stringify(cell_arr);
+	//savedStates.push(jsonString);
+	var configObject = JSON.parse(jsonString);
+	console.log(jsonString);
+	console.log(configObject);
+	console.log(cell_arr);
+	var cell_arr2 = [];
+	for(var k in configObject){
+		if(configObject[k].elementType == 'pageCell'){
+			var cell = new pageCell();
+			console.log(cell);
+			configObject[k].__proto__ = cell.__proto__;
+			cell_arr2.push(configObject[k]);
+		}
+		else if(configObject[k].elementType == 'pageCam'){
+			var cam = new pageCam();
+			console.log(cell);
+			configObject[k].__proto__ = cam.__proto__;
+			cell_arr2.push(configObject[k]);
+		}
+		else if(configObject[k].elementType == 'pageImg'){
+			var img = new pageImg();
+			console.log(cell);
+			configObject[k].__proto__ = img.__proto__;
+			cell_arr2.push(configObject[k]);
+		}
+		else if(configObject[k].elementType == 'pageText'){
+			var text = new pageText();
+			configObject[k].__proto__ = text.__proto__;
+			cell_arr2.push(configObject[k]);
+			console.log(configObject[k].getType());
+		}
+	}
+	console.log( cell_arr2 );
+	
+	/*data_object.ValueSet(function(rsp){
+		console.log(rsp);
+		if (rsp.error) {
+			alert('Failed to save configuration to server!');
+		}
+	},'webdisplay/configs/'+saveName,jsonString,0);	*/
+	
 }
 
 /*function that iterates through all instances of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" class selectors
@@ -2264,6 +2302,7 @@ it will iterate through the properties of the ".tr, .imgBlockContainer, .textBlo
 the saved state*/
 function loadState(jsonString){
 	var stateObject = JSON.parse(jsonString);
+	console.log(stateObject);
 	id_arr.length = 0;
 	path_arr.length = 0;
 	cell_arr.length = 0;

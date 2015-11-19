@@ -309,10 +309,11 @@ div.logo_container{
 	height: 400px;
 	padding: 10px;
 	background-color: grey;
+	color: #333;
 	z-index: 0;
 }
 .textBlockContainer p{
-	color: #333;
+	color: inherit;
 	margin: 0;
 	padding: 0;
 }

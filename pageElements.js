@@ -60,7 +60,6 @@ pageElement.prototype = {
 			$("#"+id).addClass('hide');
 			$("#"+id).css('opacity','.2');
 			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');	
-
 		}
 	}
 }
@@ -103,7 +102,7 @@ pageCell.prototype.setTypeChange = function(type){
 
 pageCell.prototype.fontColorChange = function(color){
 	var containerId = this.fullId;
-	$('#'+containerId).closest('.tr').css('color', color+' !important');
+	$('#'+containerId).closest('.tr').css('color', color+'');
 	var style = this.getStyle();
 	this.setStyle(style);
 }
@@ -184,6 +183,11 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 }
 pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+}
+
+pageCell.prototype.loadHtml = function(cellCount){
+	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+	
 }
 
 /***********************************************************************************
