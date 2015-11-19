@@ -514,7 +514,7 @@ function createCamFromTree(camObj){
 			$('.controlRow').show();
 			$('.controls h2').show();
 			$('#positionDiv').remove();
-			camObj.onDrag();
+			camObj.onChangeStyle();
 		},
 		disabled: false}).resizable({
 			disabled: false, 
@@ -550,7 +550,7 @@ function createCamFromTree(camObj){
 			stop: function(event, ui) {
 				$('#resizeSpan').remove();
 				camObj.setHover(true, camObj.hoverDelay);
-				camObj.onResize();
+				camObj.onChangeStyle();
 
 			}
 		});
@@ -809,13 +809,13 @@ function data_update(data) {
 						var i;
 						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 						var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
-						
+						console.log('TOOLTIP '+tooltip);
 						tree_item["path"] = path;
 						tree_item["containerId"] = new_id;
 						tree_item["fullId"] = new_id;
 						tree_item["parentId"] = new_id;
 						tree_item["id"] = id+"_pageCam_"+idArrLen;
-						tree_item["tooltip"] = tooltip;
+						tree_item["toolTip"] = tooltip;
 						console.log(children);
 						for(i = 0; i < clength; i++) {
 							console.log(children[i]);
@@ -969,7 +969,7 @@ function data_update(data) {
 									$('#positionDiv').remove();
 									/*var style = tree_item.getStyle();
 									tree_item.setStyle(style);*/
-									tree_item.onDrag();
+									tree_item.onChangeStyle();
 									console.log(tree_item);
 									console.log(JSON.stringify(cell_arr));
 
@@ -1006,7 +1006,7 @@ function data_update(data) {
 								},
 								stop: function(event, ui) {
 									$('#resizeSpan').remove();
-									tree_item.onDrag();
+									tree_item.onChangeStyle();
 								}
 							});			
 							$(".draggable").draggable( "option", "disabled", false )
@@ -1165,9 +1165,14 @@ function createText(){
 			},200);
 			$('.controlRow').show();
 			$('.controls h2').show();
+			textBlock.onChangeStyle()
 		}
 		}).resizable({
-			disabled: false
+			disabled: false,
+			grid: [1, 1],
+			stop: function(event, ui){
+				textBlock.onChangeStyle()
+			}
 		});	
 }
 function createImage(){
@@ -1175,6 +1180,7 @@ function createImage(){
 	index = cell_arr.length;
 	imgBlock = new pageImg();
 	imgBlock.id = 'img'+index;
+	imgBlock.parentId = 'img'+index+'container';
 	imgURL = $('#createImageURL').val();
 	cell_arr.push(imgBlock);
 	if(imgURL != ""){
@@ -1208,13 +1214,18 @@ function createImage(){
 			},200);
 			$('.controlRow').show();
 			$('.controls h2').show();
+			imgBlock.onChangeStyle();
 		}
 		});
 		$("#img"+index+"").resizable({ 
 					disabled: false,
 					minHeight: 70,
 					minWidth: 150,
-					aspectRatio: true
+					grid: [1, 1],
+					aspectRatio: true,
+					stop: function(event, ui){
+						imgBlock.onChangeStyle();	
+					}
 		});	
 	}
 	//allows images to be hoverable outside of edit function
@@ -1669,34 +1680,42 @@ TEXT BLOCKS CASE
 		$(bodyChange).val(body.html());
 		$(bgColor).val($('#'+id).css('background-color'));
 		$(textColor).val($('#'+id).children('p').css('color'));
-		var backgroundColor = $('#'+selectedModule).css('background-color');
-		//fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
-		//fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
+		var backgroundColor = $('#'+selectedModule).css('background-color');	 
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
+		
 		$(".textColorChange").off("mouseover.color");
 		$(".textColorChange").on("mouseover.color", function(event, color){
 			$('#'+selectedModule).css('color',color);
 		});
 		
+		//event handler for plus and minus font size
+		$( document ).off("click", "#fontSizePlus, #fontSizeMinus");
+		$( document ).on("click", "#fontSizePlus, #fontSizeMinus", function() {
+			if($(this).attr('id') == 'fontSizeMinus'){
+				objectFound.fontPlusMinus('minus')
+			}
+			else{
+				objectFound.fontPlusMinus('plus')
+			}
+		});
+		
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input#fontSize" , function() {	
-			fontsize = $('#'+id).css('font-size');
-			$('#'+id).css('font-size', fontSize.val());				
+			var size = fontSize.val()
+			objectFound.fontSizeChange(size)
 		});
 		//background color input change event handler
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$('#'+id).css('background-color', enteredColor);	
-			$('#opacitySlider .ui-slider-range').css('background', enteredColor );
-  			$('#opacitySlider .ui-slider-handle').css('border-color', enteredColor);
+			pageText.backgroundColorChange(enteredColor);
 		});
 		//color input change event handler
 		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.textColorChange" , function() {	
-			var enteredTextColor = textColor.val();
-			$('#'+id).children('p').css('color', enteredTextColor);				
+			var enteredColor = bgColor.val();
+			pageText.fontColorChange(enteredColor);;				
 		});
 		// delete event handler
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
@@ -1707,9 +1726,7 @@ TEXT BLOCKS CASE
 		$( document ).off( "keyup", "textarea.bodyChange"); //unbind old events, and bind a new one		
 		$( document ).on( "keyup", "textarea.bodyChange" , function() {	
 			var enteredText = bodyChange.val();
-			//allows line breaks and consecutive spaces but also replaces "<" with the entity to remove possibility of script injection
-			enteredText = enteredText.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/\n/g,  "<br>");
-			$(body).html(enteredText);
+			objectFound.setText(enteredText);
 		});
 		var sliderValue;
 		if(backgroundColor.indexOf('rgba') >= 0){
@@ -1730,21 +1747,7 @@ TEXT BLOCKS CASE
 			value: sliderValue,
 			slide: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
-				opacity = opacity.toString();
-				var newColor;
-				if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
-					newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
-				}
-				else{
-					var currentColor = $('#'+selectedModule).css('background-color');
-					var splitColor = currentColor.split(',');
-					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
-					$('#opacityPercent').text(' '+ui.value+'%');
-				}
-				$('#'+selectedModule).css('background-color', newColor);
-				$('.backgroundColorChange').val(''+newColor);
-				$('#opacitySlider .ui-slider-range').css('background', newColor );
-  				$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
+				objectFound.setOpacity(opacity, selectedModule, ui);
 			}
 		});
 	}
@@ -1753,7 +1756,7 @@ IMG BLOCKS CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#hideDelRow, #zRow, #urlRow , #resizeModulem, #hoverRow').show();
+		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropRow, #hoverRow').show();
 		moduleContainer = $(this).attr('id');
 		selectedModule = $(this).children().children('img').attr('id');
 
@@ -1772,7 +1775,7 @@ IMG BLOCKS CASE
 		$(urlChange).val(url.attr('src'));
 		
 		var radiobtn
-		if($('#'+moduleContainer).hasClass('hoverables')){
+		if(objectFound.hoverable){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
 			$('#hoverTime').val($('#'+selectedModule).attr('alt'));
@@ -1789,6 +1792,7 @@ IMG BLOCKS CASE
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
 				$('#'+moduleContainer).addClass('hoverables');
+				
 				$('#hoverTimeRow').show();
 
 			}
@@ -1806,31 +1810,12 @@ IMG BLOCKS CASE
 		//delegate event handler for url change
 		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
 		$( document ).on( "paste", "input.urlChange" , function() {	
-			var tempImg = document.createElement('img');
-			$(tempImg).load(function() {
-				var width = tempImg.naturalWidth;
-				var height = tempImg.naturalHeight;
-				url.attr('width',width);
-				url.attr('height',height);
-				$("#"+selectedModule).css('width', width);
-				$("#"+selectedModule).css('height',height);
-				$("#"+selectedModule).parent().css('width', width);
-				$("#"+selectedModule).parent().css('height',height);
-				url.attr('src', urlChange.val());
-			});
-			//wait split second for paste of new url
-			setTimeout(function () {
-				//reset image attributes
-				url.attr('width','0');
-				url.attr('height','0');
-				tempImg.src = urlChange.val();
-			}, 100); 
+			objectFound.setSrc();
 		});
 		//unbind old events, and bind a new one
 		$( document ).off( "click", "#deleteModule"); 
 		$( document ).on( "click", "#deleteModule" , function() {
-			$("#"+selectedModule).parent().parent().remove();
-			$('.editWindow').hide(150);
+			objectFound.deleteElement();
 		});
 		// unbind old event handler
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one

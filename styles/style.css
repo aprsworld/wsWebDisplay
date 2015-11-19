@@ -303,8 +303,8 @@ div.logo_container{
 /*styling for user created blocks of text*/
 .textBlockContainer{
 	position: absolute;
-	top: 15%;
-	left: 20%;
+	top: 50;
+	left: 300;
 	width: 300px;
 	height: 400px;
 	padding: 10px;
@@ -319,8 +319,8 @@ div.logo_container{
 /* styling for the user created images */
 .imgBlockContainer{
 	position: absolute;
-	top: 15%;
-	left: 20%;
+	top: 50;
+	left: 300;
 	width: auto;
 	height: auto;
 	z-index: 1;
@@ -329,8 +329,8 @@ div.logo_container{
 /* styling for camera-feed container */
 .imgCamContainer{
 	position: absolute;
-	top: 15%;
-	left: 20%;
+	top: 50;
+	left: 300;
 	z-index: 1;
 	background-image: url(../res/external/dist/themes/default/throbber.gif);
 	background-repeat: no-repeat;
@@ -671,6 +671,7 @@ div.logo_container{
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
 #cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
 	display:none;	
+	clear: both;
 }
 #bodyRow{
 	height: auto;

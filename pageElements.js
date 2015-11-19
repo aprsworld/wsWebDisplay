@@ -31,18 +31,14 @@ pageElement.prototype = {
 	getType: function(){
 		return this.elementType;
 	},
-	onDrag: function(){
-		var style = this.getStyle();
-		this.setStyle(style);
-	},
-	onResize: function(){
+	onChangeStyle: function(){
 		var style = this.getStyle();
 		this.setStyle(style);
 	},
 	deleteElement: function(){
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(this.id);
 		if (elementPos > -1) {
-			$('#'+this.containerId).remove();
+			$('#'+this.parentId).remove();
 			cell_arr.splice(elementPos, 1);	
 			console.log(cell_arr);
 		}	
@@ -51,9 +47,11 @@ pageElement.prototype = {
 		$('#'+id).css('z-index', zIndex ); 
 		var style = this.getStyle();
 		this.setStyle(style);
+	},
+	setHidden: function(id) {
+		
+		
 	}
-	
-	//need a hide function
 }
 
 /***********************************************************************************
@@ -122,7 +120,7 @@ pageCell.prototype.fontPlusMinus = function(direction){
 		size = (parseInt(size)+1).toString();
 		$('#fontSize').val(size);
 		size = size+"px";
-		$('#'+containerId).closest('.tr').css('font-size', size);
+		$('#'+containerId).closest('.tr').css('font-size', size+"px");
 	}
 	else{
 		size = size.replace("px",'');
@@ -173,11 +171,6 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	var style = this.getStyle();
 	this.setStyle(style);
 }
-/*pageCell.prototype.setZindex = function(id, zIndex) {
-	$('#'+id).css('z-index', zIndex ); 
-	var style = this.getStyle();
-	this.setStyle(style);
-}*/
 pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 }
@@ -356,15 +349,80 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 ************************************************************************************/
 function pageImg(){
 	this.setType('pageImg');
-	
+	this.natWidth;
+	this.natHeight;
+	this.width;
+	this.height;
+	this.id;
+	this.parentId;
+	this.src;
+	this.hoverable = false;
+	this.suppressed = true;
+	this.style;
+
 	Object.defineProperty(this, 'createHtml', {
 		value: function(cellCount){
 			$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+cellCount+')" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
+			this.src = "images/insert_image.svg";
+			this.natHeight = 240;
+			this.natWidth = 320; //dimensions of placeholder image
 		},
 		enumberable: false				
   	});	
 }
 extend(pageImg,pageElement);
+
+pageImg.prototype.setHover = function(){
+ //stub for hover function	
+}
+
+pageImg.prototype.setHoverTime = function(){
+ //stub for hover function	
+}
+
+pageImg.prototype.setSrc = function(){
+	var tempImg = document.createElement('img');
+	var selectedModule = this.parentId;
+	var url = $("#"+selectedModule).find('img');
+	console.log(src);
+	$(tempImg).load(function() {
+		var width = tempImg.naturalWidth;
+		console.log(width);
+		var height = tempImg.naturalHeight;
+		url.attr('width',width);
+		url.attr('height',height);
+		$("#"+selectedModule).css('width', width);
+		$("#"+selectedModule).css('height',height);
+		$("#"+selectedModule).parent().css('width', width);
+		$("#"+selectedModule).parent().css('height',height);
+		url.attr('src', src);
+		this.src = src;
+	});
+	//wait split second for paste of new url
+	setTimeout(function () {
+		//reset image attributes
+		url.attr('width','0');
+		url.attr('height','0');
+		tempImg.src = urlChange.val();
+	}, 100); 
+}
+
+pageImg.prototype.resize = function(){
+	var width = this.natWidth;
+	var height = this.natHeight;
+	$("#"+this.id).css('width', width);
+	$("#"+this.id).css('height',height);
+	$("#"+this.parentId).css('width', width);
+	$("#"+this.parentId).css('height',height);
+	
+	this.width = width;
+	this.height = height;
+}
+
+pageImg.prototype.createHtml = function(cellCount){
+	$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+cellCount+')" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
+	this.src = "images/insert_image.svg";	
+}
 
 /***********************************************************************************
 * TEXT BLOCK OBJECT
@@ -372,25 +430,102 @@ extend(pageImg,pageElement);
 function pageText(){
 	this.setType('pageText');
 	this.id;
+	this.parentId;
 	this.text;
 	this.style;
-	Object.defineProperty(this, 'createHtml', {
-		value: function(cellCount){
-			var textBlock, textTitle, textContent, title;
-			//create a div to hold the text
-			textBlock = document.createElement("div");
-			textBlock.className = "textBlockContainer";
-			textContent = "Click to change text";
-			this.text = textContent;
-			//incremental ID attribute
-			textBlock.id = "block"+cellCount;
-			this.id = "block"+cellCount;
-			//appends a textblock to the div with our default text
-			$(textBlock).append('<p>'+textContent+'</p>');
-			//appends the textblock to the page
-			$('#content').append(textBlock);
-		},
-		enumberable: false				
-  	});	
 }
 extend(pageText,pageElement);
+
+pageText.prototype.createHtml = function(cellCount){
+	var textBlock, textTitle, textContent, title;
+	
+	//create a div to hold the text
+	textBlock = document.createElement("div");
+	textBlock.className = "textBlockContainer";
+	textContent = "Click to change text";
+	this.text = textContent;
+	//incremental ID attribute
+	textBlock.id = "block"+cellCount;
+	this.id = "block"+cellCount;
+	this.parentId = "block"+cellCount;
+	//appends a textblock to the div with our default text
+	$(textBlock).append('<p>'+textContent+'</p>');
+	//appends the textblock to the page
+	$('#content').append(textBlock);
+}
+
+pageText.prototype.fontSizeChange = function(size){
+	if(size == ''){
+		size =  12;	
+	}
+	var containerId = this.parentId;
+	$('#'+containerId).css('font-size', size+"px");
+	var style = this.getStyle();
+	this.setStyle(style);
+}
+
+pageText.prototype.fontPlusMinus = function(direction){
+	var containerId = this.parentId;
+	var size = $('#'+containerId).css('font-size');
+	if(direction == 'plus'){
+		size = size.replace("px",'');
+		size = (parseInt(size)+1).toString();
+		$('#fontSize').val(size);
+		size = size+"px";
+		$('#'+containerId).css('font-size', size);
+	}
+	else{
+		size = size.replace("px",'');
+		size = (parseInt(size)-1).toString();
+		$('#fontSize').val(size);
+		size = size+"px";
+		$('#'+containerId).css('font-size', size);
+	}	
+	var style = this.getStyle();
+	this.setStyle(style);
+}
+
+pageText.prototype.fontColorChange = function(color){
+	var containerId = this.parentId;
+	$('#'+containerId).css('color', color);
+	var style = this.getStyle();
+	this.setStyle(style);
+}
+
+pageText.prototype.backgroundColorChange = function(color){
+	var containerId = this.parentId;
+	$('#'+containerId).css('background-color', color);
+	$('#opacitySlider .ui-slider-range').css('background', color );
+  	$('#opacitySlider .ui-slider-handle').css('border-color', color);
+	var style = this.getStyle();
+	this.setStyle(style);
+}
+
+pageText.prototype.setText = function(text){
+	//allows line breaks and consecutive spaces but also replaces "<" with the entity to remove possibility of script injection
+	text = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").replace(/\n/g,  "<br>");
+	$('#'+this.parentId).children('p').html(text);
+	this.text = text;
+}
+
+pageText.prototype.setOpacity = function(opacity, selectedModule, ui){
+	var containerId = this.parentId;	
+	opacity = opacity.toString();
+	var newColor;
+	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
+		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+	}
+	else{
+		var currentColor = $('#'+selectedModule).css('background-color');
+		var splitColor = currentColor.split(',');
+		newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
+		$('#opacityPercent').text(' '+ui.value+'%');
+	}
+	$('#'+selectedModule).css('background-color', newColor);
+	$('.backgroundColorChange').val(''+newColor);
+	$('#opacitySlider .ui-slider-range').css('background', newColor );
+	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
+	
+	var style = this.getStyle();
+	this.setStyle(style);
+}
