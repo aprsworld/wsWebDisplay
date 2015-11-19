@@ -1889,10 +1889,12 @@ DATA CELLS CASE
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
+		
 		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
 			objectFound.setPrecision($('.roundingChange').val());
 		});
+		
 		//event handler for font plus and minus being clicked
 		$( document ).off("click", "#fontSizePlus, #fontSizeMinus");
 		$( document ).on("click", "#fontSizePlus, #fontSizeMinus", function() {
@@ -1928,19 +1930,22 @@ DATA CELLS CASE
 		//title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.titleChange" , function() {	
-			title.text(titleChange.val());
+			var text = titleChange.val();
+			objectFound.setTitle(text);
 			//gets makes background-color on title transparent if the title field is empty
-			if(titleChange.val() == ""){
+			/*if(titleChange.val() == ""){
 				title.parent().css('background-color','transparent');	
 			}
 			else{
 				title.parent().css('background-color','rgba(0, 0, 0, 0.35)');	
-			}
+			}*/
 		});
 		// label change event handler
 		$( document ).off( "keyup", "input.labelChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.labelChange" , function() {	
-			label.text(htmlEntities(labelChange.val()));
+			//label.text(htmlEntities(labelChange.val()));
+			var text = htmlEntities(labelChange.val());
+			objectFound.setLabel(text);
 		});
 		// delete event handler
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
@@ -1980,25 +1985,10 @@ DATA CELLS CASE
 			value: sliderValue,
 			slide: function( event, ui ) {
 				var opacity = $(this).slider('value', ui.value);
-				opacity = opacity.toString();
-				var newColor;
-				if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
-					newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
-				}
-				else{
-					var currentColor = $('#'+selectedModule).css('background-color');
-					var splitColor = currentColor.split(',');
-					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
-					$('#opacityPercent').text(' '+ui.value+'%');
-				}
-				$('#'+selectedModule).css('background-color', newColor);
-				$('.backgroundColorChange').val(''+newColor);
-				$('#opacitySlider .ui-slider-range').css('background', newColor );
-  				$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
+				objectFound.setOpacity(opacity, selectedModule, ui);
 			}
 		});
 		//tool tip shows original title
-		$(titleChange).attr('title','Original Title: '+originalTitle);
 		$(titleChange).val(title.text());
 		$(labelChange).val(label.text());
 	}

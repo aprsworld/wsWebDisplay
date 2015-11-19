@@ -119,15 +119,45 @@ pageCell.prototype.fontPlusMinus = function(direction){
 	var style = this.getStyle();
 	this.setStyle(style);
 }
-pageCell.prototype.setTitle = function(){
-		
+pageCell.prototype.setTitle = function(text){
+	var containerId = this.fullId;
+	if(text == ''){
+		$('#'+containerId).siblings('.myTableTitle').children('p').text(text);	
+		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0)');	
+	}
+	else{
+		$('#'+containerId).siblings('.myTableTitle').children('p').text(text);	
+		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0.35)');	
+	}
+	this.title = text;
 }
 
-pageCell.prototype.setLabel = function(){
-	
+pageCell.prototype.setLabel = function(text){
+	var containerId = this.fullId;	
+	$('#'+containerId).children('.label').text(text);
+	this.label = text;
 }
-pageCell.prototype.setOpacity = function() {
+pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
+	console.log(selectedModule);
+	var containerId = this.fullId;	
+	opacity = opacity.toString();
+	var newColor;
+	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
+		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+	}
+	else{
+		var currentColor = $('#'+selectedModule).css('background-color');
+		var splitColor = currentColor.split(',');
+		newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
+		$('#opacityPercent').text(' '+ui.value+'%');
+	}
+	$('#'+selectedModule).css('background-color', newColor);
+	$('.backgroundColorChange').val(''+newColor);
+	$('#opacitySlider .ui-slider-range').css('background', newColor );
+	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
 	
+	var style = this.getStyle();
+	this.setStyle(style);
 }
 pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
