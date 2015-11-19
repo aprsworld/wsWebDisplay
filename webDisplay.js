@@ -514,6 +514,7 @@ function createCamFromTree(camObj){
 			$('.controlRow').show();
 			$('.controls h2').show();
 			$('#positionDiv').remove();
+			camObj.onDrag();
 		},
 		disabled: false}).resizable({
 			disabled: false, 
@@ -549,28 +550,11 @@ function createCamFromTree(camObj){
 			stop: function(event, ui) {
 				$('#resizeSpan').remove();
 				camObj.setHover(true, camObj.hoverDelay);
+				camObj.onResize();
 
 			}
 		});
 }	
-function fontSizeChange(direction, id){
-	var fontsize = $('#'+id).css('font-size');
-	if(direction == 'decrease'){
-		fontsize = fontsize.replace("px",'');
-		fontsize = (parseInt(fontsize)-1).toString();
-		fontsize = fontsize+"px";
-		
-		//$('#'+id).css('font-size', fontsize);
-	}
-	else if(direction == 'increase'){
-		fontsize = fontsize.replace("px",'');
-		fontsize = (parseInt(fontsize)+1).toString();
-		fontsize = fontsize+"px";
-		
-		//$('#'+id).css('font-size', fontsize);	
-	}
-	$('#fontSize').val((fontsize).slice(0,-2));
-}
 function timer(){
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
@@ -829,6 +813,7 @@ function data_update(data) {
 						tree_item["path"] = path;
 						tree_item["containerId"] = new_id;
 						tree_item["fullId"] = new_id;
+						tree_item["parentId"] = new_id;
 						tree_item["id"] = id+"_pageCam_"+idArrLen;
 						tree_item["tooltip"] = tooltip;
 						console.log(children);
@@ -864,6 +849,7 @@ function data_update(data) {
 						var units, title, type, typeUnits;
 						tree_item["path"] = path;
 						tree_item["id"] = id+"_"+idArrLen;
+						tree_item["parentId"] = "cell"+cellCount;
 						tree_item["containerId"] = new_id;
 						tree_item["fullId"] = new_id;
 						tree_item["toolTip"] = tooltip;
@@ -981,8 +967,9 @@ function data_update(data) {
 									$('.controlRow').show();
 									$('.controls h2').show();
 									$('#positionDiv').remove();
-									var style = tree_item.getStyle();
-									tree_item.setStyle(style);
+									/*var style = tree_item.getStyle();
+									tree_item.setStyle(style);*/
+									tree_item.onDrag();
 									console.log(tree_item);
 									console.log(JSON.stringify(cell_arr));
 
@@ -1019,12 +1006,13 @@ function data_update(data) {
 								},
 								stop: function(event, ui) {
 									$('#resizeSpan').remove();
+									tree_item.onDrag();
 								}
 							});			
 							$(".draggable").draggable( "option", "disabled", false )
-							$('#'+cellCount).css('position', 'absolute');
-							$('#'+cellCount).css('top',pageY);
-							$('#'+cellCount).css('left',pageX);
+							$('#cell'+cellCount).css('position', 'absolute');
+							$('#cell'+cellCount).css('top',pageY);
+							$('#cell'+cellCount).css('left',pageX);
 						cellCount++;
 					}
 				}
@@ -1875,9 +1863,7 @@ DATA CELLS CASE
 			$('#roundingRow').hide();	
 		}
 		id = $(this).children('.myTableValue').attr('id');
-		originalTitle = $(this).children('.myTableID').children('span').text();
-		//fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
-		//fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
+		originalTitle = $(this).children('.myTableID').children('span').text();				 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
 		var backgroundColor = $('#'+selectedModule).css('background-color');
 		
@@ -1988,7 +1974,6 @@ DATA CELLS CASE
 				objectFound.setOpacity(opacity, selectedModule, ui);
 			}
 		});
-		//tool tip shows original title
 		$(titleChange).val(title.text());
 		$(labelChange).val(label.text());
 	}
@@ -1998,7 +1983,8 @@ DATA CELLS CASE
 			max: 100,
 			value: zIndex,
 			slide: function( event, ui ) {
-				$('#'+moduleContainer).css('z-index', ui.value ); 
+				objectFound.setZindex(moduleContainer, ui.value);
+				//$('#'+moduleContainer).css('z-index', ui.value ); 
 			}
 		});
 	if($("#"+selectedModule).hasClass('hide')){

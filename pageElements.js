@@ -11,37 +11,33 @@ function extend(ChildClass, ParentClass) {
 ************************************************************************************/
 var pageElement = function(){
 	this.elementType = 'generalElement';	
-	//gets style
-	Object.defineProperty(this, 'getStyle', {
-		value: function(){
-			var thisElement = $('#'+this.containerId+'');
-			var style =  $('#'+this.containerId).parent().attr('style');
-			return style;		
-		},
-		enumerable: false
-	});
-	//sets the style
-	Object.defineProperty(this, 'setStyle', {
-		value: function(stylelist){
-			this.style = stylelist;
-			console.log(this.style);
-		},
-		enumerable: false
-	});
 }
 
-/***********************************************************************************
-* General object prototype
-************************************************************************************/
 pageElement.prototype = {
 	//sets type of element to be a data cell, image block, textblock, camera, etc.
 	hidden: false,
+	setStyle: function(styleList) {
+		this.style = styleList;
+		console.log(this.style);
+	},
+	getStyle: function() {
+		var style =  $('#'+this.parentId).attr('style');
+		return style;
+	},
 	setType: function(elementType) {
 		this.elementType = elementType;	
 	},
 	//gets the type
 	getType: function(){
 		return this.elementType;
+	},
+	onDrag: function(){
+		var style = this.getStyle();
+		this.setStyle(style);
+	},
+	onResize: function(){
+		var style = this.getStyle();
+		this.setStyle(style);
 	},
 	deleteElement: function(){
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(this.id);
@@ -50,7 +46,13 @@ pageElement.prototype = {
 			cell_arr.splice(elementPos, 1);	
 			console.log(cell_arr);
 		}	
+	},
+	setZindex: function(id, zIndex){
+		$('#'+id).css('z-index', zIndex ); 
+		var style = this.getStyle();
+		this.setStyle(style);
 	}
+	
 	//need a hide function
 }
 
@@ -58,6 +60,17 @@ pageElement.prototype = {
 * DATA CELL OBJECT
 ************************************************************************************/
 var pageCell = function(){
+	this.containerId;
+	this.elementType;
+	this.fullId;
+	this.hidden;
+	this.id;
+	this.path;
+	this.precision;
+	this.title;
+	this.label;
+	this.toolTip;
+	this.value;
 	this.setType('pageCell');
 	this.units = '';
 				  
@@ -107,12 +120,14 @@ pageCell.prototype.fontPlusMinus = function(direction){
 	if(direction == 'plus'){
 		size = size.replace("px",'');
 		size = (parseInt(size)+1).toString();
+		$('#fontSize').val(size);
 		size = size+"px";
 		$('#'+containerId).closest('.tr').css('font-size', size);
 	}
 	else{
 		size = size.replace("px",'');
 		size = (parseInt(size)-1).toString();
+		$('#fontSize').val(size);
 		size = size+"px";
 		$('#'+containerId).closest('.tr').css('font-size', size);
 	}	
@@ -138,7 +153,6 @@ pageCell.prototype.setLabel = function(text){
 	this.label = text;
 }
 pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
-	console.log(selectedModule);
 	var containerId = this.fullId;	
 	opacity = opacity.toString();
 	var newColor;
@@ -159,8 +173,13 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	var style = this.getStyle();
 	this.setStyle(style);
 }
+/*pageCell.prototype.setZindex = function(id, zIndex) {
+	$('#'+id).css('z-index', zIndex ); 
+	var style = this.getStyle();
+	this.setStyle(style);
+}*/
 pageCell.prototype.createHtml = function(cellCount){
-	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 }
 
 /***********************************************************************************
