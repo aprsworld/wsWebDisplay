@@ -1,5 +1,5 @@
 /***********************************************************************************
-* Extends parent object prototype to a child object
+* Function that extends parent object prototype to a child object
 ************************************************************************************/
 function extend(ChildClass, ParentClass) {
 	ChildClass.prototype = new ParentClass();
@@ -49,8 +49,19 @@ pageElement.prototype = {
 		this.setStyle(style);
 	},
 	setHidden: function(id) {
-		
-		
+		if(this.hidden == true){
+			this.hidden = false;
+			$("#"+id).css('opacity','1.0');
+			$("#"+id).removeClass('hide');
+			$('#hideModule').html('<i class="fa fa-eye-slash fa-2x"></i> Hide Selected');
+		}
+		else{
+			this.hidden = true;
+			$("#"+id).addClass('hide');
+			$("#"+id).css('opacity','.2');
+			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');	
+
+		}
 	}
 }
 

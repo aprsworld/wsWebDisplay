@@ -1659,6 +1659,11 @@ CAMERA CASE
 				$('.cropperWrapper').remove();
 			});
 		});
+		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
+		$( document ).on( "click", "#hideModule" , function() {
+			objectFound.setHidden(objectFound.parentId);				
+		});
+		
 	}
 /*****************************************************************
 TEXT BLOCKS CASE
@@ -1750,6 +1755,10 @@ TEXT BLOCKS CASE
 				objectFound.setOpacity(opacity, selectedModule, ui);
 			}
 		});
+		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
+		$( document ).on( "click", "#hideModule" , function() {
+			objectFound.setHidden(objectFound.parentId);				
+		});
 	}
 /*****************************************************************
 IMG BLOCKS CASE
@@ -1827,6 +1836,10 @@ IMG BLOCKS CASE
 			$("#"+selectedModule).parent().css('width', width);
 			$("#"+selectedModule).parent().css('height',height);
 		});
+		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
+		$( document ).on( "click", "#hideModule" , function() {
+			objectFound.setHidden(objectFound.parentId);				
+		});
 		
 	}
 /*****************************************************************
@@ -1877,7 +1890,6 @@ DATA CELLS CASE
 			}
 		});
 		
-		
 		//event handler for converting units
 		$("#unitSelect").off('change');
 		$("#unitSelect").on('change', function() {
@@ -1903,13 +1915,6 @@ DATA CELLS CASE
 		$( document ).on( "keyup", "input.titleChange" , function() {	
 			var text = titleChange.val();
 			objectFound.setTitle(text);
-			//gets makes background-color on title transparent if the title field is empty
-			/*if(titleChange.val() == ""){
-				title.parent().css('background-color','transparent');	
-			}
-			else{
-				title.parent().css('background-color','rgba(0, 0, 0, 0.35)');	
-			}*/
 		});
 		// label change event handler
 		$( document ).off( "keyup", "input.labelChange"); //unbind old events, and bind a new one
@@ -1959,6 +1964,10 @@ DATA CELLS CASE
 				objectFound.setOpacity(opacity, selectedModule, ui);
 			}
 		});
+		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
+		$( document ).on( "click", "#hideModule" , function() {
+			objectFound.setHidden(objectFound.parentId);				
+		});
 		$(titleChange).val(title.text());
 		$(labelChange).val(label.text());
 	}
@@ -1972,14 +1981,14 @@ DATA CELLS CASE
 				//$('#'+moduleContainer).css('z-index', ui.value ); 
 			}
 		});
-	if($("#"+selectedModule).hasClass('hide')){
+	/*if($("#"+selectedModule).hasClass('hide')){
 		$('#hideModule').attr('onclick', "showModule('"+ selectedModule +"')");
 		$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');
 	}
 	else{
 		$('#hideModule').attr('onclick', "hideModule('"+ selectedModule +"')");
 		$('#hideModule').html('<i class="fa fa-eye-slash fa-2x"></i> Hide Selected');
-	}
+	}*/
 };
 function edit(handler) {
 	editMode = true;
@@ -2035,7 +2044,7 @@ function nonEdit(handler) {
 	$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 	$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 }
-function hideModule(id) {
+/*function hideModule(id) {
 	$("#"+id).addClass('hide');
 	$("#"+id).css('opacity','.2');
 	$('#hideModule').attr('onclick', "showModule('"+ id +"')");	
@@ -2046,7 +2055,7 @@ function showModule(id) {
 	$("#"+id).removeClass('hide');
 	$('#hideModule').attr('onclick', "hideModule('"+ id +"')");
 	$('#hideModule').html('<i class="fa fa-eye-slash fa-2x"></i> Hide Selected');
-}
+}*/
 //function that allows for the safe decoding of html entities	
 function htmlEntities(str) {
    	var decoded = $('<div/>').html(str).text();
