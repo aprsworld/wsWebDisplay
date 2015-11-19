@@ -559,13 +559,15 @@ function fontSizeChange(direction, id){
 		fontsize = fontsize.replace("px",'');
 		fontsize = (parseInt(fontsize)-1).toString();
 		fontsize = fontsize+"px";
-		$('#'+id).css('font-size', fontsize);
+		
+		//$('#'+id).css('font-size', fontsize);
 	}
 	else if(direction == 'increase'){
 		fontsize = fontsize.replace("px",'');
 		fontsize = (parseInt(fontsize)+1).toString();
 		fontsize = fontsize+"px";
-		$('#'+id).css('font-size', fontsize);	
+		
+		//$('#'+id).css('font-size', fontsize);	
 	}
 	$('#fontSize').val((fontsize).slice(0,-2));
 }
@@ -1680,8 +1682,8 @@ TEXT BLOCKS CASE
 		$(bgColor).val($('#'+id).css('background-color'));
 		$(textColor).val($('#'+id).children('p').css('color'));
 		var backgroundColor = $('#'+selectedModule).css('background-color');
-		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
-		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
+		//fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
+		//fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
 		$(".textColorChange").off("mouseover.color");
 		$(".textColorChange").on("mouseover.color", function(event, color){
@@ -1874,8 +1876,8 @@ DATA CELLS CASE
 		}
 		id = $(this).children('.myTableValue').attr('id');
 		originalTitle = $(this).children('.myTableID').children('span').text();
-		fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
-		fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
+		//fontPlus.attr('onclick', "fontSizeChange('increase','"+ id +"')");
+		//fontMinus.attr('onclick', "fontSizeChange('decrease','"+ id +"')");					 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
 		var backgroundColor = $('#'+selectedModule).css('background-color');
 		
@@ -1889,15 +1891,31 @@ DATA CELLS CASE
 		
 		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
-			objectFound.precision = $('.roundingChange').val();
-			if($('.roundingChange').val() == ""){
-				objectFound.precision = 0;
+			objectFound.setPrecision($('.roundingChange').val());
+		});
+		//event handler for font plus and minus being clicked
+		$( document ).off("click", "#fontSizePlus, #fontSizeMinus");
+		$( document ).on("click", "#fontSizePlus, #fontSizeMinus", function() {
+			var fontsize;
+			if($(this).attr('id') == 'fontSizeMinus'){
+				fontsize = fontsize.replace("px",'');
+				fontsize = (parseInt(fontsize)-1).toString();
+				fontsize = fontsize+"px";
+				objectFound.fontPlusMinus('plus', fontsize);
+			}
+			else{
+				fontsize = fontsize.replace("px",'');
+				fontsize = (parseInt(fontsize)+1).toString();
+				fontsize = fontsize+"px";
+				objectFound.fontPlusMinus('minus', fontsize);
 			}
 		});
+		
+		
 		//event handler for converting units
 		$("#unitSelect").off('change');
 		$("#unitSelect").on('change', function() {
-			objectFound.typeChange = $( "#unitSelect" ).val();
+			objectFound.setTypeChange($( "#unitSelect" ).val());
 		});	
 		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
@@ -1906,14 +1924,12 @@ DATA CELLS CASE
 		//delegate even handler for mousing over 
 		$(".textColorChange").off("mouseover.color");
 		$(".textColorChange").on("mouseover.color", function(event, color){
-			$('#'+moduleContainer).css('color', color+' !important');
-			$('#opacitySlider .ui-slider-range').css('background', color );
-  			$('#opacitySlider .ui-slider-handle').css('border-color', color);
+			objectFound.fontColorChange(color);
 		});	
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
-		$( document ).on( "keyup", "input#fontSize" , function() {	
-			fontsize = $('#'+moduleContainer).css('font-size');
+		$( document ).on( "keyup", "input#fontSize" , function() {
+			var size = fontSize.val()
 			$('#'+moduleContainer).css('font-size', fontSize.val());				
 		});
 		//title change event handler
@@ -1944,18 +1960,13 @@ DATA CELLS CASE
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$('#'+selectedModule).css('background-color', enteredColor);
-			$('#opacitySlider .ui-slider-range').css('background', enteredColor );
-  			$('#opacitySlider .ui-slider-handle').css('border-color', enteredColor);
+			objectFound.backgroundColorChange(enteredColor);
 		});
 		//color input change event handler
 		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.textColorChange" , function() {	
 			var enteredTextColor = textColor.val();
 			$('#'+moduleContainer).css('color', enteredTextColor);
-			/*$('#'+id).children('p').css('color',enteredTextColor);
-			$('#'+id).children('span').css('color',enteredTextColor);
-			$('#'+id).parent().children('.myTableTitle').children('p').css('color',enteredTextColor);*/
 		});
 		var sliderValue;
 		if(backgroundColor.indexOf('rgba') >= 0){

@@ -65,25 +65,60 @@ var pageCell = function(){
 extend(pageCell,pageElement);
 
 pageCell.prototype.setPrecision = function(value){
-	
+	//need "||" because javascript interperets an empty string as zero
+	if(isNaN(value) || value == ''){
+		this.precision = 0;
+	}
+	else{
+		this.precision = value;
+	}
+	console.log(this);
 }
 
-pageCell.prototype.setUnitType = function(value){
-	
+pageCell.prototype.setTypeChange = function(type){
+	this.typeChange = type;
 }
 
-pageCell.prototype.fontColorChange = function(){
-	
+pageCell.prototype.fontColorChange = function(color){
+	var containerId = this.fullId;
+	$('#'+containerId).closest('.tr').css('color', color+' !important');
+	var style = this.getStyle();
+	this.setStyle(style);
 }
 
-pageCell.prototype.backgroundColorChange = function(){
-	
+pageCell.prototype.backgroundColorChange = function(color){
+	var containerId = this.fullId;
+	$('#'+containerId).closest('.tr').css('background-color', color);
+	$('#opacitySlider .ui-slider-range').css('background', color );
+  	$('#opacitySlider .ui-slider-handle').css('border-color', color);
+	var style = this.getStyle();
+	this.setStyle(style);
 }
 
-pageCell.prototype.fontSizeChange = function(){
-	
+pageCell.prototype.fontSizeChange = function(size){
+	var containerId = this.fullId;
+	$('#'+containerId).closest('.tr').css('font-size', size);
+	var style = this.getStyle();
+	this.setStyle(style);
 }
-
+pageCell.prototype.fontPlusMinus = function(direction){
+	var containerId = this.fullId;
+	var size = $('#'+containerId).closest('.tr').css('font-size');
+	if(direction == 'plus'){
+		size = size.replace("px",'');
+		size = (parseInt(size)+1).toString();
+		size = size+"px";
+		$('#'+containerId).closest('.tr').css('font-size', size);
+	}
+	else{
+		size = size.replace("px",'');
+		size = (parseInt(size)-1).toString();
+		size = size+"px";
+		$('#'+containerId).closest('.tr').css('font-size', size);
+	}	
+	var style = this.getStyle();
+	this.setStyle(style);
+}
 pageCell.prototype.setTitle = function(){
 		
 }
@@ -91,7 +126,9 @@ pageCell.prototype.setTitle = function(){
 pageCell.prototype.setLabel = function(){
 	
 }
-
+pageCell.prototype.setOpacity = function() {
+	
+}
 pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 }
