@@ -134,25 +134,26 @@ pageElement.prototype = {
 	}
 }
 /***********************************************************************************
-* DATA CELL OBJECT
+* PAGE SETTINGS OBJECT
 ************************************************************************************/
 var pageSettings = function() {
 	this.setType('pageSettings');
 	this.backgroundColor;
 	this.title;
+	this.id = 'pageSettings';
 }
 extend(pageSettings, pageElement);
 
 pageSettings.prototype.backgroundColorChange = function(color){
-	//stub
+	this.backgroundColor = color;
+	$('html').css('background-color', color);
+	$('.backgroundColorChange').val(''+color);
+	$('#opacitySlider .ui-slider-range').css('background', color );
+  	$('#opacitySlider .ui-slider-handle').css('border-color', color);
 }
 
-pageSettings.protoype.setPageTitle = function(title){
-	//stub
-}
-
-pageSettings.prototype.setOpactiy = function(event, ui){
-	//stub
+pageSettings.prototype.setPageTitle = function(title){
+	document.title = title;
 }
 /***********************************************************************************
 * DATA CELL OBJECT
@@ -255,13 +256,16 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	opacity = opacity.toString();
 	var newColor;
 	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
-		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+		console.log(ui.value);
+		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+(Math.round(ui.value)*.01).toFixed(2)+')').replace('rgb', 'rgba');
 	}
 	else{
 		var currentColor = $('#'+selectedModule).css('background-color');
 		var splitColor = currentColor.split(',');
-		newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
-		$('#opacityPercent').text(' '+ui.value+'%');
+				console.log(ui.value);
+
+		newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01).toFixed(2) + ')';
+		$('#opacityPercent').text(' '+Math.round(ui.value)+'%');
 	}
 	$('#'+selectedModule).css('background-color', newColor);
 	$('.backgroundColorChange').val(''+newColor);
@@ -548,7 +552,6 @@ pageImg.prototype.setSrc = function(){
 	var tempImg = document.createElement('img');
 	var selectedModule = this.parentId;
 	var url = $("#"+selectedModule).find('img');
-	console.log(src);
 	$(tempImg).load(function() {
 		var width = tempImg.naturalWidth;
 		console.log(width);
@@ -776,12 +779,12 @@ pageText.prototype.setOpacity = function(opacity, selectedModule, ui){
 	opacity = opacity.toString();
 	var newColor;
 	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
-		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+((ui.value)*.01)+')').replace('rgb', 'rgba');
+		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+(Math.round((ui.value))*.01).toFixed(2)+')').replace('rgb', 'rgba');
 	}
 	else{
 		var currentColor = $('#'+selectedModule).css('background-color');
 		var splitColor = currentColor.split(',');
-		newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
+		newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01).toFixed(2) + ')';
 		$('#opacityPercent').text(' '+ui.value+'%');
 	}
 	$('#'+selectedModule).css('background-color', newColor);

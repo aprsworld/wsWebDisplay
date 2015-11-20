@@ -871,6 +871,14 @@ function data_update(data) {
 		
 		
         });
+		var objId = 'pageSettings';	
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var thisObj = cell_arr[elementPos];
+		if(thisObj == undefined){
+			thisObj = new pageSettings();
+			cell_arr.push(thisObj);
+			console.log(thisObj);
+		}
 	}
 	var x = $(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
@@ -1181,26 +1189,28 @@ PAGE EDIT CASE
 		$('.titleChange').val(document.title);
 		$('.backgroundColorChange').val($('html').css('background-color'));
 		var backgroundColor = $('html').css('background-color');
-
+	
+		var objId = 'pageSettings';	
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
 		
 		//delegate event handler for color picker
 		$(".backgroundColorChange").off("mouseover.color");
 		$(".backgroundColorChange").on("mouseover.color", function(event, color){
-			$('html').css('background-color', color);
+			objectFound.backgroundColorChange(color);
 		});
 		//background color input change event handler
 		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
 			var enteredColor = bgColor.val();
-			$('html').css('background-color', enteredColor);
-			$('#opacitySlider .ui-slider-range').css('background', enteredColor );
-  			$('#opacitySlider .ui-slider-handle').css('border-color', enteredColor);
+			objectFound.backgroundColorChange(enteredColor);
+			
 		});
 		//delegate title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.titleChange" , function() {	
 			var newTitle = titleChange.val();
-			document.title = newTitle;
+			objectFound.setPageTitle(newTitle);
 		});
 		var sliderValue;
 		if(backgroundColor.indexOf('rgba') >= 0){
@@ -1233,10 +1243,11 @@ PAGE EDIT CASE
 					newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01) + ')';
 					$('#opacityPercent').text(' '+ui.value+'%');
 				}
-				$('html').css('background-color', newColor);
+				objectFound.backgroundColorChange(newColor);
+				/*$('html').css('background-color', newColor);
 				$('.backgroundColorChange').val(''+newColor);
 				$('#opacitySlider .ui-slider-range').css('background', newColor );
-  				$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
+  				$('#opacitySlider .ui-slider-handle').css('border-color', newColor);*/
 			}
 		});
 	}
@@ -1824,6 +1835,13 @@ function loadState(jsonString){
 	for(var k in configObject){
 		if(configObject[k].count >= count){
 			count = configObject[k].count;
+		}
+		if(configObject[k].elementType == 'pageSettings'){
+			var settings = new pageSettings();
+			console.log(configObject[k]);
+			configObject[k].__proto__ = settings.__proto__;
+			configObject[k].backgroundColorChange(configObject[k].backgroundColor);
+
 		}
 		if(configObject[k].elementType == 'pageCell'){
 			var cell = new pageCell();
