@@ -61,6 +61,74 @@ pageElement.prototype = {
 			$("#"+id).css('opacity','.2');
 			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');	
 		}
+	},
+	setDrag: function() {
+		var thisObj = this;
+		$('#'+this.parentId).draggable({
+			grid: [1,1], snap: true, snapTolerance: 10, cursor: "move", disabled: false,
+			start: function(event, ui){
+				$('.controls').animate({width: '10px'},100);
+				$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
+				$('.controlRow, .controls h2').hide();
+				var posLeft = ui.position.left;
+				var posTop = ui.position.top;
+				var posSpan = document.createElement("SPAN"); 
+				var posDiv = document.createElement("DIV");
+				posDiv.id = 'positionDiv';
+				$(this).append(posDiv);
+				$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
+				posSpan.textContent = "("+posLeft+", "+posTop+")";
+				posSpan.id = 'positionSpan';			
+				$('#positionDiv').append(posSpan);
+			},
+			drag: function(event, ui){
+				var posLeft = ui.position.left;	
+				var posTop = ui.position.top;
+				$('#positionSpan').text("("+posLeft+", "+posTop+")");
+			},
+			stop: function(event, ui){
+				$('.controls').animate({width: '250px'},200);
+				$('.editWindow').animate({width: '280px',padding: '20px'},200);
+				$('.controlRow, .controls h2').show();
+				$('#positionDiv').remove();
+				thisObj.onChangeStyle();
+			}
+		});
+	},
+	setResize: function() {
+		var handleTarget;
+		var thisObj = this;		
+		$('#'+thisObj.parentId).resizable({
+			grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
+			start: function(event, ui){
+				var width = $('#'+thisObj.parentId).css('width');
+				var height = $('#'+thisObj.parentId).css('height');
+				var posSpan = document.createElement("SPAN"); 
+				posSpan.id = 'resizeSpan';
+				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+				$('#resizeSpan').css({
+					top: event.clientY+5,
+					left: event.clientX+5
+				});
+				$('#'+thisObj.parentId).append(posSpan);
+				handleTarget = $(event.originalEvent.target);
+			},
+			resize: function(event, ui){
+				var width = $('#'+thisObj.parentId).css('width');
+				var height = $('#'+thisObj.parentId).css('height');
+				var top = $('#positionDiv').css('top');
+				var left = $('#positionDiv').css('left');
+				$('#resizeSpan').css({
+					top: event.clientY+5,
+					left: event.clientX+5
+				}); 
+				$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+			},
+			stop: function(event, ui){
+				$('#resizeSpan').remove();
+				thisObj.onChangeStyle();
+			}
+		});
 	}
 }
 
@@ -181,13 +249,49 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	var style = this.getStyle();
 	this.setStyle(style);
 }
+pageCell.prototype.setResize = function(){
+	var handleTarget;
+	var thisObj = this;		
+	$('#'+thisObj.parentId).resizable({
+		grid: [1,1], handles: 'all', disabled: false,
+		start: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var posSpan = document.createElement("SPAN"); 
+			posSpan.id = 'resizeSpan';
+			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			});
+			$('#'+thisObj.parentId).append(posSpan);
+			handleTarget = $(event.originalEvent.target);
+		},
+		resize: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var top = $('#positionDiv').css('top');
+			var left = $('#positionDiv').css('left');
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			}); 
+			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+		},
+		stop: function(event, ui){
+			$('#resizeSpan').remove();
+			thisObj.onChangeStyle();
+		}
+	});
+}
 pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 }
 
 pageCell.prototype.loadHtml = function(cellCount){
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
-	
+	this.setDrag();
+	this.setResize();
 }
 
 /***********************************************************************************
@@ -333,7 +437,8 @@ pageCam.prototype.resize = function(){
 	$("#"+camId).css("background-position","50% 50%");
 	var newStyle = $("#"+camId).attr('style');
 	camObj.setStyle(newStyle);
-	createCamFromTree(camObj);
+	camObj.setResize();
+	camObj.setDrag();
 }
 //creates element
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
@@ -348,7 +453,8 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		$('#'+camId).css('display','inline-block');
 		$('#'+camId).css('top',pageY);
 		$('#'+camId).css('left',pageX);
-		createCamFromTree(camObj);
+		camObj.setResize();
+		camObj.setDrag();
 		var currentMode = editMode
 		var width = $('#'+camId).children('img').width();
 		var height = $('#'+camId).children('img').height();	
@@ -362,6 +468,8 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 
 pageCam.prototype.loadHtml = function(){
 	$('#content').append('<div title="'+this.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+this.parentId+' style="background-image:url('+this.path+')"><img alt="1" style="visibility:hidden;" src="'+this.path+'"></div>');
+	this.setDrag();
+	this.setResize();
 }
 /***********************************************************************************
 * IMG BLOCK OBJECT
@@ -445,6 +553,8 @@ pageImg.prototype.createHtml = function(cellCount){
 pageImg.prototype.loadHtml = function(){
 	$('#content').append('<div id=img'+this.parentId+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+this.parentId+')" id=img'+this.parentId+' alt=img'+this.parentId+' src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
+	this.setDrag();
+	this.setResize();
 }
 /***********************************************************************************
 * TEXT BLOCK OBJECT
@@ -492,6 +602,8 @@ pageText.prototype.loadHtml = function(){
 	//appends the textblock to the page
 	$('#content').append(textBlock);
 	$('#'+this.parentId).attr('style', this.style);
+	this.setDrag();
+	this.setResize();
 }
 pageText.prototype.fontSizeChange = function(size){
 	if(size == ''){
@@ -530,7 +642,41 @@ pageText.prototype.fontColorChange = function(color){
 	var style = this.getStyle();
 	this.setStyle(style);
 }
-
+pageText.prototype.setResize = function(){
+	var handleTarget;
+	var thisObj = this;		
+	$('#'+thisObj.parentId).resizable({
+		grid: [1,1], handles: 'all', disabled: false,
+		start: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var posSpan = document.createElement("SPAN"); 
+			posSpan.id = 'resizeSpan';
+			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			});
+			$('#'+thisObj.parentId).append(posSpan);
+			handleTarget = $(event.originalEvent.target);
+		},
+		resize: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var top = $('#positionDiv').css('top');
+			var left = $('#positionDiv').css('left');
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			}); 
+			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+		},
+		stop: function(event, ui){
+			$('#resizeSpan').remove();
+			thisObj.onChangeStyle();
+		}
+	});
+}
 pageText.prototype.backgroundColorChange = function(color){
 	var containerId = this.parentId;
 	$('#'+containerId).css('background-color', color);
