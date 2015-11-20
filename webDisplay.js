@@ -468,93 +468,6 @@ function chooseConversion(type, typeUnits, value, typeChange){
 	}
 	
 }
-
-function createCamFromTree(camObj){
-	var handleTarget;
-	$('.imgCamContainer').draggable({
-		grid: [1, 1],
-		snap: true,
-		snapTolerance: 10,
-		cursor: "move",
-		start: function(event, ui) {
-			$('.controls').animate({
-				width: '10px'
-			},100);
-			$('.editWindow').animate({
-				width: '0px',
-				margin: '0',
-				padding: '0'
-			},50);
-			$('.controlRow').hide();
-			$('.controls h2').hide();
-			var posLeft = ui.position.left;
-			var posTop = ui.position.top;
-			var posSpan = document.createElement("SPAN"); 
-			var posDiv = document.createElement("DIV");
-			posDiv.id = 'positionDiv';
-			$(this).append(posDiv);
-			$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
-			posSpan.textContent = "("+posLeft+", "+posTop+")";
-			posSpan.id = 'positionSpan';			
-			$('#positionDiv').append(posSpan);
-		},
-		drag: function( event, ui ) {
-			var posLeft = ui.position.left;	
-			var posTop = ui.position.top;
-			$('#positionSpan').text("("+posLeft+", "+posTop+")");
-		},		
-		stop: function(event, ui) {
-			$('.controls').animate({
-				width: '250px'
-			},200);
-			$('.editWindow').animate({
-				width: '280px',
-				padding: '20px'
-			},200);
-			$('.controlRow').show();
-			$('.controls h2').show();
-			$('#positionDiv').remove();
-			camObj.onChangeStyle();
-		},
-		disabled: false}).resizable({
-			disabled: false, 
-			handles: 'all',
-			grid: [1,1],
-			aspectRatio: true,
-			start: function(event, ui) {
-				var width = $(this).css('width');
-				var height = $(this).css('height');
-				var posSpan = document.createElement("SPAN"); 
-				posSpan.id = 'resizeSpan';
-				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
-				$('#resizeSpan').css({
-					top: event.clientY+5,
-					left: event.clientX+5
-				});
-				$(this).append(posSpan);
-				handleTarget = $(event.originalEvent.target);
-
-			},
-			resize: function(event, ui) {
-				var width = $(this).css('width');
-				var height = $(this).css('height');
-				var top = $('#positionDiv').css('top');
-				var left = $('#positionDiv').css('left');
-				$('#resizeSpan').css({
-					top: event.clientY+5,
-					left: event.clientX+5
-				}); 
-				$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
-				//console.log(event.pageY);
-			},
-			stop: function(event, ui) {
-				$('#resizeSpan').remove();
-				camObj.setHover(true, camObj.hoverDelay);
-				camObj.onChangeStyle();
-
-			}
-		});
-}	
 function timer(){
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
@@ -920,22 +833,17 @@ function data_update(data) {
 							//$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
 							tree_item.createHtml(cellCount);
 							$(".draggable").draggable({ //makes our data cells draggable
-								disabled: true,
-								grid: [1, 1],
-								snap: true,
-								snapTolerance: 10,
-								cursor: "move",
 								start: function(event, ui) {
-									$(this).addClass('draggable_focus_in');
-									$('.controls').animate({
+									//$(this).addClass('draggable_focus_in');
+									/*$('.controls').animate({
 										width: '10px'
 									},100);
 									$('.editWindow').animate({
 										width: '0px',
 										margin: '0',
 										padding: '0'
-									},50);
-									$('.controlRow').hide();
+									},50);*/
+									/*$('.controlRow').hide();
 									$('.controls h2').hide();
 									var posLeft = ui.position.left;
 									var posTop = ui.position.top;
@@ -946,73 +854,14 @@ function data_update(data) {
 									$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
 									posSpan.textContent = "("+posLeft+", "+posTop+")";
 									posSpan.id = 'positionSpan';			
-									$('#positionDiv').append(posSpan);
-
-								},
-								drag: function( event, ui ) {
-									var posLeft = ui.position.left;	
-									var posTop = ui.position.top;
-									$('#positionSpan').text("("+posLeft+", "+posTop+")");
-
-								},
-								stop: function(event, ui) {
-									$(this).removeClass('draggable_focus_in');
-									$('.controls').animate({
-										width: '250px'
-									},200);
-									$('.editWindow').animate({
-										width: '280px',
-										padding: '20px'
-									},200);
-									$('.controlRow').show();
-									$('.controls h2').show();
-									$('#positionDiv').remove();
-									/*var style = tree_item.getStyle();
-									tree_item.setStyle(style);*/
-									tree_item.onChangeStyle();
-									console.log(tree_item);
-									console.log(JSON.stringify(cell_arr));
+									$('#positionDiv').append(posSpan);*/
 
 								}
-							}).resizable({
-								disabled: false, 
-								handles: 'all',
-								grid: [1,1],			
-								start: function(event, ui) {
-									var width = $(this).css('width');
-									var height = $(this).css('height');
-									var posSpan = document.createElement("SPAN"); 
-									posSpan.id = 'resizeSpan';
-									posSpan.textContent = "Width: "+width+"  Height: "+height+")";
-									$('#resizeSpan').css({
-										top: event.clientY+5,
-										left: event.clientX+5
-									});
-									$(this).append(posSpan);
-									handleTarget = $(event.originalEvent.target);
-
-								},
-								resize: function(event, ui) {
-									var width = $(this).css('width');
-									var height = $(this).css('height');
-									var top = $('#positionDiv').css('top');
-									var left = $('#positionDiv').css('left');
-									$('#resizeSpan').css({
-										top: event.clientY+5,
-										left: event.clientX+5
-									}); 
-									$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
-									//console.log(event.pageY);
-								},
-								stop: function(event, ui) {
-									$('#resizeSpan').remove();
-									tree_item.onChangeStyle();
-								}
-							});			
+						});
 							$(".draggable").draggable( "option", "disabled", false )
-							$('#cell'+cellCount).css('position', 'absolute');
-							$('#cell'+cellCount).css('top',pageY);
-							$('#cell'+cellCount).css('left',pageX);
+							$('#'+tree_item.parentId).css('position', 'absolute');
+							$('#'+tree_item.parentId).css('top',pageY);
+							$('#'+tree_item.parentId).css('left',pageX);
 						cellCount++;
 					}
 				}
@@ -1136,44 +985,6 @@ function createText(){
 	textBlock.createHtml(index);
 	cell_arr.push(textBlock);
 
-	$(".textBlockContainer").draggable({
-		disabled: false,
-		grid: [1, 1],
-		snap: true,
-		snapTolerance: 10,
-		start: function(event, ui) {
-			$(this).addClass('draggable_focus_in');
-			$('.controls').animate({
-				width: '10px'
-			},100);
-			$('.editWindow').animate({
-				width: '0px',
-				margin: '0',
-				padding: '0'
-			},50);
-			$('.controlRow').hide();
-			$('.controls h2').hide();
-		},
-		stop: function(event, ui) {
-			$(this).removeClass('draggable_focus_in');
-			$('.controls').animate({
-				width: '250px'
-			},200);
-			$('.editWindow').animate({
-				width: '280px',
-				padding: '20px'
-			},200);
-			$('.controlRow').show();
-			$('.controls h2').show();
-			textBlock.onChangeStyle()
-		}
-		}).resizable({
-			disabled: false,
-			grid: [1, 1],
-			stop: function(event, ui){
-				textBlock.onChangeStyle()
-			}
-		});	
 }
 function createImage(){
 	var imgBlock, imgURL, index;
@@ -1182,11 +993,13 @@ function createImage(){
 	imgBlock.id = 'img'+index;
 	imgBlock.parentId = 'img'+index+'container';
 	imgURL = $('#createImageURL').val();
+	imgBlock.createHtml(index);
+
 	cell_arr.push(imgBlock);
+
 	if(imgURL != ""){
 		//$('#content').append('<div id=img'+index+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src="images/insert_image.svg"></img></div>');
-		imgBlock.createHtml(index);
-		$(".imgBlockContainer").draggable({
+		/*$(".imgBlockContainer").draggable({
 			grid: [1, 1],
 			snap: true,
 			snapTolerance: 10,
@@ -1226,7 +1039,7 @@ function createImage(){
 					stop: function(event, ui){
 						imgBlock.onChangeStyle();	
 					}
-		});	
+		});	*/
 	}
 	//allows images to be hoverable outside of edit function
 			var hoverTime;
@@ -1772,7 +1585,7 @@ IMG BLOCKS CASE
 		//show appropriate parts of edit window
 		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropRow, #hoverRow').show();
 		moduleContainer = $(this).attr('id');
-		selectedModule = $(this).children().children('img').attr('id');
+		selectedModule = $(this).find('img').attr('id');
 
 		//change title of edit window 
 		$('.editWindow h2').text("Image "+moduleContainer);

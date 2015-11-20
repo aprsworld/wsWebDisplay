@@ -63,6 +63,7 @@ pageElement.prototype = {
 		}
 	},
 	setDrag: function() {
+		console.log(this.parentId);
 		var thisObj = this;
 		$('#'+this.parentId).draggable({
 			grid: [1,1], snap: true, snapTolerance: 10, cursor: "move", disabled: false,
@@ -286,6 +287,8 @@ pageCell.prototype.setResize = function(){
 }
 pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+	this.setDrag();
+	this.setResize();
 }
 
 pageCell.prototype.loadHtml = function(cellCount){
@@ -487,15 +490,6 @@ function pageImg(){
 	this.suppressed = true;
 	this.style;
 
-	Object.defineProperty(this, 'createHtml', {
-		value: function(cellCount){
-			$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+cellCount+')" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
-			this.src = "images/insert_image.svg";
-			this.natHeight = 240;
-			this.natWidth = 320; //dimensions of placeholder image
-		},
-		enumberable: false				
-  	});	
 }
 extend(pageImg,pageElement);
 
@@ -546,9 +540,47 @@ pageImg.prototype.resize = function(){
 	this.height = height;
 }
 
+pageImg.prototype.setResize = function(){
+	var handleTarget;
+	var thisObj = this;		
+	$('#'+thisObj.id).resizable({
+		grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
+		start: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var posSpan = document.createElement("SPAN"); 
+			posSpan.id = 'resizeSpan';
+			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			});
+			$('#'+thisObj.parentId).append(posSpan);
+			handleTarget = $(event.originalEvent.target);
+		},
+		resize: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var top = $('#positionDiv').css('top');
+			var left = $('#positionDiv').css('left');
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			}); 
+			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+		},
+		stop: function(event, ui){
+			$('#resizeSpan').remove();
+			thisObj.onChangeStyle();
+		}
+	});	
+}
 pageImg.prototype.createHtml = function(cellCount){
 	$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+cellCount+')" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
+	console.log('eh');
+	this.setDrag();
+	this.setResize();
 }
 pageImg.prototype.loadHtml = function(){
 	$('#content').append('<div id=img'+this.parentId+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+this.parentId+')" id=img'+this.parentId+' alt=img'+this.parentId+' src="images/insert_image.svg"></img></div>');
@@ -584,6 +616,8 @@ pageText.prototype.createHtml = function(cellCount){
 	$(textBlock).append('<p>'+textContent+'</p>');
 	//appends the textblock to the page
 	$('#content').append(textBlock);
+	this.setDrag();
+	this.setResize();
 }
 
 pageText.prototype.loadHtml = function(){
