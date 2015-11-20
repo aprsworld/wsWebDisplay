@@ -708,6 +708,7 @@ function data_update(data) {
 					$element = $(ui.draggable);
 					var pageX = $(ui.helper).css('left');
 					var pageY = $(ui.helper).css('top');
+					var cellCount = cell_arr.length;
 /*------------------------  if cam	------------------------------*/									
 					if(($($element).hasClass('draggableCamNode'))){
 						var tree_item = new pageCam();
@@ -840,7 +841,7 @@ function data_update(data) {
 			});	
 		//grabs layout parameter fromt he url
 		var layout = getUrlVars()["layout"];
-		var cellCount = 0;
+		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
 				if(!rsp.data || rsp.error){
 					// Couldn't get configuration data from server
@@ -1252,6 +1253,7 @@ CAMERA CASE
 		var objId = moduleContainer.replace('div_','');	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
+		console.log(objectFound);
 	
 		var camera = $(this);
 		//checks to see if image has added hoverables class and checks appropriate radio button
@@ -1308,9 +1310,12 @@ CAMERA CASE
 			console.log(parseInt($('input#hoverTime').val()));
 			if(!isNaN($('input#hoverTime').val())){
 				objectFound.hoverDelay = $('input#hoverTime').val();
+				objectFound.setHover(objectFound.hover,objectFound.hoverDelay);
 			}
 			else{
 				objectFound.hoverDelay = 0;
+				objectFound.setHover(objectFound.hover,objectFound.hoverDelay);
+
 			}
 		});
 		// delete event hanlder
@@ -1390,6 +1395,7 @@ CAMERA CASE
 				$("#"+selectedModule).show();
 				$("#"+selectedModule).addClass("cropped");
 				$(".cropped").resizable({disabled:true});
+				objectFound.setCrop(true);
 			});
 			$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
 			$( document ).on( "click", "#cancelCrop" , function() {
@@ -1814,8 +1820,11 @@ function captureState(){
 }
 function loadState(jsonString){
 		var configObject = JSON.parse(jsonString);
-
+		var count = 0;
 	for(var k in configObject){
+		if(configObject[k].count >= count){
+			count = configObject[k].count;
+		}
 		if(configObject[k].elementType == 'pageCell'){
 			var cell = new pageCell();
 			console.log(cell);
@@ -1847,6 +1856,8 @@ function loadState(jsonString){
 			configObject[k].loadHtml();
 		}
 	}
+	cell_arr.length = count+1;
+	console.log(cell_arr.length);
 	console.log( cell_arr );
 }
 /*function that iterates through all instances of the ".tr, .imgBlockContainer, .textBlockContainer, .imgCamContainer" class selectors

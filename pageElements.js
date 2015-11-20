@@ -10,7 +10,8 @@ function extend(ChildClass, ParentClass) {
 * GENERAL OBJECT
 ************************************************************************************/
 var pageElement = function(){
-	this.elementType = 'generalElement';	
+	this.elementType = 'generalElement';
+	this.count;
 }
 
 pageElement.prototype = {
@@ -289,6 +290,7 @@ pageCell.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
+	this.count = cellCount;
 }
 
 pageCell.prototype.loadHtml = function(cellCount){
@@ -302,10 +304,10 @@ pageCell.prototype.loadHtml = function(cellCount){
 ************************************************************************************/
 var pageCam = function(){
 	this.setType('pageCam');
-	this.hoverable = true;
-	this.suppressed = true;
-	this.hoverDelay = 1;
-	this.cropped = false;	
+	this.hoverable;
+	this.suppressed;
+	this.hoverDelay;
+	this.cropped;	
 	this.natWidth;
 	this.natHeight;
 	this.id;
@@ -331,6 +333,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 	else{
 		var suppressed, camId, camWidth, divWidth, camHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
 		camObj.hoverable = true;
+		timeOut = hoverTime*1000;
+
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
 		$('#hoverTimeRow, #suppressHoverable').show();		
@@ -343,7 +347,6 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			divWidth = parseInt($('#'+camId).css('width').slice(0,-2));
 			isWebkit = 'WebkitAppearance' in document.documentElement.style;
 			hoverImgId = camId+'hover';
-			timeOut = hoverTime*1000;
 			
 			if(camWidth <= divWidth && camObj.suppressed == true){
 
@@ -352,7 +355,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 
 			if(editMode == false && suppressed == false){
 			
-				hoverTimeOut = setTimeout(function() {	
+			hoverTimeOut = setTimeout(function() {	
 
 				$(hoverImg).width(camWidth);
 				$(hoverImg).height(camHeight);
@@ -410,6 +413,7 @@ pageCam.prototype.setCrop = function(boolCrop){
 		this.setStyle(style);
 		this.cropped = false;	
 	}
+
 }
 
 //gets the natural height of the image
@@ -458,13 +462,18 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		$('#'+camId).css('left',pageX);
 		camObj.setResize();
 		camObj.setDrag();
+		camObj.hoverable = true;
+		camObj.suppressed = true;
+		camObj.hoverDelay = 1;
+		camObj.cropped = false;	
+		camObj.count = cellCount;
 		var currentMode = editMode
 		var width = $('#'+camId).children('img').width();
 		var height = $('#'+camId).children('img').height();	
 		var hov = true;
 		var delay = 1;
 		camObj.setNaturalDimensions(height, width);
-
+		
 	});	
 	$('#preload_'+camId).attr('src', value);
 }
@@ -479,6 +488,11 @@ pageCam.prototype.loadHtml = function(){
 		$('#'+camObj.parentId).attr('style', camObj.style);
 		camObj.setDrag();
 		camObj.setResize();
+		camObj.setHover(camObj.hover, camObj.hoverDelay);
+		if(camObj.cropped){
+			$('#'+camObj.parentId).draggable({disabled:true});
+			$('#'+camObj.parentId).resizable({disabled:true});
+		}
 	});
 	$('#preload_'+camId).attr('src', this.src);
 
@@ -625,6 +639,7 @@ pageText.prototype.createHtml = function(cellCount){
 	$(textBlock).append('<p>'+textContent+'</p>');
 	//appends the textblock to the page
 	$('#content').append(textBlock);
+	this.count = cellCount;
 	this.setDrag();
 	this.setResize();
 }
