@@ -489,6 +489,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.hoverable = true;
 		camObj.suppressed = true;
 		camObj.hoverDelay = 1;
+		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		camObj.cropped = false;	
 		camObj.count = cellCount;
 		var currentMode = editMode
@@ -512,7 +513,7 @@ pageCam.prototype.loadHtml = function(){
 		$('#'+camObj.parentId).attr('style', camObj.style);
 		camObj.setDrag();
 		camObj.setResize();
-		camObj.setHover(camObj.hover, camObj.hoverDelay);
+		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		if(camObj.cropped){
 			$('#'+camObj.parentId).draggable({disabled:true});
 			$('#'+camObj.parentId).resizable({disabled:true});

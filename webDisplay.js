@@ -484,68 +484,6 @@ function timer(){
 		console.log(convertedLoad+' since page was loaded');	
 	}
 }
-function hoverCamInit(){
-	//allows cams to be hoverable outside of edit function
-	var hoverTimeout;
-	var hoverImg = document.createElement('img');
-	var hoverImgLink = document.createElement('a');
-	$('.imgCamContainer').hover(function(){
-	var camID = $(this).attr('id');
-	var camWidth = $(this).children('img').width();
-	var divWidth = parseInt($(this).css('width').slice(0,-2));
-	var camHeight = $(this).children('img').height();
-	var camSrc = $(this).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-	var isWebkit = 'WebkitAppearance' in document.documentElement.style;
-	var hoverImgID = camID+'hover';
-	var timeOut = 1000;
-	var suppress = false;
-	if((camWidth <= divWidth) && $(this).hasClass('suppressHover')){
-		suppress = true;
-	}
-	timeOut = parseInt($('#'+camID).children('img').attr('alt'), 10)*1000;
-	var enabled = $('#'+camID).hasClass('hoverables');
-	console.log(camWidth+" , "+divWidth);
-		if(editMode == false && enabled == true && suppress == false){	
-				hoverTimeout = setTimeout(function() {						
-					$(hoverImg).width(camWidth);
-					$(hoverImg).height(camHeight);
-					hoverImg.src = camSrc;
-					hoverImgLink.href = camSrc;
-					hoverImgLink.target = '_blank';
-					hoverImgLink.appendChild(hoverImg);
-					console.log(hoverImg);
-					$('#'+camID).append(hoverImgLink);
-					$('#'+camID).addClass('focusedCam');
-					if (isWebkit) {
-						hoverImg.className = 'webKitCam';
-						hoverImgLink.id = hoverImgID;
-						var top = ''+$('#'+camID).css('top');
-						var left = ''+$('#'+camID).css('left');
-						$('#'+hoverImgID).css('position','absolute');
-						$('#'+hoverImgID).css('left','50% ');
-						$('#'+hoverImgID).css('top','50%');
-						top = '-'+$('#'+camID).css('top');
-						left= '-'+$('#'+camID).css('left');
-						$('#'+hoverImgID).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
-						console.log(top);
-
-					}
-					else{
-						hoverImg.className = 'expandedCam';
-					}	
-				}, timeOut);
-			}
-		}, function () {
-			if(editMode == false){	
-				clearTimeout(hoverTimeout);
-				$(hoverImg).remove();
-				$('.imgCamContainer').removeClass('focusedCam');
-			}
-		}
-
-	);	
-		//end of cam hoverable event 	
-}
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
@@ -978,55 +916,55 @@ function createImage(){
 
 	cell_arr.push(imgBlock);
 	//allows images to be hoverable outside of edit function
-			var hoverTime;
-			var hoverImage = document.createElement('img');
-			$('.imgBlockContainer').hover(function(){
-				var imgID = $(this).attr('id');	
-				var imgWidth = $('#'+imgID).find('img').naturalWidth;
-				var imgHeight = $('#'+imgID).find('img').naturalHeight;
-				var imgSrc = $('#'+imgID).find('img').attr('src');
-				var isWebkit = 'WebkitAppearance' in document.documentElement.style
-				var hoverImgID = imgID+'hover';
-				var enabled = $('#'+imgID).hasClass('hoverables');
-				var timeOut = 1000;
-				timeOut = parseInt($('#'+imgID).find('img').attr('alt'), 10)*1000;
-					if(editMode == false && enabled == true){	
-						console.log(imgSrc);
-							hoverTime = setTimeout(function() {
-								$(hoverImage).width(imgWidth);
-								$(hoverImage).height(imgHeight);
-								hoverImage.src = imgSrc;
-								console.log(hoverImage);
-								$('#'+imgID).append(hoverImage);
-								$('#'+imgID).addClass('focusedCam');
-								if (isWebkit) {
-									hoverImage.className = 'webKitCam';
-									hoverImage.id = hoverImgID;
-									var top = ''+$('#'+camID).css('top');
-									var left = ''+$('#'+camID).css('left');
-									$('#'+hoverImgID).css('left','50% ');
-									$('#'+hoverImgID).css('top','50%');
-									top = '-'+$('#'+camID).css('top');
-									left= '-'+$('#'+camID).css('left');
-									$('#'+hoverImgID).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
-									console.log(top);
-									
-								}
-								else{
-									hoverImage.className = 'expandedCam';
-								}	
-							}, timeOut);
+	var hoverTime;
+	var hoverImage = document.createElement('img');
+	$('.imgBlockContainer').hover(function(){
+		var imgID = $(this).attr('id');	
+		var imgWidth = $('#'+imgID).find('img').naturalWidth;
+		var imgHeight = $('#'+imgID).find('img').naturalHeight;
+		var imgSrc = $('#'+imgID).find('img').attr('src');
+		var isWebkit = 'WebkitAppearance' in document.documentElement.style
+		var hoverImgID = imgID+'hover';
+		var enabled = $('#'+imgID).hasClass('hoverables');
+		var timeOut = 1000;
+		timeOut = parseInt($('#'+imgID).find('img').attr('alt'), 10)*1000;
+			if(editMode == false && enabled == true){	
+				console.log(imgSrc);
+					hoverTime = setTimeout(function() {
+						$(hoverImage).width(imgWidth);
+						$(hoverImage).height(imgHeight);
+						hoverImage.src = imgSrc;
+						console.log(hoverImage);
+						$('#'+imgID).append(hoverImage);
+						$('#'+imgID).addClass('focusedCam');
+						if (isWebkit) {
+							hoverImage.className = 'webKitCam';
+							hoverImage.id = hoverImgID;
+							var top = ''+$('#'+camID).css('top');
+							var left = ''+$('#'+camID).css('left');
+							$('#'+hoverImgID).css('left','50% ');
+							$('#'+hoverImgID).css('top','50%');
+							top = '-'+$('#'+camID).css('top');
+							left= '-'+$('#'+camID).css('left');
+							$('#'+hoverImgID).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
+							console.log(top);
+
 						}
-					}, function () {
-						if(editMode == false){	
-							clearTimeout(hoverTime);
-							$(hoverImage).remove();
-							$('.imgBlockContainer').removeClass('focusedCam');
-						}
-					}
-			
-			);	
-		//end of hoverable event 	
+						else{
+							hoverImage.className = 'expandedCam';
+						}	
+					}, timeOut);
+				}
+			}, function () {
+				if(editMode == false){	
+					clearTimeout(hoverTime);
+					$(hoverImage).remove();
+					$('.imgBlockContainer').removeClass('focusedCam');
+				}
+			}
+
+	);	
+//end of hoverable event 	
 }
 function refreshTree(newData){
 	var lastk = "#";
@@ -1743,14 +1681,6 @@ DATA CELLS CASE
 				//$('#'+moduleContainer).css('z-index', ui.value ); 
 			}
 		});
-	/*if($("#"+selectedModule).hasClass('hide')){
-		$('#hideModule').attr('onclick', "showModule('"+ selectedModule +"')");
-		$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');
-	}
-	else{
-		$('#hideModule').attr('onclick', "hideModule('"+ selectedModule +"')");
-		$('#hideModule').html('<i class="fa fa-eye-slash fa-2x"></i> Hide Selected');
-	}*/
 };
 function edit(handler) {
 	editMode = true;
