@@ -10,9 +10,6 @@ var camTime = 0; //incremental variable that keeps track of time since last came
 var id_arr = [];
 var path_arr = [];
 var cell_arr = [];
-var savedStates = []; //set of saved table states in the format of a multi Dimensional array consisting of coordinates of each cell
-var textBlocks = []; //array to keep track of ids of generated text blocks
-var imgBlocks = []; //array to keep track of ids of generated images
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
 var ageInterval;
 var staticRegexPeriod = /\./g; //global declaration to reduce overhead
@@ -492,8 +489,6 @@ function data_update(data) {
 					}	
 				});
 			});
-			//makes everything draggable
-			//initJqueryUI();
 			$(".top-container").droppable({
         		accept: function(d) { 
 					if(d.hasClass("jstree-leaf")){ 
@@ -1625,7 +1620,6 @@ function captureState(){
 	var saveName = $('#saveAs').val().replace(' ','%20');
 
 	var jsonString = JSON.stringify(cell_arr);
-	//savedStates.push(jsonString);
 	var configObject = JSON.parse(jsonString);
 	
 	data_object.ValueSet(function(rsp){

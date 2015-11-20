@@ -514,10 +514,8 @@ pageCam.prototype.loadHtml = function(){
 		camObj.setDrag();
 		camObj.setResize();
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
-		if(camObj.cropped){
-			$('#'+camObj.parentId).draggable({disabled:true});
-			$('#'+camObj.parentId).resizable({disabled:true});
-		}
+		$('#'+camObj.parentId).draggable({disabled:true});
+		$('#'+camObj.parentId).resizable({disabled:true});
 	});
 	$('#preload_'+camId).attr('src', this.src);
 
