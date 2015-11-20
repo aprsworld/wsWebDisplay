@@ -133,7 +133,27 @@ pageElement.prototype = {
 		});
 	}
 }
+/***********************************************************************************
+* DATA CELL OBJECT
+************************************************************************************/
+var pageSettings = function() {
+	this.setType('pageSettings');
+	this.backgroundColor;
+	this.title;
+}
+extend(pageSettings, pageElement);
 
+pageSettings.prototype.backgroundColorChange = function(color){
+	//stub
+}
+
+pageSettings.protoype.setPageTitle = function(title){
+	//stub
+}
+
+pageSettings.prototype.setOpactiy = function(event, ui){
+	//stub
+}
 /***********************************************************************************
 * DATA CELL OBJECT
 ************************************************************************************/
