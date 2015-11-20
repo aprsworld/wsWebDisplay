@@ -830,35 +830,7 @@ function data_update(data) {
 						cell_arr.push(tree_item);
 						console.log(tree_item);
 						console.log(cell_arr);
-							//$('.top-container').append('<div title="'+tooltip+'" class="tr draggable" id="' + cellCount + '"><div class="td myTableID"> ID: <span>' + title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + title + '</p></div><div class="td myTableValue" id="' + new_id + '"><p>Loading...</p><span class="path">'+ path +'</span><span class="label"> '+ units +'</span></div></div>');
 							tree_item.createHtml(cellCount);
-							$(".draggable").draggable({ //makes our data cells draggable
-								start: function(event, ui) {
-									//$(this).addClass('draggable_focus_in');
-									/*$('.controls').animate({
-										width: '10px'
-									},100);
-									$('.editWindow').animate({
-										width: '0px',
-										margin: '0',
-										padding: '0'
-									},50);*/
-									/*$('.controlRow').hide();
-									$('.controls h2').hide();
-									var posLeft = ui.position.left;
-									var posTop = ui.position.top;
-									var posSpan = document.createElement("SPAN"); 
-									var posDiv = document.createElement("DIV");
-									posDiv.id = 'positionDiv';
-									$(this).append(posDiv);
-									$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
-									posSpan.textContent = "("+posLeft+", "+posTop+")";
-									posSpan.id = 'positionSpan';			
-									$('#positionDiv').append(posSpan);*/
-
-								}
-						});
-							$(".draggable").draggable( "option", "disabled", false )
 							$('#'+tree_item.parentId).css('position', 'absolute');
 							$('#'+tree_item.parentId).css('top',pageY);
 							$('#'+tree_item.parentId).css('left',pageX);
@@ -996,51 +968,6 @@ function createImage(){
 	imgBlock.createHtml(index);
 
 	cell_arr.push(imgBlock);
-
-	if(imgURL != ""){
-		//$('#content').append('<div id=img'+index+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+index+')" id=img'+index+' alt=img'+index+' src="images/insert_image.svg"></img></div>');
-		/*$(".imgBlockContainer").draggable({
-			grid: [1, 1],
-			snap: true,
-			snapTolerance: 10,
-			start: function(event, ui) {
-			$(this).addClass('draggable_focus_in');
-				$('.controls').animate({
-					width: '10px'
-				},100);
-				$('.editWindow').animate({
-					width: '0px',
-					margin: '0',
-					padding: '0'
-				},50);
-				$('.controlRow').hide();
-				$('.controls h2').hide();
-			},
-		stop: function(event, ui) {
-			$(this).removeClass('draggable_focus_in');
-			$('.controls').animate({
-				width: '250px'
-			},200);
-			$('.editWindow').animate({
-				width: '280px',
-				padding: '20px'
-			},200);
-			$('.controlRow').show();
-			$('.controls h2').show();
-			imgBlock.onChangeStyle();
-		}
-		});
-		$("#img"+index+"").resizable({ 
-					disabled: false,
-					minHeight: 70,
-					minWidth: 150,
-					grid: [1, 1],
-					aspectRatio: true,
-					stop: function(event, ui){
-						imgBlock.onChangeStyle();	
-					}
-		});	*/
-	}
 	//allows images to be hoverable outside of edit function
 			var hoverTime;
 			var hoverImage = document.createElement('img');

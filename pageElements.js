@@ -470,9 +470,18 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 }
 
 pageCam.prototype.loadHtml = function(){
-	$('#content').append('<div title="'+this.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+this.parentId+' style="background-image:url('+this.path+')"><img alt="1" style="visibility:hidden;" src="'+this.path+'"></div>');
-	this.setDrag();
-	this.setResize();
+	console.log(this.style);
+	var camId = this.fullId;
+	var camObj = this;
+	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
+	$('#preload_'+camId).load(function() {
+		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src="'+camObj.src+'"></div>');
+		$('#'+camObj.parentId).attr('style', camObj.style);
+		camObj.setDrag();
+		camObj.setResize();
+	});
+	$('#preload_'+camId).attr('src', this.src);
+
 }
 /***********************************************************************************
 * IMG BLOCK OBJECT
