@@ -153,6 +153,7 @@ pageSettings.prototype.backgroundColorChange = function(color){
 }
 
 pageSettings.prototype.setPageTitle = function(title){
+	this.title = title;
 	document.title = title;
 }
 /***********************************************************************************

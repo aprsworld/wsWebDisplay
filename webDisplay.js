@@ -736,8 +736,11 @@ function data_update(data) {
 		var objId = 'pageSettings';	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var thisObj = cell_arr[elementPos];
-		if(thisObj == undefined){
+		console.log(elementPos);
+		
+		if(elementPos == -1){
 			thisObj = new pageSettings();
+			thisObj.setPageTitle('wsWebDisplay');
 			cell_arr.push(thisObj);
 			console.log(thisObj);
 		}
@@ -1702,7 +1705,9 @@ function loadState(jsonString){
 			console.log(configObject[k]);
 			configObject[k].__proto__ = settings.__proto__;
 			configObject[k].backgroundColorChange(configObject[k].backgroundColor);
-
+			configObject[k].setPageTitle(configObject[k].title);
+			cell_arr.push(configObject[k]);
+			console.log(cell_arr);
 		}
 		if(configObject[k].elementType == 'pageCell'){
 			var cell = new pageCell();
