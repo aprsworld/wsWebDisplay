@@ -310,8 +310,8 @@ pageCell.prototype.setResize = function(){
 		}
 	});
 }
-pageCell.prototype.createHtml = function(cellCount){
-	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+pageCell.prototype.createHtml = function(cellCount, currentData){
+	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+currentData+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
 	this.count = cellCount;

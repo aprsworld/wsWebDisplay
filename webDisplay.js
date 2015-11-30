@@ -388,6 +388,8 @@ function data_update(data) {
 						var id = $(this).attr('id');
 						var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
 						$(this).addClass(findClass);
+						
+
 					});		
 				})
 			//sets up the drag and drop for the tree
@@ -396,6 +398,8 @@ function data_update(data) {
 					helper: function() {
 						var helper = $(this).clone(); 
 						helper.addClass("ui-dragger-helperCell");
+						helper.removeClass('jstree-node');
+						helper.removeClass('jstree-closed');
 						helper.html('');
 						return helper;
 					},
@@ -421,6 +425,29 @@ function data_update(data) {
 						var title = $('#stationTree').jstree(true).get_node(id).text;
 						$(ui.helper).html('<div class="tr draggable ui-dragger-helperCell" id="helperTr"><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>'+path+'</p><span class="path"></span><span class="label"></span></div></div>');
 						console.log(ui.helper.html());
+						$('#rulerBox, #rulerBox2, #rulerBox3').show();
+					},
+					drag: function (event, ui) {
+						var width = ui.position.left+'px';	
+						var height = ui.position.top+'px';
+						$('#rulerBox').css({
+							height: height,
+							width: width
+						});
+						$('#rulerBox2').css({
+							left: width,
+							height: height,
+							width: "-moz-calc(100% - "+width+")", /* Firefox */
+ 							width: "-webkit-calc(100% - "+width+")", /* Chrome, Safari */
+ 							width: "calc(100% - "+width+")", /* IE9+ and future browsers */
+						});
+						$('#rulerBox3').css({
+							top: height,
+							width: width,
+							height: "-moz-calc(100% - "+height+")", /* Firefox */
+ 							height: "-webkit-calc(100% - "+height+")", /* Chrome, Safari */
+ 							height: "calc(100% - "+height+")", /* IE9+ and future browsers */
+						});
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -432,6 +459,7 @@ function data_update(data) {
 						},200);
 						$('.controlRow').show();
 						$('.controls h2').show();
+						$('#rulerBox, #rulerBox2, #rulerBox3').hide();
 					}
 				});
 				$( ".draggableCamNode" ).draggable({
@@ -645,7 +673,8 @@ function data_update(data) {
 						cell_arr.push(tree_item);
 						console.log(tree_item);
 						console.log(cell_arr);
-							tree_item.createHtml(cellCount);
+							var updatedPath = ref(incomingData, path);
+							tree_item.createHtml(cellCount, updatedPath);
 							$('#'+tree_item.parentId).css('position', 'absolute');
 							$('#'+tree_item.parentId).css('top',pageY);
 							$('#'+tree_item.parentId).css('left',pageX);

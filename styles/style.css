@@ -68,7 +68,28 @@ select{
 	color: #0550a5;	
 	font-size: 28px;	
 	float: left;
-
+}
+#rulerBox{
+	display:none;
+	position: absolute;
+	top: 0;
+	width: 0;
+	border-right: 1px dotted white;
+	border-bottom: 1px dotted white;
+}
+#rulerBox2{
+	display:none;
+	position: absolute;
+	top: 0;
+	width: 0;
+	border-bottom: 1px dotted white;
+}
+#rulerBox3{
+	display:none;
+	position: absolute;
+	top: 0;
+	width: 0;
+	border-right: 1px dotted white;
 }
 #preload{
 	display:none;
@@ -346,11 +367,10 @@ div.logo_container{
 }
 
 .container .myTableValue{
-	width: 65%;
 	float: left;
 	height: auto;
 	padding-top: 2px;
-	width: 100%;
+	width: 100% !important;
 	color: inherit !important;
 	font-weight: 700;
 	font-size: inherit;
@@ -359,6 +379,7 @@ div.logo_container{
 	margin:0;
 	padding: 0;
 	display: inline-block;
+	width: auto !important;
 }
 .container .myTableValue .path{
 	display:none;	
@@ -771,7 +792,6 @@ ul.jstree-children{
 }
 .ui-dragger-helperCell{
 	padding: 1px;
-	font-size: 1px;
 	width: auto !important;
 	height: auto !important;
 	display: inline-block;
@@ -805,7 +825,7 @@ ul.jstree-children{
 	color: white;
 }
 .ui-dragger-helperCell .myTableTitle{
-	width: 100%;
+	width: 100% !important;
 	float: left;
 	clear: both;
 	height:auto;
@@ -818,6 +838,24 @@ ul.jstree-children{
 .ui-dragger-helperCell .myTableTitle p{
 	margin: 0;
 	padding: 0;
+}
+.ui-dragger-helperCell .myTableValue{
+	float: left;
+	height: auto;
+	padding-top: 2px;
+	width: 100% !important;
+	color: inherit !important;
+	font-weight: 700;
+	font-size: inherit;
+}
+.ui-dragger-helperCell .myTableValue p{
+	margin:0;
+	padding: 0;
+	display: inline-block;
+	width: auto !important;
+}
+.ui-dragger-helperCell .myTableValue .path{
+	display:none;	
 }
 
 @media (max-width: 400px) {
