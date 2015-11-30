@@ -251,6 +251,9 @@ pageCell.prototype.setLabel = function(text){
 	$('#'+containerId).children('.label').text(text);
 	this.label = text;
 }
+pageCell.prototype.setLabelOverride = function(value){
+	this.labelOverride = value;
+}
 pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	var containerId = this.fullId;	
 	opacity = opacity.toString();

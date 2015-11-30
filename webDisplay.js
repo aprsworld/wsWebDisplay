@@ -307,12 +307,31 @@ function dynamicUpdate(data) {
 				else{
 					value = result.value;
 				}
-				label = result.label;
-				$('div#div_' + id + '').children('.label').html(label);
+				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
+					label = objectFound.label;
+					$('div#div_' + id + '').children('.label').html(label);
+				}
+				else{
+					label = result.label;
+					objectFound.setLabel(label);
+					$('div#div_' + id + '').children('.label').html(label);
+				}
+				
+			}
+			else if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits'))){
+				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
+					label = objectFound.label;
+					$('div#div_' + id + '').children('.label').html(label);
+				}
+				else{
+					label = objectFound.units;
+					$('div#div_' + id + '').children('.label').html(label);
+				}
 			}
 			else if(!isNaN(value)){
 				value = round(parseFloat(value), objectFound.precision);
 			}
+			
 			objectFound.value = 0;
 			$('div#div_' + objectFound.id + '').children('p').text(value);
 		}
@@ -1525,8 +1544,16 @@ DATA CELLS CASE
 		$( document ).off( "keyup", "input.labelChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.labelChange" , function() {	
 			//label.text(htmlEntities(labelChange.val()));
-			var text = htmlEntities(labelChange.val());
-			objectFound.setLabel(text);
+			console.log(labelChange);
+			if(labelChange.val() == ''){
+				objectFound.setLabelOverride(false);
+				console.log(objectFound.labelOverride);
+			}
+			else{
+				var text = htmlEntities(labelChange.val());
+				objectFound.setLabel(text);
+				objectFound.setLabelOverride(true);
+			}
 		});
 		// delete event handler
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
