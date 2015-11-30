@@ -339,6 +339,7 @@ var pageCam = function(){
 	this.style;
 	this.src;
 	this.containerId;
+	this.timeOut;
 }
 extend(pageCam,pageElement);
 
@@ -347,7 +348,6 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 	var camObj, camId, radiobtn ;
 	camObj = this;
 	camId = this.containerId;
-	console.log(camObj);
 	if(boolHover == false){
 		camObj.hoverable = false;
 		$( '#'+camId ).off("mouseenter mouseleave");
@@ -358,11 +358,11 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		var suppressed, camId, camWidth, divWidth, camHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
 		camObj.hoverable = true;
 		timeOut = hoverTime*1000;
-
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
 		$('#hoverTimeRow, #suppressHoverable').show();		
 		$('#'+camId).hover(function(){
+
 			var camSrc = camObj.src;
 			console.log(camObj);
 			suppressed = false;
@@ -379,8 +379,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 
 			if(editMode == false && suppressed == false){
 			
-			hoverTimeOut = setTimeout(function() {	
-
+			camObj.timeOut = setTimeout(function() {	
+				console.log('time');
 				$(hoverImg).width(camWidth);
 				$(hoverImg).height(camHeight);
 				hoverImg.src = camSrc;
@@ -412,7 +412,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			} //end if(editMode == false && suppressed == false)
 		}, function () {
 			if(editMode == false){	
-				clearTimeout(hoverTimeOut);
+				clearTimeout(camObj.timeOut);
 				$(hoverImg).remove();
 				$('.imgCamContainer').removeClass('focusedCam');
 			}

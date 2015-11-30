@@ -393,7 +393,12 @@ function data_update(data) {
 			//sets up the drag and drop for the tree
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				$(".jstree-leaf, .dataDraggable").draggable({
-					helper: "clone",
+					helper: function() {
+						var helper = $(this).clone(); 
+						helper.addClass("ui-dragger-helperCell");
+						helper.html('');
+						return helper;
+					},
 					grid: [1,1],
 					delay: 150,
 					opacity: 0.75,
@@ -409,13 +414,13 @@ function data_update(data) {
 						$('.controlRow').hide();
 						$('.controls h2').hide();
 						//below code allows preview of data cell to show up when dragging
-						var id = ui.helper.context.id;
-						$(ui.helper).addClass("ui-draggable-helperCell");
-						$(ui.helper).html('');
+						var id = ui.helper.context.id;	
 						var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+						path = ref(incomingData, path);
 						console.log($('#stationTree').jstree(true).get_node(id).original.obj);
 						var title = $('#stationTree').jstree(true).get_node(id).text;
-						$(ui.helper).append('<div class="tr draggable" id="helperTr"><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>Preview</p><span class="path"></span><span class="label"></span></div></div>');						
+						$(ui.helper).html('<div class="tr draggable ui-dragger-helperCell" id="helperTr"><div class="td myTableID"> ID: <span></span> </div><div class="td myTableTitle"><p class="titleText">'+title+'</p></div><div class="td myTableValue" id=""><p>'+path+'</p><span class="path"></span><span class="label"></span></div></div>');
+						console.log(ui.helper.html());
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({

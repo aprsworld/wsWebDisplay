@@ -386,6 +386,9 @@ div.logo_container{
 	color: #efefef;	
 	background-color: rgba(0,0,0,0.01);
 }
+.titleText{
+	display: inline-block;	
+}
 .draggable_focus_in{
 	box-shadow: 0px 0px 20px #0550a5;
 }
@@ -420,13 +423,13 @@ div.logo_container{
 	text-align: center;
 	padding: 7px;
 }
-.container .th{
+/*.container .th{
 	padding: 5px;
 	width: 20%;
 	text-align: center;
 	background-color: white;
 	background-image: none !important;
-}
+}*/
 .container .td{
 	color: #333333;
 	text-align: center;
@@ -763,20 +766,60 @@ ul.jstree-children{
 	box-shadow: 0px 0px 10px black;
     background-repeat: no-repeat;
 	background-size: contain;
-	height: 500px;
-	width: 500px;
+	height: auto;
+	width: auto;
 }
 .ui-dragger-helperCell{
 	padding: 1px;
-	font-size: 12px;
-	width: auto;
-	height: auto;
+	font-size: 1px;
+	width: auto !important;
+	height: auto !important;
 	display: inline-block;
 	border-radius: 5px;
+	font-size: 14px;
 	z-index: 2;
 	cursor: pointer;
 	background-color: rgba(0,0,0,0.01);	
+	background-image: none !important;
 }
+.ui-dragger-helperCell::after{
+	content: none !important;	
+	border: 0 !important;
+	background: none !important;
+}
+.ui-dragger-helperCell::before{
+	content: none !important;	
+	border: 0 !important;
+	background: none !important;	
+}
+.ui-dragger-helperCell .tr td:first-child{
+	display: none;	
+}
+.ui-dragger-helperCell .myTableID{
+	width: 10%;
+	display: none;
+	float: left;
+	height: 50px;
+}
+.ui-dragger-helperCell .myTableID span{
+	color: white;
+}
+.ui-dragger-helperCell .myTableTitle{
+	width: 100%;
+	float: left;
+	clear: both;
+	height:auto;
+	font-size: inherit;
+	font-weight: bold;
+	color: inherit !important;
+	background-color: rgba(0,0,0,.35);
+	border-radius: .25em;
+}
+.ui-dragger-helperCell .myTableTitle p{
+	margin: 0;
+	padding: 0;
+}
+
 @media (max-width: 400px) {
 	img{
 		width: 320px !important;
