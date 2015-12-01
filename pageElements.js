@@ -63,15 +63,24 @@ pageElement.prototype = {
 			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');	
 		}
 	},
-	setDrag: function() {
+	setDrag: function(gridProps) {
 		console.log(this.parentId);
 		var thisObj = this;
+		if($.isEmptyObject(gridProps)){
+			console.log('empty');
+			gridProps = {
+				"grid":[1,1],
+				"snap":"true",
+				"snapTolerance":1
+			}
+		}
 		$('#'+this.parentId).draggable({
-			grid: [1,1], snap: true, snapTolerance: 10, cursor: "move", disabled: false,
+			grid: gridProps.grid, snap: gridProps.snap, snapTolerance: gridProps.snapTolerance, cursor: "move", disabled: false,
 			start: function(event, ui){
 				$('.controls').animate({width: '10px'},100);
 				$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
 				$('.controlRow, .controls h2').hide();
+				
 				var posLeft = ui.position.left;
 				var posTop = ui.position.top;
 				var posSpan = document.createElement("SPAN"); 
@@ -82,11 +91,33 @@ pageElement.prototype = {
 				posSpan.textContent = "("+posLeft+", "+posTop+")";
 				posSpan.id = 'positionSpan';			
 				$('#positionDiv').append(posSpan);
+				$('#rulerBox, #rulerBox2, #rulerBox3').show();
 			},
 			drag: function(event, ui){
 				var posLeft = ui.position.left;	
 				var posTop = ui.position.top;
 				$('#positionSpan').text("("+posLeft+", "+posTop+")");
+				var width = posLeft+'px';	
+				var height = posTop+'px';
+				$('#rulerBox').css({
+					height: height,
+					width: width
+				});
+				$('#rulerBox2').css({
+					left: width,
+					height: height,
+					width: "-moz-calc(100% - "+width+")", /* Firefox */
+					width: "-webkit-calc(100% - "+width+")", /* Chrome, Safari */
+					width: "calc(100% - "+width+")", /* IE9+ and future browsers */
+				});
+				$('#rulerBox3').css({
+					top: height,
+					width: width,
+					height: "-moz-calc(100% - "+height+")", /* Firefox */
+					height: "-webkit-calc(100% - "+height+")", /* Chrome, Safari */
+					height: "calc(100% - "+height+")", /* IE9+ and future browsers */
+				});
+
 			},
 			stop: function(event, ui){
 				$('.controls').animate({width: '250px'},200);
@@ -94,6 +125,8 @@ pageElement.prototype = {
 				$('.controlRow, .controls h2').show();
 				$('#positionDiv').remove();
 				thisObj.onChangeStyle();
+				$('#rulerBox, #rulerBox2, #rulerBox3').hide();
+
 			}
 		});
 	},
@@ -141,6 +174,7 @@ var pageSettings = function() {
 	this.backgroundColor;
 	this.title;
 	this.id = 'pageSettings';
+	this.gridSize = true;
 }
 extend(pageSettings, pageElement);
 
@@ -155,6 +189,54 @@ pageSettings.prototype.backgroundColorChange = function(color){
 pageSettings.prototype.setPageTitle = function(title){
 	this.title = title;
 	document.title = title;
+}
+
+pageSettings.prototype.createGrid = function createGrid(size) {
+    var i,
+    sel = $('.top-container'),
+        height = sel.height(),
+        width = sel.width(),
+        ratioW = Math.floor(width / size),
+        ratioH = Math.floor(height / size);
+
+    for (i = 0; i <= ratioW; i++) { // vertical grid lines
+      $('<div />').css({
+            'top': 0,
+            'left': i * size,
+            'width': 1,
+            'height': height
+      })
+        .addClass('gridlines')
+        .appendTo(sel);
+    }
+
+    for (i = 0; i <= ratioH; i++) { // horizontal grid lines
+      $('<div />').css({
+            'top': i * size,
+            'left': 0,
+            'width': width,
+            'height': 1
+      })
+        .addClass('gridlines')
+        .appendTo(sel);
+    }
+	var snapTolerance = size*.45;
+	var gridProps = {
+		"grid":"false",
+		"snap":".gridlines",
+		"snapTolerance":snapTolerance,	
+	}
+	
+	for(var k in cell_arr){
+		k.setDrag(gridProps);	
+	}
+	
+	this.gridSize = size;
+}
+
+pageSettings.prototype.updateGrid = function updateGrid(size) {
+	$('.gridlines').remove();
+	createGrid(size);
 }
 /***********************************************************************************
 * DATA CELL OBJECT

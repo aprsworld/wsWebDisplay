@@ -79,6 +79,7 @@ function data_error(errors, delay) {
     $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 }
 
+
 //structure for jsonItem used in iterateStations
 function treeitem(){
 	this.id;
@@ -382,7 +383,7 @@ function data_update(data) {
 	var incomingData = data;
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
-    	started = true; //sets our boolean to true so the above only executes once
+		started = true; //sets our boolean to true so the above only executes once
         $(".controls").resizable({ //makes our controls div resizable and draggable
             minHeight: 70,
 			maxWidth: 250	
@@ -735,14 +736,15 @@ function data_update(data) {
         });
 		var objId = 'pageSettings';	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
-		var thisObj = cell_arr[elementPos];
+		var pageSettingsObj = cell_arr[elementPos];
 		console.log(elementPos);
 		
 		if(elementPos == -1){
-			thisObj = new pageSettings();
-			thisObj.setPageTitle('wsWebDisplay');
-			cell_arr.push(thisObj);
-			console.log(thisObj);
+			pageSettingsObj = new pageSettings();
+			pageSettingsObj.setPageTitle('wsWebDisplay');
+			pageSettingsObj.createGrid(1);
+			cell_arr.push(pageSettingsObj);
+			console.log(pageSettingsObj);
 		}
 	}
 	var x = $(document).ready(function() {

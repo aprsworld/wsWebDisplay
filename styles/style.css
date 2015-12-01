@@ -74,22 +74,28 @@ select{
 	position: absolute;
 	top: 0;
 	width: 0;
+	background-color: transparent;
 	border-right: 1px dotted white;
 	border-bottom: 1px dotted white;
+	z-index: 100;
 }
 #rulerBox2{
 	display:none;
 	position: absolute;
 	top: 0;
 	width: 0;
+	background-color: transparent;
 	border-bottom: 1px dotted white;
+	z-index: 100;
 }
 #rulerBox3{
 	display:none;
 	position: absolute;
 	top: 0;
 	width: 0;
+	background-color: transparent;
 	border-right: 1px dotted white;
+	z-index: 100;
 }
 #preload{
 	display:none;
@@ -415,7 +421,7 @@ div.logo_container{
 }
 #positionDiv{
 	position: absolute;
-	top: -19;
+	top: -16;
 	left: 0;
 	color: #ddd !important;
 	font-weight: 900;
@@ -857,7 +863,11 @@ ul.jstree-children{
 .ui-dragger-helperCell .myTableValue .path{
 	display:none;	
 }
-
+.gridlines {
+    display: none;
+    position:absolute;
+    background-color:#444;
+}
 @media (max-width: 400px) {
 	img{
 		width: 320px !important;
