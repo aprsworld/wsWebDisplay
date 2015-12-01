@@ -105,7 +105,8 @@ select{
 }
 .top-container{
 	clear: both;
-	height: 100vh;
+	height: 500vh;
+	width: 500vh;
 	background-color: transparent;
 	z-index: 0;
 }
@@ -421,8 +422,8 @@ div.logo_container{
 }
 #positionDiv{
 	position: absolute;
-	top: -16;
-	left: 0;
+	top: -17;
+	left: -11;
 	color: #ddd !important;
 	font-weight: 900;
 	text-align: center;
@@ -438,7 +439,8 @@ div.logo_container{
 #positionDiv i{
 	display: inline-block;
 	margin-left: 2px;
-	margin-bottom: -2px
+	margin-bottom: -4px;
+	margin-top: 4px;
 }
 #resizeSpan{
 	display: inline;
@@ -450,13 +452,6 @@ div.logo_container{
 	text-align: center;
 	padding: 7px;
 }
-/*.container .th{
-	padding: 5px;
-	width: 20%;
-	text-align: center;
-	background-color: white;
-	background-image: none !important;
-}*/
 .container .td{
 	color: #333333;
 	text-align: center;
@@ -783,6 +778,7 @@ div.logo_container{
 }
 
 /*Plugin fixes*/
+.fa-rotate-320 {-webkit-transform:rotate(320deg); -moz-transform:rotate(320deg); -ms-transform:rotate(320deg); -o-transform:rotate(320deg); transform:rotate(320deg);} 
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }

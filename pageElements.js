@@ -17,6 +17,11 @@ var pageElement = function(){
 pageElement.prototype = {
 	//sets type of element to be a data cell, image block, textblock, camera, etc.
 	hidden: false,
+	gridProps: {
+		"grid":[1,1],
+		"snap":"true",
+		"snapTolerance":.4
+	},
 	setStyle: function(styleList) {
 		this.style = styleList;
 		console.log(this.style);
@@ -63,19 +68,12 @@ pageElement.prototype = {
 			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');	
 		}
 	},
-	setDrag: function(gridProps) {
+	setDrag: function() {
 		console.log(this.parentId);
 		var thisObj = this;
-		if($.isEmptyObject(gridProps)){
-			console.log('empty');
-			gridProps = {
-				"grid":[1,1],
-				"snap":"true",
-				"snapTolerance":1
-			}
-		}
+		
 		$('#'+this.parentId).draggable({
-			grid: gridProps.grid, snap: gridProps.snap, snapTolerance: gridProps.snapTolerance, cursor: "move", disabled: false,
+			cursor: "move", disabled: false,
 			start: function(event, ui){
 				$('.controls').animate({width: '10px'},100);
 				$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
@@ -87,18 +85,26 @@ pageElement.prototype = {
 				var posDiv = document.createElement("DIV");
 				posDiv.id = 'positionDiv';
 				$(this).append(posDiv);
-				$('#positionDiv').html('<i class="fa fa-long-arrow-down fa-rotate-45"></i>');
 				posSpan.textContent = "("+posLeft+", "+posTop+")";
-				posSpan.id = 'positionSpan';			
+				posSpan.id = 'positionSpan';
+				$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
 				$('#positionDiv').append(posSpan);
 				$('#rulerBox, #rulerBox2, #rulerBox3').show();
 			},
 			drag: function(event, ui){
-				var posLeft = ui.position.left;	
-				var posTop = ui.position.top;
+				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
+				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
+				ui.position.top = posTop;
+				ui.position.left = posLeft;
+				
 				$('#positionSpan').text("("+posLeft+", "+posTop+")");
 				var width = posLeft+'px';	
 				var height = posTop+'px';
+				$(this).css({
+					'top': posTop,
+					'left': posLeft
+				});
+				
 				$('#rulerBox').css({
 					height: height,
 					width: width
@@ -124,6 +130,14 @@ pageElement.prototype = {
 				$('.editWindow').animate({width: '280px',padding: '20px'},200);
 				$('.controlRow, .controls h2').show();
 				$('#positionDiv').remove();
+				console.log(thisObj.gridProps.grid);
+				var roundedTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
+				var roundedLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
+				console.log(roundedLeft, roundedTop);
+				$(this).css({
+					'top': roundedTop,
+					'left': roundedLeft
+				});
 				thisObj.onChangeStyle();
 				$('#rulerBox, #rulerBox2, #rulerBox3').hide();
 
@@ -220,15 +234,12 @@ pageSettings.prototype.createGrid = function createGrid(size) {
         .addClass('gridlines')
         .appendTo(sel);
     }
-	var snapTolerance = size*.45;
-	var gridProps = {
-		"grid":"false",
+	var snapTolerance = size*.6;
+	pageElement.prototype.gridProps = {
+		"grid":[size/2, size/2],
 		"snap":".gridlines",
 		"snapTolerance":snapTolerance,	
-	}
-	
-	for(var k in cell_arr){
-		k.setDrag(gridProps);	
+		"size":size
 	}
 	
 	this.gridSize = size;
@@ -236,7 +247,8 @@ pageSettings.prototype.createGrid = function createGrid(size) {
 
 pageSettings.prototype.updateGrid = function updateGrid(size) {
 	$('.gridlines').remove();
-	createGrid(size);
+	this.createGrid(size);
+	$('.gridlines').show();
 }
 /***********************************************************************************
 * DATA CELL OBJECT
