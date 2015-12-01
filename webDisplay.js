@@ -1061,15 +1061,17 @@ PAGE EDIT CASE
 		var objectFound = cell_arr[elementPos];
 		var gridSize = objectFound.gridProps.size;
 		var backgroundColor = objectFound.backgroundColor;
-
+		console.log(backgroundColor);
 		
 		$('.gridSelect').val(gridSize);
 		
 		//delegate event handler for color picker
 		$(".backgroundColorChange").off("mouseover.color");
 		$(".backgroundColorChange").on("mouseover.color", function(event, color){
-			objectFound.backgroundColorChange(color);
-			console.log('eh');
+			if(color != undefined){
+				objectFound.backgroundColorChange(color);
+				console.log(color);
+			}
 		});
 		
 		//gridSize toggle event handler
