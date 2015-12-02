@@ -88,6 +88,10 @@ select{
 	border-bottom: 1px dotted white;
 	z-index: 100;
 }
+#rulerBox2 p{
+	position: absolute;
+	
+}
 #rulerBox3{
 	display:none;
 	position: absolute;
@@ -404,6 +408,7 @@ div.logo_container{
 	background-color: white !important;	
 }
 .container .tr{
+	position: absolute;
 	padding: 1px;
 	font-size: 14px;
 	width: auto;
@@ -863,6 +868,16 @@ ul.jstree-children{
     display: none;
     position:absolute;
     background-color:#444;
+}
+.dataDraggable a i, .draggableCamNode a i {
+	background: none !important;
+}
+.dataDraggable a i:hover, .draggableCamNode a i:hover  {
+	color: green !important;
+}
+.dataDraggable a i:before, .draggableCamNode a i:before  {
+	font-family: 'FontAwesome';
+	content: "\f067";
 }
 @media (max-width: 400px) {
 	img{

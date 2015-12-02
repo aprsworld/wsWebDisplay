@@ -377,6 +377,184 @@ function timer(){
 		console.log(convertedLoad+' since page was loaded');	
 	}
 }
+function clickToCreate(item, data, x ,y){
+	var id = $(item).parent().parent().attr('id');
+	var cellCount = cell_arr.length;
+	var obj, new_id;
+	if($('#'+id).hasClass('dataDraggable') || $('#'+id).hasClass('jstree-leaf')){
+		obj = new pageCell();
+		var idArrLen = cell_arr.length;
+		new_id = "div_"+id+"_"+idArrLen;
+		var treeNode = $.jstree.reference('#stationTree').get_node(id);
+		var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+		var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
+		console.log(tooltip);
+		var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
+		var units, title, type, typeUnits;
+		obj["path"] = path;
+		obj["id"] = id+"_"+idArrLen;
+		obj["parentId"] = "cell"+cellCount;
+		obj["containerId"] = new_id;
+		obj["fullId"] = new_id;
+		obj["toolTip"] = tooltip;
+		if(obj["path"] == "timeStamp"){
+			obj["value"] = 0;	
+		}
+		//gets typeUnits if there
+		if($('#stationTree').jstree(true).get_node(id).original.obj.typeUnits){
+			typeUnits = $('#stationTree').jstree(true).get_node(id).original.obj.typeUnits;
+			obj["typeUnits"] = typeUnits;
+		}
+		else{
+			typeUnits = "";
+		}
+		//gets type if there
+		if($('#stationTree').jstree(true).get_node(id).original.obj.type){
+			type = $('#stationTree').jstree(true).get_node(id).original.obj.type;
+			obj["type"] = type;
+		}
+		else{
+			type = "";
+		}
+		//gets units if there
+		if($('#stationTree').jstree(true).get_node(id).original.obj.units){
+			units = $('#stationTree').jstree(true).get_node(id).original.obj.units;
+			obj["units"] = units;
+		}
+		else{
+			units = "";
+		}
+		//gets title if there
+		if($('#stationTree').jstree(true).get_node(id).original.obj.title){
+			title = $('#stationTree').jstree(true).get_node(id).original.obj.title; 
+			obj["title"] = title;
+			var tooltipSplit = path.substring(1).split(staticRegexPeriod);
+			tooltip = '';
+			for(var i =0; i<tooltipSplit.length-2; i++){
+				tooltip = tooltip+tooltipSplit[i]+' >> ';	
+			}
+			tooltip = tooltip+title;
+			obj["toolTip"] = tooltip;
+			console.log(tooltipSplit);
+		}
+		//case for elements with no valid path
+		else{
+			title = $('#'+id).text();
+			obj["title"] = title;
+			if(title == 'Age of Data'){
+				var parentId = $('#stationTree').jstree(true).get_node(id).original.parent;
+				var parentPath =  $('#stationTree').jstree(true).get_node(parentId).original.obj.path;
+				var tooltipSplit = parentPath.substring(1).split(staticRegexPeriod);
+				tooltip = '';
+				for(var i =0; i<tooltipSplit.length; i++){
+					tooltip = tooltip+tooltipSplit[i]+' >> ';	
+				}
+				tooltip = tooltip+title;
+				console.log(tooltip);
+				obj["toolTip"] = tooltip;
+				console.log(tooltipSplit);
+			}
+		}
+		
+		obj["precision"] = 3;
+		path_arr.push(path);
+		id_arr.push(new_id);
+		cell_arr.push(obj);
+		console.log(obj);
+		console.log(cell_arr);
+			var updatedPath = ref(data, path);
+			obj.createHtml(cellCount, updatedPath, x ,y);
+		new_id = obj.parentId;
+	 	positionDiv(obj, new_id);
+		cellCount++;
+	}
+	else if($('#'+id).hasClass('draggableCamNode')){
+		obj = new pageCam();
+		var idArrLen = cell_arr.length;
+		var instance = $('#stationTree').jstree(true);
+		//var id = $(item).attr('id');
+		new_id = "div_"+id+"_pageCam_"+idArrLen;
+		var children = instance.get_node(id).children;
+		var clength = children.length;
+		var i;
+		var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
+		var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
+		console.log('TOOLTIP '+tooltip);
+		obj["path"] = path;
+		obj["containerId"] = new_id;
+		obj["fullId"] = new_id;
+		obj["parentId"] = new_id;
+		obj["id"] = id+"_pageCam_"+idArrLen;
+		obj["toolTip"] = tooltip;
+		console.log(obj);
+		cell_arr.push(obj);
+		var sendPath = ref(data, path);
+		obj.createHtml(cellCount, sendPath, x, y);
+		obj.setHover(true, obj.hoverDelay);
+		console.log($('#'+new_id));
+		positionDiv(obj, new_id);
+		cellCount++;
+	}
+		
+}
+
+function positionDiv(obj, new_id){
+var posTop, posLeft, width, height;
+
+	var posSpan = document.createElement("SPAN"); 
+	var posDiv = document.createElement("DIV");
+	posDiv.id = 'positionDiv';
+	console.log(new_id);
+	$('#rulerBox2').append(posDiv);
+	console.log($('#'+new_id));
+	posSpan.textContent = "("+posLeft+", "+posTop+")";
+	posSpan.id = 'positionSpan';
+	$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
+	$('#positionDiv').append(posSpan);
+	$( document ).one('mousemove', function(e){
+		$('#rulerBox, #rulerBox2, #rulerBox3').show();
+		console.log('eh');
+	});
+	$( document ).on('mousemove', function(e){
+		posTop = (Math.floor(e.pageY / obj.gridProps.size) * obj.gridProps.size);
+		posLeft = (Math.floor(e.pageX / obj.gridProps.size) * obj.gridProps.size);
+		width = posLeft+'px';	
+		height = posTop+'px';
+
+		$('#positionSpan').text("("+posLeft+", "+posTop+")");
+		console.log($('#positionSpan').text());
+		$('#'+new_id).css({
+			'top': posTop,
+			'left': posLeft
+		});
+		$('#positionDiv').css('top', posTop-18);
+		$('#rulerBox').css({
+			height: height,
+			width: width
+		});
+		$('#rulerBox2').css({
+			left: width,
+			height: height,
+			width: "-moz-calc(100% - "+width+")", /* Firefox */
+			width: "-webkit-calc(100% - "+width+")", /* Chrome, Safari */
+			width: "calc(100% - "+width+")", /* IE9+ and future browsers */
+		});
+		$('#rulerBox3').css({
+			top: height,
+			width: width,
+			height: "-moz-calc(100% - "+height+")", /* Firefox */
+			height: "-webkit-calc(100% - "+height+")", /* Chrome, Safari */
+			height: "calc(100% - "+height+")", /* IE9+ and future browsers */
+		});
+	});
+	$( document ).on('mousedown', function(e){
+		console.log('click');
+		$('#rulerBox, #rulerBox2, #rulerBox3').hide();	
+		$('#positionDiv').remove();
+			$( document ).off('mousemove');
+			$( document ).off('mousedown');
+	});	
+}
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
@@ -410,8 +588,16 @@ function data_update(data) {
 						$(this).addClass(findClass);
 						
 
-					});		
+					});
+					$('.jstree-themeicon').click(function(e){
+						var item = this;
+						var pageX = e.pageX;
+						var pageY = e.pageY;
+						clickToCreate(item, incomingData, pageX, pageY)
+					});
+
 				})
+
 			//sets up the drag and drop for the tree
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
 				var objId = 'pageSettings';	
@@ -729,7 +915,7 @@ function data_update(data) {
 						console.log(tree_item);
 						console.log(cell_arr);
 							var updatedPath = ref(incomingData, path);
-							tree_item.createHtml(cellCount, updatedPath);
+							tree_item.createHtml(cellCount, updatedPath, pageX, pageY);
 							$('#'+tree_item.parentId).css('position', 'absolute');
 							$('#'+tree_item.parentId).css('top',pageY);
 							$('#'+tree_item.parentId).css('left',pageX);

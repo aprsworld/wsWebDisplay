@@ -85,6 +85,7 @@ pageElement.prototype = {
 				var posDiv = document.createElement("DIV");
 				posDiv.id = 'positionDiv';
 				$(this).append(posDiv);
+				console.log($(this));
 				posSpan.textContent = "("+posLeft+", "+posTop+")";
 				posSpan.id = 'positionSpan';
 				$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
@@ -408,8 +409,12 @@ pageCell.prototype.setResize = function(){
 		}
 	});
 }
-pageCell.prototype.createHtml = function(cellCount, currentData){
+pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="cell' + cellCount + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+currentData+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+	var cellId = this.parentId;
+	console.log(pageX+", "+ pageY +" HAHAHAHHAHAHAA" +cellId );
+	$('#'+cellId).css('top',pageY);
+	$('#'+cellId).css('left',pageX);
 	this.setDrag();
 	this.setResize();
 	this.count = cellCount;
@@ -467,7 +472,6 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		$( "#"+camId ).hover(function(){
 
 			var camSrc = camObj.src;
-			console.log(camObj);
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
 			camHeight = parseInt(camObj.natHeight);
