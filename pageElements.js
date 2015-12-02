@@ -443,10 +443,14 @@ extend(pageCam,pageElement);
 
 //sets class for hover and sets delay time
 pageCam.prototype.setHover = function(boolHover, hoverTime){
-	var camObj, camId, radiobtn ;
+	var camObj, camId, radiobtn;
 	camObj = this;
-	camId = this.containerId;
+	console.log(this);
+	clearTimeout(camObj.timeOut);	
+	camId = camObj.containerId;
+	console.log(camId);
 	if(boolHover == false){
+		console.log('false');
 		camObj.hoverable = false;
 		$( '#'+camId ).off("mouseenter mouseleave");
 		$('#hoverTimeRow, #suppressHoverable').hide();		
@@ -458,8 +462,9 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		timeOut = hoverTime*1000;
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
-		$('#hoverTimeRow, #suppressHoverable').show();		
-		$('#'+camId).hover(function(){
+		$('#hoverTimeRow, #suppressHoverable').show();	
+		$( "#"+camId  ).unbind("mouseenter mouseleave");
+		$( "#"+camId ).hover(function(){
 
 			var camSrc = camObj.src;
 			console.log(camObj);
@@ -474,10 +479,12 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 
 				suppressed = true;
 			}
-
-			if(editMode == false && suppressed == false){
 			
-			camObj.timeOut = setTimeout(function() {	
+			if(editMode == false && suppressed == false){
+			clearTimeout(camObj.timeOut);	
+				console.log(camObj.timeOut);
+			camObj.timeOut = setTimeout(function() {
+				camObj.test = 'test';
 				console.log('time');
 				$(hoverImg).width(camWidth);
 				$(hoverImg).height(camHeight);

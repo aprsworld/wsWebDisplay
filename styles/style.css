@@ -136,7 +136,7 @@ select{
 	padding-left: 10px;
 	padding-right: 10px;
 	border: black 1px solid;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 101;
@@ -512,7 +512,7 @@ div.logo_container{
 
 /* styling for edit window that pops up when elements are clicked on in edit mode */
 .editWindow{
-	position: absolute;	
+	position: fixed;	
 	right: 0px;
 	top: 0px;
 	width: 280px;
@@ -530,7 +530,7 @@ div.logo_container{
 	max-height: 100vh;
 }
 #editMinimize{
-	position: absolute;
+	position: fixed;
 	bottom:22;
 	right: 40;
 	color: white;
@@ -540,7 +540,7 @@ div.logo_container{
 	display:none;
 }
 #editMaximize{
-	position: absolute;
+	position: fixed;
 	bottom:22;
 	right: 2;
 	color: white;
