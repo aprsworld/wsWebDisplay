@@ -414,6 +414,9 @@ function data_update(data) {
 				})
 			//sets up the drag and drop for the tree
 			$("#stationTree").bind("open_node.jstree", function (event,  data) {
+				var objId = 'pageSettings';	
+				var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+				var pageSettings = cell_arr[elementPos];
 				$(".jstree-leaf, .dataDraggable").draggable({
 					helper: function() {
 						var helper = $(this).clone(); 
@@ -423,7 +426,6 @@ function data_update(data) {
 						helper.html('');
 						return helper;
 					},
-					grid: [1,1],
 					delay: 150,
 					opacity: 0.75,
 					start: function (event, ui) {
@@ -448,6 +450,10 @@ function data_update(data) {
 						$('#rulerBox, #rulerBox2, #rulerBox3').show();
 					},
 					drag: function (event, ui) {
+						var posTop = (Math.floor(ui.position.top / pageSettings.gridProps.size) * pageSettings.gridProps.size);
+						var posLeft = (Math.floor(ui.position.left / pageSettings.gridProps.size) * pageSettings.gridProps.size);
+						ui.position.top = posTop;
+						ui.position.left = posLeft;
 						var width = ui.position.left+'px';	
 						var height = ui.position.top+'px';
 						$('#rulerBox').css({
@@ -484,10 +490,10 @@ function data_update(data) {
 				});
 				$( ".draggableCamNode" ).draggable({
 					helper: "clone",
-					grid: [1,1],
 					delay: 150,
 					opacity: 0.75,
 					start: function (event, ui) {
+						console.log(ui.helper);
 						$('.controls').animate({
 							width: '10px'
 						},100);
@@ -525,8 +531,36 @@ function data_update(data) {
 							$(ui.helper).css('height',height);
 							$(ui.helper).css('width', width);
 							$(ui.helper).css('background-position',"50% 0%");
+							$(ui.helper).css('margin-left', '0');
 						});
 						tempImg.src = value;
+						$('#rulerBox, #rulerBox2, #rulerBox3').show();
+					},
+					drag: function (event, ui) {
+						var posTop = (Math.floor(ui.position.top / pageSettings.gridProps.size) * pageSettings.gridProps.size);
+						var posLeft = (Math.floor(ui.position.left / pageSettings.gridProps.size) * pageSettings.gridProps.size);
+						ui.position.top = posTop;
+						ui.position.left = posLeft;
+						var width = ui.position.left+'px';	
+						var height = ui.position.top+'px';
+						$('#rulerBox').css({
+							height: height,
+							width: width
+						});
+						$('#rulerBox2').css({
+							left: width,
+							height: height,
+							width: "-moz-calc(100% - "+width+")", /* Firefox */
+ 							width: "-webkit-calc(100% - "+width+")", /* Chrome, Safari */
+ 							width: "calc(100% - "+width+")", /* IE9+ and future browsers */
+						});
+						$('#rulerBox3').css({
+							top: height,
+							width: width,
+							height: "-moz-calc(100% - "+height+")", /* Firefox */
+ 							height: "-webkit-calc(100% - "+height+")", /* Chrome, Safari */
+ 							height: "calc(100% - "+height+")", /* IE9+ and future browsers */
+						});
 					},
 					stop: function (event, ui) {
 						$('.controls').animate({
@@ -539,6 +573,7 @@ function data_update(data) {
 						$('.controlRow').show();
 						$('.controls h2').show();
 						$(ui.helper).removeClass("ui-draggable-helper");
+						$('#rulerBox, #rulerBox2, #rulerBox3').hide();
 					}	
 				});
 			});
