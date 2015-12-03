@@ -446,6 +446,7 @@ div.logo_container{
 	margin-left: 2px;
 	margin-bottom: -4px;
 	margin-top: 4px;
+	font-size: 14px !important;
 }
 #resizeSpan{
 	display: inline;
@@ -792,22 +793,27 @@ select.backgroundColorChange option{
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
+
+ul.jstree-children{
+	height: auto !important;	
+}
+/* style changes for color picker color box*/
 .evo-colorind-ff{
 	width: 20% !important;
 	height: 26px !important;
 }
+/*style changes for preview swatches on color picker*/
 .evo-color{
 	width: 140px !important;	
 }
-ul.jstree-children{
-	height: auto !important;	
-}
+/* style changes for color picker container*/
 .evo-pop{
 	margin-top: 12px;
 	right: 55;
 	box-shadow: 0 0 5px black;
 	width: 300px !important;
 }
+/*creates little triangle pointer on color picker*/
 .evo-pop:before{
 	position: absolute;
 	content: '';

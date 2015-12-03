@@ -999,8 +999,8 @@ PAGE EDIT CASE
 		$('.gridSelect').val(gridSize);
 		
 		//delegate event handler for color picker
-		$(".backgroundColorChange").off("mouseover.color");
-		$(".backgroundColorChange").on("mouseover.color", function(event, color){
+		$(".backgroundColorChange").off("change.color");
+		$(".backgroundColorChange").on("change.color", function(event, color){
 			if(color != undefined){
 				objectFound.backgroundColorChange(color);
 				console.log(color);
