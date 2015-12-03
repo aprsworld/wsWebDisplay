@@ -945,12 +945,15 @@ var editWindow =  function() {
 	
 	//color picker setup
 	$('.backgroundColorChange, .textColorChange').colorpicker({
-		hideButton: true,
+		transparentColor: true,
 		defaultPalette: 'web',
-		showOn: "focus"
+		showOn: "button"
 	});
-	
-	
+	var bgColorVal = $('#'+selectedModule).css('background-color');
+	var textColorVal = $('#'+selectedModule).css('color');
+	$('#backgroundColorRow').find('.evo-colorind-ff').css('background-color', bgColorVal);
+	$('#textColorRow').find('.evo-colorind-ff').css('background-color',textColorVal);
+
 	$(".backgroundColorChange").off("mouseover.color");
 	$(".backgroundColorChange").on("mouseover.color", function(event, color){
     	$('#'+selectedModule).css('background-color', color);
@@ -1437,7 +1440,7 @@ DATA CELLS CASE
 		originalTitle = $(this).children('.myTableID').children('span').text();				 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
 		var backgroundColor = $('#'+selectedModule).css('background-color');
-		
+
 		var objId = id.replace('div_', '');	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];

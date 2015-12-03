@@ -651,7 +651,13 @@ div.logo_container{
 	border-color: #333;
 }
 .backgroundColorChange, .textColorChange{
-	width: 96%;
+	width: 60%;
+}
+select.backgroundColorChange{
+	width: 20%;	
+}
+select.backgroundColorChange option{
+	display: none;
 }
 .bodyChange:focus{
 	border-color:#0550a5;	
@@ -787,6 +793,10 @@ div.logo_container{
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
+.evo-colorind-ff{
+	width: 20% !important;
+	height: 26px !important;
+}
 ul.jstree-children{
 	height: auto !important;	
 }
