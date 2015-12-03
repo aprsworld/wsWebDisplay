@@ -176,6 +176,15 @@ pageElement.prototype = {
 				thisObj.onChangeStyle();
 			}
 		});
+	},
+	removeSelf: function(){
+		var obj = this;
+		var objId = obj.parentId;
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
+		cell_arr.splice(elementPos, 1);
+		$('#'+objId).remove();
+		console.log(cell_arr);
 	}
 }
 /***********************************************************************************
@@ -625,6 +634,19 @@ pageCam.prototype.loadHtml = function(){
 	$('#preload_'+camId).attr('src', this.src);
 
 }
+
+pageCam.prototype.removeSelf = function(){
+		var obj = this;
+		var objId = obj.parentId;
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
+		cell_arr.splice(elementPos, 1);
+		console.log(objId);
+		$('#'+objId).remove();
+		$('#preload_'+objId).remove();
+		console.log(cell_arr);
+	}
+
 /***********************************************************************************
 * IMG BLOCK OBJECT
 ************************************************************************************/

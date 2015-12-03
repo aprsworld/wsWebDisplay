@@ -521,7 +521,6 @@ var posTop, posLeft, width, height;
 		height = posTop+'px';
 
 		$('#positionSpan').text("("+posLeft+", "+posTop+")");
-		console.log($('#positionSpan').text());
 		$('#'+new_id).css({
 			'top': posTop,
 			'left': posLeft
@@ -534,12 +533,12 @@ var posTop, posLeft, width, height;
 		$('#rulerBox2').css({
 			left: width,
 			height: height,
-			width: "100%",/*"-moz-calc(100% - "+width+")", /* Firefox */	
+			width: "100%",
 		});
 		$('#rulerBox3').css({
 			top: height,
 			width: width,
-			height: "100%",/*"-moz-calc(100% - "+height+")", /* Firefox */
+			height: "100%",
 		});
 	});
 	$( document ).on('mousedown', function(e){
@@ -548,7 +547,19 @@ var posTop, posLeft, width, height;
 		$('#positionDiv').remove();
 			$( document ).off('mousemove');
 			$( document ).off('mousedown');
-	});	
+			$( document ).off('keyup');
+
+	});
+	$( document ).keyup(function(e) {
+		if (e.keyCode == 27){
+			obj.removeSelf();
+			$('#positionDiv').remove();
+			$('#rulerBox, #rulerBox2, #rulerBox3').hide();	
+			$( document ).off('mousemove');
+			$( document ).off('mousedown');
+			$( document ).off('keyup');
+		}
+	});
 }
 /*function that periodically updates the data */
 function data_update(data) {
@@ -884,6 +895,7 @@ function populateConversions(id){
 }
 
 var editWindow =  function() {
+	console.log(cell_arr)
 	var moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
 	labelChange = $('.labelChange');
