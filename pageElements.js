@@ -75,9 +75,9 @@ pageElement.prototype = {
 		$('#'+this.parentId).draggable({
 			cursor: "move", disabled: false,
 			start: function(event, ui){
-				$('.controls').animate({width: '10px'},100);
+				/*$('.controls').animate({width: '10px'},100);
 				$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
-				$('.controlRow, .controls h2').hide();
+				$('.controlRow, .controls h2').hide();*/
 				
 				var posLeft = ui.position.left;
 				var posTop = ui.position.top;
@@ -124,9 +124,9 @@ pageElement.prototype = {
 
 			},
 			stop: function(event, ui){
-				$('.controls').animate({width: '250px'},200);
+				/*$('.controls').animate({width: '250px'},200);
 				$('.editWindow').animate({width: '280px',padding: '20px'},200);
-				$('.controlRow, .controls h2').show();
+				$('.controlRow, .controls h2').show();*/
 				$('#positionDiv').remove();
 				console.log(thisObj.gridProps.grid);
 				var roundedTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);

@@ -13,6 +13,7 @@ var cell_arr = [];
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
 var ageInterval;
 var staticRegexPeriod = /\./g; //global declaration to reduce overhead
+var isExpanded;
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -548,8 +549,13 @@ var posTop, posLeft, width, height;
 			$( document ).off('mousemove');
 			$( document ).off('mousedown');
 			$( document ).off('keyup');
-
+			$( document ).keyup(function(e) {
+				if (e.keyCode == 27){
+					collapseWindows()			
+				}
+			});
 	});
+	$( document ).off('keyup');
 	$( document ).keyup(function(e) {
 		if (e.keyCode == 27){
 			obj.removeSelf();
@@ -558,8 +564,28 @@ var posTop, posLeft, width, height;
 			$( document ).off('mousemove');
 			$( document ).off('mousedown');
 			$( document ).off('keyup');
+			$( document ).keyup(function(e) {
+				if (e.keyCode == 27){
+					collapseWindows()			
+				}
+			});
 		}
 	});
+}
+
+function collapseWindows(){
+	if(isExpanded){
+		$('.controls').animate({width: '10px'},100);
+		$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
+		console.log('now collapsed');
+		isExpanded = false;
+	}
+	else{
+		$('.controls').animate({width: '250px'},200);
+		$('.editWindow').animate({width: '280px',padding: '20px'},200);	
+		console.log('now expanded');		
+		isExpanded = true;
+	}
 }
 /*function that periodically updates the data */
 function data_update(data) {
@@ -919,6 +945,7 @@ var editWindow =  function() {
 		defaultPalette: 'web',
 		showOn: "focus"
 	});
+	
 	$("#editMinimize").off("click");
 	$("#editMinimize").on("click", function(event, color){
     	$('.editWindow').addClass('editHide');
@@ -1545,6 +1572,12 @@ DATA CELLS CASE
 };
 function edit(handler) {
 	editMode = true;
+	isExpanded = true;
+	$( document ).keyup(function(e) {
+		if (e.keyCode == 27){
+			collapseWindows()			
+		}
+	});
 	$('.gridlines').show();
 	$('#masterEdit').css('background-color','green');
 	$('.tr').css('cursor','pointer');
@@ -1574,6 +1607,7 @@ function edit(handler) {
 }
 function nonEdit(handler) {
 	editMode = false;
+	$( document ).off('keyup');
 	$('.gridlines').hide();
 	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
 	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
