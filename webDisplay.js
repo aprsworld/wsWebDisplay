@@ -578,12 +578,16 @@ function collapseWindows(){
 		$('.controls').animate({width: '10px'},100);
 		$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
 		console.log('now collapsed');
+		$("#editMaximize").show();
+		$("#editMinimize").hide();
 		isExpanded = false;
 	}
 	else{
 		$('.controls').animate({width: '250px'},200);
 		$('.editWindow').animate({width: '280px',padding: '20px'},200);	
-		console.log('now expanded');		
+		console.log('now expanded');
+		$("#editMaximize").hide();
+		$("#editMinimize").show();
 		isExpanded = true;
 	}
 }
@@ -946,18 +950,7 @@ var editWindow =  function() {
 		showOn: "focus"
 	});
 	
-	$("#editMinimize").off("click");
-	$("#editMinimize").on("click", function(event, color){
-    	$('.editWindow').addClass('editHide');
-		$("#editMaximize").show();
-		$("#editMinimize").hide();
-	});
-	$("#editMaximize").off("click");
-	$("#editMaximize").on("click", function(event, color){
-    	$('.editWindow').removeClass('editHide');
-		$("#editMaximize").hide();
-		$("#editMinimize").show();
-	});
+	
 	$(".backgroundColorChange").off("mouseover.color");
 	$(".backgroundColorChange").on("mouseover.color", function(event, color){
     	$('#'+selectedModule).css('background-color', color);
@@ -1577,6 +1570,22 @@ function edit(handler) {
 		if (e.keyCode == 27){
 			collapseWindows()			
 		}
+	});
+	$("#editMaximize").hide();
+	$("#editMinimize").show();
+	$("#editMinimize").off("click");
+	$("#editMinimize").on("click", function(event, color){
+    	//$('.editWindow').addClass('editHide');
+		collapseWindows();
+		$("#editMaximize").show();
+		$("#editMinimize").hide();
+	});
+	$("#editMaximize").off("click");
+	$("#editMaximize").on("click", function(event, color){
+    	//$('.editWindow').removeClass('editHide');
+		collapseWindows();
+		$("#editMaximize").hide();
+		$("#editMinimize").show();
 	});
 	$('.gridlines').show();
 	$('#masterEdit').css('background-color','green');
