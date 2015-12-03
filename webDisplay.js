@@ -575,16 +575,20 @@ var posTop, posLeft, width, height;
 
 function collapseWindows(){
 	if(isExpanded){
-		$('.controls').animate({width: '10px'},100);
-		$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
+		$('.controls').animate({'width': '0px', 'margin':'0', 'padding': '0'},100);
+		$('.editWindow').animate({'width': '0px', 'margin':'0', 'padding': '0'},50);
+		$('.controlRow').hide();
+		$('#stationTree').hide();
 		console.log('now collapsed');
 		$("#editMaximize").show();
 		$("#editMinimize").hide();
 		isExpanded = false;
 	}
 	else{
-		$('.controls').animate({width: '250px'},200);
-		$('.editWindow').animate({width: '280px',padding: '20px'},200);	
+		$('.controls').animate({'width': '250px', 'padding-left': '10px', 'padding-right': '10px'},200);
+		$('.editWindow').animate({'width': '280px','padding': '20px'},200);	
+		$('.controlRow').show();
+		$('#stationTree').show();
 		console.log('now expanded');
 		$("#editMaximize").hide();
 		$("#editMinimize").show();
@@ -954,8 +958,8 @@ var editWindow =  function() {
 	$('#backgroundColorRow').find('.evo-colorind-ff').css('background-color', bgColorVal);
 	$('#textColorRow').find('.evo-colorind-ff').css('background-color',textColorVal);
 
-	$(".backgroundColorChange").off("mouseover.color");
-	$(".backgroundColorChange").on("mouseover.color", function(event, color){
+	$(".backgroundColorChange").off("change.color");
+	$(".backgroundColorChange").on("change.color", function(event, color){
     	$('#'+selectedModule).css('background-color', color);
 		$('#opacitySlider .ui-slider-range').css('background', color );
   		$('#opacitySlider .ui-slider-handle').css('border-color', color);
@@ -1259,8 +1263,8 @@ TEXT BLOCKS CASE
 		var backgroundColor = $('#'+selectedModule).css('background-color');	 
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
 		
-		$(".textColorChange").off("mouseover.color");
-		$(".textColorChange").on("mouseover.color", function(event, color){
+		$(".textColorChange").off("change.color");
+		$(".textColorChange").on("change.color", function(event, color){
 			$('#'+selectedModule).css('color',color);
 		});
 		
@@ -1276,8 +1280,8 @@ TEXT BLOCKS CASE
 		});
 		
 		//delegate even handler for mousing over 
-		$(".textColorChange").off("mouseover.color");
-		$(".textColorChange").on("mouseover.color", function(event, color){
+		$(".textColorChange").off("change.color");
+		$(".textColorChange").on("change.color", function(event, color){
 			objectFound.fontColorChange(color);
 		});	
 		//fontsize input change event handler
@@ -1476,8 +1480,8 @@ DATA CELLS CASE
 		$('.textColorChange').val($('#'+id).children('p').css('color'));
 		
 		//delegate even handler for mousing over 
-		$(".textColorChange").off("mouseover.color");
-		$(".textColorChange").on("mouseover.color", function(event, color){
+		$(".textColorChange").off("change.color");
+		$(".textColorChange").on("change.color", function(event, color){
 			objectFound.fontColorChange(color);
 		});	
 		//fontsize input change event handler
