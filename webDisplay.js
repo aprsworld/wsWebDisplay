@@ -534,16 +534,12 @@ var posTop, posLeft, width, height;
 		$('#rulerBox2').css({
 			left: width,
 			height: height,
-			width: "-moz-calc(100% - "+width+")", /* Firefox */
-			width: "-webkit-calc(100% - "+width+")", /* Chrome, Safari */
-			width: "calc(100% - "+width+")", /* IE9+ and future browsers */
+			width: "100%",/*"-moz-calc(100% - "+width+")", /* Firefox */	
 		});
 		$('#rulerBox3').css({
 			top: height,
 			width: width,
-			height: "-moz-calc(100% - "+height+")", /* Firefox */
-			height: "-webkit-calc(100% - "+height+")", /* Chrome, Safari */
-			height: "calc(100% - "+height+")", /* IE9+ and future browsers */
+			height: "100%",/*"-moz-calc(100% - "+height+")", /* Firefox */
 		});
 	});
 	$( document ).on('mousedown', function(e){
