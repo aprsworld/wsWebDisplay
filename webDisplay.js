@@ -513,7 +513,6 @@ var posTop, posLeft, width, height;
 	$('#positionDiv').append(posSpan);
 	$( document ).one('mousemove', function(e){
 		$('#rulerBox, #rulerBox2, #rulerBox3').show();
-		console.log('eh');
 	});
 	$( document ).on('mousemove', function(e){
 		posTop = (Math.floor(e.pageY / obj.gridProps.size) * obj.gridProps.size);
