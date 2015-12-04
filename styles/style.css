@@ -793,7 +793,31 @@ select.backgroundColorChange option{
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
+.custom-combobox{
+	width: 100% !important;	
+}
+.custom-combobox-input{
+	width: 64% !important;	
+	float: left;
+	background: none !important;
+	background-color: white !important;
+}
+.custom-combobox-toggle{
+	overflow: hidden;
+	width: 30% !important;
+	float: right !important;
+	height: 26px !important;
+}
+#ul-id-1{
+	
+}
+.ui-autocomplete{
+	position: fixed !important;
+	overflow-y: scroll !important;
+	z-index:1000 !important;
+	height: 200px !important;
 
+}
 ul.jstree-children{
 	height: auto !important;	
 }
