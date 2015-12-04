@@ -224,7 +224,8 @@ pageSettings.prototype.createGrid = function createGrid(size) {
       $('<div />').css({
             'top': 0,
             'left': i * size,
-            'width': '1px',
+            'width': '0px',
+		  	'border-left': '1px solid #444',
             'height': height
       })
         .addClass('gridlines')
@@ -236,7 +237,9 @@ pageSettings.prototype.createGrid = function createGrid(size) {
             'top': i * size,
             'left': 0,
             'width': width,
-            'height': '1px'
+		  	'border-bottom': '1px solid #444',
+            'height': '0px'
+		  
       })
         .addClass('gridlines')
         .appendTo(sel);
