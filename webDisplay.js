@@ -49,6 +49,7 @@ $(function() {
           .appendTo( this.wrapper )
           .val( value )
           .attr( "title", "" )
+		  .attr( "id","comboBoxInput")
           .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
           .autocomplete({
             delay: 0,
@@ -61,6 +62,7 @@ $(function() {
  
         this._on( this.input, {
           autocompleteselect: function( event, ui ) {
+			  
             ui.item.option.selected = true;
             this._trigger( "select", event, {
               item: ui.item.option
@@ -741,10 +743,16 @@ function data_update(data) {
 			maxWidth: 250	
         });
         $(document).ready(function() {
-			  $(function() {
-				$( "#fontComboBox" ).combobox();
+			$(function() {
+				$( "#fontComboBox" ).combobox({
+					 select: function (event, ui) { 
+						$('#comboBoxInput').attr('value', this.value);
+						 $('#comboBoxInput').text(this.value);
+						$('#comboBoxInput').trigger('blur');
+					} 
+				});
 				
-			  });
+			});
 			//attempts to grab the get parameter to set background color
 			var bgColor = getUrlVars()["bgColor"];
 			if(bgColor !== undefined){
@@ -1073,7 +1081,7 @@ var editWindow =  function() {
 	labelChange = $('.labelChange');
 	bodyChange = $('.bodyChange');
 	urlChange = $('.urlChange');
-	fontSize = $('#fontSize');
+	fontSize = $('#fontComboBox');
 	fontPlus = $('#fontSizePlus');
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
@@ -1416,7 +1424,12 @@ TEXT BLOCKS CASE
 				objectFound.fontPlusMinus('plus')
 			}
 		});
-		
+		$('#comboBoxInput').off('input');
+		$('#comboBoxInput').on('input', function() { 
+			console.log('fired');
+			var newSize = $(this).val() // get the current value of the input field.
+			objectFound.fontSizeChange(newSize);
+		});
 		//delegate even handler for mousing over 
 		$(".textColorChange").off("change.color");
 		$(".textColorChange").on("change.color", function(event, color){
@@ -1598,6 +1611,12 @@ DATA CELLS CASE
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
 			objectFound.setPrecision($('.roundingChange').val());
 		});
+		$('#comboBoxInput').off('input');
+		$('#comboBoxInput').on('input', function() { 
+			console.log('fired');
+			var newSize = $(this).val() // get the current value of the input field.
+			objectFound.fontSizeChange(newSize);
+		});
 		
 		//event handler for font plus and minus being clicked
 		$( document ).off("click", "#fontSizePlus, #fontSizeMinus");
@@ -1609,6 +1628,7 @@ DATA CELLS CASE
 				objectFound.fontPlusMinus('plus')
 			}
 		});
+		
 		
 		//event handler for converting units
 		$("#unitSelect").off('change');
@@ -1624,6 +1644,7 @@ DATA CELLS CASE
 		$(".textColorChange").on("change.color", function(event, color){
 			objectFound.fontColorChange(color);
 		});	
+		
 		//fontsize input change event handler
 		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input#fontSize" , function() {

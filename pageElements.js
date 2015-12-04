@@ -824,7 +824,7 @@ pageText.prototype.loadHtml = function(){
 }
 pageText.prototype.fontSizeChange = function(size){
 	if(size == ''){
-		size =  12;	
+		size =  8;	
 	}
 	var containerId = this.parentId;
 	$('#'+containerId).css('font-size', size+"px");
