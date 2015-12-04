@@ -219,12 +219,12 @@ pageSettings.prototype.createGrid = function createGrid(size) {
         width = sel.width(),
         ratioW = Math.floor(width / size),
         ratioH = Math.floor(height / size);
-
+	
     for (i = 0; i <= ratioW; i++) { // vertical grid lines
       $('<div />').css({
             'top': 0,
             'left': i * size,
-            'width': 1,
+            'width': '1px',
             'height': height
       })
         .addClass('gridlines')
@@ -236,7 +236,7 @@ pageSettings.prototype.createGrid = function createGrid(size) {
             'top': i * size,
             'left': 0,
             'width': width,
-            'height': 1
+            'height': '1px'
       })
         .addClass('gridlines')
         .appendTo(sel);
@@ -250,6 +250,7 @@ pageSettings.prototype.createGrid = function createGrid(size) {
 	}
 	
 	this.gridSize = size;
+
 }
 
 pageSettings.prototype.updateGrid = function updateGrid(size) {
@@ -598,6 +599,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		$('#'+camId).css('display','inline-block');
 		$('#'+camId).css('top',pageY);
 		$('#'+camId).css('left',pageX);
+		console.log('test');
 		camObj.setResize();
 		camObj.setDrag();
 		camObj.hoverable = true;
@@ -676,27 +678,32 @@ pageImg.prototype.setHoverTime = function(){
 
 pageImg.prototype.setSrc = function(){
 	var tempImg = document.createElement('img');
+	var selectedChild = this.id;
 	var selectedModule = this.parentId;
+	console.log(selectedModule);
 	var url = $("#"+selectedModule).find('img');
-	$(tempImg).load(function() {
+	$(tempImg).one('load', function() {
 		var width = tempImg.naturalWidth;
-		console.log(width);
 		var height = tempImg.naturalHeight;
+		console.log(width+' '+height);
+
 		url.attr('width',width);
 		url.attr('height',height);
-		$("#"+selectedModule).css('width', width);
-		$("#"+selectedModule).css('height',height);
-		$("#"+selectedModule).parent().css('width', width);
-		$("#"+selectedModule).parent().css('height',height);
-		url.attr('src', src);
-		this.src = src;
+		$("#"+selectedChild).width(width);
+		$("#"+selectedChild).height(height);
+		$("#"+selectedModule).children('.ui-wrapper').css('width', width);
+		$("#"+selectedModule).children('.ui-wrapper').css('height',height);
+		$("#"+selectedModule).css('width', 'auto');
+		$("#"+selectedModule).css('height','auto');
+		url.attr('src', $('.urlChange').val());
+		this.src = $('.urlChange').val();
 	});
 	//wait split second for paste of new url
 	setTimeout(function () {
 		//reset image attributes
 		url.attr('width','0');
 		url.attr('height','0');
-		tempImg.src = urlChange.val();
+		tempImg.src = $('.urlChange').val();
 	}, 100); 
 }
 
@@ -778,7 +785,7 @@ pageText.prototype.createHtml = function(cellCount){
 	//create a div to hold the text
 	textBlock = document.createElement("div");
 	textBlock.className = "textBlockContainer";
-	textContent = "Click to change text";
+	textContent = "sample text";
 	this.text = textContent;
 	//incremental ID attribute
 	textBlock.id = "block"+cellCount;

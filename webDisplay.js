@@ -1397,8 +1397,10 @@ IMG BLOCKS CASE
 		});
 		
 		//delegate event handler for url change
+
 		$( document ).off( "paste", "input.urlChange"); //unbind old events, and bind a new one		
 		$( document ).on( "paste", "input.urlChange" , function() {	
+			
 			objectFound.setSrc();
 		});
 		//unbind old events, and bind a new one

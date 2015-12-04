@@ -110,7 +110,7 @@ select{
 .top-container{
 	clear: both;
 	height: 500vh;
-	width: 500vh;
+	width: 500vw;
 	background-color: transparent;
 	z-index: 0;
 }
