@@ -501,7 +501,7 @@ function clickToCreate(item, data, x ,y){
 
 function positionDiv(obj, new_id){
 var posTop, posLeft, width, height;
-
+	collapseWindows();
 	var posSpan = document.createElement("SPAN"); 
 	var posDiv = document.createElement("DIV");
 	posDiv.id = 'positionDiv';
@@ -549,6 +549,8 @@ var posTop, posLeft, width, height;
 			$( document ).off('mousemove');
 			$( document ).off('mousedown');
 			$( document ).off('keyup');
+			collapseWindows();
+
 			$( document ).keyup(function(e) {
 				if (e.keyCode == 27){
 					collapseWindows()			
@@ -564,6 +566,8 @@ var posTop, posLeft, width, height;
 			$( document ).off('mousemove');
 			$( document ).off('mousedown');
 			$( document ).off('keyup');
+			collapseWindows();
+
 			$( document ).keyup(function(e) {
 				if (e.keyCode == 27){
 					collapseWindows()			
@@ -583,6 +587,7 @@ function collapseWindows(){
 		$("#editMaximize").show();
 		$("#editMinimize").hide();
 		isExpanded = false;
+		console.log('test');
 	}
 	else{
 		$('.controls').animate({'width': '250px', 'padding-left': '10px', 'padding-right': '10px'},200);
@@ -930,6 +935,7 @@ function populateConversions(id){
 
 var editWindow =  function() {
 	console.log(cell_arr)
+
 	var moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
 	labelChange = $('.labelChange');
