@@ -335,26 +335,7 @@ pageCell.prototype.fontSizeChange = function(size){
 	var style = this.getStyle();
 	this.setStyle(style);
 }
-pageCell.prototype.fontPlusMinus = function(direction){
-	var containerId = this.fullId;
-	var size = $('#'+containerId).closest('.tr').css('font-size');
-	if(direction == 'plus'){
-		size = size.replace("px",'');
-		size = (parseInt(size)+1).toString();
-		$('#fontSize').val(size);
-		size = size+"px";
-		$('#'+containerId).closest('.tr').css('font-size', size+"px");
-	}
-	else{
-		size = size.replace("px",'');
-		size = (parseInt(size)-1).toString();
-		$('#fontSize').val(size);
-		size = size+"px";
-		$('#'+containerId).closest('.tr').css('font-size', size);
-	}	
-	var style = this.getStyle();
-	this.setStyle(style);
-}
+
 pageCell.prototype.setTitle = function(text){
 	var containerId = this.fullId;
 	if(text == ''){
@@ -845,27 +826,6 @@ pageText.prototype.fontSizeChange = function(size){
 	}
 	var containerId = this.parentId;
 	$('#'+containerId).css('font-size', size);
-	var style = this.getStyle();
-	this.setStyle(style);
-}
-
-pageText.prototype.fontPlusMinus = function(direction){
-	var containerId = this.parentId;
-	var size = $('#'+containerId).css('font-size');
-	if(direction == 'plus'){
-		size = size.replace("px",'');
-		size = (parseInt(size)+1).toString();
-		$('#fontSize').val(size);
-		size = size+"px";
-		$('#'+containerId).css('font-size', size);
-	}
-	else{
-		size = size.replace("px",'');
-		size = (parseInt(size)-1).toString();
-		$('#fontSize').val(size);
-		size = size+"px";
-		$('#'+containerId).css('font-size', size);
-	}	
 	var style = this.getStyle();
 	this.setStyle(style);
 }
