@@ -79,7 +79,6 @@ $(function() {
  
         $( "<a>" )
           .attr( "tabIndex", -1 )
-          .attr( "title", "Show All Items" )
           .tooltip()
           .appendTo( this.wrapper )
           .button({
@@ -747,8 +746,7 @@ function data_update(data) {
 				$( "#fontComboBox" ).combobox({
 					 select: function (event, ui) { 
 						$('#comboBoxInput').attr('value', this.value);
-						 $('#comboBoxInput').text(this.value);
-						$('#comboBoxInput').trigger('blur');
+						$('#comboBoxInput').text(this.value).trigger("input");
 					} 
 				});
 				
@@ -1426,21 +1424,16 @@ TEXT BLOCKS CASE
 			$('#'+selectedModule).css('color',color);
 		});
 		
-		//event handler for plus and minus font size
-		$( document ).off("click", "#fontSizePlus, #fontSizeMinus");
-		$( document ).on("click", "#fontSizePlus, #fontSizeMinus", function() {
-			if($(this).attr('id') == 'fontSizeMinus'){
-				objectFound.fontPlusMinus('minus')
-			}
-			else{
-				objectFound.fontPlusMinus('plus')
-			}
-		});
 		$('#comboBoxInput').off('input');
 		$('#comboBoxInput').on('input', function() { 
 			console.log('fired');
-			var newSize = $(this).val() // get the current value of the input field.
-			objectFound.fontSizeChange(newSize);
+			var input = this;
+			setTimeout(function () {
+				var newSize = $(input).val() // get the current value of the input field.
+				console.log(newSize);
+
+				objectFound.fontSizeChange(newSize);
+			}, 100);
 		});
 		//delegate even handler for mousing over 
 		$(".textColorChange").off("change.color");
@@ -1629,21 +1622,14 @@ DATA CELLS CASE
 		$('#comboBoxInput').off('input');
 		$('#comboBoxInput').on('input', function() { 
 			console.log('fired');
-			var newSize = $(this).val() // get the current value of the input field.
-			objectFound.fontSizeChange(newSize);
+			var input = this;
+			setTimeout(function () {
+				var newSize = $(input).val() // get the current value of the input field.
+				console.log(newSize);
+
+				objectFound.fontSizeChange(newSize);
+			}, 100);
 		});
-		
-		//event handler for font plus and minus being clicked
-		$( document ).off("click", "#fontSizePlus, #fontSizeMinus");
-		$( document ).on("click", "#fontSizePlus, #fontSizeMinus", function() {
-			if($(this).attr('id') == 'fontSizeMinus'){
-				objectFound.fontPlusMinus('minus')
-			}
-			else{
-				objectFound.fontPlusMinus('plus')
-			}
-		});
-		
 		
 		//event handler for converting units
 		$("#unitSelect").off('change');
@@ -1659,13 +1645,7 @@ DATA CELLS CASE
 		$(".textColorChange").on("change.color", function(event, color){
 			objectFound.fontColorChange(color);
 		});	
-		
-		//fontsize input change event handler
-		$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
-		$( document ).on( "keyup", "input#fontSize" , function() {
-			var size = fontSize.val()
-			$('#'+moduleContainer).css('font-size', fontSize.val());				
-		});
+
 		//title change event handler
 		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.titleChange" , function() {	

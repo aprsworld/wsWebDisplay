@@ -75,8 +75,10 @@ pageElement.prototype = {
 		}
 		
 		this.selected = true;
-		$( 'html' ).off('keyup');
-		$( 'html').on('keyup', delHandle(objectFound));
+		if(this.type != 'pageSettings'){
+			$( 'html' ).off('keyup');
+			$( 'html').on('keyup', delHandle(objectFound));
+		}
 	},
 	setDeselected: function() {
 		var objectFound = this;
@@ -842,7 +844,7 @@ pageText.prototype.fontSizeChange = function(size){
 		size =  8;	
 	}
 	var containerId = this.parentId;
-	$('#'+containerId).css('font-size', size+"px");
+	$('#'+containerId).css('font-size', size);
 	var style = this.getStyle();
 	this.setStyle(style);
 }
