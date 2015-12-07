@@ -68,6 +68,20 @@ pageElement.prototype = {
 			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');	
 		}
 	},
+	setSelected: function() {
+		var objectFound = this;
+		for(var k in cell_arr){
+			cell_arr[k].setDeselected();	
+		}
+		
+		this.selected = true;
+		$( 'html' ).off('keyup');
+		$( 'html').on('keyup', delHandle(objectFound));
+	},
+	setDeselected: function() {
+		var objectFound = this;
+		this.selected = false;
+	},
 	setDrag: function() {
 		console.log(this.parentId);
 		var thisObj = this;

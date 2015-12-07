@@ -1228,6 +1228,7 @@ CAMERA CASE
 		var objId = moduleContainer.replace('div_','');	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
+		objectFound.setSelected();
 		console.log(objectFound);
 	
 		var camera = $(this);
@@ -1292,12 +1293,6 @@ CAMERA CASE
 			}
 		});
 		// delete event hanlder
-		$( document ).one('keyup', function(e) {
-			if (e.keyCode == 46){
-				objectFound.deleteElement();
-				$('.editWindow').hide(150);			
-			}
-		});
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {		
 			objectFound.deleteElement();
@@ -1416,6 +1411,8 @@ TEXT BLOCKS CASE
 		var objId = moduleContainer;	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
+		objectFound.setSelected();
+
 		console.log(objectFound);
 		
 		$(bodyChange).val(body.html());
@@ -1467,13 +1464,6 @@ TEXT BLOCKS CASE
 		$( document ).on( "keyup", "input.textColorChange" , function() {	
 			var enteredColor = textColor.val();
 			objectFound.fontColorChange(enteredColor);				
-		});
-		// delete event handler
-		$( document ).one('keyup', function(e) {
-			if (e.keyCode == 46){
-				objectFound.deleteElement();
-				$('.editWindow').hide(150);			
-			}
 		});
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
@@ -1529,6 +1519,8 @@ IMG BLOCKS CASE
 		console.log(moduleContainer);
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
+		objectFound.setSelected();
+		
 		console.log(objectFound);
 		
 		url = $(this).find('img');
@@ -1577,12 +1569,6 @@ IMG BLOCKS CASE
 		});
 		//unbind old events, and bind a new one
 		// delete event handler
-		$( document ).one('keyup', function(e) {
-			if (e.keyCode == 46){
-				objectFound.deleteElement();
-				$('.editWindow').hide(150);			
-			}
-		});
 		$( document ).off( "click", "#deleteModule"); 
 		$( document ).on( "click", "#deleteModule" , function() {
 			objectFound.deleteElement();
@@ -1631,7 +1617,7 @@ DATA CELLS CASE
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		console.log(objectFound);
-		
+		objectFound.setSelected();
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
@@ -1701,13 +1687,7 @@ DATA CELLS CASE
 				objectFound.setLabelOverride(true);
 			}
 		});
-		// delete event handler
-		$( document ).one('keyup', function(e) {
-			if (e.keyCode == 46){
-				objectFound.deleteElement();
-				$('.editWindow').hide(150);			
-			}
-		});		
+		
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).remove();
@@ -1846,7 +1826,14 @@ function htmlEntities(str) {
    	var decoded = $('<div/>').html(str).text();
 	return decoded
 }
-
+function delHandle(objectFound){
+	return function ( e ){
+		if (e.keyCode == 46){
+			objectFound.deleteElement();
+			$('.editWindow').hide(150);			
+		}
+	}
+}
 function captureState(){
 	for(var k in cell_arr){
 		cell_arr[k].onChangeStyle();
