@@ -604,7 +604,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	$('#'+camId).css('left',pageX);
 	$('#preload_'+camId).load(function() {
 		var src = $(this).attr("src");
-		$('#'+camId).css('background-image','url('+value+')');	
+		$('#'+camId).css('background-image','url('+value+')');
 		console.log('test');
 		camObj.hoverable = true;
 		camObj.suppressed = true;

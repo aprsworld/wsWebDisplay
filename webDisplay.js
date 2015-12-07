@@ -1272,12 +1272,10 @@ CAMERA CASE
 			if(suppressedChecked == 'enabled'){
 				objectFound.suppressed = true;
 				objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
-
 			}
 			else{
 				objectFound.suppressed = false;
 				objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
-
 			}
 		});
 		$( document ).off( "keyup", "input#hoverTime");
@@ -1318,6 +1316,7 @@ CAMERA CASE
 			var src = $("#"+selectedModule).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //.find('img').attr('src');
 			var diffFromNatHeight = (height.slice(0,-2))/nativeHeight;
 			var diffFromNatWidth = (width.slice(0,-2))/nativeWidth;
+			$('.controlsOverlay').show();
 			$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width.slice(0,-2)*diffFromNatWidth)+' " height="'+(height.slice(0,-2)*diffFromNatHeight)+' "src="'+src+'"></div>');
 			$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 			$('.cropperwrapper > img').cropper({
@@ -1337,6 +1336,14 @@ CAMERA CASE
 					cropTop = e.y;
 				}
 			});
+			$('#masterEdit, .textBlockContainer, .imgBlockContainer, .imgCamContainer, .tr').one('click', function() {
+				$("#"+selectedModule).show();
+				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
+				$('#endCrop, #cancelCrop').hide();
+				$('.cropperWrapper').remove();
+				$('.controlsOverlay').hide();								
+			});
+
 			$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
 			$( document ).on( "click", "#endCrop" , function() {
 				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
@@ -1369,6 +1376,7 @@ CAMERA CASE
 				$("#"+selectedModule).css("overflow","hidden");
 				$("#"+selectedModule).show();
 				$("#"+selectedModule).addClass("cropped");
+				$('.controlsOverlay').hide();				
 				$(".cropped").resizable({disabled:true});
 				objectFound.setCrop(true);
 			});
@@ -1378,6 +1386,7 @@ CAMERA CASE
 				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
 				$('#endCrop, #cancelCrop').hide();
 				$('.cropperWrapper').remove();
+				$('.controlsOverlay').hide();
 			});
 		});
 		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
@@ -1722,14 +1731,14 @@ DATA CELLS CASE
 	}
 	var zIndex = $('#'+moduleContainer).css('z-index'); 
 	$('#zSlider').slider({
-			min: 0,
-			max: 100,
-			value: zIndex,
-			slide: function( event, ui ) {
-				objectFound.setZindex(moduleContainer, ui.value);
-				//$('#'+moduleContainer).css('z-index', ui.value ); 
-			}
-		});
+		min: 0,
+		max: 100,
+		value: zIndex,
+		slide: function( event, ui ) {
+			objectFound.setZindex(moduleContainer, ui.value);
+			//$('#'+moduleContainer).css('z-index', ui.value ); 
+		}
+	});
 };
 function edit(handler) {
 	editMode = true;
@@ -1772,10 +1781,6 @@ function edit(handler) {
 	
 	//enable draggables and resizables
 	$('.ui-icon').show();
-	$(".jstree-leaf").draggable({
-		helper: "clone",
-		delay: 300
-	});
 	$(".imgCamContainer").draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 	$(".cropped").resizable({disabled:true});
 	$(".draggable").draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
@@ -1783,7 +1788,7 @@ function edit(handler) {
 	$('.imgBlockContainer').draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 }
 function nonEdit(handler) {
-	editMode = false;
+	editMode = false;	
 	$( document ).off('keyup');
 	$('.gridlines').hide();
 	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
