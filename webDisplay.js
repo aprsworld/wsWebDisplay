@@ -1513,6 +1513,7 @@ IMG BLOCKS CASE
 		console.log(moduleContainer);
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
+		console.log(objectFound);
 		objectFound.setSelected();
 		
 		console.log(objectFound);
@@ -1565,7 +1566,7 @@ IMG BLOCKS CASE
 		// delete event handler
 		$( document ).off( "click", "#deleteModule"); 
 		$( document ).on( "click", "#deleteModule" , function() {
-			objectFound.deleteElement();
+			objectFound.removeSelf();
 			$('.editWindow').hide(150);			
 		});
 		// unbind old event handler
@@ -1818,6 +1819,7 @@ function delHandle(objectFound){
 function captureState(){
 	for(var k in cell_arr){
 		cell_arr[k].onChangeStyle();
+		console.log(cell_arr[k]);
 	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
 
@@ -1876,9 +1878,9 @@ function loadState(jsonString){
 		}
 		else if(configObject[k].elementType == 'pageImg'){
 			var img = new pageImg();
-			console.log(cell);
 			configObject[k].__proto__ = img.__proto__;
 			cell_arr.push(configObject[k]);
+			console.log(cell_arr);
 			configObject[k].loadHtml();
 
 		}

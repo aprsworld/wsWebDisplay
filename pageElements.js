@@ -588,7 +588,6 @@ pageCam.prototype.resize = function(){
 }
 //creates element
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
-	alert(value);
 	var camId = this.fullId;
 	var camObj = this;
 	console.log(camId);
@@ -680,6 +679,7 @@ pageImg.prototype.setHoverTime = function(){
 }
 
 pageImg.prototype.setSrc = function(){
+	var objectFound = this;
 	var tempImg = document.createElement('img');
 	var selectedChild = this.id;
 	var selectedModule = this.parentId;
@@ -699,7 +699,9 @@ pageImg.prototype.setSrc = function(){
 		$("#"+selectedModule).css('width', 'auto');
 		$("#"+selectedModule).css('height','auto');
 		url.attr('src', $('.urlChange').val());
-		this.src = $('.urlChange').val();
+		objectFound.src = $('.urlChange').val();
+		objectFound.natHeight = height;
+		objectFound.natWidth = width;
 	});
 	//wait split second for paste of new url
 	setTimeout(function () {
@@ -754,21 +756,30 @@ pageImg.prototype.setResize = function(){
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
 			thisObj.onChangeStyle();
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			thisObj.width = width;
+			thisObj.height = height;
 		}
 	});	
 }
 pageImg.prototype.createHtml = function(cellCount){
-	$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+cellCount+')" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
+	$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
-	console.log('eh');
 	this.setDrag();
 	this.setResize();
+	this.count = cellCount;
+
 }
 pageImg.prototype.loadHtml = function(){
-	$('#content').append('<div id=img'+this.parentId+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" onerror="brokenImg(img'+this.parentId+')" id=img'+this.parentId+' alt=img'+this.parentId+' src="images/insert_image.svg"></img></div>');
-	this.src = "images/insert_image.svg";	
-	this.setDrag();
-	this.setResize();
+	console.log('loadedImage');
+	var objectFound = this;
+	$('#content').append('<div id="'+this.parentId+'" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
+	$('#'+this.id).load(function() {
+		objectFound.setDrag();
+		objectFound.setResize();
+		
+	});
 }
 /***********************************************************************************
 * TEXT BLOCK OBJECT
