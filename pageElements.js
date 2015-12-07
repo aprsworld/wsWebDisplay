@@ -588,10 +588,11 @@ pageCam.prototype.resize = function(){
 }
 //creates element
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
+	alert(value);
 	var camId = this.fullId;
 	var camObj = this;
 	console.log(camId);
-	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
+	$('#preload').append('<img alt="camimage" src="" id="preload_'+camId+'" >');
 	$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
 	camObj.setResize();
 		camObj.setDrag();
@@ -609,6 +610,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		camObj.cropped = false;	
 		camObj.count = cellCount;
+		camObj.src = value;
 		var currentMode = editMode
 		var width = $('#'+camId).children('img').width();
 		var height = $('#'+camId).children('img').height();	

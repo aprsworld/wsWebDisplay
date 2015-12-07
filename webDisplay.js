@@ -390,6 +390,7 @@ function dynamicUpdate(data) {
 	
     for ($i = 0; $i < idLength; $i++) {
 		objectFound = cell_arr[$i];
+		
 		// since the object array has textblocks and img blocks, we need to weed them out
 		if(objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell'){
 		id = objectFound.id;
@@ -405,7 +406,7 @@ function dynamicUpdate(data) {
 			value = ref(data, objectFound.path);
 			currentCam = $("#"+objectFound.fullId);
 			currentCam = currentCam.attr('id');
-			$('#preload_'+currentCam).unbind()
+			$('#preload_'+currentCam).unbind();
 			$('#preload_'+currentCam).load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
