@@ -595,16 +595,17 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	var camObj = this;
 	console.log(camId);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
+	$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
+	camObj.setResize();
+		camObj.setDrag();
+	$('#'+camId).css('position', 'absolute');
+	$('#'+camId).css('display','inline-block');	
+	$('#'+camId).css('top',pageY);
+	$('#'+camId).css('left',pageX);
 	$('#preload_'+camId).load(function() {
 		var src = $(this).attr("src");
-		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style="background-image:url('+value+')"><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
-		$('#'+camId).css('position', 'absolute');
-		$('#'+camId).css('display','inline-block');
-		$('#'+camId).css('top',pageY);
-		$('#'+camId).css('left',pageX);
+		$('#'+camId).css('background-image','url('+value+')');	
 		console.log('test');
-		camObj.setResize();
-		camObj.setDrag();
 		camObj.hoverable = true;
 		camObj.suppressed = true;
 		camObj.hoverDelay = 1;
