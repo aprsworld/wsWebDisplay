@@ -1292,6 +1292,12 @@ CAMERA CASE
 			}
 		});
 		// delete event hanlder
+		$( document ).one('keyup', function(e) {
+			if (e.keyCode == 46){
+				objectFound.deleteElement();
+				$('.editWindow').hide(150);			
+			}
+		});
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {		
 			objectFound.deleteElement();
@@ -1463,9 +1469,15 @@ TEXT BLOCKS CASE
 			objectFound.fontColorChange(enteredColor);				
 		});
 		// delete event handler
+		$( document ).one('keyup', function(e) {
+			if (e.keyCode == 46){
+				objectFound.deleteElement();
+				$('.editWindow').hide(150);			
+			}
+		});
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
-			$("#"+selectedModule).remove();
+				objectFound.deleteElement();
 			$('.editWindow').hide(150);
 		});
 		$( document ).off( "keyup", "textarea.bodyChange"); //unbind old events, and bind a new one		
@@ -1564,9 +1576,17 @@ IMG BLOCKS CASE
 			objectFound.setSrc();
 		});
 		//unbind old events, and bind a new one
+		// delete event handler
+		$( document ).one('keyup', function(e) {
+			if (e.keyCode == 46){
+				objectFound.deleteElement();
+				$('.editWindow').hide(150);			
+			}
+		});
 		$( document ).off( "click", "#deleteModule"); 
 		$( document ).on( "click", "#deleteModule" , function() {
 			objectFound.deleteElement();
+			$('.editWindow').hide(150);			
 		});
 		// unbind old event handler
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
@@ -1682,6 +1702,12 @@ DATA CELLS CASE
 			}
 		});
 		// delete event handler
+		$( document ).one('keyup', function(e) {
+			if (e.keyCode == 46){
+				objectFound.deleteElement();
+				$('.editWindow').hide(150);			
+			}
+		});		
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
 			$("#"+selectedModule).remove();
