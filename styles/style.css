@@ -191,10 +191,11 @@ select{
 	color: #999;	
 	float: left;
 	font-size: 12px;
-	cursor: pointer;
+	cursor: help;
 }
 .editWindowRow .fa-question:hover{
 	color: white;
+	text-shadow: 0px 0px 5px white;
 }
 .controls input{
 	vertical-align: middle;

@@ -17,9 +17,9 @@ var tooltips = {
 	//tooltip for jstree instructions
 	jsTree : "<p> Items from the file tree below can be placed onto the page: </p>" +
 			"<ul>"+
-			"<li> Double click an item to expand its children</li>"+
-			"<li> When an element has a <i class='fa fa-plus-square-o'></i>, this icon can be clicked in order to being adding that element</li>"+
+			"<li> <b>Double click</b> an item to expand its children</li>"+
+			"<li> <b>Click</b> the <i class='fa fa-plus-square-o'></i> next to an element that you want to add</li>"+
 			"<li> Once the <i class='fa fa-plus-square-o'></i> is clicked, the item will attach to the mouse pointer</li>"+
-			"<li> click anywhere on the grid and the item will be added to the page</li>"+
+			"<li> <b> Move </b> your mouse and <b>click</b> anywhere on the grid and the item will be added to the page</li>"+
 			"</ul>"
 }

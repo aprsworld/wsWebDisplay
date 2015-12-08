@@ -763,6 +763,8 @@ function data_update(data) {
 			});
 			// all tooltips located in tooltips.js due to messy strings
 			$(document).tooltip({ 
+				position: {my: "right bottom"},
+				show: { effect: "slide", delay: 600 },
 				content: function() {
 					var element = $( this );
 					if(	element.is( "#bodyInputInfo" )){
