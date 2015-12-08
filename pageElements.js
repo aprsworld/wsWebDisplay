@@ -592,7 +592,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	var camObj = this;
 	console.log(camId);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+camId+'" >');
-	$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
+	$('.top-container').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
 	camObj.setResize();
 		camObj.setDrag();
 	$('#'+camId).css('position', 'absolute');
@@ -764,7 +764,7 @@ pageImg.prototype.setResize = function(){
 	});	
 }
 pageImg.prototype.createHtml = function(cellCount){
-	$('#content').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
+	$('.top-container').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
 	this.setDrag();
 	this.setResize();
@@ -808,7 +808,7 @@ pageText.prototype.createHtml = function(cellCount){
 	//appends a textblock to the div with our default text
 	$(textBlock).append('<p>'+textContent+'</p>');
 	//appends the textblock to the page
-	$('#content').append(textBlock);
+	$('.top-container').append(textBlock);
 	this.count = cellCount;
 	this.setDrag();
 	this.setResize();

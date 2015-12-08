@@ -77,7 +77,7 @@ select{
 	background-color: transparent;
 	border-right: 1px dotted white;
 	border-bottom: 1px dotted white;
-	z-index: 100;
+	z-index: 102;
 }
 #rulerBox2{
 	display:none;
@@ -86,7 +86,7 @@ select{
 	width: 0;
 	background-color: transparent;
 	border-bottom: 1px dotted white;
-	z-index: 100;
+	z-index: 102;
 }
 #rulerBox2 p{
 	position: absolute;
@@ -99,7 +99,7 @@ select{
 	width: 0;
 	background-color: transparent;
 	border-right: 1px dotted white;
-	z-index: 100;
+	z-index: 102;
 }
 #preload{
 	display:none;
@@ -141,7 +141,7 @@ select{
 	padding-left: 10px;
 	padding-right: 10px;
 	background-color: rgba(0,0,0,0.7);
-	z-index: 102;
+	z-index: 103;
 }
 .controls{
 	width: 250px;
@@ -153,7 +153,7 @@ select{
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 101;
+	z-index: 102;
 	box-shadow: 0px 0px 4px #222;
 	text-align: center;
 	display: none;
@@ -354,7 +354,7 @@ div.logo_container{
 	padding: 10px;
 	background-color: grey;
 	color: #333;
-	z-index: 0;
+	z-index: 100;
 	font-size: 14px;
 }
 .textBlockContainer p{
@@ -370,7 +370,7 @@ div.logo_container{
 	left: 300;
 	width: auto;
 	height: auto;
-	z-index: 1;
+	z-index: 100;
 	display: inline;
 }
 /* styling for camera-feed container */
@@ -378,7 +378,7 @@ div.logo_container{
 	position: absolute;
 	top: 50;
 	left: 300;
-	z-index: 1;
+	z-index: 100;
 	background-image: url(../res/external/dist/themes/default/throbber.gif);
 	background-repeat: no-repeat;
 	background-position: center; 
@@ -427,7 +427,7 @@ div.logo_container{
 	height: auto;
 	display: inline-block;
 	border-radius: 5px;
-	z-index: 2;
+	z-index: 100;
 	color: #efefef;	
 	background-color: rgba(0,0,0,0.01);
 }
@@ -540,7 +540,7 @@ div.logo_container{
 	border: 1px solid #000;
 	padding-left: 0px;
 	padding-right: 0px;
-	z-index: 101;
+	z-index: 102;
 	color: #333;
 	text-align: center;
 	box-shadow: 0px 0px 3px #222;
@@ -553,7 +553,7 @@ div.logo_container{
 	color: white;
 	cursor: pointer;
 	width: 200px;
-	z-index: 102;
+	z-index: 103;
 	display:none;
 }
 #editMaximize{
@@ -563,7 +563,7 @@ div.logo_container{
 	color: white;
 	cursor: pointer;
 	width: 32px;
-	z-index: 102;
+	z-index: 103;
 	display:none;
 	box-shadow: 0px 0px 5px black;
 	
