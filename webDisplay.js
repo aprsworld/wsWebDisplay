@@ -755,14 +755,27 @@ function data_update(data) {
 			}
         });
         $(document).ready(function() {
-			$(function() {
-				$( "#fontComboBox" ).combobox({
-					 select: function (event, ui) { 
-						$('#comboBoxInput').attr('value', this.value);
-						$('#comboBoxInput').text(this.value).trigger("input");
-					} 
-				});
-				
+			$( "#fontComboBox" ).combobox({
+				 select: function (event, ui) { 
+					$('#comboBoxInput').attr('value', this.value);
+					$('#comboBoxInput').text(this.value).trigger("input");
+				} 
+			});
+			// all tooltips located in tooltips.js due to messy strings
+			$(document).tooltip({ 
+				content: function() {
+					var element = $( this );
+					if(	element.is( "#bodyInputInfo" )){
+						return tooltips.bodyInput;
+					}
+					else if( element.is( "#jsTreeInfo" )){
+						return tooltips.jsTree;
+					}
+					else{
+						return element.attr( "title" );
+					}
+			   }
+					
 			});
 			//attempts to grab the get parameter to set background color
 			var bgColor = getUrlVars()["bgColor"];

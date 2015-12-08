@@ -18,6 +18,7 @@
 <script type="text/javascript" src="version.js"></script>	
 <script type="text/javascript" src="pageElements.js"></script>
 <script type="text/javascript" src="conversions.js"></script>
+<script type="text/javascript" src="tooltips.js"></script>
 <script type="text/javascript" src="webDisplay.js"></script>
 <link rel="stylesheet" type="text/css" href="styles/style.css">
 <link rel="stylesheet" type="text/css" href="res/external/evol.colorpicker.min.css">
@@ -45,6 +46,7 @@
 					<h2> Available Data </h2>
 				</div>
 				<hr>
+				<i id="jsTreeInfo" title="" class="fa fa-question"></i>
 				<div  ondragstart="return false;" ondrop="return false;"  id="stationTree"></div>
 				<div id="refreshControlRow" class="controlRow">
 					<button id="refreshTree"><i class="fa fa-refresh"></i><span> Refresh Tree </span></button>	
@@ -105,7 +107,8 @@
 		<label> Edit URL </label><input title="" class="urlChange" type="text" placeholder="Change URL"></input>
 	</div>
 	<div id="bodyRow" class="editWindowRow">
-		<label id="editBodyLabel"> Edit Body </label><textarea title="" class="bodyChange" type="text" placeholder="Change Text"></textarea>
+		<label id="editBodyLabel"> Edit Body </label><i id="bodyInputInfo" title="This input accepts HTML: &#013 Bold: <b> bolded text </b> &#013; Italics: <i> italicized text </i> &#013; Header 1: <h1> header text </h1>&#013; Header 2: <h2> header text </h2>&#013; " class="fa fa-question"></i>
+		<textarea title="" class="bodyChange" type="text" placeholder="Change Text"></textarea>
 	</div>
 	<div id="backgroundColorRow" class="editWindowRow">
 		<label id="bgColorLabel"> Background Color</label><input title="Type in a color" class="backgroundColorChange" type="text" placeholder="Type in a color"></input>
