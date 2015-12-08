@@ -824,6 +824,7 @@ function data_update(data) {
 				console.log(rsp);
 				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
+				getConfigs(rsp.data)
 				if (layout) {
 					loadState(loadedLayout);
 					$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -892,6 +893,14 @@ function getParameterByName(name) {
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function getConfigs(data) {
+	for(var k in data){
+		$('#configDrop')
+          .append($('<option>', { value : k })
+          .text(k));
+	}
 }
 
 var data_object;
