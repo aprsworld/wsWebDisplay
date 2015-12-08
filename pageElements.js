@@ -20,7 +20,7 @@ pageElement.prototype = {
 	gridProps: {
 		"grid":[1,1],
 		"snap":"true",
-		"snapTolerance":.4
+		"snapTolerance":.4	
 	},
 	setStyle: function(styleList) {
 		this.style = styleList;
@@ -688,6 +688,7 @@ pageImg.prototype.setSrc = function(){
 	$(tempImg).one('load', function() {
 		var width = tempImg.naturalWidth;
 		var height = tempImg.naturalHeight;
+		var newSrc = $('.urlChange').val();
 		console.log(width+' '+height);
 
 		url.attr('width',width);
@@ -698,6 +699,7 @@ pageImg.prototype.setSrc = function(){
 		$("#"+selectedModule).children('.ui-wrapper').css('height',height);
 		$("#"+selectedModule).css('width', 'auto');
 		$("#"+selectedModule).css('height','auto');
+		$("#"+selectedModule).css('background-image', 'url('+newSrc+')');
 		url.attr('src', $('.urlChange').val());
 		objectFound.src = $('.urlChange').val();
 		objectFound.natHeight = height;
@@ -727,7 +729,7 @@ pageImg.prototype.resize = function(){
 pageImg.prototype.setResize = function(){
 	var handleTarget;
 	var thisObj = this;		
-	$('#'+thisObj.id).resizable({
+	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
 		start: function(event, ui){
 			var width = $('#'+thisObj.parentId).css('width');
@@ -764,7 +766,7 @@ pageImg.prototype.setResize = function(){
 	});	
 }
 pageImg.prototype.createHtml = function(cellCount){
-	$('.top-container').append('<div id=img'+cellCount+'container class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
+	$('.top-container').append('<div id=img'+cellCount+'container style="background-image: url(images/insert_image.svg)" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
 	this.setDrag();
 	this.setResize();
@@ -774,12 +776,12 @@ pageImg.prototype.createHtml = function(cellCount){
 pageImg.prototype.loadHtml = function(){
 	console.log('loadedImage');
 	var objectFound = this;
-	$('#content').append('<div id="'+this.parentId+'" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
+	$('#content').append('<div id="'+this.parentId+'" style="background-image: url('+objectFound.src+')" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
 	$('#'+this.id).load(function() {
-		objectFound.setDrag();
-		objectFound.setResize();
-		
+		$('#'+objectFound.parentId).attr('style',objectFound.style);
 	});
+	objectFound.setDrag();
+	objectFound.setResize();
 }
 /***********************************************************************************
 * TEXT BLOCK OBJECT

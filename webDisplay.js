@@ -740,7 +740,19 @@ function data_update(data) {
 		started = true; //sets our boolean to true so the above only executes once
         $(".controls").resizable({ //makes our controls div resizable and draggable
             minHeight: 70,
-			maxWidth: 250	
+			maxWidth: 250,
+			resize: function (event, ui){
+				if(ui.size.width <= 25){
+					$(".controls").css("padding-left", "1px").css("padding-right","1px");
+					$(".controls").children("#stationTree, .controlRow, .controlsTitle").hide();
+					//$("#stationTree").hide();
+				}
+				else{
+					$(".controls").css("padding-left", "10px").css("padding-right","10px");
+					$(".controls").children("#stationTree, .controlRow, .controlsTitle").show();					
+					//$("#stationTree").show();
+				}
+			}
         });
         $(document).ready(function() {
 			$(function() {
@@ -774,7 +786,7 @@ function data_update(data) {
 						
 
 					});
-					$('.jstree-themeicon').click(function(e){
+					$('.jstree-themeicon').off('click').on('click', function(e) {
 						var item = this;
 						var pageX = e.pageX;
 						var pageY = e.pageY;
@@ -1836,6 +1848,7 @@ function captureState(){
 function loadState(jsonString){
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
+
 	for(var k in configObject){
 		if(configObject[k].count >= count){
 			count = configObject[k].count;

@@ -372,6 +372,16 @@ div.logo_container{
 	height: auto;
 	z-index: 100;
 	display: inline;
+	background-repeat: no-repeat;
+	background-position: center; 
+	background-size: contain;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility:    hidden;
+	-ms-backface-visibility:     hidden;
+	-webkit-transform: translate3d(0, 0, 0);
+}
+.imgBlockContainer img{
+	visibility: hidden;
 }
 /* styling for camera-feed container */
 .imgCamContainer{
@@ -778,7 +788,7 @@ select.backgroundColorChange option{
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;
-
+	z-index: 2147483647;
 }
 /* class for the hovered cam that appears in firefox and IE*/
 .expandedCam{
@@ -791,7 +801,7 @@ select.backgroundColorChange option{
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;
-
+	z-index: 2147483647;
 }
 .focusedCam{
 	z-index: 2147483647;
