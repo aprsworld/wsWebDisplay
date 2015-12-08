@@ -1426,7 +1426,8 @@ TEXT BLOCKS CASE
 
 		console.log(objectFound);
 		
-		$(bodyChange).val(body.html());
+		$(bodyChange).val(objectFound.text);
+		
 		$(bgColor).val($('#'+id).css('background-color'));
 		$(textColor).val($('#'+id).children('p').css('color'));
 		var backgroundColor = $('#'+selectedModule).css('background-color');	 
