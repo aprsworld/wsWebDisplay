@@ -190,6 +190,8 @@ pageElement.prototype = {
 			stop: function(event, ui){
 				$('#resizeSpan').remove();
 				thisObj.onChangeStyle();
+				thisObj.changedWidth = $('#'+thisObj.parentId).css('width');
+				thisObj.changedHeight = $('#'+thisObj.parentId).css('height');
 			}
 		});
 	},
@@ -569,6 +571,8 @@ pageCam.prototype.getHeight = function(){
 pageCam.prototype.setNaturalDimensions = function(height, width){
 	this.natHeight = height;
 	this.natWidth = width;
+	this.changedHeight = height;
+	this.changedWidth = width;
 }
 pageCam.prototype.resize = function(){
 	var camObj = this;
@@ -585,6 +589,138 @@ pageCam.prototype.resize = function(){
 	camObj.setStyle(newStyle);
 	camObj.setResize();
 	camObj.setDrag();
+}
+pageCam.prototype.camCrop = function(){
+	var thisObj = this;
+	var thisElement = $("#"+thisObj.parentId);
+	thisElement.hide();
+	var width, height, left, top, src, diffFromNatWidth, diffFromNatHeight, cropTop, cropLeft, cropWidth, cropHeight, originalWidth, originalHeight;
+	//cropping situation if our camera has already been cropped
+	if(thisObj.cropped == true){
+		width = thisObj.changedWidth;
+		height = thisObj.changedHeight;
+		originalWidth = thisElement.css('width');
+		originalHeight = thisElement.css('height');
+		left = thisElement.css('left');
+		top = thisElement.css('top');
+		src = thisObj.src;		
+		diffFromNatHeight = (height)/thisObj.natHeight;
+		diffFromNatWidth = (width)/thisObj.natWidth;
+		//disables controls
+		$('.controlsOverlay').show();
+		//creates a cropper window that is the size of the image that we are cropping
+		$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width*diffFromNatWidth)+' " height="'+(height*diffFromNatHeight)+' "src="'+src+'"></div>');
+		//sets the cropped postion to be maximum width and height and positioned in the top left corner
+		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
+
+		$('.cropperwrapper > img').cropper({
+			dragCrop: true,
+			scaleable: false,
+			movable: false,
+			modal: true,
+			strict: false,
+			zoomable: false,
+			mouseWheelZoom: false,
+			crop: function(e) {
+					cropHeight =  Math.round(e.height);
+					cropWidth =  Math.round(e.width);
+					cropLeft =  Math.round(e.x);
+					cropTop =  Math.round(e.y);
+			},
+			built: function () {
+				console.log(originalHeight);
+				var thisTop, thisLeft, thisWidth, thisHeight;
+				var backgroundPos = thisElement.css('backgroundPosition').split(" ");
+				thisTop = Math.abs(parseInt(backgroundPos[1]));
+				thisLeft = Math.abs(parseInt(backgroundPos[0]));
+				thisHeight = parseInt(originalHeight);
+				thisWidth = parseInt(originalWidth);
+				console.log(thisTop+" "+thisLeft+" "+thisWidth+" "+thisHeight);
+				$('.cropperwrapper > img').cropper("setCropBoxData", { width: thisWidth, height: thisHeight, left: thisLeft, top: thisTop });
+			}
+		});
+	}
+	//if cam has not been cropped yet
+	else{
+		width = thisElement.css('width');
+		height = thisElement.css('height');
+		left = thisElement.css('left');
+		top = thisElement.css('top');
+		src = thisObj.src;
+		diffFromNatHeight = (height.slice(0,-2))/thisObj.natHeight;
+		diffFromNatWidth = (width.slice(0,-2))/thisObj.natWidth;
+		//disables controls
+		$('.controlsOverlay').show();
+		//creates a cropper window that is the size of the image that we are cropping
+		$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width*diffFromNatWidth)+' " height="'+(height*diffFromNatHeight)+' "src="'+src+'"></div>');
+		//sets the cropped postion to be maximum width and height and positioned in the top left corner
+		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
+
+		$('.cropperwrapper > img').cropper({
+			aspectRatio: width / height,
+			autoCropArea: 1.0,
+			dragCrop: true,
+			scaleable: false,
+			movable: false,
+			modal: true,
+			strict: false,
+			zoomable: false,
+			mouseWheelZoom: false,
+			crop: function(e) {
+				cropHeight = Math.round(e.height);
+				cropWidth = Math.round(e.width);
+				cropLeft = Math.round(e.x);
+				cropTop = Math.round(e.y);
+			}
+		});
+	}	
+	//event for finalizing the cropping
+	$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
+	$( document ).on( "click", "#endCrop" , function() {
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
+		$('#endCrop, #cancelCrop').hide();
+		
+		width = parseInt((width));
+		height = parseInt((height));
+		$('.cropperWrapper').remove();
+		
+		if(cropTop == 0 || cropLeft == 0){
+			if(cropTop == 0){
+				thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px "+((cropTop*diffFromNatHeight))+"px");
+			}
+			else if(cropLeft == 0){
+				thisElement.css("background-position", ""+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+			}
+			else if(cropLeft == 0 && cropTop ==0){
+				thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+			}
+		}
+		else{
+				thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+		}
+		console.log(thisElement.css("background-position"));
+		thisElement.css({
+			"top": top+(cropTop*diffFromNatHeight),
+			"left": left+(cropLeft*diffFromNatWidth),
+			"width": cropWidth*diffFromNatWidth+"px",
+			"height": cropHeight*diffFromNatHeight+"px",
+			"background-size": width+"px "+height+"px ",
+			"overflow": "hidden"
+		});
+		$('.controlsOverlay').hide();				
+		$(".cropped").resizable({disabled:true});
+		thisObj.setCrop(true);
+		thisElement.show();
+	});
+	//event for canceling the cropping
+	$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
+	$( document ).on( "click", "#cancelCrop" , function() {
+		thisElement.show();
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
+		$('#endCrop, #cancelCrop').hide();
+		$('.cropperWrapper').remove();
+		$('.controlsOverlay').hide();
+	});
 }
 //creates element
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){

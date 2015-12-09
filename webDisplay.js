@@ -761,6 +761,9 @@ function data_update(data) {
 					$('#comboBoxInput').text(this.value).trigger("input");
 				} 
 			});
+			$( document ).off('click','#loadConfig').on('click', '#loadConfig', function() {
+				loadFromList();	
+			});
 			// all tooltips located in tooltips.js due to messy strings
 			$(document).tooltip({ 
 				position: {my: "right bottom"},
@@ -834,6 +837,7 @@ function data_update(data) {
 					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 					cellCount = parseInt(lastCell, 10)+1;
 				}
+
 			},'webdisplay/configs');			
 		//if layout parameter found, load that layout
 		if(layout != undefined){
@@ -903,6 +907,32 @@ function getConfigs(data) {
 	}
 }
 
+function loadFromList(){
+	alert('loaded');
+	for(var k in cell_arr){
+		cell_arr[k].removeSelf();	
+	}
+	data_object.ValueGet(function(rsp){
+		if(!rsp.data || rsp.error){
+			// Couldn't get configuration data from server
+			return;
+		}
+		console.log(rsp);
+		console.log(loadedLayout);
+		var selected = $( "#configDrop option:selected" ).text();
+		var loadedLayout = rsp.data[selected];
+
+		loadState(rsp.data[selected]);
+		$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+		$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+		$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+		$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+		var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
+		cellCount = parseInt(lastCell, 10)+1;
+	
+	},'webdisplay/configs');
+	
+}
 var data_object;
 /*function initiates the data transfer*/
 function data_start() {
@@ -1341,89 +1371,7 @@ CAMERA CASE
 		$( document ).on( "click", "#cropModule" , function() {	
 			$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').hide();
 			$('#endCrop, #cancelCrop').show();
-			var nativeWidth = $("#"+selectedModule).children('img').width();
-			var nativeHeight = $("#"+selectedModule).children('img').height();
-			$("#"+selectedModule).hide();
-			var cropWidth, cropHeight, cropLeft, cropTop;
-			var width = $("#"+selectedModule).css('width');
-			var height = $("#"+selectedModule).css('height');
-			var left = $("#"+selectedModule).css('left');
-			var top = $("#"+selectedModule).css('top');
-			var src = $("#"+selectedModule).css('background-image').replace(/^url\(["']?/, '').replace(/["']?\)$/, ''); //.find('img').attr('src');
-			var diffFromNatHeight = (height.slice(0,-2))/nativeHeight;
-			var diffFromNatWidth = (width.slice(0,-2))/nativeWidth;
-			$('.controlsOverlay').show();
-			$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width.slice(0,-2)*diffFromNatWidth)+' " height="'+(height.slice(0,-2)*diffFromNatHeight)+' "src="'+src+'"></div>');
-			$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
-			$('.cropperwrapper > img').cropper({
-				aspectRatio: width / height,
-				autoCropArea: 1.0,
-				dragCrop: true,
-				scaleable: false,
-				movable: false,
-				modal: true,
-				strict: false,
-				zoomable: false,
-				mouseWheelZoom: false,
-				crop: function(e) {
-					cropHeight = e.height;
-					cropWidth = e.width;
-					cropLeft = e.x;
-					cropTop = e.y;
-				}
-			});
-			$('#masterEdit, .textBlockContainer, .imgBlockContainer, .imgCamContainer, .tr').one('click', function() {
-				$("#"+selectedModule).show();
-				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
-				$('#endCrop, #cancelCrop').hide();
-				$('.cropperWrapper').remove();
-				$('.controlsOverlay').hide();								
-			});
-
-			$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
-			$( document ).on( "click", "#endCrop" , function() {
-				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
-				$('#endCrop, #cancelCrop').hide();
-				width = parseInt((width.slice(0,-2)));
-				height = parseInt((height.slice(0,-2)));
-				$('.cropperWrapper').remove();
-				console.log(diffFromNatHeight);
-				console.log(diffFromNatWidth);
-				if(cropTop == 0 || cropLeft == 0){
-					if(cropTop == 0){
-						$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px "+((cropTop*diffFromNatHeight))+"px");
-					}
-					else if(cropLeft == 0){
-						$("#"+selectedModule).css("background-position", ""+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
-					}
-					else if(cropLeft == 0 && cropTop ==0){
-						$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
-					}
-					console.log($("#"+selectedModule).css("background-position"));
-				}
-				else{
-					$("#"+selectedModule).css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
-				}
-				$("#"+selectedModule).css("top",top+(cropTop*diffFromNatHeight));
-				$("#"+selectedModule).css("left",left+(cropLeft*diffFromNatWidth));
-				$("#"+selectedModule).css("width",cropWidth*diffFromNatWidth+"px");
-				$("#"+selectedModule).css("height",cropHeight*diffFromNatHeight+"px");
-				$("#"+selectedModule).css("background-size",width+"px "+height+"px ");
-				$("#"+selectedModule).css("overflow","hidden");
-				$("#"+selectedModule).show();
-				$("#"+selectedModule).addClass("cropped");
-				$('.controlsOverlay').hide();				
-				$(".cropped").resizable({disabled:true});
-				objectFound.setCrop(true);
-			});
-			$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
-			$( document ).on( "click", "#cancelCrop" , function() {
-				$("#"+selectedModule).show();
-				$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
-				$('#endCrop, #cancelCrop').hide();
-				$('.cropperWrapper').remove();
-				$('.controlsOverlay').hide();
-			});
+			objectFound.camCrop();
 		});
 		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
 		$( document ).on( "click", "#hideModule" , function() {
