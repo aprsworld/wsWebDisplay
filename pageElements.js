@@ -589,6 +589,7 @@ pageCam.prototype.resize = function(){
 	camObj.setStyle(newStyle);
 	camObj.setResize();
 	camObj.setDrag();
+	
 }
 pageCam.prototype.camCrop = function(){
 	var thisObj = this;
@@ -597,8 +598,8 @@ pageCam.prototype.camCrop = function(){
 	var width, height, left, top, src, diffFromNatWidth, diffFromNatHeight, cropTop, cropLeft, cropWidth, cropHeight, originalWidth, originalHeight;
 	//cropping situation if our camera has already been cropped
 	if(thisObj.cropped == true){
-		width = thisObj.changedWidth;
-		height = thisObj.changedHeight;
+		width = parseInt(thisObj.changedWidth);
+		height = parseInt(thisObj.changedHeight);
 		originalWidth = thisElement.css('width');
 		originalHeight = thisElement.css('height');
 		left = thisElement.css('left');
@@ -683,7 +684,6 @@ pageCam.prototype.camCrop = function(){
 		width = parseInt((width));
 		height = parseInt((height));
 		$('.cropperWrapper').remove();
-		
 		if(cropTop == 0 || cropLeft == 0){
 			if(cropTop == 0){
 				thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px "+((cropTop*diffFromNatHeight))+"px");
@@ -696,9 +696,10 @@ pageCam.prototype.camCrop = function(){
 			}
 		}
 		else{
-				thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+			thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
 		}
 		console.log(thisElement.css("background-position"));
+		console.log(diffFromNatWidth);
 		thisElement.css({
 			"top": top+(cropTop*diffFromNatHeight),
 			"left": left+(cropLeft*diffFromNatWidth),
@@ -708,7 +709,7 @@ pageCam.prototype.camCrop = function(){
 			"overflow": "hidden"
 		});
 		$('.controlsOverlay').hide();				
-		$(".cropped").resizable({disabled:true});
+		thisElement.resizable({disabled:true});
 		thisObj.setCrop(true);
 		thisElement.show();
 	});
