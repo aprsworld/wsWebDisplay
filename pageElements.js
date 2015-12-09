@@ -198,9 +198,13 @@ pageElement.prototype = {
 	removeSelf: function(){
 		var obj = this;
 		var objId = obj.parentId;
-		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+		var id = obj.id;
+		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(id);
 		var objectFound = cell_arr[elementPos];
+		console.log(elementPos);
+		console.log(cell_arr.length);
 		cell_arr.splice(elementPos, 1);
+		console.log(cell_arr.length);
 		$('#'+objId).remove();
 		console.log(cell_arr);
 	}
@@ -210,7 +214,7 @@ pageElement.prototype = {
 ************************************************************************************/
 var pageSettings = function() {
 	this.setType('pageSettings');
-	this.backgroundColor;
+	this.backgroundColor = '#333';
 	this.title;
 	this.id = 'pageSettings';
 	this.gridSize = true;
@@ -629,14 +633,12 @@ pageCam.prototype.camCrop = function(){
 					cropTop =  Math.round(e.y);
 			},
 			built: function () {
-				console.log(originalHeight);
 				var thisTop, thisLeft, thisWidth, thisHeight;
 				var backgroundPos = thisElement.css('backgroundPosition').split(" ");
 				thisTop = Math.abs(parseInt(backgroundPos[1]));
 				thisLeft = Math.abs(parseInt(backgroundPos[0]));
 				thisHeight = parseInt(originalHeight);
 				thisWidth = parseInt(originalWidth);
-				console.log(thisTop+" "+thisLeft+" "+thisWidth+" "+thisHeight);
 				$('.cropperwrapper > img').cropper("setCropBoxData", { width: thisWidth, height: thisHeight, left: thisLeft, top: thisTop });
 			}
 		});
@@ -777,6 +779,7 @@ pageCam.prototype.loadHtml = function(){
 }
 
 pageCam.prototype.removeSelf = function(){
+	console.log('REMOVED');
 		var obj = this;
 		var objId = obj.parentId;
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);

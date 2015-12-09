@@ -765,7 +765,8 @@ function data_update(data) {
 				loadFromList();	
 			});
 			// all tooltips located in tooltips.js due to messy strings
-			$(document).tooltip({ 
+			$('[title]:not(.imgBlockContainer, .imgCamContainer, .textBlockContainer, .imgBlockContainer)').tooltip({ 
+				//items: ":not(.imgBlockContainer, .imgCamContainer, .textBlockContainer, .imgBlockContainer)",
 				position: {my: "right bottom"},
 				show: { effect: "slide", delay: 600 },
 				content: function() {
@@ -908,10 +909,13 @@ function getConfigs(data) {
 }
 
 function loadFromList(){
-	alert('loaded');
-	for(var k in cell_arr){
-		cell_arr[k].removeSelf();	
-	}
+	var arrlength = cell_arr.length;
+	for(var i = 0; i< arrlength; i++){
+					console.log(i);
+
+			$('#'+cell_arr[i].parentId).remove()
+		}
+	cell_arr.length = 0;
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
 			// Couldn't get configuration data from server
@@ -921,7 +925,7 @@ function loadFromList(){
 		console.log(loadedLayout);
 		var selected = $( "#configDrop option:selected" ).text();
 		var loadedLayout = rsp.data[selected];
-
+		
 		loadState(rsp.data[selected]);
 		$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -1446,7 +1450,7 @@ TEXT BLOCKS CASE
 		});
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {	
-				objectFound.deleteElement();
+				objectFound.removeSelf();
 			$('.editWindow').hide(150);
 		});
 		$( document ).off( "keyup", "textarea.bodyChange"); //unbind old events, and bind a new one		
@@ -1839,6 +1843,7 @@ function loadState(jsonString){
 			var settings = new pageSettings();
 			console.log(configObject[k]);
 			configObject[k].__proto__ = settings.__proto__;
+			
 			configObject[k].backgroundColorChange(configObject[k].backgroundColor);
 			configObject[k].setPageTitle(configObject[k].title);
 			configObject[k].updateGrid(configObject[k].gridSize);
@@ -1873,6 +1878,8 @@ function loadState(jsonString){
 		else if(configObject[k].elementType == 'pageText'){
 			var text = new pageText();
 			configObject[k].__proto__ = text.__proto__;
+						console.log(configObject[k]);
+
 			cell_arr.push(configObject[k]);
 			configObject[k].loadHtml();
 		}
