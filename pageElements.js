@@ -680,8 +680,8 @@ pageCam.prototype.camCrop = function(){
 	//event for finalizing the cropping
 	$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
 	$( document ).on( "click", "#endCrop" , function() {
-		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
-		$('#endCrop, #cancelCrop').hide();
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
+		$('#endCrop, #cancelCrop, #cropDialog').hide();
 		
 		width = parseInt((width));
 		height = parseInt((height));
@@ -701,7 +701,7 @@ pageCam.prototype.camCrop = function(){
 			thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
 		}
 		console.log(thisElement.css("background-position"));
-		console.log(diffFromNatWidth);
+		console.log(width+" "+diffFromNatWidth);
 		thisElement.css({
 			"top": top+(cropTop*diffFromNatHeight),
 			"left": left+(cropLeft*diffFromNatWidth),
@@ -719,10 +719,18 @@ pageCam.prototype.camCrop = function(){
 	$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
 	$( document ).on( "click", "#cancelCrop" , function() {
 		thisElement.show();
-		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').show();
-		$('#endCrop, #cancelCrop').hide();
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
+		$('#endCrop, #cancelCrop, #cropDialog').hide();
 		$('.cropperWrapper').remove();
 		$('.controlsOverlay').hide();
+	});
+	$('#masterEdit, .textBlockContainer, .imgBlockContainer, .imgCamContainer, .tr').one('click', function() {
+		console.log('abort!');
+		thisElement.show();
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
+		$('#endCrop, #cancelCrop, #cropDialog').hide();
+		$('.cropperWrapper').remove();
+		$('.controlsOverlay').hide();								
 	});
 }
 //creates element

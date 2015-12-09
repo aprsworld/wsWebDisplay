@@ -1373,8 +1373,8 @@ CAMERA CASE
 		});
 		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#cropModule" , function() {	
-			$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow').hide();
-			$('#endCrop, #cancelCrop').show();
+			$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').hide();
+			$('#endCrop, #cancelCrop, #cropDialog').show();
 			objectFound.camCrop();
 		});
 		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one

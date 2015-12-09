@@ -101,6 +101,17 @@ select{
 	border-right: 1px dotted white;
 	z-index: 102;
 }
+#cropDialog{
+	display: none;
+	width: auto;
+	height: auto;
+	position: fixed;
+	border-radius: 5px 5px 0px 0px;
+	bottom: 18;
+	left: 45%;
+	background-color: rgba(200, 200, 200, 0.8);
+	z-index: 1001;
+}
 #preload{
 	display:none;
 }
