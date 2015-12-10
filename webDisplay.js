@@ -1490,7 +1490,7 @@ IMG BLOCKS CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropRow, #hoverRow').show();
+		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow').show();
 		moduleContainer = $(this).attr('id');
 		selectedModule = $(this).find('img').attr('id');
 
@@ -1551,6 +1551,12 @@ IMG BLOCKS CASE
 			
 			objectFound.setSrc();
 		});
+		$( document ).off( "click", "#cropModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#cropModule" , function() {	
+			$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').hide();
+			$('#endCrop, #cancelCrop, #cropDialog').show();
+			objectFound.imgCrop();
+		});
 		//unbind old events, and bind a new one
 		// delete event handler
 		$( document ).off( "click", "#deleteModule"); 
@@ -1561,12 +1567,13 @@ IMG BLOCKS CASE
 		// unbind old event handler
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {
-			var width = document.getElementById(selectedModule).naturalWidth;
+			/*var width = document.getElementById(selectedModule).naturalWidth;
 			var height = document.getElementById(selectedModule).naturalHeight;
 			$("#"+selectedModule).css('width', width);
 			$("#"+selectedModule).css('height',height);
 			$("#"+selectedModule).parent().css('width', width);
-			$("#"+selectedModule).parent().css('height',height);
+			$("#"+selectedModule).parent().css('height',height);*/
+			objectFound.resize();
 		});
 		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
 		$( document ).on( "click", "#hideModule" , function() {

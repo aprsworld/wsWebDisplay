@@ -866,6 +866,8 @@ pageImg.prototype.setSrc = function(){
 		objectFound.src = $('.urlChange').val();
 		objectFound.natHeight = height;
 		objectFound.natWidth = width;
+		objectFound.changedHeight = objectFound.natHeight;
+		objectFound.changedWidth = objectFound.natWidth;
 	});
 	//wait split second for paste of new url
 	setTimeout(function () {
@@ -876,6 +878,173 @@ pageImg.prototype.setSrc = function(){
 	}, 100); 
 }
 
+pageImg.prototype.setCrop = function(boolCrop){
+	if(boolCrop == true){
+		var style = this.getStyle();
+		this.setStyle(style);
+		this.cropped = true;
+	}
+	else{
+		var style = this.getStyle();
+		this.setStyle(style);
+		this.cropped = false;	
+	}
+
+}
+
+
+pageImg.prototype.imgCrop = function(){
+	var thisObj = this;
+	var thisElement = $("#"+thisObj.parentId);
+	thisElement.hide();
+	var width, height, left, top, src, diffFromNatWidth, diffFromNatHeight, cropTop, cropLeft, cropWidth, cropHeight, originalWidth, originalHeight;
+	//cropping situation if our camera has already been cropped
+	if(thisObj.cropped == true){
+		width = parseInt(thisObj.changedWidth);
+		height = parseInt(thisObj.changedHeight);
+		originalWidth = thisElement.css('width');
+		originalHeight = thisElement.css('height');
+		left = thisElement.css('left');
+		top = thisElement.css('top');
+		src = thisObj.src;		
+		diffFromNatHeight = (height)/thisObj.natHeight;
+		diffFromNatWidth = (width)/thisObj.natWidth;
+		console.log(width+" "+thisObj.natWidth+" "+diffFromNatHeight);
+		//disables controls
+		$('.controlsOverlay').show();
+		//creates a cropper window that is the size of the image that we are cropping
+		$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width*diffFromNatWidth)+' " height="'+(height*diffFromNatHeight)+' "src="'+src+'"></div>');
+		//sets the cropped postion to be maximum width and height and positioned in the top left corner
+		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
+
+		$('.cropperwrapper > img').cropper({
+			dragCrop: true,
+			scaleable: false,
+			movable: false,
+			modal: true,
+			strict: false,
+			zoomable: false,
+			mouseWheelZoom: false,
+			crop: function(e) {
+					cropHeight =  Math.round(e.height);
+					cropWidth =  Math.round(e.width);
+					cropLeft =  Math.round(e.x);
+					cropTop =  Math.round(e.y);
+			},
+			built: function () {
+				var thisTop, thisLeft, thisWidth, thisHeight;
+				var backgroundPos = thisElement.css('backgroundPosition').split(" ");
+				thisTop = Math.abs(parseInt(backgroundPos[1]));
+				thisLeft = Math.abs(parseInt(backgroundPos[0]));
+				thisHeight = parseInt(originalHeight);
+				thisWidth = parseInt(originalWidth);
+				//case for when crop is not adjusted and finish is clicked
+				cropWidth = thisWidth;
+				cropHeight = thisHeight;
+				cropLeft = thisLeft;
+				cropTop = thisTop;
+				$('.cropperwrapper > img').cropper("setCropBoxData", { width: thisWidth, height: thisHeight, left: thisLeft, top: thisTop });
+			}
+		});
+	}
+	//if cam has not been cropped yet
+	else{
+		width = thisElement.css('width');
+		height = thisElement.css('height');
+		left = thisElement.css('left');
+		top = thisElement.css('top');
+		src = thisObj.src;
+		diffFromNatHeight = (height.slice(0,-2))/thisObj.natHeight;
+		diffFromNatWidth = (width.slice(0,-2))/thisObj.natWidth;
+		//disables controls
+		$('.controlsOverlay').show();
+		//creates a cropper window that is the size of the image that we are cropping
+		$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width*diffFromNatWidth)+' " height="'+(height*diffFromNatHeight)+' "src="'+src+'"></div>');
+		//sets the cropped postion to be maximum width and height and positioned in the top left corner
+		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
+
+		$('.cropperwrapper > img').cropper({
+			aspectRatio: width / height,
+			autoCropArea: 1.0,
+			dragCrop: true,
+			scaleable: false,
+			movable: false,
+			modal: true,
+			strict: false,
+			zoomable: false,
+			mouseWheelZoom: false,
+			crop: function(e) {
+				cropHeight = Math.round(e.height);
+				cropWidth = Math.round(e.width);
+				cropLeft = Math.round(e.x);
+				cropTop = Math.round(e.y);
+			}
+		});
+	}	
+	//event for finalizing the cropping
+	$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
+	$( document ).on( "click", "#endCrop" , function() {
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
+		$('#endCrop, #cancelCrop, #cropDialog').hide();
+		
+		width = parseInt((width));
+		height = parseInt((height));
+		$('.cropperWrapper').remove();
+		if(cropTop == 0 || cropLeft == 0){
+			if(cropTop == 0){
+				thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px "+((cropTop*diffFromNatHeight))+"px");
+			}
+			else if(cropLeft == 0){
+				thisElement.css("background-position", ""+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+			}
+			else if(cropLeft == 0 && cropTop ==0){
+				thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+			}
+		}
+		else{
+			thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
+		}
+		top = parseInt(top, 10);
+		left = parseInt(left, 10);
+		cropTop = parseInt(cropTop, 10);
+		cropLeft = parseInt(cropLeft, 10);
+		var topcrop = top;
+		var leftcrop = left;
+		var widthcrop = cropWidth*diffFromNatWidth;
+		var heightcrop = cropHeight*diffFromNatHeight;
+		//console.log(top+(cropTop*diffFromNatHeight)+" "+left+(cropLeft*diffFromNatWidth)+" "+cropWidth*diffFromNatWidth+" "+cropHeight*diffFromNatHeight)
+		console.log(thisElement.css("background-position"));
+		console.log(width+" "+diffFromNatWidth+" "+cropWidth+" "+widthcrop);
+		thisElement.css({
+			"top": topcrop,
+			"left": leftcrop,
+			"width": widthcrop+"px",
+			"height": heightcrop+"px",
+			"background-size": width+"px "+height+"px ",
+			"overflow": "hidden"
+		});
+		$('.controlsOverlay').hide();				
+		thisElement.resizable({disabled:true});
+		thisObj.setCrop(true);
+		thisElement.show();
+	});
+	//event for canceling the cropping
+	$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
+	$( document ).on( "click", "#cancelCrop" , function() {
+		thisElement.show();
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
+		$('#endCrop, #cancelCrop, #cropDialog').hide();
+		$('.cropperWrapper').remove();
+		$('.controlsOverlay').hide();
+	});
+	$('#masterEdit, .textBlockContainer, .imgBlockContainer, .imgCamContainer, .tr').one('click', function() {
+		thisElement.show();
+		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
+		$('#endCrop, #cancelCrop, #cropDialog').hide();
+		$('.cropperWrapper').remove();
+		$('.controlsOverlay').hide();								
+	});
+}
 pageImg.prototype.resize = function(){
 	var width = this.natWidth;
 	var height = this.natHeight;
@@ -883,9 +1052,14 @@ pageImg.prototype.resize = function(){
 	$("#"+this.id).css('height',height);
 	$("#"+this.parentId).css('width', width);
 	$("#"+this.parentId).css('height',height);
-	
+	$("#"+this.parentId).css('background', 'url('+this.src+')');
+	this.setCrop(false);
 	this.width = width;
 	this.height = height;
+	$("#"+this.parentId).css("background-size","contain");
+	$("#"+this.parentId).css("background-position","50% 50%");
+	this.setResize();
+	this.setDrag();
 }
 
 pageImg.prototype.setResize = function(){
@@ -924,6 +1098,8 @@ pageImg.prototype.setResize = function(){
 			var height = $('#'+thisObj.parentId).css('height');
 			thisObj.width = width;
 			thisObj.height = height;
+			thisObj.changedWidth = thisObj.width;
+			thisObj.changedHeight = thisObj.height;
 		}
 	});	
 }
