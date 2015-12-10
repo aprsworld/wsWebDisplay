@@ -611,6 +611,7 @@ pageCam.prototype.camCrop = function(){
 		src = thisObj.src;		
 		diffFromNatHeight = (height)/thisObj.natHeight;
 		diffFromNatWidth = (width)/thisObj.natWidth;
+		console.log(diffFromNatHeight);
 		//disables controls
 		$('.controlsOverlay').show();
 		//creates a cropper window that is the size of the image that we are cropping
@@ -639,6 +640,11 @@ pageCam.prototype.camCrop = function(){
 				thisLeft = Math.abs(parseInt(backgroundPos[0]));
 				thisHeight = parseInt(originalHeight);
 				thisWidth = parseInt(originalWidth);
+				//case for when crop is not adjusted and finish is clicked
+				cropWidth = thisWidth;
+				cropHeight = thisHeight;
+				cropLeft = thisLeft;
+				cropTop = thisTop;
 				$('.cropperwrapper > img').cropper("setCropBoxData", { width: thisWidth, height: thisHeight, left: thisLeft, top: thisTop });
 			}
 		});
@@ -700,13 +706,22 @@ pageCam.prototype.camCrop = function(){
 		else{
 			thisElement.css("background-position", "-"+(cropLeft*diffFromNatWidth)+"px -"+(cropTop*diffFromNatHeight)+"px");
 		}
+		top = parseInt(top, 10);
+		left = parseInt(left, 10);
+		cropTop = parseInt(cropTop, 10);
+		cropLeft = parseInt(cropLeft, 10);
+		var topcrop = top;
+		var leftcrop = left;
+		var widthcrop = cropWidth*diffFromNatWidth;
+		var heightcrop = cropHeight*diffFromNatHeight;
+		//console.log(top+(cropTop*diffFromNatHeight)+" "+left+(cropLeft*diffFromNatWidth)+" "+cropWidth*diffFromNatWidth+" "+cropHeight*diffFromNatHeight)
 		console.log(thisElement.css("background-position"));
-		console.log(width+" "+diffFromNatWidth);
+		console.log(width+" "+diffFromNatWidth+" "+cropWidth+" "+widthcrop);
 		thisElement.css({
-			"top": top+(cropTop*diffFromNatHeight),
-			"left": left+(cropLeft*diffFromNatWidth),
-			"width": cropWidth*diffFromNatWidth+"px",
-			"height": cropHeight*diffFromNatHeight+"px",
+			"top": topcrop,
+			"left": leftcrop,
+			"width": widthcrop+"px",
+			"height": heightcrop+"px",
 			"background-size": width+"px "+height+"px ",
 			"overflow": "hidden"
 		});
@@ -725,7 +740,6 @@ pageCam.prototype.camCrop = function(){
 		$('.controlsOverlay').hide();
 	});
 	$('#masterEdit, .textBlockContainer, .imgBlockContainer, .imgCamContainer, .tr').one('click', function() {
-		console.log('abort!');
 		thisElement.show();
 		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
 		$('#endCrop, #cancelCrop, #cropDialog').hide();
