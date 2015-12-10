@@ -91,10 +91,10 @@ pageElement.prototype = {
 		$('#'+this.parentId).draggable({
 			cursor: "move", disabled: false,
 			start: function(event, ui){
-				/*$('.controls').animate({width: '10px'},100);
-				$('.editWindow').animate({width: '0px', margin:'0', padding: '0'},50);
-				$('.controlRow, .controls h2').hide();*/
-				
+				//collapses windows when dragging
+				if(isExpanded){
+					collapseWindows();
+				}
 				var posLeft = ui.position.left;
 				var posTop = ui.position.top;
 				var posSpan = document.createElement("SPAN"); 
@@ -140,9 +140,10 @@ pageElement.prototype = {
 
 			},
 			stop: function(event, ui){
-				/*$('.controls').animate({width: '250px'},200);
-				$('.editWindow').animate({width: '280px',padding: '20px'},200);
-				$('.controlRow, .controls h2').show();*/
+				/uncollapses windows when done dragging
+				if(!isExpanded){
+					collapseWindows();
+				}
 				$('#positionDiv').remove();
 				console.log(thisObj.gridProps.grid);
 				var roundedTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
@@ -611,7 +612,7 @@ pageCam.prototype.camCrop = function(){
 		src = thisObj.src;		
 		diffFromNatHeight = (height)/thisObj.natHeight;
 		diffFromNatWidth = (width)/thisObj.natWidth;
-		console.log(diffFromNatHeight);
+		console.log(height+" "+thisObj.natHeight+" "+diffFromNatHeight);
 		//disables controls
 		$('.controlsOverlay').show();
 		//creates a cropper window that is the size of the image that we are cropping
@@ -658,6 +659,7 @@ pageCam.prototype.camCrop = function(){
 		src = thisObj.src;
 		diffFromNatHeight = (height.slice(0,-2))/thisObj.natHeight;
 		diffFromNatWidth = (width.slice(0,-2))/thisObj.natWidth;
+		console.log(thisObj.natWidth+" "+width.slice(0,-2)+" "+width);
 		//disables controls
 		$('.controlsOverlay').show();
 		//creates a cropper window that is the size of the image that we are cropping
