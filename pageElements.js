@@ -842,6 +842,7 @@ pageImg.prototype.setHoverTime = function(){
 
 pageImg.prototype.setSrc = function(){
 	var objectFound = this;
+	objectFound.resize();
 	var tempImg = document.createElement('img');
 	var selectedChild = this.id;
 	var selectedModule = this.parentId;
