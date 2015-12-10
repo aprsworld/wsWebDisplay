@@ -140,7 +140,7 @@ pageElement.prototype = {
 
 			},
 			stop: function(event, ui){
-				/uncollapses windows when done dragging
+				//uncollapses windows when done dragging
 				if(!isExpanded){
 					collapseWindows();
 				}
@@ -536,7 +536,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			if(editMode == false){	
 				clearTimeout(camObj.timeOut);
 				$(hoverImg).remove();
-				$('.imgCamContainer').removeClass('focusedCam');
+				$('#'+camId).removeClass('focusedCam');
+				
 			}
 		}
 	);} //end $('#'camId).hover(function()
@@ -886,6 +887,7 @@ pageImg.prototype.setHover = function(boolHover, hoverTime){
 					console.log(hoverImg);
 					$('#'+imgId).append(hoverImgLink);
 					$('#'+imgId).addClass('focusedCam');
+					console.log($('#'+imgId).css('z-index'));
 					$('#'+hoverImgId).css('visibility','visible');
 					console.log($('#'+hoverImgId).parent().css('visibility'));
 					if (isWebkit) {
@@ -912,7 +914,7 @@ pageImg.prototype.setHover = function(boolHover, hoverTime){
 			if(editMode == false){	
 				clearTimeout(imgObj.timeOut);
 				$(hoverImgLink).remove();
-				$('.imgCamContainer').removeClass('focusedCam');
+				$('#'+imgId).removeClass('focusedCam');
 			}
 		}
 	);} //end $('#'camId).hover(function()

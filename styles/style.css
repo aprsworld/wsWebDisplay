@@ -835,10 +835,10 @@ select.backgroundColorChange option{
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;
-	z-index: 2147483647;
+	z-index: 100000000 !important;
 }
 .focusedCam{
-	z-index: 2147483647;
+	z-index: 100000000 !important;
 }
 .selectedShadow {
     box-shadow: 0px 0px 20px #0550a5;
