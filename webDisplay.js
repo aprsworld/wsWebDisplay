@@ -1001,53 +1001,9 @@ function createImage(){
 	//allows images to be hoverable outside of edit function
 	var hoverTime;
 	var hoverImage = document.createElement('img');
-	$('.imgBlockContainer').hover(function(){
-		var imgID = $(this).attr('id');	
-		var imgWidth = $('#'+imgID).find('img').naturalWidth;
-		var imgHeight = $('#'+imgID).find('img').naturalHeight;
-		var imgSrc = $('#'+imgID).find('img').attr('src');
-		var isWebkit = 'WebkitAppearance' in document.documentElement.style
-		var hoverImgID = imgID+'hover';
-		var enabled = $('#'+imgID).hasClass('hoverables');
-		var timeOut = 1000;
-		timeOut = parseInt($('#'+imgID).find('img').attr('alt'), 10)*1000;
-			if(editMode == false && enabled == true){	
-				console.log(imgSrc);
-					hoverTime = setTimeout(function() {
-						$(hoverImage).width(imgWidth);
-						$(hoverImage).height(imgHeight);
-						hoverImage.src = imgSrc;
-						console.log(hoverImage);
-						$('#'+imgID).append(hoverImage);
-						$('#'+imgID).addClass('focusedCam');
-						if (isWebkit) {
-							hoverImage.className = 'webKitCam';
-							hoverImage.id = hoverImgID;
-							var top = ''+$('#'+camID).css('top');
-							var left = ''+$('#'+camID).css('left');
-							$('#'+hoverImgID).css('left','50% ');
-							$('#'+hoverImgID).css('top','50%');
-							top = '-'+$('#'+camID).css('top');
-							left= '-'+$('#'+camID).css('left');
-							$('#'+hoverImgID).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
-							console.log(top);
-
-						}
-						else{
-							hoverImage.className = 'expandedCam';
-						}	
-					}, timeOut);
-				}
-			}, function () {
-				if(editMode == false){	
-					clearTimeout(hoverTime);
-					$(hoverImage).remove();
-					$('.imgBlockContainer').removeClass('focusedCam');
-				}
-			}
-
-	);	
-//end of hoverable event 	
+	imgBlock.hoverDelay = 1;
+	imgBlock.setSuppression(true);
+	imgBlock.setHover(false, imgBlock.hoverDelay);
 }
 function refreshTree(newData){
 	var lastk = "#";
@@ -1515,7 +1471,7 @@ IMG BLOCKS CASE
 		if(objectFound.hoverable){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
-			$('#hoverTime').val($('#'+selectedModule).attr('alt'));
+			$('#hoverTime').val(objectFound.hoverDelay);
 			$('#hoverTimeRow').show();
 
 		}
@@ -1528,20 +1484,23 @@ IMG BLOCKS CASE
 		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
-				$('#'+moduleContainer).addClass('hoverables');
+				objectFound.setHover(true, objectFound.hoverDelay);
 				
 				$('#hoverTimeRow').show();
+				$('input#hoverTime').val() = objectFound.hoverDelay;
 
 			}
 			else{
-				$('#'+moduleContainer).removeClass('hoverables');
+				objectFound.setHover(false, objectFound.hoverDelay);
 				$('#hoverTimeRow').hide();
 			}
 		});
 		
 		$( document ).off( "keyup", "input#hoverTime");
 		$( document ).on( "keyup", "input#hoverTime" , function() {
-			$('#'+selectedModule).attr('alt',$('input#hoverTime').val());
+			var time = $('input#hoverTime').val();
+			objectFound.setHover(true, time);
+			objectFound.hoverDelay = time;
 		});
 		
 		//delegate event handler for url change
@@ -1806,7 +1765,7 @@ function htmlEntities(str) {
 }
 function delHandle(objectFound){
 	return function ( e ){
-		console.log(e.target);
+		//if delete key is pressed and the input nor text area are not receiving focus, the element is deleted
 		if (e.keyCode == 46 && !$(e.target).is('input, textarea')){
 			objectFound.deleteElement();
 			$('.editWindow').hide(150);			

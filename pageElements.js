@@ -832,12 +832,92 @@ function pageImg(){
 }
 extend(pageImg,pageElement);
 
-pageImg.prototype.setHover = function(){
- //stub for hover function	
+pageImg.prototype.setHover = function(boolHover, hoverTime){
+	var imgObj, imgId, radiobtn;
+	imgObj = this;
+	console.log(this);
+	clearTimeout(imgObj.timeOut);	
+	imgId = imgObj.parentId;
+	console.log(imgId);
+	if(boolHover == false){
+		console.log('false');
+		imgObj.hoverable = false;
+		$( '#'+imgId ).off("mouseenter mouseleave");
+		$('#hoverTimeRow, #suppressHoverable').hide();		
+		return;	
+	}
+	else{
+		var suppressed, imgId, imgWidth, divWidth, imgHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
+		imgObj.hoverable = true;
+		timeOut = hoverTime*1000;
+		hoverImg = document.createElement('img');
+		hoverImgLink = document.createElement('a');
+		$('#hoverTimeRow, #suppressHoverable').show();	
+		$( "#"+imgId  ).unbind("mouseenter mouseleave");
+		$( "#"+imgId ).hover(function(){
+
+			var imgSrc = imgObj.src;
+			suppressed = false;
+			imgWidth = parseInt(imgObj.natWidth);
+			imgHeight = parseInt(imgObj.natHeight);
+			divWidth = parseInt($('#'+imgId).css('width').slice(0,-2));
+			isWebkit = 'WebkitAppearance' in document.documentElement.style;
+			hoverImgId = imgId+'hover';
+
+			if(imgWidth <= divWidth && imgObj.suppressed == true){
+				suppressed = true;
+			}
+
+			if(editMode == false && suppressed == false){
+				clearTimeout(imgObj.timeOut);	
+				console.log(imgObj.timeOut);
+				imgObj.timeOut = setTimeout(function() {
+					console.log('time');
+										hoverImg.id = hoverImgId;
+
+					$('#'+hoverImgId).width(imgWidth);
+					$('#'+hoverImgId).height(imgHeight);
+					hoverImg.src = imgSrc;
+					hoverImgLink.href = imgSrc;
+					hoverImgLink.target = '_blank';
+					hoverImgLink.appendChild(hoverImg);
+					console.log(hoverImg);
+					$('#'+imgId).append(hoverImgLink);
+					$('#'+imgId).addClass('focusedCam');
+					$('#'+hoverImgId).css('visibility','visible');
+					console.log($('#'+hoverImgId).parent().css('visibility'));
+					if (isWebkit) {
+						hoverImg.className = 'webKitCam';
+						hoverImgLink.id = hoverImgId;
+						var top = ''+$('#'+imgId).css('top');
+						var left = ''+$('#'+imgId).css('left');
+						$('#'+hoverImgId).css('position','absolute');
+						$('#'+hoverImgId).css('left','50% ');
+						$('#'+hoverImgId).css('top','50%');
+						top = '-'+$('#'+imgId).css('top');
+						left= '-'+$('#'+imgId).css('left');
+						$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
+						console.log(top);
+
+					}
+					else{
+						hoverImg.className = 'expandedCam';
+					}	
+				}, timeOut); //end hoverTimeOut
+
+			} //end if(editMode == false && suppressed == false)
+		}, function () {
+			if(editMode == false){	
+				clearTimeout(imgObj.timeOut);
+				$(hoverImgLink).remove();
+				$('.imgCamContainer').removeClass('focusedCam');
+			}
+		}
+	);} //end $('#'camId).hover(function()
 }
 
-pageImg.prototype.setHoverTime = function(){
- //stub for hover function	
+pageImg.prototype.setSuppression = function(boolSuppress){
+	this.suppressed = boolSuppress;
 }
 
 pageImg.prototype.setSrc = function(){
