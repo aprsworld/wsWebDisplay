@@ -996,7 +996,8 @@ function createImage(){
 	imgBlock.parentId = 'img'+index+'container';
 	imgURL = $('#createImageURL').val();
 	imgBlock.createHtml(index);
-
+	imgBlock.natHeight = 240;
+	imgBlock.natWidth = 320;
 	cell_arr.push(imgBlock);
 	//allows images to be hoverable outside of edit function
 	var hoverTime;
@@ -1111,7 +1112,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop').hide();
+	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #titleInputInfo').hide();
 	$('.editWindow').removeClass('editHide').show(150);
 	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 	$("#editMaximize").hide();
@@ -1155,7 +1156,7 @@ PAGE EDIT CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'pageEdit'){
 		$('.editWindow h2').text("Page");
-		$('#gridRow, #titleRow,#backgroundColorRow,#opacityRow').show();
+		$('#gridRow, #titleRow,#backgroundColorRow,#opacityRow,#titleInputInfo').show();
 		$('#hideModule,#deleteModule').hide();
 		$('.titleChange').val(document.title);
 		$('.backgroundColorChange').val($('html').css('background-color'));
