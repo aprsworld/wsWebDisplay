@@ -1112,7 +1112,7 @@ var editWindow =  function() {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #titleInputInfo').hide();
+	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo').hide();
 	$('.editWindow').removeClass('editHide').show(150);
 	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 	$("#editMaximize").hide();
@@ -1256,7 +1256,7 @@ CAMERA CASE
 		var objectFound = cell_arr[elementPos];
 		objectFound.setSelected();
 		console.log(objectFound);
-	
+		
 		var camera = $(this);
 		//checks to see if image has added hoverables class and checks appropriate radio button
 		var radiobtn
@@ -1264,7 +1264,7 @@ CAMERA CASE
 		if(objectFound.hoverable == true){
 			radiobtn = document.getElementById("hoverEnabled");
 			radiobtn.checked = true;
-			$('#hoverTimeRow').show();
+			$('#hoverTimeRow, #suppressHoverable').show();
 		}
 		else{
 			radiobtn = document.getElementById("hoverDisabled");
@@ -1448,6 +1448,7 @@ IMG BLOCKS CASE
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
 		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow').show();
+		
 		moduleContainer = $(this).attr('id');
 		selectedModule = $(this).find('img').attr('id');
 
@@ -1474,7 +1475,7 @@ IMG BLOCKS CASE
 			radiobtn.checked = true;
 			$('#hoverTime').val(objectFound.hoverDelay);
 			$('#hoverTimeRow').show();
-
+			$('#suppressHoverable').show();	
 		}
 		else{
 			radiobtn = document.getElementById("hoverDisabled");
