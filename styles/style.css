@@ -298,9 +298,8 @@ div.logo_container{
 	height: 30px;
 }
 .fontContainer{
-	width: 65px;	
+	width: 80px;	
 	height:36px;
-	padding: 2px;
 	float: left;
 }
 #fontSizePlus{
@@ -604,14 +603,13 @@ div.logo_container{
 }
 .editWindowRow{
 	height: auto;
-	min-height: 35px;
 	width: 250px;
 	display: inline-block;
 	text-align: center;
 	margin: 10px;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	
+	clear: both;
 }
 .editWindowRow input{
 	height: 28px;	
@@ -622,7 +620,7 @@ div.logo_container{
 	display: inline-block;
 	width: 30%;
 	font-weight: 300;
-	text-align: center;
+	text-align: left;
 	font-size: 16px;
 	margin-bottom: 5px;
 	margin-right: 15px;
@@ -653,10 +651,12 @@ div.logo_container{
 	float: left;
 	margin-right: 20px !important;
 }
-#bgColorLabel, #textColorLabel{
+#bgColorLabel, #textColorLabel, #zLabel{
 	float: left;
-	width: 98% !important;
+	margin-left: 4px;
+	width: 80% !important;
 	text-align: left !important;
+	clear: both;
 }
 #editBodyLabel{
 	float: left;
@@ -684,7 +684,7 @@ div.logo_container{
 	width: 90%;	
 }
 .bodyChange{
-	padding: 3px;
+	padding: 6px;
 	width: 95%;
 	background-color: #AAA;	
 	color: #333;
@@ -694,10 +694,12 @@ div.logo_container{
 	border-color: #333;
 }
 .backgroundColorChange, .textColorChange{
-	width: 60%;
+	width: 150px;
+	float: right;
 }
 select.backgroundColorChange{
-	width: 20%;	
+	width: 20%;
+
 }
 select.backgroundColorChange option{
 	display: none;
@@ -751,16 +753,14 @@ select.backgroundColorChange option{
 	box-shadow: 0px 0px 10px black;
 }
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
-#cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
+#cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, 
+#unitRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, 
+#backgroundColorRow, #textColorRow, #opacityRow{
 	display:none;	
 	clear: both;
 }
-#bodyRow{
-	height: auto;
-	min-height: 60px;
-}
 #backgroundColorRow, #textColorRow{
-	height: 50px;	
+	min-height: 50px;	
 }
 #backgroundColorRow span{
 	text-align: left;	
@@ -783,8 +783,11 @@ select.backgroundColorChange option{
 	float: left;
 	text-align: left;
 }
-#opacityRow, #zRow{
+
+#opacitySlider, #zSlider{
 	width: 90%;	
+	margin-bottom: 10px auto;
+	clear: both;
 }
 #opacityLabel{
 	width: 100%;	
@@ -876,6 +879,8 @@ ul.jstree-children{
 .evo-colorind-ff{
 	width: 20% !important;
 	height: 26px !important;
+		float:left !important;
+		margin-left: 25px;
 }
 /*style changes for preview swatches on color picker*/
 .evo-color{
@@ -883,8 +888,8 @@ ul.jstree-children{
 }
 /* style changes for color picker container*/
 .evo-pop{
-	margin-top: 12px;
-	right: 55;
+	margin-top: 60px;
+	left: -230;
 	box-shadow: 0 0 5px black;
 	width: 300px !important;
 }
