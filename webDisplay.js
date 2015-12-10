@@ -1806,7 +1806,8 @@ function htmlEntities(str) {
 }
 function delHandle(objectFound){
 	return function ( e ){
-		if (e.keyCode == 46){
+		console.log(e.target);
+		if (e.keyCode == 46 && !$(e.target).is('input, textarea')){
 			objectFound.deleteElement();
 			$('.editWindow').hide(150);			
 		}
