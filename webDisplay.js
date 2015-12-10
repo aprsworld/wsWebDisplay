@@ -1841,6 +1841,7 @@ function loadState(jsonString){
 			cell_arr.push(configObject[k]);
 			console.log(cell_arr);
 			configObject[k].loadHtml();
+			
 
 		}
 		else if(configObject[k].elementType == 'pageText'){

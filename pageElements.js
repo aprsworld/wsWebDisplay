@@ -1198,9 +1198,12 @@ pageImg.prototype.loadHtml = function(){
 	$('#content').append('<div id="'+this.parentId+'" style="background-image: url('+objectFound.src+')" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
 	$('#'+this.id).load(function() {
 		$('#'+objectFound.parentId).attr('style',objectFound.style);
+		objectFound.setSuppression(objectFound.suppressed);
+		objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
 	});
 	objectFound.setDrag();
 	objectFound.setResize();
+	
 }
 /***********************************************************************************
 * TEXT BLOCK OBJECT
@@ -1253,6 +1256,7 @@ pageText.prototype.loadHtml = function(){
 	$('#'+this.parentId).attr('style', this.style);
 	this.setDrag();
 	this.setResize();
+
 }
 pageText.prototype.fontSizeChange = function(size){
 	if(size == ''){
