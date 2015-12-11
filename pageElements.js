@@ -463,12 +463,9 @@ extend(pageCam,pageElement);
 pageCam.prototype.setHover = function(boolHover, hoverTime){
 	var camObj, camId, radiobtn;
 	camObj = this;
-	console.log(this);
 	clearTimeout(camObj.timeOut);	
 	camId = camObj.containerId;
-	console.log(camId);
 	if(boolHover == false){
-		console.log('false');
 		camObj.hoverable = false;
 		$( '#'+camId ).off("mouseenter mouseleave");
 		$('#hoverTimeRow, #suppressHoverable').hide();		
@@ -485,6 +482,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		$( "#"+camId ).hover(function(){
 
 			var camSrc = camObj.src;
+			console.log(camObj.src);
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
 			camHeight = parseInt(camObj.natHeight);
@@ -803,6 +801,8 @@ pageCam.prototype.loadHtml = function(){
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		$('#'+camObj.parentId).draggable({disabled:true});
 		$('#'+camObj.parentId).resizable({disabled:true});
+		cell_arr.push(camObj);
+
 	});
 	$('#preload_'+camId).attr('src', this.src);
 

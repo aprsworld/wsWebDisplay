@@ -386,11 +386,9 @@ function ref(obj, str) {
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate(data) {
 	var idLength = cell_arr.length;
-	var value, cellObj, id, label, objectFound;
+	var value, cellObj, id, label, loadingObject;
 	
-    for ($i = 0; $i < idLength; $i++) {
-		objectFound = cell_arr[$i];
-		
+    cell_arr.forEach(function(objectFound){	
 		// since the object array has textblocks and img blocks, we need to weed them out
 		if(objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell'){
 		id = objectFound.id;
@@ -403,6 +401,7 @@ function dynamicUpdate(data) {
 		//cam update
 		else if(id.indexOf("pageCam") >= 0){
 			var currentCam;
+			
 			value = ref(data, objectFound.path);
 			currentCam = $("#"+objectFound.fullId);
 			currentCam = currentCam.attr('id');
@@ -410,7 +409,10 @@ function dynamicUpdate(data) {
 			$('#preload_'+currentCam).load(function() {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
-				objectFound.src = src;
+				if(objectFound.src != src){	
+					objectFound.src = src;
+					objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
+				}
 				document.getElementById(cam).style.backgroundImage = 'url('+src+')';	
 			});
 			//src is set after the .load() function
@@ -475,7 +477,7 @@ function dynamicUpdate(data) {
 		clearInterval(ageInterval);						
 		ageTimer();
     }
-	}
+	});
 	
 }
 function chooseConversion(type, typeUnits, value, typeChange){
