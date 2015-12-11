@@ -929,6 +929,8 @@ function loadFromList(){
 		var loadedLayout = rsp.data[selected];
 		
 		loadState(rsp.data[selected]);
+		$('.gridlines').show();
+
 		$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
