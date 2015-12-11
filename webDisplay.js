@@ -913,10 +913,10 @@ function getConfigs(data) {
 function loadFromList(){
 	var arrlength = cell_arr.length;
 	for(var i = 0; i< arrlength; i++){
-					console.log(i);
-
-			$('#'+cell_arr[i].parentId).remove()
-		}
+				console.log(i);
+		
+		cell_arr[i].removeSelf()
+	}
 	cell_arr.length = 0;
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
@@ -1856,6 +1856,9 @@ function loadState(jsonString){
 
 			cell_arr.push(configObject[k]);
 			configObject[k].loadHtml();
+		}
+		else{
+			console.log('undefined');	
 		}
 	}
 	cell_arr.length = count+1;

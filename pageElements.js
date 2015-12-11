@@ -801,7 +801,8 @@ pageCam.prototype.loadHtml = function(){
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		$('#'+camObj.parentId).draggable({disabled:true});
 		$('#'+camObj.parentId).resizable({disabled:true});
-		cell_arr.push(camObj);
+		//cell_arr.push(camObj);
+		console.log(cell_arr);
 
 	});
 	$('#preload_'+camId).attr('src', this.src);
