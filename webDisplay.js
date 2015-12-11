@@ -619,7 +619,7 @@ function clickToCreate(item, data, x ,y){
 		obj["id"] = id+"_pageCam_"+idArrLen;
 		obj["toolTip"] = tooltip;
 		console.log(obj);
-		cell_arr.push(obj);
+		//cell_arr.push(obj);
 		var sendPath = ref(data, path);
 		obj.createHtml(cellCount, sendPath, x, y);
 		obj.setHover(true, obj.hoverDelay);

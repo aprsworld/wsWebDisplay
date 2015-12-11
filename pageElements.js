@@ -575,6 +575,8 @@ pageCam.prototype.getHeight = function(){
 
 //sets the natural width and height of an image
 pageCam.prototype.setNaturalDimensions = function(height, width){
+	console.log("width "+width+" height "+height);
+	
 	this.natHeight = height;
 	this.natWidth = width;
 	this.changedHeight = height;
@@ -764,6 +766,8 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	$('#'+camId).css('top',pageY);
 	$('#'+camId).css('left',pageX);
 	$('#preload_'+camId).load(function() {
+				console.log('loaded - we should call setNatDimensions now');
+
 		var src = $(this).attr("src");
 		$('#'+camId).css('background-image','url('+value+')');
 		console.log('test');
@@ -780,7 +784,8 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		var hov = true;
 		var delay = 1;
 		camObj.setNaturalDimensions(height, width);
-		
+		cell_arr.push(camObj);
+
 	});	
 	$('#preload_'+camId).attr('src', value);
 }
