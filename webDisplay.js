@@ -770,7 +770,7 @@ function data_update(data) {
 			$('[title]:not(.imgBlockContainer, .imgCamContainer, .textBlockContainer, .imgBlockContainer)').tooltip({ 
 				//items: ":not(.imgBlockContainer, .imgCamContainer, .textBlockContainer, .imgBlockContainer)",
 				position: {my: "right bottom"},
-				show: { effect: "slide", delay: 600 },
+				show: { effect: "fade", delay: 600 },
 				content: function() {
 					var element = $( this );
 					if(	element.is( "#bodyInputInfo" )){
@@ -1836,17 +1836,16 @@ function loadState(jsonString){
 			var cam = new pageCam();
 			console.log(cell);
 			configObject[k].__proto__ = cam.__proto__;
-			cell_arr.push(configObject[k]);
 			configObject[k].loadHtml();
+			cell_arr.push(configObject[k]);
 
 		}
 		else if(configObject[k].elementType == 'pageImg'){
 			var img = new pageImg();
 			configObject[k].__proto__ = img.__proto__;
-			cell_arr.push(configObject[k]);
 			console.log(cell_arr);
 			configObject[k].loadHtml();
-			
+			cell_arr.push(configObject[k]);			
 
 		}
 		else if(configObject[k].elementType == 'pageText'){

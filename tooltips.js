@@ -15,7 +15,8 @@ var tooltips = {
 				"<li> <i> Italicized </i> phrases:<br> &#60;i&#62;phrase &#60;/i&#62;</li>"+	
 				"</ul>",
 	//tooltip for jstree instructions
-	jsTree : "<p> Items from the file tree below can be placed onto the page: </p>" +
+	jsTree : "<h3> How to use this control panel </h3>"+
+			"<p> Items from the file tree below can be placed onto the page: </p>" +
 			"<ul>"+
 			"<li> <b>Double click</b> a folder to expand its children</li>"+
 			"<li> <b>Click</b> the <b><i class='fa fa-plus-square-o'></i></b> next to an element that you want to add</li>"+

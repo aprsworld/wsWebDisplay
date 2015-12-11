@@ -15,7 +15,6 @@ var pageElement = function(){
 }
 
 pageElement.prototype = {
-	//sets type of element to be a data cell, image block, textblock, camera, etc.
 	hidden: false,
 	gridProps: {
 		"grid":[1,1],
@@ -30,6 +29,7 @@ pageElement.prototype = {
 		var style =  $('#'+this.parentId).attr('style');
 		return style;
 	},
+	//sets type of element to be a data cell, image block, textblock, camera, etc.
 	setType: function(elementType) {
 		this.elementType = elementType;	
 	},
@@ -144,6 +144,7 @@ pageElement.prototype = {
 				if(!isExpanded){
 					collapseWindows();
 				}
+				console.log($('#positionDiv').children().text());
 				$('#positionDiv').remove();
 				console.log(thisObj.gridProps.grid);
 				var roundedTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
@@ -155,7 +156,7 @@ pageElement.prototype = {
 				});
 				thisObj.onChangeStyle();
 				$('#rulerBox, #rulerBox2, #rulerBox3').hide();
-
+				
 			}
 		});
 	},
@@ -802,7 +803,6 @@ pageCam.prototype.loadHtml = function(){
 		$('#'+camObj.parentId).draggable({disabled:true});
 		$('#'+camObj.parentId).resizable({disabled:true});
 		//cell_arr.push(camObj);
-		console.log(cell_arr);
 
 	});
 	$('#preload_'+camId).attr('src', this.src);
