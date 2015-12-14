@@ -466,22 +466,36 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 	camObj = this;
 	clearTimeout(camObj.timeOut);	
 	camId = camObj.containerId;
+	
+	/*if hovering is set to disabled, we remove the event handler and hide the 
+	* options in the edit window responsible for configuring hover. 
+	*/
 	if(boolHover == false){
 		camObj.hoverable = false;
 		$( '#'+camId ).off("mouseenter mouseleave");
 		$('#hoverTimeRow, #suppressHoverable').hide();		
 		return;	
 	}
+	//else, continue setting hover event handler
 	else{
 		var suppressed, camId, camWidth, divWidth, camHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
 		camObj.hoverable = true;
 		timeOut = hoverTime*1000;
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
+		
+		/*if the src of the image changes while we are hovering, we don't want 
+		* this function to set another hover event handler. Instead we just change
+		* the src of the hover image and return
+		*/
+		if($( "#"+camId  ).hasClass('focusedCam')){
+			$( "#"+camId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);	
+			return;
+		}
+		
 		$('#hoverTimeRow, #suppressHoverable').show();	
 		$( "#"+camId  ).unbind("mouseenter mouseleave");
 		$( "#"+camId ).hover(function(){
-
 			var camSrc = camObj.src;
 			console.log(camObj.src);
 			suppressed = false;
@@ -492,44 +506,43 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			hoverImgId = camId+'hover';
 			
 			if(camWidth <= divWidth && camObj.suppressed == true){
-
 				suppressed = true;
 			}
 			
 			if(editMode == false && suppressed == false){
-			clearTimeout(camObj.timeOut);	
-				console.log(camObj.timeOut);
-			camObj.timeOut = setTimeout(function() {
-				camObj.test = 'test';
-				console.log('time');
-				$(hoverImg).width(camWidth);
-				$(hoverImg).height(camHeight);
-				hoverImg.src = camSrc;
-				hoverImgLink.href = camSrc;
-				hoverImgLink.target = '_blank';
-				hoverImgLink.appendChild(hoverImg);
-				console.log(hoverImg);
-				$('#'+camId).append(hoverImgLink);
-				$('#'+camId).addClass('focusedCam');
-				if (isWebkit) {
-					hoverImg.className = 'webKitCam';
-					hoverImgLink.id = hoverImgId;
-					var top = ''+$('#'+camId).css('top');
-					var left = ''+$('#'+camId).css('left');
-					$('#'+hoverImgId).css('position','absolute');
-					$('#'+hoverImgId).css('left','50% ');
-					$('#'+hoverImgId).css('top','50%');
-					top = '-'+$('#'+camId).css('top');
-					left= '-'+$('#'+camId).css('left');
-					$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
-					console.log(top);
+				clearTimeout(camObj.timeOut);	
+				//sets a user-configurable timeout so that the hover does not trigger right away
+				camObj.timeOut = setTimeout(function() {
+					camObj.test = 'test';
+					console.log('time');
+					$(hoverImg).width(camWidth);
+					$(hoverImg).height(camHeight);
+					hoverImg.src = camSrc;
+					hoverImgLink.href = camSrc;
+					hoverImgLink.target = '_blank';
+					hoverImgLink.appendChild(hoverImg);
+					console.log(hoverImg);
+					$('#'+camId).append(hoverImgLink);
+					$('#'+camId).addClass('focusedCam');
+					//Since Chrome and Safari like to mess things up, we need a separate class with extra math for those browsers
+					if (isWebkit) {
+						hoverImg.className = 'webKitCam';
+						hoverImgLink.id = hoverImgId;
+						var top = ''+$('#'+camId).css('top');
+						var left = ''+$('#'+camId).css('left');
+						$('#'+hoverImgId).css('position','absolute');
+						$('#'+hoverImgId).css('left','50% ');
+						$('#'+hoverImgId).css('top','50%');
+						top = '-'+$('#'+camId).css('top');
+						left= '-'+$('#'+camId).css('left');
+						$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
+						console.log(top);
 
-				}
-				else{
-					hoverImg.className = 'expandedCam';
-				}	
-			}, timeOut); //end hoverTimeOut
-			
+					}
+					else{
+						hoverImg.className = 'expandedCam';
+					}	
+				}, timeOut); //end hoverTimeOut
 			} //end if(editMode == false && suppressed == false)
 		}, function () {
 			if(editMode == false){	
