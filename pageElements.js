@@ -492,8 +492,6 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			$( "#"+camId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);	
 			return;
 		}
-		
-		$('#hoverTimeRow, #suppressHoverable').show();	
 		$( "#"+camId  ).unbind("mouseenter mouseleave");
 		$( "#"+camId ).hover(function(){
 			var camSrc = camObj.src;
@@ -872,6 +870,10 @@ pageImg.prototype.setHover = function(boolHover, hoverTime){
 		var suppressed, imgId, imgWidth, divWidth, imgHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
 		imgObj.hoverable = true;
 		timeOut = hoverTime*1000;
+		if($( "#"+imgId  ).hasClass('focusedCam')){
+			$( "#"+imgId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);	
+			return;
+		}
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
 		$('#hoverTimeRow, #suppressHoverable').show();	

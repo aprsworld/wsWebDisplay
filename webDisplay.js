@@ -1249,7 +1249,7 @@ PAGE EDIT CASE
 CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
-		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow, #suppressHoverable').show();
+		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text($(this).attr('title'));
 		$(this).addClass('selectedShadow');
 		
@@ -1259,6 +1259,11 @@ CAMERA CASE
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		objectFound.setSelected();
+		
+		if(objectFound.hoverable){
+			$('#hoverTimeRow, #suppressHoverable').show();		
+		}
+		
 		console.log(objectFound);
 		
 		var camera = $(this);
@@ -1291,9 +1296,13 @@ CAMERA CASE
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
 				objectFound.setHover(true, objectFound.hoverDelay);
+				$('#hoverTimeRow, #suppressHoverable').show();		
+
 			}
 			else{
 				objectFound.setHover(false, objectFound.hoverDelay);
+				$('#hoverTimeRow, #suppressHoverable').hide();		
+
 			}
 		});
 		var suppressedChecked;
