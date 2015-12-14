@@ -14,6 +14,7 @@ var started = false; //this boolean makes sure we only execute some of our funct
 var ageInterval;
 var staticRegexPeriod = /\./g; //global declaration to reduce overhead
 var isExpanded;
+var tempArray = [];
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -413,7 +414,7 @@ function dynamicUpdate(data) {
 					objectFound.src = src;
 					objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
 				}
-				document.getElementById(cam).style.backgroundImage = 'url('+src+')';	
+				$('#'+cam).css('background-image', 'url('+src+')');	
 			});
 			//src is set after the .load() function
 			$('#preload_'+currentCam).attr('src',value);		
@@ -913,9 +914,8 @@ function getConfigs(data) {
 function loadFromList(){
 	var arrlength = cell_arr.length;
 	for(var i = 0; i< arrlength; i++){
-				console.log(i);
-		
-		cell_arr[i].removeSelf()
+		console.log(cell_arr[i]);		
+		$('#'+cell_arr[i].parentId).remove();
 	}
 	cell_arr.length = 0;
 	data_object.ValueGet(function(rsp){
@@ -1104,9 +1104,10 @@ function populateConversions(id){
 	}
 }
 
-var editWindow =  function() {
+var editWindow =  function(e) {
 	console.log(cell_arr)
-	var moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
+	
+	var changeArray, moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
 	labelChange = $('.labelChange');
 	bodyChange = $('.bodyChange');
@@ -1118,7 +1119,6 @@ var editWindow =  function() {
 	textColor= $('.textColorChange');
 	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo').hide();
 	$('.editWindow').removeClass('editHide').show(150);
-	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 	$("#editMaximize").hide();
 	$("#editMinimize").show();
 	selectedModule = $(this).attr('id');
@@ -1141,10 +1141,52 @@ var editWindow =  function() {
   		$('#opacitySlider .ui-slider-handle').css('border-color', color);
 	});
 	$('#hideModule,#deleteModule').show();
+	
+	$(document).off('click','.tr, .textBlockContainer, .imgBlockContainer, .imgCamContainer');
+/*****************************************************************
+MULTIPLE SELECTIONS (shift key is held when clicking)
+******************************************************************/			
+	if(e.shiftKey) {	
+		$('.selectedShadow').removeClass('selectedShadow');
+		var length = tempArray.length;
+		for(var i = 0; i<length; i++){
+			var parent = tempArray[i].parentId;	
+			$('#'+parent).addClass('selectedShadow');
+		}
+		var clicked = this;
+		var id;
+		var elementPos = tempArray.map(function(x) {return x.parentId; }).indexOf(selectedModule);
+		var objectFound
+		if(elementPos != -1){
+			$(clicked).removeClass('selectedShadow');
+			tempArray.splice(elementPos, 1);
+			console.log(tempArray);
+		}
+		else{
+			console.log(selectedModule);
+			elementPos = cell_arr.map(function(x) {return x.parentId; }).indexOf(selectedModule);
+			objectFound = cell_arr[elementPos];
+			console.log(elementPos);
+			tempArray.push(objectFound);
+			$(clicked).addClass('selectedShadow');
+			$( 'html').off('keyup');
+			$( 'html').on('keyup', function(e){
+				if (e.keyCode == 46 && !$(e.target).is('input, textarea')){
+					console.log(tempArray);
+					var length = tempArray.length;	
+					for(var i = 0; i<tempArray.length; i++){
+						tempArray[i].removeSelf();	
+					}
+					$('.editWindow').hide(150);	
+					console.log(cell_arr);
+				}
+			});
+		}
+	}
 /*****************************************************************
 CREATE STATIC ELEMENTS CASE
 ******************************************************************/	
-	if($(this).attr('id') == 'createStatic'){
+	else if($(this).attr('id') == 'createStatic'){
 		$('.editWindow h2').text("Static Elements");
 		$('#staticRow').show();
 	}
@@ -1159,6 +1201,7 @@ CONFIGRATIONS CASE
 PAGE EDIT CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'pageEdit'){
+		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 		$('.editWindow h2').text("Page");
 		$('#gridRow, #titleRow,#backgroundColorRow,#opacityRow,#titleInputInfo').show();
 		$('#hideModule,#deleteModule').hide();
@@ -1251,6 +1294,7 @@ CAMERA CASE
 	else if($(this).hasClass('imgCamContainer')){
 		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text($(this).attr('title'));
+		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 		$(this).addClass('selectedShadow');
 		
 		moduleContainer = $(this).attr('id');
@@ -1360,6 +1404,7 @@ TEXT BLOCKS CASE
 		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
 		id = $(this).attr('id');
 		$('.editWindow h2').text("Text "+id);
+		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 		$(this).addClass('selectedShadow');
 
 		body = $(this).children('p');
@@ -1467,6 +1512,7 @@ IMG BLOCKS CASE
 
 		//change title of edit window 
 		$('.editWindow h2').text("Image "+moduleContainer);
+		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');			
 		$(this).addClass('selectedShadow');
 		
 		var objId = selectedModule;
@@ -1564,6 +1610,7 @@ DATA CELLS CASE
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text($(this).attr('title'));
+		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$(this).addClass('selectedShadow');
 
 		//find parts of the data cell and assign them to a variable
@@ -1730,8 +1777,9 @@ function edit(handler) {
 	$('.controls').show(200);
 	$('#masterEdit').attr('onclick', 'nonEdit()');
 	//delegate events
-	$('.top-container').delegate('.tr','click', editWindow);
-	$('#content').delegate('.textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);	
+	//$('.top-container').delegate('.tr','click', editWindow);
+	$('#content').delegate('.tr, .textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);	
+	
 	//$('#content').delegate('.imgBlockContainer','click',editWindow);
 	//$('#content').delegate('.imgCamContainer','click',editWindow);
 	$('.controls').delegate('#pageEdit, #createStatic, #configMenu','click',editWindow);
@@ -1760,12 +1808,13 @@ function nonEdit(handler) {
 	$("#editMaximize").hide();
 	$("#editMinimize").hide();
 	//delegate events
-	$('#content').undelegate('.textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);
-	$('.top-container').undelegate('.tr','click', editWindow);
+	$('#content').undelegate('.tr, .textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);
+	//$('.top-container').undelegate('.tr','click', editWindow);
 	//$('#content').undelegate('.imgBlockContainer','click',editWindow);
 	//$('#content').undelegate('.imgCamContainer','click',editWindow);
 	$('.controls').delegate('#pageEdit, #createStatic, #configMenu','click',editWindow);
-	
+	tempArray.length = 0;
+	console.log(tempArray);
 	//disable draggables and resizables
 	$('.ui-icon').hide();
 	$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );

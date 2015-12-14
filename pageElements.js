@@ -1351,6 +1351,7 @@ pageText.prototype.setText = function(text){
 }
 
 pageText.prototype.setOpacity = function(opacity, selectedModule, ui){
+	var thisObj = this;
 	var containerId = this.parentId;	
 	opacity = opacity.toString();
 	var newColor;
