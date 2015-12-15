@@ -1183,6 +1183,7 @@ MULTIPLE SELECTIONS (shift key is held when clicking)
 			$(clicked).addClass('selectedShadow');
 		}
 		if(tempArray.length > 0){
+			$('.editWindow h2').text('Multiple Elements');
 			var tempLength = tempArray.length;
 			var sliderValue, backgroundColor;
 			if(objectFound.getType == 'pageCell' || objectFound.getType == 'pageText'){
