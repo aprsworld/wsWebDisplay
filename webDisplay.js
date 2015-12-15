@@ -1123,6 +1123,16 @@ var editWindow =  function(e) {
 	$("#editMinimize").show();
 	selectedModule = $(this).attr('id');
 	
+	//destroy previous sliders
+	var sliderExists = $("#opacitySlider").is(':ui-slider');
+	if(sliderExists){
+		$('#opacitySlider').slider('destroy');
+	}
+	sliderExists = $("#zSlider").is(':ui-slider');
+	if(sliderExists){
+		$('#zSlider').slider('destroy');
+	}
+	
 	//color picker setup
 	$('.backgroundColorChange, .textColorChange').colorpicker({
 		transparentColor: true,
@@ -1146,9 +1156,15 @@ var editWindow =  function(e) {
 /*****************************************************************
 MULTIPLE SELECTIONS (shift key is held when clicking)
 ******************************************************************/			
-	if(e.shiftKey) {	
-		$('.selectedShadow').removeClass('selectedShadow');
+	if(e.ctrlKey) {	
 		var length = tempArray.length;
+		if(length > 0){
+			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
+		}
+		else{
+			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').hide();
+		}
+		$('.selectedShadow').removeClass('selectedShadow');
 		for(var i = 0; i<length; i++){
 			var parent = tempArray[i].parentId;	
 			$('#'+parent).addClass('selectedShadow');
@@ -1156,31 +1172,131 @@ MULTIPLE SELECTIONS (shift key is held when clicking)
 		var clicked = this;
 		var id;
 		var elementPos = tempArray.map(function(x) {return x.parentId; }).indexOf(selectedModule);
-		var objectFound
+		var objectFound;
+		//if element is in the array
 		if(elementPos != -1){
 			$(clicked).removeClass('selectedShadow');
 			tempArray.splice(elementPos, 1);
 			console.log(tempArray);
 		}
 		else{
-			console.log(selectedModule);
 			elementPos = cell_arr.map(function(x) {return x.parentId; }).indexOf(selectedModule);
 			objectFound = cell_arr[elementPos];
-			console.log(elementPos);
 			tempArray.push(objectFound);
+			var tempLength = tempArray.length;
+			var sliderValue, backgroundColor;
+			if(objectFound.getType == 'pageCell' || objectFound.getType == 'pageText'){
+				backgroundColor = objectFound.backgroundColor;
+			}
+			else{
+				backgroundColor = 'rgba(0,0,0,0)';	
+			}
 			$(clicked).addClass('selectedShadow');
+			//delete key handler
 			$( 'html').off('keyup');
 			$( 'html').on('keyup', function(e){
 				if (e.keyCode == 46 && !$(e.target).is('input, textarea')){
 					console.log(tempArray);
-					var length = tempArray.length;	
-					for(var i = 0; i<tempArray.length; i++){
+					for(var i = 0; i<tempLength; i++){
 						tempArray[i].removeSelf();	
 					}
 					$('.editWindow').hide(150);	
 					console.log(cell_arr);
 				}
 			});
+			//font size handler
+			$('#comboBoxInput').off('input');
+			$('#comboBoxInput').on('input', function() { 
+				console.log('fired');
+				var input = this;
+				//wait a fraction of a second for the combobox to register the change
+				setTimeout(function () {
+					var newSize = $(input).val() // get the current value of the input field.
+					console.log(newSize);
+					for(var i = 0; i<tempLength; i++){
+						if(tempArray[i].getType() == 'pageCell' || tempArray[i].getType() =='pageText'){
+							tempArray[i].fontSizeChange(newSize);
+						}
+					}
+				}, 100);
+			});
+			//fontsize input change event handler
+			$( document ).off( "keyup", "input#fontSize") //unbind old events, and bind a new one
+			$( document ).on( "keyup", "input#fontSize" , function() {	
+				var size = fontSize.val()
+				for(var i = 0; i<tempLength; i++){
+					if(tempArray[i].getType() == 'pageCell' || tempArray[i].getType() =='pageText'){
+						tempArray[i].fontSizeChange(size)
+					}
+				}
+			});
+			//background color input change event handler
+			$( document ).off( "keyup", "input.backgroundColorChange"); //unbind old events, and bind a new one
+			$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
+				var enteredColor = bgColor.val();
+				for(var i = 0; i<tempLength; i++){
+					if(tempArray[i].getType() == 'pageCell' || tempArray[i].getType() =='pageText'){
+						tempArray[i].backgroundColorChange(enteredColor);
+					}
+				}
+			});
+			//delegate event handler for color picker
+			$(".backgroundColorChange").off("change.color");
+			$(".backgroundColorChange").on("change.color", function(event, color){
+				if(color != undefined){
+					for(var i = 0; i<tempLength; i++){
+						if(tempArray[i].getType() == 'pageCell' || tempArray[i].getType() =='pageText'){
+							tempArray[i].backgroundColorChange(color);
+						}
+					}
+				}
+			});
+			//delegate event handler for font color picker
+			$(".textColorChange").off("change.color");
+			$(".textColorChange").on("change.color", function(event, color){
+				if(color != undefined){
+					for(var i = 0; i<tempLength; i++){
+						if(tempArray[i].getType() == 'pageCell' || tempArray[i].getType() =='pageText'){
+							tempArray[i].fontColorChange(color);
+						}
+					}
+				}
+			});
+			$(".textColorChange").off("change.color");
+			$(".textColorChange").on("change.color", function(event, color){
+				for(var i = 0; i<tempLength; i++){
+					if(tempArray[i].getType() == 'pageCell' || tempArray[i].getType() =='pageText'){
+						tempArray[i].fontColorChange(color);
+					}
+				}
+			});
+			
+			if(backgroundColor.indexOf('rgba') >= 0){
+				var splitColor =  backgroundColor.split(',');
+				sliderValue = Math.round(parseFloat(splitColor[3].slice(0, - 1), 10)*100);
+			}
+			else{
+				sliderValue = 100;
+			}
+			$('#opacitySlider .ui-slider-range').css('background', backgroundColor );
+			$('#opacitySlider .ui-slider-handle').css('border-color', backgroundColor);
+			$('#opacityPercent').text(' '+sliderValue+'%');
+			//opacity slider setup
+			$('#opacitySlider').slider({
+				min: 1,
+				max: 100,
+				range: "min",
+				value: sliderValue,
+				stop: function( event, ui) {
+					var opacity = $(this).slider('value', ui.value);
+					for(var i = 0; i<tempLength; i++){
+						if(tempArray[i].getType() == 'pageCell' || tempArray[i].getType() =='pageText'){
+							console.log(tempArray[i]);
+							tempArray[i].setOpacity(opacity, tempArray[i].parentId, ui);
+						}
+					}
+				}
+			});//end of slider setup
 		}
 	}
 /*****************************************************************
@@ -1201,6 +1317,7 @@ CONFIGRATIONS CASE
 PAGE EDIT CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'pageEdit'){
+		tempArray.length = 0;
 		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 		$('.editWindow h2').text("Page");
 		$('#gridRow, #titleRow,#backgroundColorRow,#opacityRow,#titleInputInfo').show();
@@ -1303,7 +1420,8 @@ CAMERA CASE
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		objectFound.setSelected();
-		
+		tempArray.length = 0;
+		tempArray.push(objectFound);
 		if(objectFound.hoverable){
 			$('#hoverTimeRow, #suppressHoverable').show();		
 		}
@@ -1414,7 +1532,8 @@ TEXT BLOCKS CASE
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		objectFound.setSelected();
-
+		tempArray.length = 0;
+		tempArray.push(objectFound);
 		console.log(objectFound);
 		
 		$(bodyChange).val(objectFound.text);
@@ -1426,7 +1545,7 @@ TEXT BLOCKS CASE
 		
 		$(".textColorChange").off("change.color");
 		$(".textColorChange").on("change.color", function(event, color){
-			$('#'+selectedModule).css('color',color);
+			objectFound.fontColorChange(color);
 		});
 		
 		$('#comboBoxInput').off('input');
@@ -1521,7 +1640,8 @@ IMG BLOCKS CASE
 		var objectFound = cell_arr[elementPos];
 		console.log(objectFound);
 		objectFound.setSelected();
-		
+		tempArray.length = 0;
+		tempArray.push(objectFound);
 		console.log(objectFound);
 		
 		url = $(this).find('img');
@@ -1630,6 +1750,8 @@ DATA CELLS CASE
 		var objectFound = cell_arr[elementPos];
 		console.log(objectFound);
 		objectFound.setSelected();
+		tempArray.length = 0;
+		tempArray.push(objectFound);
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
@@ -1723,6 +1845,7 @@ DATA CELLS CASE
 			range: "min",
 			value: sliderValue,
 			slide: function( event, ui ) {
+				console.log('BLAH');
 				var opacity = $(this).slider('value', ui.value);
 				objectFound.setOpacity(opacity, selectedModule, ui);
 			}
@@ -1776,6 +1899,7 @@ function edit(handler) {
 	$('.hide').css('visibility','visible');
 	$('.controls').show(200);
 	$('#masterEdit').attr('onclick', 'nonEdit()');
+	
 	//delegate events
 	//$('.top-container').delegate('.tr','click', editWindow);
 	$('#content').delegate('.tr, .textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);	
@@ -1783,7 +1907,6 @@ function edit(handler) {
 	//$('#content').delegate('.imgBlockContainer','click',editWindow);
 	//$('#content').delegate('.imgCamContainer','click',editWindow);
 	$('.controls').delegate('#pageEdit, #createStatic, #configMenu','click',editWindow);
-	
 	
 	//enable draggables and resizables
 	$('.ui-icon').show();
