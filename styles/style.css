@@ -925,7 +925,8 @@ ul.jstree-children{
 }
 .dataDraggable a i:before, .draggableCamNode a i:before  {
 	font-family: 'FontAwesome';
-	content: "\f196";
+	font-style: normal !important;
+	content: "\f0fe";
 	font-size: 20px;
 }
 @media (max-width: 400px) {

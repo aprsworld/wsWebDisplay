@@ -1156,13 +1156,13 @@ var editWindow =  function(e) {
 /*****************************************************************
 MULTIPLE SELECTIONS (shift key is held when clicking)
 ******************************************************************/			
-	if(e.ctrlKey) {	
+	if(e.ctrlKey && ($('#'+selectedModule).hasClass('imgCamContainer') || $('#'+selectedModule).hasClass('imgBlockContainer')||$('#'+selectedModule).hasClass('tr') ||$('#'+selectedModule).hasClass('textBlockContainer') )) {	
 		var length = tempArray.length;
 		if(length > 0){
 			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
 		}
 		else{
-			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').hide();
+			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, .editWindow').hide();
 		}
 		$('.selectedShadow').removeClass('selectedShadow');
 		for(var i = 0; i<length; i++){
