@@ -596,7 +596,6 @@ function clickToCreate(item, data, x ,y){
 		id_arr.push(new_id);
 		cell_arr.push(obj);
 		console.log(obj);
-		console.log(cell_arr);
 			var updatedPath = ref(data, path);
 			obj.createHtml(cellCount, updatedPath, x ,y);
 		new_id = obj.parentId;
@@ -1099,13 +1098,11 @@ function populateConversions(id){
 		else{
 			return;	
 		}
-		console.log("hi "+currentUnits);
 		$("#unitSelect").val(currentUnits);
 	}
 }
 
 var editWindow =  function(e) {
-	console.log(cell_arr)
 	
 	var changeArray, moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
@@ -1123,15 +1120,7 @@ var editWindow =  function(e) {
 	$("#editMinimize").show();
 	selectedModule = $(this).attr('id');
 	
-	//destroy previous sliders
-	var sliderExists = $("#opacitySlider").is(':ui-slider');
-	if(sliderExists){
-		$('#opacitySlider').slider('destroy');
-	}
-	sliderExists = $("#zSlider").is(':ui-slider');
-	if(sliderExists){
-		$('#zSlider').slider('destroy');
-	}
+	
 	
 	//color picker setup
 	$('.backgroundColorChange, .textColorChange').colorpicker({
@@ -1173,16 +1162,27 @@ MULTIPLE SELECTIONS (shift key is held when clicking)
 		var id;
 		var elementPos = tempArray.map(function(x) {return x.parentId; }).indexOf(selectedModule);
 		var objectFound;
-		//if element is in the array
+		//if element is in the array we want it to be removed from the array if it is clicked
 		if(elementPos != -1){
-			$(clicked).removeClass('selectedShadow');
+			$('#'+selectedModule).removeClass('selectedShadow');
 			tempArray.splice(elementPos, 1);
 			console.log(tempArray);
+			if(tempArray.length === 0){
+				$('.editWindow').hide();
+			}
+			else{
+				selectedModule = tempArray[0].parentId;
+				objectFound = tempArray[0];
+				console.log(selectedModule);
+			}
 		}
 		else{
 			elementPos = cell_arr.map(function(x) {return x.parentId; }).indexOf(selectedModule);
 			objectFound = cell_arr[elementPos];
 			tempArray.push(objectFound);
+			$(clicked).addClass('selectedShadow');
+		}
+		if(tempArray.length > 0){
 			var tempLength = tempArray.length;
 			var sliderValue, backgroundColor;
 			if(objectFound.getType == 'pageCell' || objectFound.getType == 'pageText'){
@@ -1191,7 +1191,15 @@ MULTIPLE SELECTIONS (shift key is held when clicking)
 			else{
 				backgroundColor = 'rgba(0,0,0,0)';	
 			}
-			$(clicked).addClass('selectedShadow');
+			//destroy previous sliders
+			var sliderExists = $("#opacitySlider").is(':ui-slider');
+			if(sliderExists){
+				$('#opacitySlider').slider('destroy');
+			}
+			sliderExists = $("#zSlider").is(':ui-slider');
+			if(sliderExists){
+				$('#zSlider').slider('destroy');
+			}
 			//delete key handler
 			$( 'html').off('keyup');
 			$( 'html').on('keyup', function(e){
@@ -1297,6 +1305,20 @@ MULTIPLE SELECTIONS (shift key is held when clicking)
 					}
 				}
 			});//end of slider setup
+			$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
+			$( document ).on( "click", "#deleteModule" , function() {	
+				for(var i = 0; i<tempLength; i++){
+					tempArray[i].removeSelf();	
+				}
+				$('.editWindow').hide(150);
+			});
+			$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
+			$( document ).on( "click", "#hideModule" , function() {
+				for(var i = 0; i<tempLength; i++){
+					tempArray[i].setHidden(tempArray[i].parentId);				
+
+				}
+			});
 		}
 	}
 /*****************************************************************

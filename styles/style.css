@@ -919,6 +919,8 @@ ul.jstree-children{
 /* alters the icon next to elements in jstree that we want to be draggable*/
 .dataDraggable a i, .draggableCamNode a i {
 	background: none !important;
+	color: #333;
+	
 }
 .dataDraggable a i:hover, .draggableCamNode a i:hover  {
 	color: green !important;
