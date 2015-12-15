@@ -348,4 +348,249 @@ var TimeConvert = {
 	  	return sqlDate;
     },
 }
-
+var AtmosphericPressureConvert = {
+	init: function(){
+		var result = {};
+		if(fUnit == 'atmosphere'){
+			result.value = this.toUNIX(cUnit, value); 
+			result.label = '';
+		}
+		else if(fUnit == 'Pascal'){
+			result.value = this.toPascal(cUnit, value); 
+			result.label = '';
+		}
+		else if(fUnit == 'millibar'){
+			result.value = this.toMilliBar(cUnit, value); 
+			result.label = '';
+		}
+		else if(fUnit == 'hectopascal'){
+			result.value = this.toHectoPascal(cUnit, value); 
+			result.label = '';
+		}
+		else if(fUnit == 'mmHg'){
+			result.value = this.toMmHg(cUnit, value); 
+			result.label = '';
+		}
+		else if(fUnit == 'inHg'){
+			result.value = this.toInHg(cUnit, value); 
+			result.label = '';
+		}
+		else if(fUnit == 'bar'){
+			result.value = this.toInHg(cUnit, value); 
+			result.label = '';
+		}		
+		else if(fUnit == 'psi'){
+			result.value = this.toPSI(cUnit, value); 
+			result.label = '';
+		}
+		return result;
+	},
+	toAtmosphere: function(cUnit, value){
+		if(cUnit == 'Pascal'){
+			return value * 0.00000986923;
+		}
+		else if(cUnit == 'millibar'){
+			return value * 0.000986923;
+		}
+		else if(cUnit == 'hectoPascal'){
+			return value*0.000986923;
+		}
+		else if(cUnit == 'mmHg'){
+			return value*0.00131578955679;
+		}
+		else if(cUnit == 'inHg'){
+			return value*0.0334211;
+		}
+		else if(cUnit == 'psi'){
+			return value*0.068046;
+		}
+		else if(cUnit == 'bar'){
+			return value*0.986923;
+		}		
+		else{
+			return value;	
+		}
+	},
+	toPascal: function(cUnit, value){
+		if(cUnit == 'atmosphere'){
+			return value*101325;
+		}
+		else if(cUnit == 'millibar'){
+			return value*100;
+		}
+		else if(cUnit == 'hectoPascal'){
+			return value*100;
+		}
+		else if(cUnit == 'mmHg'){
+			return value*133.322365;
+		}
+		else if(cUnit == 'inHg'){
+			return value*3386.39;
+		}
+		else if(cUnit == 'psi'){
+			return value*6894.76;
+		}
+		else if(cUnit == 'bar'){
+			return value*100000;
+		}	
+		else{
+			return value;	
+		}
+	},
+	toBar: function(cUnit, value){
+		if(cUnit == 'Pascal'){
+			return value*.00004;
+		}
+		else if(cUnit == 'millibar'){
+			return value*.001;
+		}
+		else if(cUnit == 'hectoPascal'){
+			return value*.001;
+		}
+		else if(cUnit == 'mmHg'){
+			return value*0013332237;
+		}
+		else if(cUnit == 'inHg'){
+			return value*0.0338639;
+		}
+		else if(cUnit == 'psi'){
+			return value*0.0689476;
+		}
+		else if(cUnit == 'atmosphere'){
+			return value*1.01325;
+		}	
+		else{
+			return value;	
+		}
+	},
+	toMilliBar: function(cUnit, value){
+		if(cUnit == 'Pascal'){
+			return value*0.01;
+		}
+		else if(cUnit == 'atmosphere'){
+			return value*1013.25;
+		}
+		else if(cUnit == 'hectoPascal'){
+			return value*1;
+		}
+		else if(cUnit == 'mmHg'){
+			return value*1.333224;
+		}
+		else if(cUnit == 'inHg'){
+			return value*33.8639;
+		}
+		else if(cUnit == 'psi'){
+			return value*68.9476;
+		}
+		else if(cUnit == 'bar'){
+			return value*1000;
+		}	
+		else{
+			return value;	
+		}
+	},
+	toHecotoPascal: function(cUnit, value){
+		if(cUnit == 'Pascal'){
+			return value*0.01;
+		}
+		else if(cUnit == 'millibar'){
+			return value*1
+		}
+		else if(cUnit == 'atmosphere'){
+			return value*1013.25;
+		}
+		else if(cUnit == 'mmHg'){
+			return value*1.333224;
+		}
+		else if(cUnit == 'inHg'){
+			return value*33.8639;
+		}
+		else if(cUnit == 'psi'){
+			return value*68.9476;
+		}
+		else if(cUnit == 'bar'){
+			return value*1000;
+		}	
+		else{
+			return value;	
+		}
+	},
+	toMmHg: function(cUnit, value){
+		if(cUnit == 'Pascal'){
+			return value*0.007500617;
+		}
+		else if(cUnit == 'millibar'){
+			return value*0.750061561303;
+		}
+		else if(cUnit == 'hectoPascal'){
+			return value*.750061561303;
+		}
+		else if(cUnit == 'atmosphere'){
+			return value*760;
+		}
+		else if(cUnit == 'inHg'){
+			return value*25.399999705;
+		}
+		else if(cUnit == 'psi'){
+			return value*51.71484;
+		}
+		else if(cUnit == 'bar'){
+			return value*750.06375541921;
+		}	
+		else{
+			return value;	
+		}
+	},
+	toInHg: function(cUnit, value){
+		if(cUnit == 'Pascal'){
+			return value*0.0002953;
+		}
+		else if(cUnit == 'millibar'){
+			return value*0.02953;
+		}
+		else if(cUnit == 'hectoPascal'){
+			return value*0.02953;
+		}
+		else if(cUnit == 'mmHg'){
+			return value*0.03937023;
+		}
+		else if(cUnit == 'atmosphere'){
+			return value*29.92
+		}
+		else if(cUnit == 'psi'){
+			return value*2.03602;
+		}
+		else if(cUnit == 'bar'){
+			return value*29.53;
+		}	
+		else{
+			return value;	
+		}
+	},
+	toPSI: function(cUnit, value){
+		if(cUnit == 'Pascal'){
+			return value*0.000145038;
+		}
+		else if(cUnit == 'millibar'){
+			return value*0.0145038;
+		}
+		else if(cUnit == 'hectoPascal'){
+			return value*0.0145038;
+		}
+		else if(cUnit == 'mmHg'){
+			return value*.01933681;
+		}
+		else if(cUnit == 'inHg'){
+			return value*0.491154;
+		}
+		else if(cUnit == 'atmosphere'){
+			return value*14.696;
+		}
+		else if(cUnit == 'bar'){
+			return value*14.5038;
+		}	
+		else{
+			return value;	
+		}
+	}
+}

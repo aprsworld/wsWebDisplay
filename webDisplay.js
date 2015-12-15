@@ -494,7 +494,9 @@ function chooseConversion(type, typeUnits, value, typeChange){
 	else if(type == "time"){
 		return TimeConvert.init(typeUnits, typeChange, value);
 	}
-	
+	else if(type == "atmosphericPressure"){
+		return AtmosphericPressureConvert.init(typeUnits, typeChange, value);	
+	}
 }
 function timer(){
 	loadedTime = loadedTime+1;
@@ -1029,6 +1031,7 @@ function populateConversions(id){
 	var speedUnits = ['KM/HR','MI/HR','M/S','KTS'];
 	var lengthUnits = ['IN','FT','MI','MM','CM','M','KM'];
 	var timeUnits = ['UNIX','MYSQL'];
+	var apUnits = ['Atmosphere','Pascal','Bar','millibar','hectopascal','mmHg','inHg','psi'];
 	
 	id = id.replace('div_', '');	
 	var cellObj = $.grep(cell_arr, function(e){ return e.id === id});
@@ -1090,6 +1093,18 @@ function populateConversions(id){
 				$('#unitSelect').append($('<option>', {
 					value: timeUnits[i],
 					text: ''+timeUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'atmosphericPressure'){
+			var i = 0;
+			var length = apUnits.length;
+			for(i; i<length; i++){
+				console.log(apUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: apUnits[i],
+					text: ''+apUnits[i]+''
 				}));	
 			}
 			$('#unitRow').show();
