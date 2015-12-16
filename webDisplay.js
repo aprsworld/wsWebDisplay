@@ -486,27 +486,7 @@ function dynamicUpdate(data) {
 	});
 	
 }
-function chooseConversion(type, typeUnits, value, typeChange){
-	if(type == "temperature"){
-		var x = TemperatureConvert.init(typeUnits, typeChange, value);
-		return x;
-	}
-	else if(type == "speed"){
-		return SpeedConvert.init(typeUnits, typeChange, value);
-	}
-	else if(type == "length"){
-		console.log('line 497: '+type+' , '+typeUnits+' , '+value+' , '+typeChange);
-		return LengthConvert.init(typeUnits, typeChange, value);
-	}
-	else if(type == "time"){
-		return TimeConvert.init(typeUnits, typeChange, value);
-	}
-	else if(type == "atmosphericPressure"){
-		typeChange = typeChange.toUpperCase();
-		console.log('line 497: '+type+' , '+typeUnits+' , '+value+' , '+typeChange);
-		return AtmosphericPressureConvert.init(typeUnits, typeChange, value);	
-	}
-}
+
 function timer(){
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
@@ -1033,98 +1013,7 @@ function refreshTree(newData){
 function brokenImg(id){
 	alert('invalid URL - please paste a valid URL');
 }
-//populates the conversion dropdown based on the id
-function populateConversions(id){
-	$('#unitRow').hide();
-	var temperatureUnits = ['C','F','K'];
-	var speedUnits = ['KM/HR','MI/HR','M/S','KTS'];
-	var lengthUnits = ['IN','FT','MI','MM','CM','M','KM'];
-	var timeUnits = ['UNIX','MYSQL'];
-	var apUnits = ['Atmosphere','Pascal','Bar','millibar','hectopascal','mmHg','inHg','psi'];
-	
-	id = id.replace('div_', '');	
-	var cellObj = $.grep(cell_arr, function(e){ return e.id === id});
-	var type = cellObj[0].type;
-	var label = cellObj[0].units;
-	var currentUnits = cellObj[0].typeUnits;
-	//empty selection list in case there was elements in it from the last click
-	$("#unitSelect").empty();
-	//leave function if either undefined
-	if(currentUnits == 'undefined' || type == 'undefined'){
-		console.log('fail');
-		return;	
-	}
-	else{
-		//
-		//logic block that matches type with one of the arrays above. it will then populate the selection list in the edit window and unhide it.
-		//
-		if(type == 'temperature'){
-			var i = 0;
-			var length = temperatureUnits.length;
-			for(i; i<length; i++){
-				console.log(temperatureUnits[i]);
-				$('#unitSelect').append($('<option>', {
-					value: temperatureUnits[i],
-					text: ''+temperatureUnits[i]+''
-				}));	
-			}
-			$('#unitRow').show();
-		}
-		else if(type == 'speed'){
-			var i = 0;
-			var length = speedUnits.length;
-			for(i; i<length; i++){
-				console.log(speedUnits[i]);
-				$('#unitSelect').append($('<option>', {
-					value: speedUnits[i],
-					text: ''+speedUnits[i]+''
-				}));	
-			}
-			$('#unitRow').show();
-		}
-		else if(type == 'length'){
-			var i = 0;
-			var length = lengthUnits.length;
-			for(i; i<length; i++){
-				console.log(lengthUnits[i]);
-				$('#unitSelect').append($('<option>', {
-					value: lengthUnits[i],
-					text: ''+lengthUnits[i]+''
-				}));	
-			}
-			$('#unitRow').show();
-		}
-		else if(type == 'time'){
-			var i = 0;
-			var length = timeUnits.length;
-			for(i; i<length; i++){
-				console.log(timeUnits[i]);
-				$('#unitSelect').append($('<option>', {
-					value: timeUnits[i],
-					text: ''+timeUnits[i]+''
-				}));	
-			}
-			$('#unitRow').show();
-		}
-		else if(type == 'atmosphericPressure'){
-			var i = 0;
-			var length = apUnits.length;
-			for(i; i<length; i++){
-				console.log(apUnits[i]);
-				$('#unitSelect').append($('<option>', {
-					value: apUnits[i],
-					text: ''+apUnits[i]+''
-				}));	
-			}
-			$('#unitRow').show();
-		}
-		//leave function due to incorrect format of object.type
-		else{
-			return;	
-		}
-		$("#unitSelect").val(currentUnits);
-	}
-}
+
 
 var editWindow =  function(e) {
 	
