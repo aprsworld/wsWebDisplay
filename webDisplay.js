@@ -292,7 +292,7 @@ function iterateStations(obj, stack, arr, lastk) {
 					jsonItem["obj"]["path"] = stack + '.' + property + ".value";
 				}
 				else{
-					value = null;	
+					value = 'Incorrect Data Format';	
 				}
 				// get units 
 				if('undefined' !== typeof obj[property]['units']){
@@ -430,15 +430,19 @@ function dynamicUpdate(data) {
 				var typeUnits = objectFound.typeUnits.toUpperCase();
 				var typeChange = objectFound.typeChange;
 				if(typeChange !== typeUnits){
+					console.log('line 433');
 					var result = chooseConversion(type, typeUnits, value, typeChange);
+					console.log('line 435: '+result.value);
 				}
 				else{
 					var result = {};
 					result.value = value;
 					result.label = objectFound.units;
+					console.log('test');
 				}
 				if(type != "time"){
 					value = round(result.value, objectFound.precision);
+					console.log('line 443: '+value);
 				}
 				else{
 					value = result.value;
@@ -483,18 +487,22 @@ function dynamicUpdate(data) {
 }
 function chooseConversion(type, typeUnits, value, typeChange){
 	if(type == "temperature"){
-		return TemperatureConvert.init(typeUnits, typeChange, value);
+		var x = TemperatureConvert.init(typeUnits, typeChange, value);
+		return x;
 	}
 	else if(type == "speed"){
 		return SpeedConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "length"){
+		console.log('line 497: '+type+' , '+typeUnits+' , '+value+' , '+typeChange);
 		return LengthConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "time"){
 		return TimeConvert.init(typeUnits, typeChange, value);
 	}
 	else if(type == "atmosphericPressure"){
+		typeChange = typeChange.toUpperCase();
+		console.log('line 497: '+type+' , '+typeUnits+' , '+value+' , '+typeChange);
 		return AtmosphericPressureConvert.init(typeUnits, typeChange, value);	
 	}
 }
