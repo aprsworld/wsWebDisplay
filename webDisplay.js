@@ -432,21 +432,16 @@ function dynamicUpdate(data) {
 				var type = objectFound.type;
 				var typeUnits = objectFound.typeUnits.toUpperCase();
 				var typeChange = objectFound.typeChange;
-				console.log(value);
 				if(typeChange !== typeUnits){
-					console.log('line 433');
 					var result = chooseConversion(type, typeUnits, value, typeChange);
-					console.log('line 435: '+result.value);
 				}
 				else{
 					var result = {};
 					result.value = value;
 					result.label = objectFound.units;
-					console.log('test');
 				}
 				if(type != "time"){
 					value = round(result.value, objectFound.precision);
-					console.log('line 443: '+value);
 				}
 				else{
 					value = result.value;
@@ -464,7 +459,6 @@ function dynamicUpdate(data) {
 				
 			}
 			else if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits'))){
-								console.log(value);
 
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
 					label = objectFound.label;

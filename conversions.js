@@ -1,4 +1,22 @@
-/*Our base unit of choice is feet. Therefore, any conversion will convert first to feet, and then convert to the future unit. For instance, if we are going from 2 miles to inches we would first convert 2 miles into feet, which is 10560. Then we convert 10560 feet into inches, which turns out to be 126720 inches.
+/*													HOW THIS WORKS
+There are objects for each type conversion such as 'LengthConvert', 'TemperatureConvert', etc. These objects each have an init function. This function
+accepts 3 parameters: currentUnit, FutureUnit, and value
+
+Current unit is the unit of measure that is being converted
+Future unit is the unit of measure that will be the end conversion
+Value is the current value that the unit applies to - the value changes based on the conversion
+
+Each conversion object has a base unit of measurement. This is what everything will be converted to and converted from to get the final result. This means
+that We dont need n^2 conversions.
+
+Everytime one of the functions is called, it is actually called twice. Once to convert to the base unit, and another time to convert to the 'future unit.' 
+The second (final) time that the funciton is called, it returns an object containing value and label properties. 
+
+Here is an example:
+
+Within the lengthConvert object, Our base unit is feet. Therefore, any conversion will convert first to feet, and then convert to the future unit. For instance, 
+if we are going from 2 miles to inches we would first convert 2 miles into feet, which is 10560. Then we convert 10560 feet into inches, 
+which turns out to be 126720 inches. When the function returns, it will return an object holding a value property equal to 126770 and a label property equal to ' in.'
 */
 var LengthConvert = {
 	init: function(currentUnit, futureUnit, value){
@@ -38,30 +56,37 @@ var LengthConvert = {
 			result.label = futureUnit;
 			if(futureUnit == 'FT'){
 				result.value = value;
+				result.label = ' ft.';
 				return result;
 			}
 			else if(futureUnit == 'IN'){
 				result.value = value*12;
+				result.label = ' in.';
 				return result;
 			}
 			else if(futureUnit == 'MI'){
 				result.value = value*.000189;
+				result.label = ' mi.';
 				return result;
 			}
 			else if(futureUnit == 'M'){
 				result.value = value*.305
+				result.label = ' m';
 				return result;
 			}
 			else if(futureUnit == 'MM'){
 				result.value = value*304.8;
+				result.label = ' mm';
 				return result;
 			}
 			else if(futureUnit == 'KM'){
 				result.value = value*.000305;
+				result.label = ' km';
 				return result;
 			}
 			else if(futureUnit == 'CM'){
 				result.value = value*30.48;
+				result.label = ' cm';
 				return result;        
 			}
 		}
@@ -92,18 +117,22 @@ var SpeedConvert = {
 			result.label = futureUnit;
 			if(futureUnit == 'MI/HR'){
 				result.value = value;
+				result.label = ' mph';
 				return result;
 			}
 				else if(futureUnit == 'KM/HR'){
 				result.value = value*1.61;
+				result.label = ' km/h';
 				return result;
 			}
 				else if(futureUnit == 'M/S'){
 				value = value*0.44704;
+				result.label = ' m/s';	
 				return result;
 			}
 				else if(futureUnit == 'KTS'){
 				result.value = value*0.868976;
+				result.label = ' kn';
 				return result;
 			}
 		}
@@ -127,14 +156,17 @@ var TemperatureConvert = {
 			result.label = futureUnit;
 			if(futureUnit == 'F'){
 				result.value = value;
+				result.label = '&deg;F';
 				return result;
 			}
 			else if(futureUnit == 'K'){
 				result.value = (value + 459.67) * 5/9;
+				result.label = '&deg;K';				
 				return result;
 			}
 			else if(futureUnit == 'C'){
 				result.value = (value - 32)*(5/9);
+				result.label = '&deg;C';				
 				return result;
 			}
 		}
@@ -175,7 +207,6 @@ var AtmosphericPressureConvert = {
 		}
 		else if(currentUnit == 'BAR' || currentUnit == 'BARS'){
 			value = value*0.986923;
-			console.log('line 178: '+value);
 			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);
 			return result;
 		}
@@ -184,40 +215,50 @@ var AtmosphericPressureConvert = {
 			result.label = futureUnit;
 			if(futureUnit == 'ATMOSPHERE'){
 				result.value = value;
+				result.label = ' atmosphere';
 				return result;
 			}
 			else if(futureUnit == 'PASCAL'){
 				result.value = value*101325;
+				result.label = ' Pascal';
 				return result;
 			}
 			else if(futureUnit == 'MILLIBAR'){
 				result.value = value*1013.25;
+				result.label = ' millibar';
 				return result;
 			}
 			else if(futureUnit == 'BAR'){
 				result.value = value*1.01325;
+				result.label = ' Bar';
 				return result;
 			}
 			else if(futureUnit == 'HECTOPASCAL'){
 				result.value = value*1013.25;
+				result.label = ' hectopascal';
 				return result;
 			}
 			else if(futureUnit == 'MMHG'){
 				result.value = value*760;
+				result.label = ' mmHg';
 				return result;
 			}
 			else if(futureUnit == 'INHG'){
 				result.value = value*29.92;
+				result.label = ' inHg';
 				return result;
 			}
 			else if(futureUnit == 'PSI'){
 				result.value = value*14.696;
+				result.label = ' psi';
 				return result;
 			}
 		}
 	}
 };
-//time is non-linear so it will work a bit differently
+//
+//time conversions are non-linear so it will work a bit differently
+//
 var TimeConvert = {
 	init: function(cUnit, fUnit, value){
 		var result = {};
@@ -233,13 +274,10 @@ var TimeConvert = {
 	},	
 	toUNIX: function(cUnit, value) {
        	var date = (new Date(value.replace(' ','T'))).getTime()/1000;
-		console.log(date);
 		return date;
     },
 	toMYSQL: function(cUnit, value) {
-		console.log(value);
        	var date = new Date(value*1000);
-		console.log(date.toString());
 		var year = date.getUTCFullYear();
 		var month = date.getUTCMonth()+1;
 		var day = date.getUTCDate()+1;
