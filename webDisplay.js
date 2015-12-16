@@ -424,9 +424,11 @@ function dynamicUpdate(data) {
 			id = id.replace('div_', '');	
 			//finds value of object
 			value = ref(data, objectFound.path);
-			if( value !== null && typeof value === 'object' ){
+			console.log(value);
+			if(( value !== null && typeof value === 'object' ) || isNaN(value) || value == ''){
 				value = ' [Incorrect Format: "value" property is undefined] ';	
 			}
+			
 			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
