@@ -424,11 +424,15 @@ function dynamicUpdate(data) {
 			id = id.replace('div_', '');	
 			//finds value of object
 			value = ref(data, objectFound.path);
+			if( value !== null && typeof value === 'object' ){
+				value = ' [Incorrect Format: "value" property is undefined] ';	
+			}
 			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
 				var typeUnits = objectFound.typeUnits.toUpperCase();
 				var typeChange = objectFound.typeChange;
+				console.log(value);
 				if(typeChange !== typeUnits){
 					console.log('line 433');
 					var result = chooseConversion(type, typeUnits, value, typeChange);
@@ -451,6 +455,7 @@ function dynamicUpdate(data) {
 					label = objectFound.label;
 					$('div#div_' + id + '').children('.label').html(label);
 				}
+				
 				else{
 					label = result.label;
 					objectFound.setLabel(label);
@@ -459,6 +464,8 @@ function dynamicUpdate(data) {
 				
 			}
 			else if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits'))){
+								console.log(value);
+
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
 					label = objectFound.label;
 					$('div#div_' + id + '').children('.label').html(label);
