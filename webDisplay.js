@@ -289,7 +289,7 @@ function iterateStations(obj, stack, arr, lastk) {
 				if('undefined' !== typeof obj[property]['value']){
 					value = obj[property]['value'];	
 					if(( value !== null && typeof value === 'object' )){
-						value = ' [Incorrect Format: \"value\" property is undefined] ';	
+						value = ' [Incorrect Format - \"value\" property is undefined] ';	
 					}
 					else if(value == '' ){
 						value = ' [No Data - Check format of \"value\" property] ';
@@ -431,9 +431,8 @@ function dynamicUpdate(data) {
 			id = id.replace('div_', '');	
 			//finds value of object
 			value = ref(data, objectFound.path);
-			console.log(value);
 			if(( value !== null && typeof value === 'object' )){
-				value = ' [Incorrect Format: \"value\" property is undefined] ';	
+				value = ' [Incorrect Format - \"value\" property is undefined] ';	
 			}
 			else if(value == '' ){
 				value = ' [No Data - Check format of \"value\" property] ';
@@ -1722,7 +1721,12 @@ DATA CELLS CASE
 		//event handler for converting units
 		$("#unitSelect").off('change');
 		$("#unitSelect").on('change', function() {
-			objectFound.setTypeChange($( "#unitSelect" ).val());
+			var val = $( "#unitSelect" ).val();
+			objectFound.setTypeChange(val);
+			setTimeout(function () {
+				$('.labelChange').val(objectFound.units);
+				console.log('timeout');
+			}, 1500);
 		});	
 		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
