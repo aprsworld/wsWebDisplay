@@ -1212,7 +1212,7 @@ pageImg.prototype.setResize = function(){
 	});	
 }
 pageImg.prototype.createHtml = function(cellCount){
-	$('.top-container').append('<div id=img'+cellCount+'container style="background-image: url(images/insert_image.svg)" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id=img'+cellCount+' alt=img'+cellCount+' src="images/insert_image.svg"></img></div>');
+	$('.top-container').append('<div id="'+this.parentId+'" style="background-image: url(images/insert_image.svg)" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id="'+this.id+'" alt="'+this.id+'" src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
 	this.setDrag();
 	this.setResize();
@@ -1246,16 +1246,16 @@ extend(pageText,pageElement);
 
 pageText.prototype.createHtml = function(cellCount){
 	var textBlock, textTitle, textContent, title;
-	
+	var rand = Date.now();
 	//create a div to hold the text
 	textBlock = document.createElement("div");
 	textBlock.className = "textBlockContainer";
 	textContent = "sample text";
 	this.text = textContent;
 	//incremental ID attribute
-	textBlock.id = "block"+cellCount;
-	this.id = "block"+cellCount;
-	this.parentId = "block"+cellCount;
+	textBlock.id = "block"+cellCount+rand;
+	this.id = "block"+cellCount+rand;
+	this.parentId = "block"+cellCount+rand;
 	//appends a textblock to the div with our default text
 	$(textBlock).append('<p>'+textContent+'</p>');
 	//appends the textblock to the page

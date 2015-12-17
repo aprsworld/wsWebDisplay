@@ -998,10 +998,11 @@ function createText(){
 }
 function createImage(){
 	var imgBlock, imgURL, index;
+	var rand = Date.now();
 	index = cell_arr.length;
 	imgBlock = new pageImg();
-	imgBlock.id = 'img'+index;
-	imgBlock.parentId = 'img'+index+'container';
+	imgBlock.id = 'img'+index+rand;
+	imgBlock.parentId = 'img'+index+rand+'container';
 	imgURL = $('#createImageURL').val();
 	imgBlock.createHtml(index);
 	imgBlock.natHeight = 240;
