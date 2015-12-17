@@ -425,10 +425,12 @@ function dynamicUpdate(data) {
 			//finds value of object
 			value = ref(data, objectFound.path);
 			console.log(value);
-			if(( value !== null && typeof value === 'object' ) || value == ''){
-				value = ' [Incorrect Format: "value" property is undefined] ';	
+			if(( value !== null && typeof value === 'object' )){
+				value = ' [Incorrect Format: \"value\" property is undefined] ';	
 			}
-			
+			else if(value == '' ){
+				value = ' [No Data - Check format of \"value\" property] ';
+			}
 			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
