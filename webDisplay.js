@@ -470,7 +470,6 @@ function dynamicUpdate(data) {
 			}
 			else if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits'))){
 				if(!isNaN(value)){
-					console.log('line 483');
 					value = round(parseFloat(value), objectFound.precision);
 				}
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
@@ -483,7 +482,6 @@ function dynamicUpdate(data) {
 				}
 			}
 			else if(!isNaN(value)){
-				console.log('line 483');
 				value = round(parseFloat(value), objectFound.precision);
 			}
 			
@@ -610,10 +608,11 @@ function clickToCreate(item, data, x ,y){
 	}
 	else if($('#'+id).hasClass('draggableCamNode')){
 		obj = new pageCam();
+		var rand = Date.now();
 		var idArrLen = cell_arr.length;
 		var instance = $('#stationTree').jstree(true);
 		//var id = $(item).attr('id');
-		new_id = "div_"+id+"_pageCam_"+idArrLen;
+		new_id = "div_"+id+"_pageCam_"+idArrLen+rand;
 		var children = instance.get_node(id).children;
 		var clength = children.length;
 		var i;
@@ -624,7 +623,7 @@ function clickToCreate(item, data, x ,y){
 		obj["containerId"] = new_id;
 		obj["fullId"] = new_id;
 		obj["parentId"] = new_id;
-		obj["id"] = id+"_pageCam_"+idArrLen;
+		obj["id"] = id+"_pageCam_"+idArrLen+rand;
 		obj["toolTip"] = tooltip;
 		console.log(obj);
 		//cell_arr.push(obj);
