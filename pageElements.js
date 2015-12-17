@@ -361,7 +361,7 @@ pageCell.prototype.setLabel = function(text){
 	var containerId = this.fullId;	
 	$('#'+containerId).children('.label').text(text);
 	this.label = text;
-	this.units = text;
+	//this.units = text;
 }
 pageCell.prototype.setLabelOverride = function(value){
 	this.labelOverride = value;

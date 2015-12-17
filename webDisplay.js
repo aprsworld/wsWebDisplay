@@ -442,13 +442,13 @@ function dynamicUpdate(data) {
 				var type = objectFound.type;
 				var typeUnits = objectFound.typeUnits.toUpperCase();
 				var typeChange = objectFound.typeChange;
-				if(typeChange !== typeUnits){
+				if(typeChange != typeUnits){
 					var result = chooseConversion(type, typeUnits, value, typeChange);
 				}
 				else{
-					var result = {};
-					result.value = value;
+					var result ={};
 					result.label = objectFound.units;
+					result.value = value;
 				}
 				if(type != "time"){
 					value = round(result.value, objectFound.precision);
@@ -469,7 +469,10 @@ function dynamicUpdate(data) {
 				
 			}
 			else if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits'))){
-
+				if(!isNaN(value)){
+					console.log('line 483');
+					value = round(parseFloat(value), objectFound.precision);
+				}
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
 					label = objectFound.label;
 					$('div#div_' + id + '').children('.label').html(label);
@@ -480,6 +483,7 @@ function dynamicUpdate(data) {
 				}
 			}
 			else if(!isNaN(value)){
+				console.log('line 483');
 				value = round(parseFloat(value), objectFound.precision);
 			}
 			
@@ -1723,8 +1727,9 @@ DATA CELLS CASE
 		$("#unitSelect").on('change', function() {
 			var val = $( "#unitSelect" ).val();
 			objectFound.setTypeChange(val);
+			console.log(val);
 			setTimeout(function () {
-				$('.labelChange').val(objectFound.units);
+				$('.labelChange').val(objectFound.label);
 				console.log('timeout');
 			}, 1500);
 		});	
