@@ -288,8 +288,15 @@ function iterateStations(obj, stack, arr, lastk) {
 				// get value 
 				if('undefined' !== typeof obj[property]['value']){
 					value = obj[property]['value'];	
+					if(( value !== null && typeof value === 'object' )){
+						value = ' [Incorrect Format: \"value\" property is undefined] ';	
+					}
+					else if(value == '' ){
+						value = ' [No Data - Check format of \"value\" property] ';
+					}
 					jsonItem["obj"]["value"] = value;
 					jsonItem["obj"]["path"] = stack + '.' + property + ".value";
+					
 				}
 				else{
 					value = 'Incorrect Data Format';	
