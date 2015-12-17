@@ -425,7 +425,7 @@ function dynamicUpdate(data) {
 			//finds value of object
 			value = ref(data, objectFound.path);
 			console.log(value);
-			if(( value !== null && typeof value === 'object' ) || isNaN(value) || value == ''){
+			if(( value !== null && typeof value === 'object' ) || value == ''){
 				value = ' [Incorrect Format: "value" property is undefined] ';	
 			}
 			
