@@ -434,7 +434,7 @@ function dynamicUpdate(data) {
 			if(( value !== null && typeof value === 'object' )){
 				value = ' [Incorrect Format - \"value\" property is undefined] ';	
 			}
-			else if(value == '' ){
+			else if(value == '' && value !== 0){
 				value = ' [No Data - Check format of \"value\" property] ';
 			}
 			//checks if the object has type, typeUnits, and typeChange properties
