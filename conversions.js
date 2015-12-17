@@ -96,7 +96,6 @@ var LengthConvert = {
 var SpeedConvert = {
 	//base unit: mi/hr
 	init: function(currentUnit, futureUnit, value){
-		console.log(currentUnit+" "+futureUnit+" "+value);
 		if(currentUnit == 'KM/HR'){
 			//convert value from km/hr to the base unit, mi/hr
 			value = value*0.6213712;
@@ -105,10 +104,7 @@ var SpeedConvert = {
 			return result;
 		}
 		else if(currentUnit == 'M/S'){
-			console.log(value);
-
 			value = value*2.23694;
-			console.log(value);
 			var result = SpeedConvert.init('MI/HR', futureUnit, value);
 			return result;
 		}
