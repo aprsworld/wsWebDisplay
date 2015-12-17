@@ -523,6 +523,7 @@ function clickToCreate(item, data, x ,y){
 	var obj, new_id;
 	if($('#'+id).hasClass('dataDraggable') || $('#'+id).hasClass('jstree-leaf')){
 		obj = new pageCell();
+		var rand = Date.now();
 		var idArrLen = cell_arr.length;
 		new_id = "div_"+id+"_"+idArrLen;
 		var treeNode = $.jstree.reference('#stationTree').get_node(id);
@@ -532,10 +533,10 @@ function clickToCreate(item, data, x ,y){
 		var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
 		var units, title, type, typeUnits;
 		obj["path"] = path;
-		obj["id"] = id+"_"+idArrLen;
-		obj["parentId"] = "cell"+cellCount;
-		obj["containerId"] = new_id;
-		obj["fullId"] = new_id;
+		obj["id"] = id+"_"+idArrLen+rand;
+		obj["parentId"] = "cell"+cellCount+rand;
+		obj["containerId"] = new_id+rand;
+		obj["fullId"] = new_id+rand;
 		obj["toolTip"] = tooltip;
 		if(obj["path"] == "timeStamp"){
 			obj["value"] = 0;	
