@@ -414,6 +414,7 @@ function dynamicUpdate(data) {
 			var currentCam;
 			
 			value = ref(data, objectFound.path);
+			objectFound.dataType = typeof value;
 			currentCam = $("#"+objectFound.fullId);
 			currentCam = currentCam.attr('id');
 			$('#preload_'+currentCam).unbind();
@@ -440,6 +441,7 @@ function dynamicUpdate(data) {
 			else if(value == '' && value !== 0){
 				value = ' [No Data - Check format of \"value\" property] ';
 			}
+			objectFound.dataType = typeof value;
 			//checks if the object has type, typeUnits, and typeChange properties
 			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange'))){
 				var type = objectFound.type;
@@ -748,8 +750,8 @@ function collapseWindows(){
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
-	var incomingData = data;
 	console.log(data);
+	var incomingData = data;
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
 		started = true; //sets our boolean to true so the above only executes once
@@ -1696,9 +1698,7 @@ DATA CELLS CASE
 		title = $(this).children('.myTableTitle').children('p');
 		label = $(this).children('.myTableValue').children('.label');
 		value = $(this).children('.myTableValue');
-		if(isNaN(value.find('p').text())){
-			$('#roundingRow').hide();	
-		}
+		
 		id = $(this).children('.myTableValue').attr('id');
 		originalTitle = $(this).children('.myTableID').children('span').text();				 
 		fontSize.val(value.css('font-size').slice(0, - 2));	//takes 'px' off end
@@ -1707,6 +1707,9 @@ DATA CELLS CASE
 		var objId = id.replace('div_', '');	
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
+		if(isNaN(value.find('p').text()) || objectFound.dataType != 'number'){
+			$('#roundingRow').hide();	
+		}
 		console.log(objectFound);
 		objectFound.setSelected();
 		tempArray.length = 0;

@@ -328,10 +328,11 @@ function populateConversions(id){
 	var type = cellObj[0].type;
 	var label = cellObj[0].units;
 	var currentUnits = cellObj[0].typeUnits;
+	var dataType = cellObj[0].dataType;
 	//empty selection list in case there was elements in it from the last click
 	$("#unitSelect").empty();
 	//leave function if either undefined
-	if(currentUnits == 'undefined' || type == 'undefined'){
+	if(currentUnits == 'undefined' || type == 'undefined' || dataType != 'number'){
 		console.log('fail');
 		return;	
 	}
