@@ -89,7 +89,7 @@ pageElement.prototype = {
 		var thisObj = this;
 		
 		$('#'+this.parentId).draggable({
-			cursor: "move", disabled: false,
+			cursor: "move", disabled: false, delay: 50,
 			start: function(event, ui){
 				//collapses windows when dragging
 				if(isExpanded){
