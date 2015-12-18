@@ -489,8 +489,7 @@ function dynamicUpdate(data) {
 					$('div#div_' + id + '').children('.label').html(label);
 				}
 			}
-			else if(!isNaN(value) && typeof value === 'number'){
-
+			else if(!isNaN(value) && typeof value === 'number' && objectFound.hasOwnProperty('precision')){
 				value = round(parseFloat(value), objectFound.precision);
 				
 			}
