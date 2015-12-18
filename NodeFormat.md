@@ -12,9 +12,12 @@ Currently, a station consists of the following properties:
 
 in order for a sensor to show up with all of the default properties, it will need the following child properties:
 
-1. title - which will be the text that displays in the tree for that sensor - this overrides what is likely to be a bunch of random characters that serve as the sensor's id
-2. units - the units that are associated with the value (ex: feet, degrees celsius, seconds, etc.)
-3. value - the value for that sensor
+1. title (optional) - which will be the text that displays in the tree for that sensor - this overrides what is likely to be a bunch of random characters that serve as the sensor's id
+2. units (optional) - the units that are associated with the value (ex: feet, degrees celsius, seconds, etc.)
+3. type (optional) - type tells wsWebDisplay what type of unit it is dealing with. Currently, the types are: atmospheric pressure, time, length, speed, temperature
+4. typeUnits (optional) - typeUnits specifies the subtype. So if, for example, we have temperature as a type, we can specify celcius as "c" within the typeUnits property. This is used in various ways within wsWebDisplay such as setting up unit conversions between temperatures.
+5. units (optional) - units is essentially a property that dictates the label for the value. So if we have typeUnits 'c', a label that might be passed with it would be '&deg;C'
+6. value (required if title, units, type, typeUnits, or units are set) - the value for that sensor. This can be a String or Number type when it comes in via JSON. The type within the JSON String dictates how wsWebDisplay treats the value. If it is a string, the ui will display it in a literal way. If it is a number, it will manipulate the value based on the type, typeUnits and units properties.  
 
 ###cameras
 
@@ -77,6 +80,8 @@ Code:
             "cd836789f651b02071e05e045f9511b5": {
                 "value": 0,
                 "title": "Watchdog Timer",
+				"type": "time",
+				"typeUnits": "seconds",
                 "units": "seconds"
             },
             "0ca41badb637f4b03936f6d0e59e390c": {
@@ -97,9 +102,3 @@ Code:
     }
 }
 ```
-Resulting structure:
-![example](images/example.png)
-
-Resulting tree:
-
-![example](images/example2.png)

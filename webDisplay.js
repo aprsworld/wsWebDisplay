@@ -470,6 +470,9 @@ function dynamicUpdate(data) {
 					label = result.label;
 					objectFound.setLabel(label);
 					$('div#div_' + id + '').children('.label').html(label);
+					if(objectFound.selected){
+						$('.labelChange').val(label);
+					}
 				}
 				
 			}
@@ -750,7 +753,6 @@ function collapseWindows(){
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
-	console.log(data);
 	var incomingData = data;
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
@@ -1727,7 +1729,7 @@ DATA CELLS CASE
 			console.log('fired');
 			var input = this;
 			setTimeout(function () {
-				var newSize = $(input).val() // get the current value of the input field.
+				var newSize = $(input).val(); // get the current value of the input field.
 				console.log(newSize);
 
 				objectFound.fontSizeChange(newSize);
@@ -1740,10 +1742,6 @@ DATA CELLS CASE
 			var val = $( "#unitSelect" ).val();
 			objectFound.setTypeChange(val);
 			console.log(val);
-			setTimeout(function () {
-				$('.labelChange').val(objectFound.label);
-				console.log('timeout');
-			}, 1500);
 		});	
 		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+selectedModule).css('background-color'));
