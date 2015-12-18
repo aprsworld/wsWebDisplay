@@ -205,6 +205,9 @@ function secToTime(sec){
 }
 //value = number being rounded, decimals = decimal places to round to
 function round(value, decimals) {
+	if(value == 0){
+		return value;	
+	}
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
 }
 function data_error(errors, delay) {
@@ -442,7 +445,7 @@ function dynamicUpdate(data) {
 				var type = objectFound.type;
 				var typeUnits = objectFound.typeUnits.toUpperCase();
 				var typeChange = objectFound.typeChange;
-				if(typeChange != typeUnits){
+				if(typeChange != typeUnits && typeof value === 'number'){
 					var result = chooseConversion(type, typeUnits, value, typeChange);
 				}
 				else{
@@ -450,7 +453,7 @@ function dynamicUpdate(data) {
 					result.label = objectFound.units;
 					result.value = value;
 				}
-				if(type != "time"){
+				if(/*type != "time"*/ typeof value === 'number'){
 					value = round(result.value, objectFound.precision);
 				}
 				else{
@@ -469,7 +472,7 @@ function dynamicUpdate(data) {
 				
 			}
 			else if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits'))){
-				if(!isNaN(value)){
+				if(typeof value === 'number'){
 					value = round(parseFloat(value), objectFound.precision);
 				}
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
@@ -481,8 +484,10 @@ function dynamicUpdate(data) {
 					$('div#div_' + id + '').children('.label').html(label);
 				}
 			}
-			else if(!isNaN(value)){
+			else if(!isNaN(value) && typeof value === 'number'){
+
 				value = round(parseFloat(value), objectFound.precision);
+				
 			}
 			
 			objectFound.value = 0;
@@ -595,13 +600,15 @@ function clickToCreate(item, data, x ,y){
 			}
 		}
 		
-		obj["precision"] = 3;
 		path_arr.push(path);
 		id_arr.push(new_id);
 		cell_arr.push(obj);
 		console.log(obj);
-			var updatedPath = ref(data, path);
-			obj.createHtml(cellCount, updatedPath, x ,y);
+		var updatedPath = ref(data, path);
+		if(typeof value === 'number'){
+				obj["precision"] = 3;
+		}
+		obj.createHtml(cellCount, updatedPath, x ,y);
 		new_id = obj.parentId;
 	 	positionDiv(obj, new_id);
 		cellCount++;
@@ -742,6 +749,7 @@ function collapseWindows(){
 function data_update(data) {
 	time=0;
 	var incomingData = data;
+	console.log(data);
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
 		started = true; //sets our boolean to true so the above only executes once
