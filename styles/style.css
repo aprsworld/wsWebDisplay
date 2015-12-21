@@ -101,25 +101,31 @@ select{
 	border-right: 1px dotted white;
 	z-index: 102;
 }
-#testLog{
+.dataLog{
 	position: absolute;
 	top: 50;
 	left: 300;
-	width: 320px;
-	height: 200px;
+	width: 420px;
+	height: auto;
 	background-color: #ddd;
 	color: #333;
-	overflow-y: auto;
-	overflow-x: hidden;
+	overflow: hidden;
 		z-index: 100;
 	border: 2px solid black;
-
+	padding: 16px;
+}
+.logContainer{
+	height: 200px;
+	overflow: auto;	
+	border-top: 1px solid #333;
 }
 .logEntry{
 	margin: 0 2px;
 	padding: 0 1px;
 	border: 1px #333 solid;
 	background-color: white;
+	min-width: 200px;
+	max-width: 80%;
 }
 #cropDialog{
 	display: none;

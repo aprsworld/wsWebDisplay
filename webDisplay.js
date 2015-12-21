@@ -881,7 +881,6 @@ function data_update(data) {
 		   $(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		   $('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		   $('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-
 		}
 		var objId = 'pageSettings';	
 		console.log(cell_arr);
@@ -896,8 +895,6 @@ function data_update(data) {
 			pageSettingsObj.createGrid(10);
 			cell_arr.push(pageSettingsObj);
 			logElement = new pageLog();
-			logElement.setResize();
-			logElement.setDrag();
 			cell_arr.push(logElement);
 			console.log(logElement);
 			console.log(pageSettingsObj);

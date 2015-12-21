@@ -452,6 +452,41 @@ pageLog.prototype.remove = function(position) {
  
     this._length--;
 };
+pageLog.prototype.setResize = function(){
+	var handleTarget;
+	var thisObj = this;		
+	$('#'+thisObj.parentId).resizable({
+		grid: [1,1], handles: 'all', disabled: false,
+		start: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var posSpan = document.createElement("SPAN"); 
+			posSpan.id = 'resizeSpan';
+			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			});
+			$('#'+thisObj.parentId).append(posSpan);
+			handleTarget = $(event.originalEvent.target);
+		},
+		resize: function(event, ui){
+			var width = $('#'+thisObj.parentId).css('width');
+			var height = $('#'+thisObj.parentId).css('height');
+			var top = $('#positionDiv').css('top');
+			var left = $('#positionDiv').css('left');
+			$('#resizeSpan').css({
+				top: event.clientY+5,
+				left: event.clientX+5
+			}); 
+			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+		},
+		stop: function(event, ui){
+			$('#resizeSpan').remove();
+			thisObj.onChangeStyle();
+		}
+	});
+}
 /***********************************************************************************
 * DATA CELL OBJECT
 ************************************************************************************/
