@@ -286,6 +286,173 @@ pageSettings.prototype.updateGrid = function updateGrid(size) {
 	$('.gridlines').show();
 }
 /***********************************************************************************
+* DATA LOG OBJECT
+************************************************************************************/
+var pageLog = function(){
+	this.setType('pageLog');
+	this.timeStamp;
+	this.value;
+	this.type;
+	this.typeUnits;
+	this.units;
+	this.label;
+	this.path = ".A4757.sensors.0ad65b345af388a841c010953846394e.value";
+	this.title;
+	this.id;
+	this.containerId;
+	this.hidden;
+	this.elementType;	
+	this.logLimit = 10;
+	this.head = null;
+	this.tail = null;
+	this._length = 0;
+	this.interval = 1; //in seconds
+}
+extend(pageLog, pageElement);
+
+pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
+	
+}
+pageLog.prototype.loadHtml = function(){
+	
+}
+/*
+*	the structure for an entry will be that of a doubly linked list. Therefore it will have to be its own object with a pointer
+*	to the previous object, data, timestamp, and a pointer to the next object in the list
+*/
+var logEntry = function(){
+	this.elementType = 'logEntry';
+	this.count;
+	this.previous = null;
+	this.next = null;
+	this.data;
+	this.timeStamp;
+};
+pageLog.prototype.checkInterval = function(time){
+	if(this.tail == null){
+		return true;	
+	}
+	var oldTime = this.tail.timeStamp;
+	var difference = time-oldTime;
+	if(difference >= this.interval){
+		return true;
+	}
+	else{
+		return false;	
+	}
+};
+//creates a logEntry object and inserts it into the queue
+pageLog.prototype.push = function(time, currentData){
+	console.log(this.tail);
+	if( this.tail == null || this.tail.timeStamp != time){
+		var node = new logEntry();
+		//case for a non-empty list
+		console.log(this._length);
+		if (this._length) {
+			if(this._length >= this.logLimit){
+				this.remove(1);
+			}
+			//finds the next property of the current tail node and makes it equal to the logEntry we just created
+			this.tail.next = node;
+			//sets our newly created logEntry previous property to the current tail
+			node.previous = this.tail;
+			//sets our newly created logEntry as the tail of our queue
+			this.tail = node;
+		//case for empty list
+		} else {
+			//sets the head to our newly created logEntry
+			this.head = node;
+			//sets the tail to our newly created logEntry
+			this.tail = node;
+		}
+		node.data = currentData;
+		node.timeStamp = time;
+		this._length++;
+
+		//return node;
+	} else {
+		console.log('duplicate');	
+	}
+};
+
+pageLog.prototype.searchNodeAt = function(position) {
+    var currentNode = this.head,
+        length = this._length,
+        count = 1,
+        message = {failure: 'Failure: non-existent node in this list.'};
+ 
+    // 1st use-case: an invalid position
+    if (length === 0 || position < 1 || position > length) {
+        throw new Error(message.failure);
+    }
+ 
+    // 2nd use-case: a valid position
+    while (count < position) {
+        currentNode = currentNode.next;
+        count++;
+    }
+ 
+    return currentNode;
+};
+
+
+pageLog.prototype.remove = function(position) {
+	var currentNode = this.head,
+        length = this._length,
+        count = 1,
+        message = {failure: 'Failure: non-existent node in this list.'},
+        beforeNodeToDelete = null,
+		afterNodeToDelete = null,
+        nodeToDelete = null,
+        deletedNode = null;
+ 
+    // 1st use-case: an invalid position
+    if (length === 0 || position < 1 || position > length) {
+        //throw new Error(message.failure);
+		console.log('failure');
+    }
+ 
+    // 2nd use-case: the first node is removed
+    if (position === 1) {
+		if (this.head){
+			var id = currentNode.timeStamp;
+        	this.head = currentNode.next;
+			this.head.previous = null;
+			$('#'+id).remove();
+
+		}
+        // 2nd use-case: there is a second node
+        else if (!this.head) {
+            this.head.previous = null;
+        // 2nd use-case: there is no second node
+        } else {
+            this.tail = null;
+        }
+ 
+    // 3rd use-case: the last node is removed
+    } else if (position === this._length) {
+        this.tail = this.tail.previous;
+        this.tail.next = null;
+    // 4th use-case: a middle node is removed
+    } else {
+        while (count < position) {
+            currentNode = currentNode.next;
+            count++;
+        }
+ 
+        beforeNodeToDelete = currentNode.previous;
+        nodeToDelete = currentNode;
+        afterNodeToDelete = currentNode.next;
+ 
+        beforeNodeToDelete.next = afterNodeToDelete;
+        afterNodeToDelete.previous = beforeNodeToDelete;
+        deletedNode = nodeToDelete;
+        nodeToDelete = null;
+    }
+ 
+    this._length--;
+};
+/***********************************************************************************
 * DATA CELL OBJECT
 ************************************************************************************/
 var pageCell = function(){
@@ -301,8 +468,7 @@ var pageCell = function(){
 	this.toolTip;
 	this.value;
 	this.setType('pageCell');
-	this.units = '';
-				  
+	this.units = '';				  
 }
 extend(pageCell,pageElement);
 

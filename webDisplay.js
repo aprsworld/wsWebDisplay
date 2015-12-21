@@ -398,7 +398,7 @@ function ref(obj, str) {
 function dynamicUpdate(data) {
 	var idLength = cell_arr.length;
 	var value, cellObj, id, label, loadingObject;
-	
+	console.log('update');
     cell_arr.forEach(function(objectFound){	
 		// since the object array has textblocks and img blocks, we need to weed them out
 		if(objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell'){
@@ -504,6 +504,22 @@ function dynamicUpdate(data) {
 		clearInterval(ageInterval);						
 		ageTimer();
     }
+	else if(objectFound.elementType == 'pageLog'){
+		var interval = objectFound.interval;
+		var timeStamp = new Date().getTime() / 1000;
+		timeStamp = Math.floor(timeStamp);
+		value = ref(data, objectFound.path);
+		var readyToChange = objectFound.checkInterval(timeStamp);
+		console.log(readyToChange);
+		if(readyToChange){
+			objectFound.push(timeStamp, value);
+			console.log('ready');
+			$("#testLog").append('<span id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</span><br>');
+
+		}
+		console.log(value);
+		
+	}
 	});
 	
 }
@@ -752,7 +768,6 @@ function collapseWindows(){
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
-	console.log(data);
 	var incomingData = data;
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
@@ -871,6 +886,7 @@ function data_update(data) {
 		console.log(cell_arr);
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var pageSettingsObj = cell_arr[elementPos];
+		var logElement;
 		console.log(elementPos);
 		
 		if(elementPos <= -1){
@@ -878,7 +894,12 @@ function data_update(data) {
 			pageSettingsObj.setPageTitle('wsWebDisplay');
 			pageSettingsObj.createGrid(10);
 			cell_arr.push(pageSettingsObj);
+			logElement = new pageLog();
+			cell_arr.push(logElement);
+			console.log(logElement);
 			console.log(pageSettingsObj);
+			console.log(cell_arr);
+			
 		}			
         });
 		

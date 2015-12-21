@@ -101,6 +101,18 @@ select{
 	border-right: 1px dotted white;
 	z-index: 102;
 }
+#testLog{
+	position: absolute;
+	top: 50;
+	left: 300;
+	width: 300px;
+	height: 200px;
+	background-color: #ddd;
+	color: #333;
+	overflow: auto;
+		z-index: 100;
+
+}
 #cropDialog{
 	display: none;
 	width: auto;
