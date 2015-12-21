@@ -514,7 +514,8 @@ function dynamicUpdate(data) {
 		if(readyToChange){
 			objectFound.push(timeStamp, value);
 			console.log('ready');
-			$("#testLog").append('<span id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</span><br>');
+			//TODO Unique ids
+			$("#testLog").append('<p class="logEntry" id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</p>');
 
 		}
 		console.log(value);

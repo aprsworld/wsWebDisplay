@@ -296,7 +296,7 @@ var pageLog = function(){
 	this.typeUnits;
 	this.units;
 	this.label;
-	this.path = ".A4757.sensors.0ad65b345af388a841c010953846394e.value";
+	this.path = ".A4757.sensors.2086bd024e633982ff78fb65f3e81e0b.value";
 	this.title;
 	this.id;
 	this.containerId;
@@ -349,6 +349,7 @@ pageLog.prototype.push = function(time, currentData){
 		//case for a non-empty list
 		console.log(this._length);
 		if (this._length) {
+			//removes first entry if the loglimit is reached
 			if(this._length >= this.logLimit){
 				this.remove(1);
 			}

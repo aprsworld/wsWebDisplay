@@ -113,6 +113,10 @@ select{
 		z-index: 100;
 
 }
+.logEntry{
+	margin: 0;
+	padding: 0;
+}
 #cropDialog{
 	display: none;
 	width: auto;
