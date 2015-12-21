@@ -68,7 +68,49 @@ select{
 	color: #0550a5;	
 	font-size: 28px;	
 	float: left;
-
+}
+#rulerBox{
+	display:none;
+	position: absolute;
+	top: 0;
+	width: 0;
+	background-color: transparent;
+	border-right: 1px dotted white;
+	border-bottom: 1px dotted white;
+	z-index: 102;
+}
+#rulerBox2{
+	display:none;
+	position: absolute;
+	top: 0;
+	width: 0;
+	background-color: transparent;
+	border-bottom: 1px dotted white;
+	z-index: 102;
+}
+#rulerBox2 p{
+	position: absolute;
+	
+}
+#rulerBox3{
+	display:none;
+	position: absolute;
+	top: 0;
+	width: 0;
+	background-color: transparent;
+	border-right: 1px dotted white;
+	z-index: 102;
+}
+#cropDialog{
+	display: none;
+	width: auto;
+	height: auto;
+	position: fixed;
+	border-radius: 5px 5px 0px 0px;
+	bottom: 18;
+	left: 45%;
+	background-color: rgba(200, 200, 200, 0.8);
+	z-index: 1001;
 }
 #preload{
 	display:none;
@@ -78,7 +120,8 @@ select{
 }
 .top-container{
 	clear: both;
-	height: 100vh;
+	height: 500vh;
+	width: 500vw;
 	background-color: transparent;
 	z-index: 0;
 }
@@ -101,6 +144,16 @@ select{
 }
 
 /* Styling for left-hand control panel */
+.controlsOverlay{
+	display: none;
+	position:absolute;
+	width:250px;
+	height:98vh;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: rgba(0,0,0,0.7);
+	z-index: 103;
+}
 .controls{
 	width: 250px;
 	height: 98vh;
@@ -108,13 +161,16 @@ select{
 	padding-left: 10px;
 	padding-right: 10px;
 	border: black 1px solid;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 101;
+	z-index: 102;
 	box-shadow: 0px 0px 4px #222;
 	text-align: center;
 	display: none;
+}
+.controlsTitle{
+	overflow: hidden;	
 }
 .controls h2{
 	font-size: 26px;
@@ -131,18 +187,27 @@ select{
 	margin-top: 10px;
 	width: 100%;
 	clear:both;
-	height: 25px;
-	
+	height: auto;	
 }
 #refreshControlRow{
 	width: 100%;
 	clear:both;
-	height: 25px;
+	height: auto;
 	margin-top: 0;
 }
 #refreshTree{
 	width: 100%;
-	height: 30px;
+}
+.editWindowRow .fa-question{
+	color: #999;	
+	float: left;
+	margin-left: -10px;
+	font-size: 12px;
+	cursor: help;
+}
+.editWindowRow .fa-question:hover{
+	color: white;
+	text-shadow: 0px 0px 5px white;
 }
 .controls input{
 	vertical-align: middle;
@@ -155,9 +220,10 @@ select{
 .controls button{
 	vertical-align: middle;
 	display: inline-block;
-	height: 30px;
 	width: 100%;
+	height: auto;
 	color: #333;
+	overflow: hidden;
 }
 .controls button span{
 	float: left;
@@ -216,6 +282,7 @@ div.logo_container{
 }
 #saveState{
 	margin-top: 5px;
+	margin-bottom: 10px;
 	width: 80%;
 }
 #saveState span{
@@ -233,9 +300,8 @@ div.logo_container{
 	height: 30px;
 }
 .fontContainer{
-	width: 65px;	
+	width: 80px;	
 	height:36px;
-	padding: 2px;
 	float: left;
 }
 #fontSizePlus{
@@ -303,35 +369,48 @@ div.logo_container{
 /*styling for user created blocks of text*/
 .textBlockContainer{
 	position: absolute;
-	top: 15%;
-	left: 20%;
+	top: 50;
+	left: 300;
 	width: 300px;
 	height: 400px;
 	padding: 10px;
 	background-color: grey;
-	z-index: 0;
+	color: #333;
+	z-index: 100;
+	font-size: 14px;
 }
 .textBlockContainer p{
-	color: #333;
+	color: inherit;
+	font-size: inherit;
 	margin: 0;
 	padding: 0;
 }
 /* styling for the user created images */
 .imgBlockContainer{
 	position: absolute;
-	top: 15%;
-	left: 20%;
+	top: 50;
+	left: 300;
 	width: auto;
 	height: auto;
-	z-index: 1;
+	z-index: 100;
 	display: inline;
+	background-repeat: no-repeat;
+	background-position: center; 
+	background-size: contain;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility:    hidden;
+	-ms-backface-visibility:     hidden;
+	-webkit-transform: translate3d(0, 0, 0);
+}
+.imgBlockContainer img{
+	visibility: hidden;
 }
 /* styling for camera-feed container */
 .imgCamContainer{
 	position: absolute;
-	top: 15%;
-	left: 20%;
-	z-index: 1;
+	top: 50;
+	left: 300;
+	z-index: 100;
 	background-image: url(../res/external/dist/themes/default/throbber.gif);
 	background-repeat: no-repeat;
 	background-position: center; 
@@ -343,11 +422,10 @@ div.logo_container{
 }
 
 .container .myTableValue{
-	width: 65%;
 	float: left;
 	height: auto;
 	padding-top: 2px;
-	width: 100%;
+	width: 100% !important;
 	color: inherit !important;
 	font-weight: 700;
 	font-size: inherit;
@@ -356,6 +434,7 @@ div.logo_container{
 	margin:0;
 	padding: 0;
 	display: inline-block;
+	width: auto !important;
 }
 .container .myTableValue .path{
 	display:none;	
@@ -373,23 +452,27 @@ div.logo_container{
 	background-color: white !important;	
 }
 .container .tr{
+	position: absolute;
 	padding: 1px;
-	font-size: 14px;
+	font-size: 15px;
 	width: auto;
 	height: auto;
 	display: inline-block;
 	border-radius: 5px;
-	z-index: 2;
+	z-index: 100;
 	color: #efefef;	
 	background-color: rgba(0,0,0,0.01);
+}
+.titleText{
+	display: inline-block;	
 }
 .draggable_focus_in{
 	box-shadow: 0px 0px 20px #0550a5;
 }
 #positionDiv{
 	position: absolute;
-	top: -19;
-	left: 0;
+	top: -17;
+	left: -11;
 	color: #ddd !important;
 	font-weight: 900;
 	text-align: center;
@@ -405,7 +488,9 @@ div.logo_container{
 #positionDiv i{
 	display: inline-block;
 	margin-left: 2px;
-	margin-bottom: -2px
+	margin-bottom: -4px;
+	margin-top: 4px;
+	font-size: 14px !important;
 }
 #resizeSpan{
 	display: inline;
@@ -416,13 +501,6 @@ div.logo_container{
 	font-weight: 900;
 	text-align: center;
 	padding: 7px;
-}
-.container .th{
-	padding: 5px;
-	width: 20%;
-	text-align: center;
-	background-color: white;
-	background-image: none !important;
 }
 .container .td{
 	color: #333333;
@@ -484,7 +562,7 @@ div.logo_container{
 
 /* styling for edit window that pops up when elements are clicked on in edit mode */
 .editWindow{
-	position: absolute;	
+	position: fixed;	
 	right: 0px;
 	top: 0px;
 	width: 280px;
@@ -494,31 +572,30 @@ div.logo_container{
 	border: 1px solid #000;
 	padding-left: 0px;
 	padding-right: 0px;
-	z-index: 101;
+	z-index: 102;
 	color: #333;
 	text-align: center;
 	box-shadow: 0px 0px 3px #222;
-	overflow: hidden;
 	max-height: 100vh;
 }
 #editMinimize{
-	position: absolute;
+	position: fixed;
 	bottom:22;
 	right: 40;
 	color: white;
 	cursor: pointer;
 	width: 200px;
-	z-index: 102;
+	z-index: 103;
 	display:none;
 }
 #editMaximize{
-	position: absolute;
+	position: fixed;
 	bottom:22;
 	right: 2;
 	color: white;
 	cursor: pointer;
 	width: 32px;
-	z-index: 102;
+	z-index: 103;
 	display:none;
 	box-shadow: 0px 0px 5px black;
 	
@@ -528,14 +605,13 @@ div.logo_container{
 }
 .editWindowRow{
 	height: auto;
-	min-height: 35px;
 	width: 250px;
 	display: inline-block;
 	text-align: center;
 	margin: 10px;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	
+	clear: both;
 }
 .editWindowRow input{
 	height: 28px;	
@@ -546,10 +622,11 @@ div.logo_container{
 	display: inline-block;
 	width: 30%;
 	font-weight: 300;
-	text-align: center;
+	text-align: left;
 	font-size: 16px;
 	margin-bottom: 5px;
 	margin-right: 15px;
+	float: left;
 }
 .editWindow h1{
 	font-size: 28px;
@@ -577,10 +654,12 @@ div.logo_container{
 	float: left;
 	margin-right: 20px !important;
 }
-#bgColorLabel, #textColorLabel{
+#bgColorLabel, #textColorLabel, #zLabel{
 	float: left;
-	width: 98% !important;
+	margin-left: 4px;
+	width: 80% !important;
 	text-align: left !important;
+	clear: both;
 }
 #editBodyLabel{
 	float: left;
@@ -608,9 +687,9 @@ div.logo_container{
 	width: 90%;	
 }
 .bodyChange{
-	padding: 3px;
+	padding: 6px;
 	width: 95%;
-	background-color: #AAA;	
+	background-color: white;	
 	color: #333;
 	font-family: arial;
 	font-size: 14px;
@@ -618,7 +697,15 @@ div.logo_container{
 	border-color: #333;
 }
 .backgroundColorChange, .textColorChange{
-	width: 96%;
+	width: 150px;
+	float: right;
+}
+select.backgroundColorChange{
+	width: 20%;
+
+}
+select.backgroundColorChange option{
+	display: none;
 }
 .bodyChange:focus{
 	border-color:#0550a5;	
@@ -669,15 +756,14 @@ div.logo_container{
 	box-shadow: 0px 0px 10px black;
 }
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
-#cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, #unitRow #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow{
+#cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, 
+#unitRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, 
+#backgroundColorRow, #textColorRow, #opacityRow{
 	display:none;	
-}
-#bodyRow{
-	height: auto;
-	min-height: 60px;
+	clear: both;
 }
 #backgroundColorRow, #textColorRow{
-	height: 50px;	
+	min-height: 50px;	
 }
 #backgroundColorRow span{
 	text-align: left;	
@@ -700,8 +786,11 @@ div.logo_container{
 	float: left;
 	text-align: left;
 }
-#opacityRow, #zRow{
+
+#opacitySlider, #zSlider{
 	width: 90%;	
+	margin-bottom: 10px auto;
+	clear: both;
 }
 #opacityLabel{
 	width: 100%;	
@@ -711,14 +800,22 @@ div.logo_container{
 	padding-top: 10px;
 	background-color: rgba(255, 255, 255, 0.5);
 	margin-right: 5px;
-	margin-top: 20px;
 	float: left;
 	width: 100%;
-	height: 450px;
+	height: 45vh;
 	overflow-y: auto;
 	box-shadow: inset 0px 0px 3px white;
 	text-align: left !important;
 	border: 3px solid #555;
+}
+#jsTreeInfo{
+	float: right;
+	color: #999;
+	cursor: help;
+}
+#jsTreeInfo:hover{
+	color: white;
+	text-shadow: 0px 0px 2px white;
 }
 /* class for the hovered cam that appears in chrome and safari*/
 .webKitCam{
@@ -726,7 +823,7 @@ div.logo_container{
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;
-
+	z-index: 2147483647;
 }
 /* class for the hovered cam that appears in firefox and IE*/
 .expandedCam{
@@ -739,39 +836,100 @@ div.logo_container{
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;
-
+	z-index: 100000000 !important;
 }
 .focusedCam{
-	z-index: 2147483647;
+	z-index: 100000000 !important;
 }
 .selectedShadow {
     box-shadow: 0px 0px 20px #0550a5;
 }
 
-/*Plugin fixes*/
+/*Plugin fixes and alterations */
+.fa-rotate-320 {-webkit-transform:rotate(320deg); -moz-transform:rotate(320deg); -ms-transform:rotate(320deg); -o-transform:rotate(320deg); transform:rotate(320deg);} 
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
+.custom-combobox{
+	width: 100% !important;	
+}
+.custom-combobox-input{
+	width: 64% !important;	
+	float: left;
+	background: none !important;
+	background-color: white !important;
+}
+.custom-combobox-toggle{
+	overflow: hidden;
+	width: 30% !important;
+	float: right !important;
+	height: 26px !important;
+}
+#ul-id-1{
+	
+}
+.ui-autocomplete{
+	position: fixed !important;
+	overflow-y: scroll !important;
+	z-index:1000 !important;
+	height: 200px !important;
+
+}
 ul.jstree-children{
 	height: auto !important;	
 }
-.ui-draggable-helper {
-	box-shadow: 0px 0px 10px black;
-    background-repeat: no-repeat;
-	background-size: contain;
-	height: 500px;
-	width: 500px;
+/* style changes for color picker color box*/
+.evo-colorind-ff{
+	width: 20% !important;
+	height: 26px !important;
+		float:left !important;
+		margin-left: 25px;
 }
-.ui-dragger-helperCell{
-	padding: 1px;
-	font-size: 12px;
-	width: auto;
-	height: auto;
-	display: inline-block;
-	border-radius: 5px;
-	z-index: 2;
-	cursor: pointer;
-	background-color: rgba(0,0,0,0.01);	
+/*style changes for preview swatches on color picker*/
+.evo-color{
+	width: 140px !important;	
+}
+/* style changes for color picker container*/
+.evo-pop{
+	margin-top: 60px;
+	left: -230;
+	box-shadow: 0 0 5px black;
+	width: 300px !important;
+}
+/*creates little triangle pointer on color picker*/
+.evo-pop:before{
+	position: absolute;
+	content: '';
+	top:-20;
+	right:0;
+	width: 0; 
+	height: 0; 
+	border-top: 30px solid transparent;
+	border-right: 60px solid white;
+	
+	border-bottom: 30px solid transparent;
+}
+
+.gridlines {
+    display: none;
+    position:absolute;
+    background-color:#444;
+}
+
+/* alters the icon next to elements in jstree that we want to be draggable*/
+.dataDraggable a i, .draggableCamNode a i {
+	background: none !important;
+	color: #333;
+	
+}
+.dataDraggable a i:hover, .draggableCamNode a i:hover  {
+	color: green !important;
+}
+.dataDraggable a i:before, .draggableCamNode a i:before  {
+	font-family: 'FontAwesome';
+	font-style: normal !important;
+	content: "\f045";
+	font-size: 20px;
 }
 @media (max-width: 400px) {
 	img{

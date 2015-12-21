@@ -16,7 +16,9 @@
 <script src="res/wsBroadcast-WebClient/js/wsb-client.js"></script> <!-- WebSockets Broadcast Client -->
 <script src="res/external/evol.colorpicker.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="version.js"></script>	
+<script type="text/javascript" src="pageElements.js"></script>
 <script type="text/javascript" src="conversions.js"></script>
+<script type="text/javascript" src="tooltips.js"></script>
 <script type="text/javascript" src="webDisplay.js"></script>
 <link rel="stylesheet" type="text/css" href="styles/style.css">
 <link rel="stylesheet" type="text/css" href="res/external/evol.colorpicker.min.css">
@@ -27,28 +29,40 @@
 <body onload="data_start();">
 <div id="preload">
 </div>
+<div id="rulerBox">	
+	
+</div>
+<div id="rulerBox2">
+</div>
+<div id="rulerBox3">	
+</div>	
+<div id="cropDialog">
+	<button id="cancelCrop"><i class="fa fa-minus-circle fa-2x"></i> Cancel Cropping </button>
+	<button id="endCrop"><i class="fa fa-thumbs-up fa-2x"></i> Finish Cropping </button>
+</div>
 <div id="content">
 	<div class="container">
 		
 		<div class="top-container">
 			<div class="controls">
-				<h2> Available Data </h2>
+				<div title="Please finish cropping" class="controlsOverlay"></div>
+				<div class="controlsTitle">
+					<h2> Available Data </h2>
+				</div>
 				<hr>
-				<div id="stationTree"></div>
+				<i id="jsTreeInfo" title="" class="fa fa-question"></i>
+				<div  ondragstart="return false;" ondrop="return false;"  id="stationTree"></div>
 				<div id="refreshControlRow" class="controlRow">
-					<button id="refreshTree"><i class="fa fa-refresh"></i><span> Refresh Tree </span></button>	
+					<button title="Manually refreshes tree to update with changes" id="refreshTree"><i class="fa fa-refresh"></i><span> Refresh Tree </span></button>	
 				</div>	
 				<div class="controlRow">
-					<button id="pageEdit" onclick=""><i class="fa fa-pencil-square-o"></i><span> Edit Page </span></button>	
+					<button title="Adjust page background color, page title, etc." id="pageEdit" onclick=""><i class="fa fa-pencil-square-o"></i><span> Page Settings </span></button>	
 				</div>	
 				<div class="controlRow">
-					<button id="createStatic"><i class="fa fa-magic"></i><span> Create Static Element </span></button>					
+					<button title="Create stand-alone images and text blocks" id="createStatic"><i class="fa fa-magic"></i><span> Create Static Element </span></button>					
 				</div>
 				<div class="controlRow">
-					<button id="configMenu"><i class="fa fa-cloud-download"></i><span> Configurations </span></button>
-				</div>
-				<div class="controlRow">
-					<!--<input type="text" id="json"></input>-->
+					<button title="Save and load configurations" id="configMenu"><i class="fa fa-cloud-download"></i><span> Configurations </span></button>
 				</div>
 				<div class="drag-handle"></div>
 			</div>
@@ -71,13 +85,19 @@
 	<div id="configRow" class="editWindowRow">
 		<input id="saveAs" type="textfield" value="" placeholder="Save Configuration As..."></input>
 		<button id="saveState" onclick="captureState()"> <i class="fa fa-floppy-o"></i><span> Save Configuration </span></button>
+		<select id="configDrop">
+			
+		</select>
+		<button id="loadConfig"> <i class="fa fa-floppy-o"></i><span> Load Configuration </span></button>
 	</div>
 	<div id="staticRow" class="editWindowRow">
-		<button id="createText" onclick="createText()"> <i class="fa fa-align-left fa-2x"></i> Create Text </button>
-		<button id="createImg" onclick="createImage()"> <i class="fa fa-file-image-o fa-2x"></i> Create Image </button>	
+		<button id="createText" title="Creates a text block element on the page" onclick="createText()"> <i class="fa fa-align-left fa-2x"></i> Create Text </button>
+		<button id="createImg" title="Creates an img block element on the page" onclick="createImage()"> <i class="fa fa-file-image-o fa-2x"></i> Create Image </button>	
 	</div>
 	<div id="titleRow" class="editWindowRow">
 		<label> Edit Title </label><input title="" class="titleChange" type="text"></input>
+		<i id="titleInputInfo" title="Changes the title of the webpage - this can sometimes be seen at the top-left corner of the browser window. This will also change the text on your browser tab." class="fa fa-question"></i>
+
 	</div>	
 	<div id="labelRow" class="editWindowRow">
 		<label> Edit Label </label><input title="Add a unit label" class="labelChange" type="text" placeholder="Add a Label"></input>
@@ -94,7 +114,8 @@
 		<label> Edit URL </label><input title="" class="urlChange" type="text" placeholder="Change URL"></input>
 	</div>
 	<div id="bodyRow" class="editWindowRow">
-		<label id="editBodyLabel"> Edit Body </label><textarea title="" class="bodyChange" type="text" placeholder="Change Text"></textarea>
+		<label id="editBodyLabel"> Edit Body </label><i id="bodyInputInfo" title="This input accepts HTML: &#013 Bold: <b> bolded text </b> &#013; Italics: <i> italicized text </i> &#013; Header 1: <h1> header text </h1>&#013; Header 2: <h2> header text </h2>&#013; " class="fa fa-question"></i>
+		<textarea title="" class="bodyChange" type="text" placeholder="Change Text"></textarea>
 	</div>
 	<div id="backgroundColorRow" class="editWindowRow">
 		<label id="bgColorLabel"> Background Color</label><input title="Type in a color" class="backgroundColorChange" type="text" placeholder="Type in a color"></input>
@@ -104,6 +125,17 @@
 	</div>
 	<div id="opacityRow" class="editWindowRow">
 		<label id="opacityLabel"> Background Opacity: <span id="opacityPercent"> </span> </label><div id="opacitySlider" ></div>	
+	</div>
+	<div id="gridRow" class="editWindowRow">
+		<label id="gridSelectLabel"> Grid Size </label>
+		<i id="titleInputInfo" title="Adjusts the size of the grid that draggable elements snap to" class="fa fa-question"></i>
+		<select class="gridSelect">
+			<option class="gridOpt" value="5">5</option>
+			<option class="gridOpt" value="10">10</option>
+			<option class="gridOpt" value="25">25</option>
+			<option class="gridOpt" value="50">50</option>
+			<option class="gridOpt" value="100">100</option>			
+		</select> 	
 	</div>
 	<div id="zRow" class="editWindowRow">
 		<label id="zLabel"> z-index </label>
@@ -128,24 +160,42 @@
 	</div>
 	<div id="fontSizeRow" class="editWindowRow">
 		<label id="fontSizeLabel"> Font Size </label>
-		<div class="fontContainer">
+		<!--<div class="fontContainer">
 			<input id="fontSize" type="text"> </input>
 			<button id="fontSizePlus" onclick="">+</button>
 			<button id="fontSizeMinus" onclick="">-</button>		
+		</div>-->
+		<div class="fontContainer">
+			<select id="fontComboBox">
+				<option value='8'>8 </option>
+				<option value='10'>10 </option>
+				<option value='12'>12 </option>
+				<option value='14'>14 </option>
+				<option value='16'>16 </option>
+				<option value='18'>18 </option>
+				<option value='20'>20 </option>
+				<option value='22'>22 </option>
+				<option value='24'>24 </option>
+				<option value='26'>26 </option>
+				<option value='28'>28 </option>
+				<option value='36'>36 </option>
+				<option value='48'>48 </option>
+				<option value='72'>72 </option>
+				<option value='96'>96 </option>
+				<option value='144'>144 </option>
+			</select>
 		</div>
 	</div>
 	<div id="cropRow" class="editWindowRow">
 		<button id="resizeModule"><i class="fa fa-undo fa-2x"></i> Reset Image </button>
-		<button id="cancelCrop"><i class="fa fa-minus-circle fa-2x"></i> Cancel Cropping </button>
 		<button id="cropModule"><i class="fa fa-crop fa-2x"></i> Crop image </button>
-		<button id="endCrop"><i class="fa fa-thumbs-up fa-2x"></i> Finish Cropping </button>
 	</div>
 	<div id="hideDelRow"class="editWindowRow">
-		<button id="hideModule"> <i class="fa fa-trash fa-2x"></i> Hide Selected</button>
+		<button id="hideModule"> <i class="fa fa-eye-slash fa-2x"></i> Hide Selected</button>
 		<button id="deleteModule"> <i class="fa fa-trash fa-2x"></i>Delete Selected </button>
 	</div>
 </div>
-	<button title="Minimize Edit Window" id="editMinimize"><span>Collapse </span><i class="fa fa-long-arrow-right"></i></button>
+	<button title="Minimize Edit Window (shortcut: esc key)" id="editMinimize"><span>Collapse </span><i class="fa fa-long-arrow-right"></i></button>
 	<button title="Expand Edit Window" id="editMaximize"><i class="fa fa-long-arrow-left"></i></button>
 </body>
 </html>

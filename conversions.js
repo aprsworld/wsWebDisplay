@@ -1,321 +1,269 @@
-/*******************************************************************
-// This is a file that contains four object: TemperatureConvert, LengthConvert, SpeedConvert, TimeConvert
-// All four objects contain a function, init, that detects the future unit, "fUnit" and calls the correct function
-// each object also has a set of functions used to convert values to values of other units.
-// each of these functions returns "result" which is an object that contains two properties, label and value
-// label is the the property which holds the type of units that are being converted to
-// value is the newly converted value to be returned
-********************************************************************/
+/*													HOW THIS WORKS
 
+There are objects for each type conversion such as 'LengthConvert', 'TemperatureConvert', etc. These objects each have an init function. This function
+accepts 3 parameters: currentUnit, FutureUnit, and value
 
-//cUnit = current units, fUnit = future units, value = current value
-var TemperatureConvert = {
-	init: function(cUnit, fUnit, value){
-		var result = {};
-		value = parseFloat(value);
-		if(fUnit == 'F'){
-			result.value = this.toF(cUnit, value); 
-			result.label = '&deg;F';
-		}
-		else if(fUnit == 'C'){
-			result.value = this.toC(cUnit, value); 
-			result.label = '&deg;C';
-		}
-		else if(fUnit == 'K'){
-			result.value = this.toK(cUnit, value); 
-			result.label = '&deg;K';
-		}
-		return result;
-	},	
-    toF: function(cUnit, value) {
-        if(cUnit == 'C'){
-			return (value*(9/5))+32;
-		}
-		else if(cUnit == 'K'){
-			return (value*(9/5))-459.67;
-		}
-		else{
-			return value;	
-		}
-    },
-	toC: function(cUnit, value) {
-        if(cUnit == 'F'){
-			return (value - 32)*(5/9);
+Current unit is the unit of measure that is being converted
+Future unit is the unit of measure that will be the end conversion
+Value is the current value that the unit applies to - the value changes based on the conversion
 
+Each conversion object has a base unit of measurement. This is what everything will be converted to and converted from to get the final result. This means
+that We dont need n^2 conversions.
+
+Everytime one of the functions is called, it is actually called twice. Once to convert to the base unit, and another time to convert to the 'future unit.' 
+The second (final) time that the funciton is called, it returns an object containing value and label properties. 
+
+Here is an example:
+
+Within the lengthConvert object, Our base unit is feet. Therefore, any conversion will convert first to feet, and then convert to the future unit. For instance, 
+if we are going from 2 miles to inches we would first convert 2 miles into feet, which is 10560. Then we convert 10560 feet into inches, 
+which turns out to be 126720 inches. When the function returns, it will return an object holding a value property equal to 126770 and a label property equal to ' in.'
+*/
+var LengthConvert = {
+	init: function(currentUnit, futureUnit, value){
+		if(currentUnit == 'IN'){
+			//convert value from inches to feet
+			value = value*.0833;
+			//call function again with feet as current unit, the same future unit, and a new value.
+			var result = LengthConvert.init('FT', futureUnit, value);
 		}
-		else if(cUnit == 'K'){
-			return (value - 273.15)*1;
+		else if(currentUnit == 'MI'){
+			value = value*5280;
+			var result = LengthConvert.init('FT', futureUnit, value);
+			return result;
 		}
-		else{
-			return value;	
+		else if(currentUnit == 'M'){
+			value = value*3.28084;
+			var result = LengthConvert.init('FT', futureUnit, value);
+			return result;
 		}
-    },
-	toK: function(cUnit, value) {
-		if(cUnit == 'F'){
-			return (value + 459.67) * 5/9;
+		else if(currentUnit == 'MM'){
+			value = value*0.00328084;
+			var result = LengthConvert.init('FT', futureUnit, value);
+			return result;
 		}
-		else if(cUnit == 'C'){
-			return (value + 273.15)*1;
+		else if(currentUnit == 'KM'){
+			value = value*3280.84;
+			var result = LengthConvert.init('FT', futureUnit, value);
+			return result;
 		}
-		else{
-			return value;	
+		else if(currentUnit == 'CM'){
+			value = value*0.0328084;
+			var result = LengthConvert.init('FT', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'FT'){
+			var result = {};
+			result.label = futureUnit;
+			if(futureUnit == 'FT'){
+				result.value = value;
+				result.label = ' ft.';
+				return result;
+			}
+			else if(futureUnit == 'IN'){
+				result.value = value*12;
+				result.label = ' in.';
+				return result;
+			}
+			else if(futureUnit == 'MI'){
+				result.value = value*.000189;
+				result.label = ' mi.';
+				return result;
+			}
+			else if(futureUnit == 'M'){
+				result.value = value*.305
+				result.label = ' m';
+				return result;
+			}
+			else if(futureUnit == 'MM'){
+				result.value = value*304.8;
+				result.label = ' mm';
+				return result;
+			}
+			else if(futureUnit == 'KM'){
+				result.value = value*.000305;
+				result.label = ' km';
+				return result;
+			}
+			else if(futureUnit == 'CM'){
+				result.value = value*30.48;
+				result.label = ' cm';
+				return result;        
+			}
 		}
 	}
 };
 var SpeedConvert = {
-	init: function(cUnit, fUnit, value){
-		var result = {};
-		value = parseFloat(value);
-		if(fUnit == 'KM/HR'){
-			result.value = this.toKMHR(cUnit, value); 
-			result.label = 'KM/HR';
+	//base unit: mi/hr
+	init: function(currentUnit, futureUnit, value){
+		if(currentUnit == 'KM/HR'){
+			//convert value from km/hr to the base unit, mi/hr
+			value = value*0.6213712;
+		  //call function again with mi/hr as current unit, the same future unit, and a new value.
+		  var result = speedConvert.init('MI/HR', futureUnit, value);
+			return result;
 		}
-		else if(fUnit == 'MI/HR'){
-			result.value = this.toMIHR(cUnit, value); 
-			result.label = 'MI/HR';
+		else if(currentUnit == 'M/S'){
+			value = value*2.23694;
+			var result = SpeedConvert.init('MI/HR', futureUnit, value);
+			return result;
 		}
-		else if(fUnit == 'M/S'){
-			result.value = this.toK(cUnit, value); 
-			result.label = 'M/S';
+		else if(currentUnit == 'KTS'){
+			value = value*1.15078;
+			var result = SpeedConvert.init('MI/HR', futureUnit, value);
+			return result;
 		}
-		else if(fUnit == 'KTS'){
-			result.value = this.toKTS(cUnit, value); 
-			result.label = 'KTS';
-		}
-		return result;
-	},	
-	toKMHR: function(cUnit, value) {
-        if(cUnit == 'MI/HR'){
-			return (value*1.61);
-		}
-		else if(cUnit == 'M/S'){
-			return (value*3.6);
-		}
-		else if(cUnit == 'KTS'){
-			return (value*1.852);
-		}
-		else{
-			return value;
-		}
-	},
-	toMIHR: function(cUnit, value) {
-        if(cUnit == 'KM/HR'){
-			return (value*0.6213712);
-		}
-		else if(cUnit == 'M/S'){
-			return (value*2.23694);
-		}
-		else if(cUnit == 'KTS'){
-			return (value*1.15078);
-		}
-		else{
-			return value;
-		}
-    },
-	toMS: function(cUnit, value) {
-		if(cUnit == 'MI/HR'){
-			return (value*0.44704);
-		}
-		else if(cUnit == 'KM/HR'){
-			return (value*0.277778);
-		}
-		else if(cUnit == 'KTS'){
-			return (value*0.514444);
-		}
-		else{
-			return value;
-		}
-	},
-	toKTS: function(cUnit, value) {
-		if(cUnit == 'MI/HR'){
-			return (value*0.868976);
-		}
-		else if(cUnit == 'M/S'){
-			return (value*1.94384);
-		}
-		else if(cUnit == 'KM/HR'){
-			return (value*0.539957);
-		}
-		else{
-			return value;
-		}
-	}  
-};
+		else if(currentUnit == 'MI/HR'){
+			var result = {};
+			result.label = futureUnit;
+			if(futureUnit == 'MI/HR'){
+				result.value = value;
+				result.label = ' mph';
+				return result;
+			}
+				else if(futureUnit == 'KM/HR'){
+				result.value = value*1.61;
+				result.label = ' km/h';
+				return result;
+			}
+				else if(futureUnit == 'M/S'){
+								console.log(value);
 
-//{IN, FT, MI, MM, CM, M, KM}
-var LengthConvert = {
-	init: function(cUnit, fUnit, value){
-		var result = {};
-		value = parseFloat(value);
-		if(fUnit == 'IN'){
-			result.value = this.toIN(cUnit, value); 
-			result.label = 'IN';
-		}
-		else if(fUnit == 'FT'){
-			result.value = this.toFT(cUnit, value); 
-			result.label = 'FT';
-		}
-		else if(fUnit == 'MI'){
-			result.value = this.toMI(cUnit, value); 
-			result.label = 'MI';
-		}
-		else if(fUnit == 'MM'){
-			result.value = this.toMM(cUnit, value); 
-			result.label = 'MM';
-		}
-		else if(fUnit == 'CM'){
-			result.value = this.toCM(cUnit, value); 
-			result.label = 'CM';
-		}
-		else if(fUnit == 'M'){
-			result.value = this.toM(cUnit, value); 
-			result.label = 'M';
-		}
-		else if(fUnit == 'KM'){
-			result.value = this.toKM(cUnit, value); 
-			result.label = 'KM';
-		}
-		return result;
-	},
-	toIN: function(cUnit, value) {
-		if(cUnit == 'FT'){
-			return (value/12);
-		}
-		else if(cUnit == 'MI'){
-			return (value*63360);
-		}
-		else if(cUnit == 'MM'){
-			return (value*0.0393701);
-		}
-		else if(cUnit == 'CM'){
-			return (value*0.393701);
-		}
-		else if(cUnit == 'M'){
-			return (value*39.3701);
-		}
-		else if(cUnit == 'KM'){
-			return (value*39370.1);
-		}
-		else{
-			return value;	
-		}
-	},
-	toFT: function(cUnit, value) {
-        if(cUnit == 'IN'){
-			return (value*12);
-		}
-		else if(cUnit == 'MI'){
-			return value*5280;
-		}
-		else if(cUnit == 'MM'){
-			return value*0.00328084;
-		}
-		else if(cUnit == 'CM'){
-			return value*0.0328084;
-		}
-		else if(cUnit == 'M'){
-			return value*3.28084;
-		}
-		else if(cUnit == 'KM'){
-			return  value*3280.84;
-		}
-		else{
-			return value;	
-		}
-    },
-	toMI: function(cUnit, value) {
-		if(cUnit == 'FT'){
-			return (value/5280);
-		}
-		else if(cUnit == 'IN'){
-			return (value*0.0000157828);
-		}
-		else if(cUnit == 'MM'){
-			return (value*0.000000621371);
-		}
-		else if(cUnit == 'CM'){
-			return (value*0.00000621371);
-		}
-		else if(cUnit == 'M'){
-			return (value*0.000621371);
-		}
-		else if(cUnit == 'KM'){
-			return (value*0.621371);
-		}
-		else{
-			return value;	
-		}	
-	},
-	toMM: function(cUnit, value) {
-		if(cUnit == 'FT'){
-			return (value*304.8);
-		}
-		else if(cUnit == 'M'){
-			return (value*1000);
-		}
-		else if(cUnit == 'CM'){
-			return (value*10);
-		}
-		else if(cUnit == 'KM'){
-			return (value*1000000);
-		}
-		else if(cUnit == 'IN'){
-			return (value*25.4);
-		}
-		else if(cUnit == 'MI'){
-			return (value*1609000);
-		}
-		else{
-			return value;	
-		}
-	},
-	toCM: function(cUnit, value) {
-		if(cUnit == 'FT'){
-			return (value*30.48);
-		}
-		else if(cUnit == 'IN'){
-			return (value*2.54);			
-		}
-		else if(cUnit == 'MI'){
-			return (value*160934);
-		}
-		else if(cUnit == 'KM'){
-			return (value*100000);
-		}
-		else if(cUnit == 'MM'){
-			return (value*0.1);
-		}
-		else if(cUnit == 'M'){
-			return (value*100);
-		}
-		else{
-			return value;	
-		}
-	},
-	toKM: function(cUnit, value) {
-		if(cUnit == 'FT'){
-			return (value*0.0003048);
-		}
-		else if(cUnit == 'IN'){
-			return (value*0.0000254);
-		}
-		else if(cUnit == 'MM'){
-			return (value*0.000001);
-		}
-		else if(cUnit == 'CM'){
-			return (value*0.00001);
-		}
-		else if(cUnit == 'M'){
-			return (value*0.001);
-		}
-		else if(cUnit == 'MI'){
-			return (value*1.60934);
-		}
-		else{
-			return value;	
+				value = value*0.44704;
+								console.log(value);
+
+				result.label = ' m/s';	
+				return result;
+			}
+				else if(futureUnit == 'KTS'){
+				result.value = value*0.868976;
+				result.label = ' kn';
+				return result;
+			}
 		}
 	}	
 };
+var TemperatureConvert = {
+	//base unit is F
+	init: function(currentUnit, futureUnit, value){
+		if(currentUnit == 'C'){
+			value = (value*(9/5))+32;
+			var result = TemperatureConvert.init('F', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'K'){
+			value = (value*(9/5))-459.67;
+			var result = TemperatureConvert.init('F', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'F'){
+			var result = {};
+			result.label = futureUnit;
+			if(futureUnit == 'F'){
+				result.value = value;
+				result.label = '&deg;F';
+				return result;
+			}
+			else if(futureUnit == 'K'){
+				result.value = (value + 459.67) * 5/9;
+				result.label = '&deg;K';				
+				return result;
+			}
+			else if(futureUnit == 'C'){
+				result.value = (value - 32)*(5/9);
+				result.label = '&deg;C';				
+				return result;
+			}
+		}
+	}
+};
+var AtmosphericPressureConvert = {
+	//base unit is atmosphere (atm)
+	init: function(currentUnit, futureUnit, value){
+		if(currentUnit == 'PASCAL'){
+			value = value * 0.00000986923;
+			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'MILLIBAR'){
+			value = value * 0.000986923; 
+			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'HECTOPASCAL'){
+			value = value*0.000986923;
+			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'MMHG'){
+			value = value*0.00131578955679;
+			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);      
+			return result;
+		}
+		else if(currentUnit == 'INHG'){
+			value = value*0.0334211;
+			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'PSI'){
+			value = value*0.068046;
+			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'BAR' || currentUnit == 'BARS'){
+			value = value*0.986923;
+			var result = AtmosphericPressureConvert.init('ATMOSPHERE', futureUnit, value);
+			return result;
+		}
+		else if(currentUnit == 'ATMOSPHERE'){
+			var result = {};
+			result.label = futureUnit;
+			if(futureUnit == 'ATMOSPHERE'){
+				result.value = value;
+				result.label = ' atmosphere';
+				return result;
+			}
+			else if(futureUnit == 'PASCAL'){
+				result.value = value*101325;
+				result.label = ' Pascal';
+				return result;
+			}
+			else if(futureUnit == 'MILLIBAR'){
+				result.value = value*1013.25;
+				result.label = ' millibar';
+				return result;
+			}
+			else if(futureUnit == 'BAR'){
+				result.value = value*1.01325;
+				result.label = ' Bar';
+				return result;
+			}
+			else if(futureUnit == 'HECTOPASCAL'){
+				result.value = value*1013.25;
+				result.label = ' hectopascal';
+				return result;
+			}
+			else if(futureUnit == 'MMHG'){
+				result.value = value*760;
+				result.label = ' mmHg';
+				return result;
+			}
+			else if(futureUnit == 'INHG'){
+				result.value = value*29.92;
+				result.label = ' inHg';
+				return result;
+			}
+			else if(futureUnit == 'PSI'){
+				result.value = value*14.696;
+				result.label = ' psi';
+				return result;
+			}
+		}
+	}
+};
+//
+//time conversions are non-linear so it will work a bit differently
+//
 var TimeConvert = {
 	init: function(cUnit, fUnit, value){
 		var result = {};
@@ -331,13 +279,10 @@ var TimeConvert = {
 	},	
 	toUNIX: function(cUnit, value) {
        	var date = (new Date(value.replace(' ','T'))).getTime()/1000;
-		console.log(date);
 		return date;
     },
 	toMYSQL: function(cUnit, value) {
-		console.log(value);
        	var date = new Date(value*1000);
-		console.log(date.toString());
 		var year = date.getUTCFullYear();
 		var month = date.getUTCMonth()+1;
 		var day = date.getUTCDate()+1;
@@ -346,6 +291,119 @@ var TimeConvert = {
 		var sec = date.getUTCSeconds();
 		var sqlDate = year+"-"+month+"-"+day+" "+hour+":"+min+":"+sec+" UTC";
 	  	return sqlDate;
-    },
+    }
+};
+
+function chooseConversion(type, typeUnits, value, typeChange){
+	if(type == "temperature"){
+		var x = TemperatureConvert.init(typeUnits, typeChange, value);
+		return x;
+	}
+	else if(type == "speed"){
+		return SpeedConvert.init(typeUnits, typeChange, value);
+	}
+	else if(type == "length"){
+		return LengthConvert.init(typeUnits, typeChange, value);
+	}
+	else if(type == "time"){
+		return TimeConvert.init(typeUnits, typeChange, value);
+	}
+	else if(type == "atmosphericPressure"){
+		typeChange = typeChange.toUpperCase();
+		return AtmosphericPressureConvert.init(typeUnits, typeChange, value);	
+	}
 }
 
+//populates the conversion dropdown based on the id
+function populateConversions(id){
+	$('#unitRow').hide();
+	var temperatureUnits = ['C','F','K'];
+	var speedUnits = ['KM/HR','MI/HR','M/S','KTS'];
+	var lengthUnits = ['IN','FT','MI','MM','CM','M','KM'];
+	var timeUnits = ['UNIX','MYSQL'];
+	var apUnits = ['Atmosphere','Pascal','Bar','millibar','hectopascal','mmHg','inHg','psi'];
+	
+	id = id.replace('div_', '');	
+	var cellObj = $.grep(cell_arr, function(e){ return e.id === id});
+	var type = cellObj[0].type;
+	var label = cellObj[0].units;
+	var currentUnits = cellObj[0].typeUnits;
+	var dataType = cellObj[0].dataType;
+	//empty selection list in case there was elements in it from the last click
+	$("#unitSelect").empty();
+	//leave function if either undefined
+	if(currentUnits == 'undefined' || type == 'undefined' || dataType != 'number'){
+		console.log('fail');
+		return;	
+	}
+	else{
+		//
+		//logic block that matches type with one of the arrays above. it will then populate the selection list in the edit window and unhide it.
+		//
+		if(type == 'temperature'){
+			var i = 0;
+			var length = temperatureUnits.length;
+			for(i; i<length; i++){
+				console.log(temperatureUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: temperatureUnits[i],
+					text: ''+temperatureUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'speed'){
+			var i = 0;
+			var length = speedUnits.length;
+			for(i; i<length; i++){
+				console.log(speedUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: speedUnits[i],
+					text: ''+speedUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'length'){
+			var i = 0;
+			var length = lengthUnits.length;
+			for(i; i<length; i++){
+				console.log(lengthUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: lengthUnits[i],
+					text: ''+lengthUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'time'){
+			var i = 0;
+			var length = timeUnits.length;
+			for(i; i<length; i++){
+				console.log(timeUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: timeUnits[i],
+					text: ''+timeUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		else if(type == 'atmosphericPressure'){
+			var i = 0;
+			var length = apUnits.length;
+			for(i; i<length; i++){
+				console.log(apUnits[i]);
+				$('#unitSelect').append($('<option>', {
+					value: apUnits[i],
+					text: ''+apUnits[i]+''
+				}));	
+			}
+			$('#unitRow').show();
+		}
+		//leave function due to incorrect format of object.type
+		else{
+			return;	
+		}
+		$("#unitSelect").val(currentUnits);
+	}
+}

@@ -3,18 +3,28 @@
  In order for tree nodes (stations) to display correctly, they need to be in the correct format
 
 Currently, a station consists of the following properties:
-
-1. **sensors**
-2. **cameras**
-3. **title**
+ 
+1. **title** 
+2. **type**
+3. **typeUnits**
+4. **units**
+5. **value**
 
 ###sensors
 
 in order for a sensor to show up with all of the default properties, it will need the following child properties:
 
-1. title - which will be the text that displays in the tree for that sensor - this overrides what is likely to be a bunch of random characters that serve as the sensor's id
-2. units - the units that are associated with the value (ex: feet, degrees celsius, seconds, etc.)
-3. value - the value for that sensor
+1. title (optional) - which will be the text that displays in the tree for that sensor - this overrides what is likely to be a bunch of random characters that serve as the sensor's id
+2. type (optional, type: string) - type tells wsWebDisplay what type of unit it is dealing with. Currently, the types are: atmosphericPressure, time, length, speed, temperature 
+3. typeUnits (optional, type: string) - typeUnits specifies the subtype. So if, for example, we have temperature as a type, we can specify celcius as "c" within the typeUnits property. This is used in various ways within wsWebDisplay such as setting up unit conversions between temperatures.
+	Current valid types: 
+	Temperature Units: 'C','F','K'
+	Speed Units: 'KM/HR','MI/HR','M/S','KTS'
+	Length Units: 'IN','FT','MI','MM','CM','M','KM'
+	Time Units: 'UNIX','MYSQL'
+	Atmospheric Pressure Units: 'Atmosphere','Pascal','Bar','millibar','hectopascal','mmHg','inHg','psi'
+4. units (optional) - units is essentially a property that dictates the label for the value. So if we have typeUnits 'c', a label that might be passed with it would be '&deg;C'
+5. value (required if title, units, type, typeUnits, or units are set) - the value for that sensor. This can be a String or Number type when it comes in via JSON. The type within the JSON String dictates how wsWebDisplay treats the value. If it is a string, the ui will display it in a literal way. If it is a number, it will manipulate the value based on the type, typeUnits and units properties.  
 
 ###cameras
 
@@ -77,6 +87,8 @@ Code:
             "cd836789f651b02071e05e045f9511b5": {
                 "value": 0,
                 "title": "Watchdog Timer",
+				"type": "time",
+				"typeUnits": "seconds",
                 "units": "seconds"
             },
             "0ca41badb637f4b03936f6d0e59e390c": {
@@ -85,6 +97,7 @@ Code:
                 "units": "UTC"
             }
         },
+		"title": "Custom Title",
         "cameras": [
             {
                 "image_url": "http://cam.aprsworld.com/A4606/2015/10/05/20151005_202031.jpg",
@@ -97,9 +110,3 @@ Code:
     }
 }
 ```
-Resulting structure:
-![example](images/example.png)
-
-Resulting tree:
-
-![example](images/example2.png)
