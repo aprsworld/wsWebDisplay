@@ -752,6 +752,7 @@ function collapseWindows(){
 /*function that periodically updates the data */
 function data_update(data) {
 	time=0;
+	console.log(data);
 	var incomingData = data;
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties

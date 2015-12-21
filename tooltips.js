@@ -19,8 +19,8 @@ var tooltips = {
 			"<p> Items from the file tree below can be placed onto the page: </p>" +
 			"<ul>"+
 			"<li> <b>Double click</b> a folder to expand its children</li>"+
-			"<li> <b>Click</b> the <b><i class='fa fa-plus-square-o'></i></b> next to an element that you want to add</li>"+
-			"<li> Once the <b><i class='fa fa-plus-square-o'></i></b> is clicked, the item will attach to the mouse pointer</li>"+
+			"<li> <b>Click</b> the <b><i class='fa fa-share-square-o'></i></b> next to an element that you want to add</li>"+
+			"<li> Once the <b><i class='fa fa-share-square-o'></i></b> is clicked, the item will attach to the mouse pointer</li>"+
 			"<li> <b> Move </b> your mouse and <b>click</b> anywhere on the grid and the item will be added to the page</li>"+
 			"<li> Alternatively, your <b> esc key </b> will cancel the process </li>"+
 			"<li> These items can now be dragged and resized while in edit mode </li>"+
