@@ -1,5 +1,5 @@
 # Format of Stations
-
+ 
  In order for tree nodes (stations) to display correctly, they need to be in the correct format
 
 Currently, a station consists of the following properties:
