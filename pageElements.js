@@ -300,6 +300,7 @@ var pageLog = function(){
 	this.title;
 	this.id;
 	this.containerId;
+	this.parentId = "testLog";
 	this.hidden;
 	this.elementType;	
 	this.logLimit = 10;
@@ -347,7 +348,6 @@ pageLog.prototype.push = function(time, currentData){
 	if( this.tail == null || this.tail.timeStamp != time){
 		var node = new logEntry();
 		//case for a non-empty list
-		console.log(this._length);
 		if (this._length) {
 			//removes first entry if the loglimit is reached
 			if(this._length >= this.logLimit){
@@ -370,7 +370,6 @@ pageLog.prototype.push = function(time, currentData){
 		node.timeStamp = time;
 		this._length++;
 
-		//return node;
 	} else {
 		console.log('duplicate');	
 	}

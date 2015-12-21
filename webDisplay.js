@@ -515,7 +515,7 @@ function dynamicUpdate(data) {
 			objectFound.push(timeStamp, value);
 			console.log('ready');
 			//TODO Unique ids
-			$("#testLog").append('<p class="logEntry" id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</p>');
+			$("#testLog").find('ol').append('<li class="logEntry" id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</li>');
 
 		}
 		console.log(value);
@@ -896,6 +896,8 @@ function data_update(data) {
 			pageSettingsObj.createGrid(10);
 			cell_arr.push(pageSettingsObj);
 			logElement = new pageLog();
+			logElement.setResize();
+			logElement.setDrag();
 			cell_arr.push(logElement);
 			console.log(logElement);
 			console.log(pageSettingsObj);
