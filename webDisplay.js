@@ -246,7 +246,7 @@ function round(value, decimals) {
 	console.log(decimals);
 	if(value === 0){
 		
-		return value.toPrecision(decimals);
+		return value.toFixed(decimals);
 	}
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
 }
