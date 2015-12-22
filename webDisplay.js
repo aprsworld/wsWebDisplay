@@ -243,8 +243,10 @@ function secToTime(sec){
 }
 //value = number being rounded, decimals = decimal places to round to
 function round(value, decimals) {
+	console.log(decimals);
 	if(value === 0){
-		return value.toFixed(decimals);	
+		
+		return value.toPrecision(decimals);
 	}
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
 }
