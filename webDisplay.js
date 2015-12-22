@@ -942,9 +942,9 @@ function data_update(data) {
 			pageSettingsObj.setPageTitle('wsWebDisplay');
 			pageSettingsObj.createGrid(10);
 			cell_arr.push(pageSettingsObj);
-			logElement = new pageLog();
-			cell_arr.push(logElement);
-			console.log(logElement);
+			//logElement = new pageLog();
+			//cell_arr.push(logElement);
+			//console.log(logElement);
 			console.log(pageSettingsObj);
 			console.log(cell_arr);
 			
