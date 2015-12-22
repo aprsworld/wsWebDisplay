@@ -185,7 +185,6 @@ $(function() {
 				var tmp = iTag.cloneNode(true);
 				var id = obj.id;
 				var data = jQuery('#stationTree').jstree(true).get_node(id).original.obj;
-				console.log(data);
 				if(data.class == 'dataDraggable'){
 					obj.insertBefore(tmp, obj.childNodes[1]);
 				}
@@ -194,6 +193,8 @@ $(function() {
 		};
 	};
 })(jQuery);
+
+
 
 
 //converts seconds into a time format (hours:minutes:seconds)
@@ -243,7 +244,7 @@ function secToTime(sec){
 //value = number being rounded, decimals = decimal places to round to
 function round(value, decimals) {
 	if(value == 0){
-		return value;	
+		return value.toFixed(decimals);	
 	}
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
 }
@@ -435,7 +436,7 @@ function ref(obj, str) {
 function dynamicUpdate(data) {
 	var idLength = cell_arr.length;
 	var value, cellObj, id, label, loadingObject;
-	console.log('update');
+	//console.log('update');
     cell_arr.forEach(function(objectFound){	
 		// since the object array has textblocks and img blocks, we need to weed them out
 		if(objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell'){
@@ -514,8 +515,11 @@ function dynamicUpdate(data) {
 				
 			}
 			else if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits'))){
+
 				if(typeof value === 'number'){
 					value = round(parseFloat(value), objectFound.precision);
+										console.log(value);
+
 				}
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
 					label = objectFound.label;
@@ -530,8 +534,7 @@ function dynamicUpdate(data) {
 				value = round(parseFloat(value), objectFound.precision);
 				
 			}
-			
-			objectFound.value = 0;
+			//objectFound.value = 0;
 			$('div#div_' + objectFound.id + '').children('p').text(value);
 		}
 		if (value === undefined) {
@@ -547,15 +550,15 @@ function dynamicUpdate(data) {
 		timeStamp = Math.floor(timeStamp);
 		value = ref(data, objectFound.path);
 		var readyToChange = objectFound.checkInterval(timeStamp);
-		console.log(readyToChange);
+		//console.log(readyToChange);
 		if(readyToChange){
 			objectFound.push(timeStamp, value);
-			console.log('ready');
+			//console.log('ready');
 			//TODO Unique ids
 			$("#testLog").find('ol').append('<li class="logEntry" id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</li>');
 
 		}
-		console.log(value);
+		//console.log(value);
 		
 	}
 	});
@@ -579,10 +582,18 @@ function timer(){
 	}
 }
 function clickToCreate(item, data, x ,y){
-	var id = $(item).parent().parent().attr('id');
+	var id = $(item).closest('.jstree-node').attr('id');
 	var cellCount = cell_arr.length;
 	var obj, new_id;
+	
+	//if data cell or log
 	if($('#'+id).hasClass('dataDraggable') || $('#'+id).hasClass('jstree-leaf')){
+		//if the log icon was clicked
+		if($(item).hasClass('jstree-contextmenubtn')){
+			
+		} else {
+		//if data cell icon was clicked
+			
 		obj = new pageCell();
 		var rand = Date.now();
 		var idArrLen = cell_arr.length;
@@ -670,6 +681,7 @@ function clickToCreate(item, data, x ,y){
 		new_id = obj.parentId;
 	 	positionDiv(obj, new_id);
 		cellCount++;
+		}
 	}
 	else if($('#'+id).hasClass('draggableCamNode')){
 		obj = new pageCam();
@@ -875,8 +887,9 @@ function data_update(data) {
 						var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
 						$(this).addClass(findClass);
 					});
-					$('.jstree-themeicon').off('click').on('click', function(e) {
+					$('.jstree-themeicon, .jstree-contextmenubtn').off('click').on('click', function(e) {
 						var item = this;
+						console.log(item);
 						var pageX = e.pageX;
 						var pageY = e.pageY;
 						clickToCreate(item, incomingData, pageX, pageY)

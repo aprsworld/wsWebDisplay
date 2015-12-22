@@ -884,7 +884,7 @@ select.backgroundColorChange option{
 	color: #333;
 	width: 24px;
 	height: 20px;
-	line-height: 20px;
+	line-height: 24px;
 	text-align:center;
 	transition: background-color 0.15s ease 0s, box-shadow 0.15s ease 0s;
 }

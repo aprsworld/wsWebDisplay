@@ -344,7 +344,7 @@ pageLog.prototype.checkInterval = function(time){
 };
 //creates a logEntry object and inserts it into the queue
 pageLog.prototype.push = function(time, currentData){
-	console.log(this.tail);
+	//console.log(this.tail);
 	if( this.tail == null || this.tail.timeStamp != time){
 		var node = new logEntry();
 		//case for a non-empty list
