@@ -872,11 +872,28 @@ select.backgroundColorChange option{
 }
 
 /*Plugin fixes and alterations */
-.jstree-contextmenubtn { position:relative; cursor:pointer; display: inline; }
 .fa-rotate-320 {-webkit-transform:rotate(320deg); -moz-transform:rotate(320deg); -ms-transform:rotate(320deg); -o-transform:rotate(320deg); transform:rotate(320deg);} 
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
+.jstree-contextmenubtn { 
+	position:relative; 
+	cursor:pointer; 
+	display: inline; 
+	background: none;
+	color: #333;
+	width: 24px;
+	height: 20px;
+	line-height: 20px;
+	text-align:center;
+	transition: background-color 0.15s ease 0s, box-shadow 0.15s ease 0s;
+}
+.jstree-contextmenubtn:hover { 
+	color: green;
+	background-color: #E7F4F9;
+	box-shadow: 0px 0px 1px #ccc inset;
+	border-radius: 2px;
+}
 .custom-combobox{
 	width: 100% !important;	
 }
