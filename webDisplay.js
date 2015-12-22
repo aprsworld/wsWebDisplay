@@ -243,7 +243,7 @@ function secToTime(sec){
 }
 //value = number being rounded, decimals = decimal places to round to
 function round(value, decimals) {
-	if(value == 0){
+	if(value === 0){
 		return value.toFixed(decimals);	
 	}
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
@@ -335,6 +335,12 @@ function iterateStations(obj, stack, arr, lastk) {
 					else if(value == '' ){
 						value = ' [No Data - Check format of \"value\" property] ';
 					}
+					if(typeof value === 'number'){
+						jsonItem["obj"]["valueType"] = 'number';
+					}
+					else if(typeof value === 'string'){
+						jsonItem["obj"]["valueType"] = 'string';
+					}
 					jsonItem["obj"]["value"] = value;
 					jsonItem["obj"]["path"] = stack + '.' + property + ".value";
 					
@@ -392,11 +398,12 @@ function iterateStations(obj, stack, arr, lastk) {
 				lastk = property; //keeps track of last property which is stored in a global variable
 				iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
 			}
-		// if property is not an object AKA leaf node
+		// if property is not an object it must just be a property and therefore a leafnode in our jstree
 		} else {
 			var jsonItem = new treeitem();
 			var id = ("ws_" + stack+property+"_x").replace(/\./g, "");
 			var path = stack + '.' + property;
+			
 			var parent = ("ws_"+stack+"_x").replace(/\./g, "");
 			jsonItem ["id"] = id;
 			jsonItem ["parent"] = parent;
@@ -493,7 +500,7 @@ function dynamicUpdate(data) {
 					result.label = objectFound.units;
 					result.value = value;
 				}
-				if(/*type != "time"*/ typeof value === 'number'){
+				if(typeof value === 'number'){
 					value = round(result.value, objectFound.precision);
 				}
 				else{
@@ -518,8 +525,6 @@ function dynamicUpdate(data) {
 
 				if(typeof value === 'number'){
 					value = round(parseFloat(value), objectFound.precision);
-										console.log(value);
-
 				}
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
 					label = objectFound.label;
@@ -532,7 +537,6 @@ function dynamicUpdate(data) {
 			}
 			else if(!isNaN(value) && typeof value === 'number' && objectFound.hasOwnProperty('precision')){
 				value = round(parseFloat(value), objectFound.precision);
-				
 			}
 			//objectFound.value = 0;
 			$('div#div_' + objectFound.id + '').children('p').text(value);
@@ -676,6 +680,10 @@ function clickToCreate(item, data, x ,y){
 		var updatedPath = ref(data, path);
 		if(typeof value === 'number'){
 				obj["precision"] = 3;
+				obj["toolTip"] = tooltip+' (type: number) ';
+		}
+		else{
+				obj["toolTip"] = tooltip+' (type: string) ';
 		}
 		obj.createHtml(cellCount, updatedPath, x ,y);
 		new_id = obj.parentId;
@@ -884,8 +892,20 @@ function data_update(data) {
 				.bind('open_node.jstree', function(e, data) {
 					$( "li.jstree-node" ).each(function() {
 						var id = $(this).attr('id');
+						var thisObj = $('#stationTree').jstree(true).get_node(id).original.obj;
 						var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
 						$(this).addClass(findClass);
+						var findType = $('#stationTree').jstree(true).get_node(id).original.obj.valueType;
+						if(findClass == 'dataDraggable'){
+							if(!thisObj.hasOwnProperty('valueType')){
+								console.log(incomingData);
+								var objData = typeof ref(incomingData, thisObj.path);
+								$(this).attr('title', "Type: "+objData);
+							}
+							else{
+								$(this).attr('title', "Type: "+findType);
+							}
+						}
 					});
 					$('.jstree-themeicon, .jstree-contextmenubtn').off('click').on('click', function(e) {
 						var item = this;
