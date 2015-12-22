@@ -872,6 +872,7 @@ select.backgroundColorChange option{
 }
 
 /*Plugin fixes and alterations */
+.jstree-contextmenubtn { position:relative; cursor:pointer; display: inline; }
 .fa-rotate-320 {-webkit-transform:rotate(320deg); -moz-transform:rotate(320deg); -ms-transform:rotate(320deg); -o-transform:rotate(320deg); transform:rotate(320deg);} 
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }

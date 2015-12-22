@@ -159,6 +159,43 @@ $(function() {
     });
   })( jQuery );
 
+//jstree fix for adding multiple icons per node
+// additional icon on node (outside of anchor)
+(function ($, undefined) {
+	"use strict";
+	var iTag = document.createElement('I');
+	iTag.className = "fa fa-book jstree-contextmenubtn";
+
+	$.jstree.plugins.contextmenubtn = function (options, parent) {
+		this.bind = function () {
+			parent.bind.call(this);
+			this.element
+				.on("click.jstree", ".jstree-contextmenubtn", $.proxy(function (e) {
+						e.stopImmediatePropagation();
+                        $(e.target).closest('.jstree-node').children('.jstree-anchor').trigger('contextmenu');
+					}, this));
+		};
+		this.teardown = function () {
+			this.element.find(".jstree-contextmenubtn").remove();
+			parent.teardown.call(this);
+		};
+		this.redraw_node = function(obj, deep, callback, force_draw) {
+			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
+			if(obj) {
+				var tmp = iTag.cloneNode(true);
+				var id = obj.id;
+				var data = jQuery('#stationTree').jstree(true).get_node(id).original.obj;
+				console.log(data);
+				if(data.class == 'dataDraggable'){
+					obj.insertBefore(tmp, obj.childNodes[1]);
+				}
+			}
+			return obj;
+		};
+	};
+})(jQuery);
+
+
 //converts seconds into a time format (hours:minutes:seconds)
 function ageTimer(){
 	var length, k, value, id;
@@ -829,7 +866,7 @@ function data_update(data) {
 			var jsonArray = [];
 			var json = iterateStations(data, "", jsonArray, lastk);
 			//sets up our tree
-			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray},"plugins" : [ "sort" ]})});
+			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray},"plugins" : [ "sort","contextmenubtn" ]})});
 			//adds classes from object properties to certain nodes in the tree - this allows for certain nodes to be dragged out of tree and 
 			$("#stationTree")
 				.bind('open_node.jstree', function(e, data) {
@@ -837,8 +874,6 @@ function data_update(data) {
 						var id = $(this).attr('id');
 						var findClass = $('#stationTree').jstree(true).get_node(id).original.obj.class;
 						$(this).addClass(findClass);
-						
-
 					});
 					$('.jstree-themeicon').off('click').on('click', function(e) {
 						var item = this;
