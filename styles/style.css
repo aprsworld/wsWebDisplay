@@ -103,8 +103,7 @@ select{
 }
 .dataLog{
 	position: absolute;
-	top: 50;
-	left: 300;
+	
 	width: 420px;
 	height: auto;
 	background-color: #ddd;
@@ -399,7 +398,7 @@ div.logo_container{
 	left: 300;
 	width: 300px;
 	height: 400px;
-	padding: 10px;
+	/*padding: 10px;*/
 	background-color: grey;
 	color: #333;
 	z-index: 100;
@@ -408,7 +407,7 @@ div.logo_container{
 .textBlockContainer p{
 	color: inherit;
 	font-size: inherit;
-	margin: 0;
+	margin: 10px;
 	padding: 0;
 }
 /* styling for the user created images */

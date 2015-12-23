@@ -194,9 +194,6 @@ $(function() {
 	};
 })(jQuery);
 
-
-
-
 //converts seconds into a time format (hours:minutes:seconds)
 function ageTimer(){
 	var length, k, value, id;
@@ -243,7 +240,6 @@ function secToTime(sec){
 }
 //value = number being rounded, decimals = decimal places to round to
 function round(value, decimals) {
-	console.log(decimals);
 	if(value === 0){
 		
 		return value.toFixed(decimals);
@@ -596,12 +592,20 @@ function clickToCreate(item, data, x ,y){
 	if($('#'+id).hasClass('dataDraggable') || $('#'+id).hasClass('jstree-leaf')){
 		//if the log icon was clicked
 		if($(item).hasClass('jstree-contextmenubtn')){
-			
+		
+			obj = new pageLog();
+			var rand = Date.now();
+			obj["parentId"] = "log"+cellCount+rand;
+
 		} else {
 		//if data cell icon was clicked
 			
-		obj = new pageCell();
-		var rand = Date.now();
+			obj = new pageCell();
+			var rand = Date.now();
+			obj["parentId"] = "cell"+cellCount+rand;
+
+		}
+		
 		var idArrLen = cell_arr.length;
 		new_id = "div_"+id+"_"+idArrLen;
 		var treeNode = $.jstree.reference('#stationTree').get_node(id);
@@ -612,7 +616,6 @@ function clickToCreate(item, data, x ,y){
 		var units, title, type, typeUnits;
 		obj["path"] = path;
 		obj["id"] = id+"_"+idArrLen+rand;
-		obj["parentId"] = "cell"+cellCount+rand;
 		obj["containerId"] = new_id+rand;
 		obj["fullId"] = new_id+rand;
 		obj["toolTip"] = tooltip;
@@ -691,7 +694,7 @@ function clickToCreate(item, data, x ,y){
 		new_id = obj.parentId;
 	 	positionDiv(obj, new_id);
 		cellCount++;
-		}
+		
 	}
 	else if($('#'+id).hasClass('draggableCamNode')){
 		obj = new pageCam();
@@ -718,6 +721,7 @@ function clickToCreate(item, data, x ,y){
 		obj.createHtml(cellCount, sendPath, x, y);
 		obj.setHover(true, obj.hoverDelay);
 		console.log($('#'+new_id));
+		console.log(obj);
 		positionDiv(obj, new_id);
 		cellCount++;
 	}
@@ -909,7 +913,7 @@ function data_update(data) {
 							}
 						}
 					});
-					$('.jstree-themeicon, .jstree-contextmenubtn').off('click').on('click', function(e) {
+					$('.jstree-themeicon'/*, .jstree-contextmenubtn'*/).off('click').on('click', function(e) {
 						var item = this;
 						console.log(item);
 						var pageX = e.pageX;
@@ -1134,7 +1138,11 @@ function brokenImg(id){
 
 
 var editWindow =  function(e) {
-	
+	if(!isExpanded){
+		collapseWindows()
+	}
+		$("#editMinimize").show();
+
 	var changeArray, moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
 	labelChange = $('.labelChange');
@@ -1934,7 +1942,6 @@ function edit(handler) {
 		}
 	});
 	$("#editMaximize").hide();
-	$("#editMinimize").show();
 	$("#editMinimize").off("click");
 	$("#editMinimize").on("click", function(event, color){
     	//$('.editWindow').addClass('editHide');

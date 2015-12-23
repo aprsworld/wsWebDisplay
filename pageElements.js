@@ -296,7 +296,7 @@ var pageLog = function(){
 	this.typeUnits;
 	this.units;
 	this.label;
-	this.path = ".A4757.sensors.2086bd024e633982ff78fb65f3e81e0b.value";
+	this.path;
 	this.title;
 	this.id;
 	this.containerId;
@@ -312,7 +312,15 @@ var pageLog = function(){
 extend(pageLog, pageElement);
 
 pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
-	
+		var logId = this.parentId;
+
+	$('.top-container').append('<div id="'+logId+'"class="dataLog"><h2> Log: </h2><div class="logContainer"><ol></ol></div></div>');
+	console.log(logId);
+	$('#'+logId).css('top',pageY);
+	$('#'+logId).css('left',pageX);
+	this.setDrag();
+	this.setResize();
+	this.count = cellCount;	
 }
 pageLog.prototype.loadHtml = function(){
 	
@@ -1002,7 +1010,6 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	});	
 	$('#preload_'+camId).attr('src', value);
 }
-
 pageCam.prototype.loadHtml = function(){
 	console.log(this.style);
 	var camId = this.fullId;
