@@ -486,7 +486,7 @@ function dynamicUpdate(data) {
 			}
 			objectFound.dataType = typeof value;
 			//checks if the object has type, typeUnits, and typeChange properties
-			if((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange')) || objectFound.hasOwnProperty('type') && objectFound.hasOwnProperty('typeUnits') && objectFound.typeUnits == 'degrees' && objectFound.type == 'direction'){
+			if(((objectFound.hasOwnProperty('type')) && (objectFound.hasOwnProperty('typeUnits')) && (objectFound.hasOwnProperty('typeChange')))|| (objectFound.hasOwnProperty('type') && objectFound.hasOwnProperty('typeUnits') && objectFound.typeUnits == 'degrees' && objectFound.type == 'direction')){
 				var type = objectFound.type;
 				var typeUnits = objectFound.typeUnits.toUpperCase();
 				var typeChange;
