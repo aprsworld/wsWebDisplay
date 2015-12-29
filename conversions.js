@@ -293,6 +293,39 @@ var TimeConvert = {
 	  	return sqlDate;
     }
 };
+var directionConvert = {
+	init: function(value){
+		var result = {};
+		if ( degrees >= 338 || degrees < 23 ){
+			result.label = "N";
+		}
+		else if ( degrees < 68 ){
+			result.label = "NE";
+		}
+		else if ( degrees < 113 ){
+			result.label = "E";
+		}
+		else if ( degrees < 158 ){
+			result.label = "SE";
+		}
+		else if ( degrees < 203 ){
+			result.label = "S";
+		}
+		else if ( degrees < 248 ){
+			result.label = "SW";
+		}
+		else if ( degrees < 293 ){
+			result.label = "W";
+		}
+		else{
+			result.label = "NW";
+		}
+		result.value = value;
+		return result;
+		
+	}
+}
+
 
 function chooseConversion(type, typeUnits, value, typeChange){
 	if(type == "temperature"){
@@ -311,6 +344,9 @@ function chooseConversion(type, typeUnits, value, typeChange){
 	else if(type == "atmosphericPressure"){
 		typeChange = typeChange.toUpperCase();
 		return AtmosphericPressureConvert.init(typeUnits, typeChange, value);	
+	}
+	else if(type == "direction"){
+		return directionConvert.init(value);
 	}
 }
 
@@ -333,7 +369,6 @@ function populateConversions(id){
 	$("#unitSelect").empty();
 	//leave function if either undefined
 	if(currentUnits == 'undefined' || type == 'undefined' || dataType != 'number'){
-		console.log('fail');
 		return;	
 	}
 	else{
