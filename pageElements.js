@@ -739,12 +739,24 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 						hoverImgLink.id = hoverImgId;
 						var top = ''+$('#'+camId).css('top');
 						var left = ''+$('#'+camId).css('left');
-						$('#'+hoverImgId).css('position','absolute');
+						$('#'+hoverImgId).css('position','fixed');
+						var scrollTop = $(window).scrollTop(); // return the number of pixels scrolled vertically
+						var scrollLeft = $(window).scrollLeft();
 						$('#'+hoverImgId).css('left','50% ');
 						$('#'+hoverImgId).css('top','50%');
+						var widthoffset = 0;
+						var heightoffset = 0;
+						if(window.innerWidth-camWidth < 0){
+						widthoffset = window.innerWidth-camWidth;
+						}
+						if(window.innerHeight-camHeight < 0){
+						heightoffset = window.innerHeight-camHeight;
+						}
+						/*$('#'+hoverImgId).css('left','calc(50% + '+scrollTop+') ');
+						$('#'+hoverImgId).css('top','calc(50% + '+scrollLeft+') ');*/
 						top = '-'+$('#'+camId).css('top');
 						left= '-'+$('#'+camId).css('left');
-						$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+'), calc(0% + '+top+')'});
+						$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+' + '+scrollLeft+'px + '+widthoffset+'px), calc(0% + '+top+' + '+scrollTop+'px + '+heightoffset+'px)'});
 						console.log(top);
 
 					}
