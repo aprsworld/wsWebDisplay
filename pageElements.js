@@ -740,23 +740,48 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 						var top = ''+$('#'+camId).css('top');
 						var left = ''+$('#'+camId).css('left');
 						$('#'+hoverImgId).css('position','fixed');
-						var scrollTop = $(window).scrollTop(); // return the number of pixels scrolled vertically
-						var scrollLeft = $(window).scrollLeft();
-						$('#'+hoverImgId).css('left','50% ');
-						$('#'+hoverImgId).css('top','50%');
+						$('#'+hoverImgId).css('left','5% ');
+						$('#'+hoverImgId).css('top','5%');
 						var widthoffset = 0;
 						var heightoffset = 0;
-						if(window.innerWidth-camWidth < 0){
-						widthoffset = window.innerWidth-camWidth;
+						
+						//calculate distance from original cam image to sides of viewport
+						var scrollTop     = $(window).scrollTop(),
+							elementOffsetTop = $('#'+camId).offset().top,
+							distanceTop      = (elementOffsetTop - scrollTop);
+						var scrollLeft     = $(window).scrollLeft(),
+							elementOffsetLeft = $('#'+camId).offset().left,
+							distanceLeft      = (elementOffsetLeft - scrollLeft);
+						if(distanceLeft < 0){
+							distanceLeft = Math.abs(distanceLeft);
 						}
-						if(window.innerHeight-camHeight < 0){
-						heightoffset = window.innerHeight-camHeight;
+						else{
+							distanceLeft = distanceLeft*-1;
 						}
-						/*$('#'+hoverImgId).css('left','calc(50% + '+scrollTop+') ');
-						$('#'+hoverImgId).css('top','calc(50% + '+scrollLeft+') ');*/
+						if(distanceTop < 0 ){
+							distanceTop = Math.abs(distanceTop);	
+						}
+						else{
+							distanceTop = distanceTop*-1;
+						}
 						top = '-'+$('#'+camId).css('top');
 						left= '-'+$('#'+camId).css('left');
-						$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+' + '+scrollLeft+'px + '+widthoffset+'px), calc(0% + '+top+' + '+scrollTop+'px + '+heightoffset+'px)'});
+						
+						/*detects if camera is bigger than the viewport in either width or height
+						* This changes where the cam is positioned so that the hover cam does not
+						* go off-screen
+						*/
+						if(window.innerWidth-camWidth < 0 || window.innerHeight-camHeight < 0){
+							
+							$('#'+hoverImgId).css({'top':''+distanceTop+'','left':''+distanceLeft+''});
+							console.log(scrollLeft+" "+elementOffsetLeft+" "+distanceLeft);
+
+						}
+						else{
+							
+							//$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+' + '+scrollLeft+'px - '+widthoffset+'px), calc(0% + '+top+' + '+scrollTop+'px - '+heightoffset+'px)'});
+							$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+distanceLeft+'px), calc(0% + '+distanceTop+'px)'});
+						}
 						console.log(top);
 
 					}
