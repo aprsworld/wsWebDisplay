@@ -14,6 +14,7 @@ var started = false; //this boolean makes sure we only execute some of our funct
 var ageInterval;
 var staticRegexPeriod = /\./g; //global declaration to reduce overhead
 var isExpanded;
+var dataNow = {};
 var tempArray = [];
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
@@ -723,7 +724,8 @@ function clickToCreate(item, data, x ,y){
 		obj["toolTip"] = tooltip;
 		console.log(obj);
 		//cell_arr.push(obj);
-		var sendPath = ref(data, path);
+		var sendPath = ref(dataNow, path);
+		console.log(sendPath);
 		obj.createHtml(cellCount, sendPath, x, y);
 		obj.setHover(true, obj.hoverDelay);
 		console.log($('#'+new_id));
@@ -839,6 +841,7 @@ function collapseWindows(){
 function data_update(data) {
 	time=0;
 	var incomingData = data;
+	dataNow = data;
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
 		started = true; //sets our boolean to true so the above only executes once
