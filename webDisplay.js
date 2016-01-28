@@ -458,6 +458,8 @@ function dynamicUpdate(data) {
 			var currentCam;
 			
 			value = ref(data, objectFound.path);
+						objectFound.value = value;
+
 			objectFound.dataType = typeof value;
 			currentCam = $("#"+objectFound.fullId);
 			currentCam = currentCam.attr('id');
@@ -479,6 +481,8 @@ function dynamicUpdate(data) {
 			id = id.replace('div_', '');	
 			//finds value of object
 			value = ref(data, objectFound.path);
+						objectFound.value = value;
+
 			if(( value !== null && typeof value === 'object' )){
 				value = ' [Incorrect Format - \"value\" property is undefined] ';	
 			}
@@ -507,6 +511,7 @@ function dynamicUpdate(data) {
 				}
 				if(typeof value === 'number'){
 					value = round(result.value, objectFound.precision);
+
 				}
 				else{
 					value = result.value;
@@ -545,11 +550,11 @@ function dynamicUpdate(data) {
 			}
 			//objectFound.value = 0;
 			$('div#div_' + objectFound.id + '').children('p').text(value);
+
 		}
 		if (value === undefined) {
 			value = 'MISSING DATA!';
 		}
-		
 		clearInterval(ageInterval);						
 		ageTimer();
     }
@@ -558,12 +563,13 @@ function dynamicUpdate(data) {
 		var timeStamp = new Date().getTime() / 1000;
 		timeStamp = Math.floor(timeStamp);
 		value = ref(data, objectFound.path);
+					objectFound.value = value;
+
 		var readyToChange = objectFound.checkInterval(timeStamp);
 		//console.log(readyToChange);
 		if(readyToChange){
 			objectFound.push(timeStamp, value);
 			//console.log('ready');
-			//TODO Unique ids
 			$("#testLog").find('ol').append('<li class="logEntry" id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</li>');
 
 		}
@@ -693,9 +699,12 @@ function clickToCreate(item, data, x ,y){
 		if(typeof value === 'number'){
 				obj["precision"] = 3;
 				obj["toolTip"] = tooltip+' (type: number) ';
+				obj["dataType"] = 'number';
 		}
 		else{
 				obj["toolTip"] = tooltip+' (type: string) ';
+				obj["dataType"] = 'string';
+
 		}
 		obj.createHtml(cellCount, updatedPath, x ,y);
 		new_id = obj.parentId;
@@ -1849,6 +1858,29 @@ DATA CELLS CASE
 		$("#unitSelect").on('change', function() {
 			var val = $( "#unitSelect" ).val();
 			objectFound.setTypeChange(val);
+			var type = objectFound.type;
+			var typeUnits = objectFound.typeUnits.toUpperCase();
+			console.log(objectFound.value);
+			var result = chooseConversion(type, typeUnits, objectFound.value, val);
+			var newLabel;
+			console.log(result.value);
+			var newValue = round(result.value, objectFound.precision);
+			if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
+				newLabel = objectFound.label;
+				$('#'+selectedModule).children('.label').html(newLabel);
+			}	
+			else{
+				newLabel = result.label;
+				objectFound.setLabel(newLabel);
+				$('#'+selectedModule).children('.label').html(newLabel);
+				if(objectFound.selected){
+					$('.labelChange').val(newLabel);
+				}
+			}
+			console.log(newValue + " " + newLabel);
+			console.log($('#'+selectedModule).find('.myTableValue').children('p').text());
+			$('#'+selectedModule).find('.myTableValue').children('p').text(newValue);
+			
 			console.log(val);
 		});	
 		//populate input fields with cell specific information

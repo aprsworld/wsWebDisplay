@@ -161,17 +161,17 @@ var TemperatureConvert = {
 			result.label = futureUnit;
 			if(futureUnit == 'F'){
 				result.value = value;
-				result.label = '&deg;F';
+				result.label = '°F';
 				return result;
 			}
 			else if(futureUnit == 'K'){
 				result.value = (value + 459.67) * 5/9;
-				result.label = '&deg;K';				
+				result.label = '°K';				
 				return result;
 			}
 			else if(futureUnit == 'C'){
 				result.value = (value - 32)*(5/9);
-				result.label = '&deg;C';				
+				result.label = '°C';				
 				return result;
 			}
 		}
@@ -364,6 +364,7 @@ function populateConversions(id){
 	var type = cellObj[0].type;
 	var label = cellObj[0].units;
 	var currentUnits = cellObj[0].typeUnits;
+	var newUnits = cellObj[0].typeChange;
 	var dataType = cellObj[0].dataType;
 	//empty selection list in case there was elements in it from the last click
 	$("#unitSelect").empty();
@@ -439,6 +440,11 @@ function populateConversions(id){
 		else{
 			return;	
 		}
-		$("#unitSelect").val(currentUnits);
+		if(newUnits){
+			$("#unitSelect").val(newUnits.toUpperCase()).attr("selected","selected");
+		}
+		else{
+			$("#unitSelect").val(currentUnits.toUpperCase()).attr("selected","selected");
+		}
 	}
 }
