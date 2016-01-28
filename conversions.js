@@ -383,7 +383,7 @@ function populateConversions(id){
 				console.log(temperatureUnits[i]);
 				$('#unitSelect').append($('<option>', {
 					value: temperatureUnits[i],
-					text: ''+temperatureUnits[i]+''
+					text: '°'+temperatureUnits[i]+''
 				}));	
 			}
 			$('#unitRow').show();

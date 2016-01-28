@@ -517,7 +517,7 @@ extend(pageCell,pageElement);
 
 pageCell.prototype.setPrecision = function(value){
 	//need "||" because javascript interperets an empty string as zero
-	if(isNaN(value) || value == ''){
+	if(isNaN(value) || value == '' || parseInt(value) > 19){
 		this.precision = 0;
 	}
 	else{

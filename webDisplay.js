@@ -696,10 +696,14 @@ function clickToCreate(item, data, x ,y){
 		cell_arr.push(obj);
 		console.log(obj);
 		var updatedPath = ref(data, path);
+
 		if(typeof value === 'number'){
 				obj["precision"] = 3;
 				obj["toolTip"] = tooltip+' (type: number) ';
 				obj["dataType"] = 'number';
+				updatedPath = round(updatedPath, obj.precision);
+
+				
 		}
 		else{
 				obj["toolTip"] = tooltip+' (type: string) ';
@@ -1840,7 +1844,9 @@ DATA CELLS CASE
 		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
 			objectFound.setPrecision($('.roundingChange').val());
-			$("#"+id).text( round(objectFound.value, objectFound.precision));
+			console.log($("#"+id).text());
+			var findVal = $('#'+selectedModule).find('.myTableValue').children('p').text();
+			$('#'+selectedModule).find('.myTableValue').children('p').text( round(parseFloat(findVal), objectFound.precision));
 		});
 		$('#comboBoxInput').off('input');
 		$('#comboBoxInput').on('input', function() { 
