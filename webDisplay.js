@@ -1840,6 +1840,7 @@ DATA CELLS CASE
 		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
 			objectFound.setPrecision($('.roundingChange').val());
+			$("#"+id).text( round(objectFound.value, objectFound.precision));
 		});
 		$('#comboBoxInput').off('input');
 		$('#comboBoxInput').on('input', function() { 
