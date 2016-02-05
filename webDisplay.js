@@ -1537,22 +1537,7 @@ CAMERA CASE
 			suppressButton = document.getElementById("unsuppressHover");
 			suppressButton.checked = true;
 			camera.removeClass('suppressHover');
-		}
-		
-		objectFound.setWidthHeightFields();
-		console.log(pageObjectFound);
-		pageObjectFound.updateElementDimensions(objectFound);
-		
-		
-		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#resizePrevious" , function() {	
-			pageObjectFound.previousElementDimensions();
-		});
-		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#applyDimensions" , function() {	
-			objectFound.applyWidthHeight();
-		});
-		
+		}	
 		
 		var radioChecked;
 		$( document ).off( "change", "input[type=radio][name=hoverToggle]");
@@ -1764,20 +1749,6 @@ IMG BLOCKS CASE
 		url = $(this).find('img');
 		//populate input fields with image specific information
 		$(urlChange).val(url.attr('src'));
-		
-		objectFound.setWidthHeightFields();
-		console.log(pageObjectFound);
-		pageObjectFound.updateElementDimensions(objectFound);
-		
-		
-		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#resizePrevious" , function() {	
-			pageObjectFound.previousElementDimensions();
-		});
-		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#applyDimensions" , function() {	
-			objectFound.applyWidthHeight();
-		});
 		
 		
 		var radiobtn
