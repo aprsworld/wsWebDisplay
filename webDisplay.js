@@ -1181,7 +1181,9 @@ var editWindow =  function(e) {
 	$("#editMinimize").show();
 	selectedModule = $(this).attr('id');
 	
-	
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	var pageObjectFound = cell_arr[pageElementPos];
 	
 	//color picker setup
 	$('.backgroundColorChange, .textColorChange').colorpicker({
@@ -1840,6 +1842,20 @@ DATA CELLS CASE
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
+		objectFound.setWidthHeightFields();
+		console.log(pageObjectFound);
+		pageObjectFound.updateElementDimensions(objectFound);
+		
+		
+		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePrevious" , function() {	
+			pageObjectFound.previousElementDimensions();
+		});
+		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyDimensions" , function() {	
+			objectFound.applyWidthHeight();
+		});
+		
 		
 		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
@@ -1848,6 +1864,7 @@ DATA CELLS CASE
 			var findVal = $('#'+selectedModule).find('.myTableValue').children('p').text();
 			$('#'+selectedModule).find('.myTableValue').children('p').text( round(parseFloat(findVal), objectFound.precision));
 		});
+		
 		$('#comboBoxInput').off('input');
 		$('#comboBoxInput').on('input', function() { 
 			console.log('fired');

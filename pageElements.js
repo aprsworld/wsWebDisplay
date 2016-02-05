@@ -209,7 +209,31 @@ pageElement.prototype = {
 		console.log(cell_arr.length);
 		$('#'+objId).remove();
 		console.log(cell_arr);
+	},
+	getWidth: function(){
+		return $("#"+this.parentId).width();
+	},
+	getHeight: function(){
+		return $("#"+this.parentId).height();
+	},
+	applyWidthHeight: function(){
+		var width = $("#manualWidth").val();
+		var height = $("#manualHeight").val();
+		console.log(width+" "+height);
+		console.log(this);
+		$("#"+this.parentId).css("height",height+"px");
+		$("#"+this.parentId).css("width",width+"px");
+
+		//this.onChangeStyle();
+	},
+	setWidthHeightFields: function(){
+		var obj = this;
+		var width = this.getWidth();
+		var height = this.getHeight();
+		$("#manualWidth").val(width);
+		$("#manualHeight").val(height);
 	}
+	
 }
 /***********************************************************************************
 * PAGE SETTINGS OBJECT
@@ -220,6 +244,7 @@ var pageSettings = function() {
 	this.title;
 	this.id = 'pageSettings';
 	this.gridSize = true;
+	this.elementDimensions = [];
 }
 extend(pageSettings, pageElement);
 
@@ -234,6 +259,36 @@ pageSettings.prototype.backgroundColorChange = function(color){
 pageSettings.prototype.setPageTitle = function(title){
 	this.title = title;
 	document.title = title;
+}
+
+pageSettings.prototype.updateElementDimensions = function(obj){
+	console.log(this);
+	var length = this.elementDimensions.length;
+	var oldObj;
+	if(length == 0){
+		this.elementDimensions.push(obj);
+	}
+	else if(this.elementDimensions.length <= 1){
+		oldObj = this.elementDimensions[length-1];
+		if(obj.containerId != oldObj.containerId){
+			this.elementDimensions.push(obj);
+		}
+	}
+	else{
+		oldObj = this.elementDimensions[length-1];
+		if(obj.containerId != oldObj.containerId){
+			this.elementDimensions.shift();
+			this.elementDimensions.push(obj);
+		}
+	}
+	console.log(this.elementDimensions);
+}
+pageSettings.prototype.previousElementDimensions = function(){
+	var dims = this.elementDimensions[0];
+	console.log(dims);
+	$("#manualWidth").val(dims.getWidth());
+	$("#manualHeight").val(dims.getHeight());
+	
 }
 
 pageSettings.prototype.createGrid = function createGrid(size) {

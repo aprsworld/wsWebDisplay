@@ -193,6 +193,15 @@
 			</select>
 		</div>
 	</div>
+
+<!--todo -->
+	<div id="manualResizeRow" class="editWindowrow">
+		<label id="manualResizeLabel"> Manual Resizing </label>
+		<label id="manualWidthLabel"> Width </label><input id="manualWidth" type="text" value=""></input> 
+		<label id="manualHeightLabel"> Height </label><input id="manualHeight" type="text" value=""></input>
+		<button id="resizePrevious"> Use Last Element's Dimensions </button>
+		<button id="applyDimensions"> Apply Dimensions </button>
+	</div>
 	<div id="cropRow" class="editWindowRow">
 		<button id="resizeModule"><i class="fa fa-undo fa-2x"></i> Reset Image </button>
 		<button id="cropModule"><i class="fa fa-crop fa-2x"></i> Crop image </button>
@@ -202,7 +211,7 @@
 		<button id="deleteModule"> <i class="fa fa-trash fa-2x"></i>Delete Selected </button>
 	</div>
 </div>
-	<button title="Minimize Edit Window (shortcut: esc key)" id="editMinimize"><span>Collapse </span><i class="fa fa-long-arrow-right"></i></button>
-	<button title="Expand Edit Window" id="editMaximize"><i class="fa fa-long-arrow-left"></i></button>
+	<button title="Minimize Edit Window (shortcut: esc key)" id="editMinimize"><span>Hide </span><i class="fa fa-long-arrow-right"></i></button>
+	<button title="Expand Edit Window" id="editMaximize"><i class="fa fa-long-arrow-left"></i> Show</button>
 </body>
 </html>
