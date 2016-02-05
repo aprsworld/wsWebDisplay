@@ -1175,7 +1175,7 @@ var editWindow =  function(e) {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo').hide();
+	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo, #manualResizeRow').hide();
 	$('.editWindow').removeClass('editHide').show(150);
 	$("#editMaximize").hide();
 	$("#editMinimize").show();
@@ -1495,7 +1495,7 @@ PAGE EDIT CASE
 CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
-		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
+		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow, #manualResizeRow').show();
 		$('.editWindow h2').text($(this).attr('title'));
 		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 		$(this).addClass('selectedShadow');
@@ -1538,6 +1538,22 @@ CAMERA CASE
 			suppressButton.checked = true;
 			camera.removeClass('suppressHover');
 		}
+		
+		objectFound.setWidthHeightFields();
+		console.log(pageObjectFound);
+		pageObjectFound.updateElementDimensions(objectFound);
+		
+		
+		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePrevious" , function() {	
+			pageObjectFound.previousElementDimensions();
+		});
+		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyDimensions" , function() {	
+			objectFound.applyWidthHeight();
+		});
+		
+		
 		var radioChecked;
 		$( document ).off( "change", "input[type=radio][name=hoverToggle]");
 		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
@@ -1605,7 +1621,7 @@ CAMERA CASE
 TEXT BLOCKS CASE
 ******************************************************************/
 	else if($(this).hasClass('textBlockContainer')){
-		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
+		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow').show();
 		id = $(this).attr('id');
 		$('.editWindow h2').text("Text "+id);
 		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
@@ -1628,6 +1644,21 @@ TEXT BLOCKS CASE
 		$(textColor).val($('#'+id).children('p').css('color'));
 		var backgroundColor = $('#'+selectedModule).css('background-color');	 
 		fontSize.val($(this).css('font-size').slice(0, - 2));	//takes 'px' off end
+		
+		objectFound.setWidthHeightFields();
+		console.log(pageObjectFound);
+		pageObjectFound.updateElementDimensions(objectFound);
+		
+		
+		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePrevious" , function() {	
+			pageObjectFound.previousElementDimensions();
+		});
+		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyDimensions" , function() {	
+			objectFound.applyWidthHeight();
+		});
+		
 		
 		$(".textColorChange").off("change.color");
 		$(".textColorChange").on("change.color", function(event, color){
@@ -1710,7 +1741,7 @@ IMG BLOCKS CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow').show();
+		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow, #manualResizeRow').show();
 		
 		moduleContainer = $(this).attr('id');
 		selectedModule = $(this).find('img').attr('id');
@@ -1733,6 +1764,21 @@ IMG BLOCKS CASE
 		url = $(this).find('img');
 		//populate input fields with image specific information
 		$(urlChange).val(url.attr('src'));
+		
+		objectFound.setWidthHeightFields();
+		console.log(pageObjectFound);
+		pageObjectFound.updateElementDimensions(objectFound);
+		
+		
+		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePrevious" , function() {	
+			pageObjectFound.previousElementDimensions();
+		});
+		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyDimensions" , function() {	
+			objectFound.applyWidthHeight();
+		});
+		
 		
 		var radiobtn
 		if(objectFound.hoverable){
@@ -1812,7 +1858,7 @@ DATA CELLS CASE
 ******************************************************************/
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
-		$('#hideDelRow, #zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow').show();
+		$('#hideDelRow, #zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow').show();
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text($(this).attr('title'));

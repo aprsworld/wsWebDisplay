@@ -794,7 +794,7 @@ select.backgroundColorChange option{
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
 #cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, 
 #unitRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, 
-#backgroundColorRow, #textColorRow, #opacityRow{
+#backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow{
 	display:none;	
 	clear: both;
 }
