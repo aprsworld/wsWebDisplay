@@ -1495,7 +1495,7 @@ PAGE EDIT CASE
 CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
-		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow, #manualResizeRow').show();
+		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
 		$('.editWindow h2').text($(this).attr('title'));
 		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 		$(this).addClass('selectedShadow');
@@ -1726,7 +1726,7 @@ IMG BLOCKS CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow, #manualResizeRow').show();
+		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow').show();
 		
 		moduleContainer = $(this).attr('id');
 		selectedModule = $(this).find('img').attr('id');
