@@ -970,7 +970,7 @@ function data_update(data) {
 					cellCount = parseInt(lastCell, 10)+1;
 				}
 
-			},'webdisplay/configs');			
+			},'webdisplay/configs/');			
 		//if layout parameter found, load that layout
 		if(layout != undefined){
 		   $(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -2120,7 +2120,7 @@ function captureState(){
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs/'+saveName,jsonString,0);
+	},'webdisplay/configs/'+saveName,jsonString,true);
 }
 function loadState(jsonString){
 	var configObject = JSON.parse(jsonString);
