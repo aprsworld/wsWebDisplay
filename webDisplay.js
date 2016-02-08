@@ -1007,7 +1007,7 @@ function data_update(data) {
 		});	
 		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
 		if(editMode == false && treeRefreshTimer >= 14){
-			refreshTree(data);	
+			//refreshTree(data);	
 			console.log('refreshed');
 			treeRefreshTimer = 0;
 		}
