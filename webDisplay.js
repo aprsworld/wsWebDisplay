@@ -15,6 +15,7 @@ var ageInterval;
 var staticRegexPeriod = /\./g; //global declaration to reduce overhead
 var isExpanded;
 var dataNow = {};
+var dataOld = {};
 var tempArray = [];
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
@@ -445,7 +446,7 @@ function dynamicUpdate(data) {
 	//console.log('update');
     cell_arr.forEach(function(objectFound){	
 		// since the object array has textblocks and img blocks, we need to weed them out
-		if(objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell'){
+		if((objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell')&& typeof ref(data, objectFound.path) != "undefined"){
 		id = objectFound.id;
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
 		if(id.indexOf("ageOfData") >= 0){
@@ -459,7 +460,7 @@ function dynamicUpdate(data) {
 			
 			value = ref(data, objectFound.path);
 						objectFound.value = value;
-
+			
 			objectFound.dataType = typeof value;
 			currentCam = $("#"+objectFound.fullId);
 			currentCam = currentCam.attr('id');
@@ -626,6 +627,7 @@ function clickToCreate(item, data, x ,y){
 		var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
 		console.log(tooltip);
 		var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
+		console.log(value);
 		var units, title, type, typeUnits;
 		obj["path"] = path;
 		obj["id"] = id+"_"+idArrLen+rand;
@@ -702,13 +704,13 @@ function clickToCreate(item, data, x ,y){
 				obj["toolTip"] = tooltip+' (type: number) ';
 				obj["dataType"] = 'number';
 				updatedPath = round(updatedPath, obj.precision);
-
+				obj["value"] = updatedPath;
 				
 		}
 		else{
 				obj["toolTip"] = tooltip+' (type: string) ';
 				obj["dataType"] = 'string';
-
+				obj["value"] = updatedPath;
 		}
 		obj.createHtml(cellCount, updatedPath, x ,y);
 		new_id = obj.parentId;
@@ -736,8 +738,12 @@ function clickToCreate(item, data, x ,y){
 		obj["id"] = id+"_pageCam_"+idArrLen+rand;
 		obj["toolTip"] = tooltip;
 		console.log(obj);
-		//cell_arr.push(obj);
-		var sendPath = ref(dataNow, path);
+		cell_arr.push(obj);
+		var sendPath = ref(dataOld, path);
+		if(sendPath == 'undefined'){
+			sendPath = path;
+			
+		}
 		console.log(sendPath);
 		obj.createHtml(cellCount, sendPath, x, y);
 		obj.setHover(true, obj.hoverDelay);
@@ -998,16 +1004,18 @@ function data_update(data) {
 			
 		}			
         });
-		
+		dataOld = data;
+
 	}
+	refreshTreeData(data);
 	var x = $(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
 		$( document ).on( "click", "#refreshTree" , function() {	
-			refreshTree(data);
+			refreshTree(dataOld);
 		});	
 		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
 		if(editMode == false && treeRefreshTimer >= 14){
-			//refreshTree(data);	
+			refreshTree(dataOld);	
 			console.log('refreshed');
 			treeRefreshTimer = 0;
 		}
@@ -1016,7 +1024,6 @@ function data_update(data) {
 	x = null;
 	//refreshCams(cams);
 	dynamicUpdate( data); //updates all data cells to their current values
-	
 }
 //gets parameters in url
 //called like: var host = getUrlVars()["host"];
@@ -1144,10 +1151,25 @@ function createImage(){
 	imgBlock.setSuppression(true);
 	imgBlock.setHover(false, imgBlock.hoverDelay);
 }
+function refreshTreeData(newData){
+	for(var key in dataOld){
+		if(key == Object.keys(newData)[0] && key != '_bserver_'){
+			console.log(key);
+			console.log(Object.keys(newData)[0]);
+			dataOld[key] = newData[Object.keys(newData)[0]];
+			
+			break;
+		}
+		console.log(Object.keys(newData)[0]);
+	}
+}
 function refreshTree(newData){
 	var lastk = "#";
 	var jsonArray = [];
-	iterateStations(newData, "", jsonArray, lastk);
+	console.log(newData);
+	
+	console.log(dataOld);
+	iterateStations(dataOld, "", jsonArray, lastk);
 	$('#stationTree').jstree(true).settings.core.data = jsonArray;
 	$('#stationTree').jstree(true).refresh();
 	//empty array for the sake of performance
