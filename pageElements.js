@@ -244,7 +244,6 @@ var pageSettings = function() {
 	this.title;
 	this.id = 'pageSettings';
 	this.gridSize = true;
-	this.elementDimensions = [];
 }
 extend(pageSettings, pageElement);
 
@@ -340,6 +339,8 @@ pageSettings.prototype.updateGrid = function updateGrid(size) {
 	this.createGrid(size);
 	$('.gridlines').show();
 }
+
+pageSettings.prototype.elementDimensions = [];
 /***********************************************************************************
 * DATA LOG OBJECT
 ************************************************************************************/
@@ -701,7 +702,11 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 }
 
 pageCell.prototype.loadHtml = function(cellCount){
-	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>Loading...</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+	var updatedPath = ref(dataOld, this.path);
+	if(this.dataType == 'number'){
+		updatedPath = round(updatedPath, this.precision);
+	}	
+	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
 }
@@ -1106,10 +1111,15 @@ pageCam.prototype.loadHtml = function(){
 	console.log(this.style);
 	var camId = this.fullId;
 	var camObj = this;
+	var updatedPath = ref(dataOld, this.path);
+	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
 	$('#preload_'+camId).load(function() {
-		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src="'+camObj.src+'"></div>');
+		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src="'+updatedPath+'"></div>');
 		$('#'+camObj.parentId).attr('style', camObj.style);
+		console.log(camObj.style);
+		$('#'+camObj.parentId).css('background-image', 'url('+updatedPath+')');
+		console.log($('#'+camObj.parentId).attr('src'));
 		camObj.setDrag();
 		camObj.setResize();
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
@@ -1118,7 +1128,7 @@ pageCam.prototype.loadHtml = function(){
 		//cell_arr.push(camObj);
 
 	});
-	$('#preload_'+camId).attr('src', this.src);
+	$('#preload_'+camId).attr('src', updatedPath);
 
 }
 

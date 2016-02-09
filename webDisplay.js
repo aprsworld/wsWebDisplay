@@ -425,7 +425,6 @@ function iterateStations(obj, stack, arr, lastk) {
 				delete timeStamp;
 			}
 		}
-
     }
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
@@ -634,6 +633,7 @@ function clickToCreate(item, data, x ,y){
 		obj["containerId"] = new_id+rand;
 		obj["fullId"] = new_id+rand;
 		obj["toolTip"] = tooltip;
+		obj["treeId"] = treeNode.original.id;
 		if(obj["path"] == "timeStamp"){
 			obj["value"] = 0;	
 		}
@@ -1152,15 +1152,62 @@ function createImage(){
 	imgBlock.setHover(false, imgBlock.hoverDelay);
 }
 function refreshTreeData(newData){
+	console.log(newData);
+	var oldSensors, newSensors, oldCameras, newCameras;
+	var objectKeys = Object.keys(newData)[0];
 	for(var key in dataOld){
-		if(key == Object.keys(newData)[0] && key != '_bserver_'){
-			console.log(key);
-			console.log(Object.keys(newData)[0]);
-			dataOld[key] = newData[Object.keys(newData)[0]];
-			
+		
+		
+		if(dataOld.hasOwnProperty(key) && key == objectKeys && key != '_bserver_'){
+			console.log(Date.now());
+			if(newData[objectKeys].hasOwnProperty('sensors')){
+				oldSensors = dataOld[key]["sensors"];
+				newSensors = newData[objectKeys]["sensors"];
+				console.log('sensors = true');
+				for(var sensor in newData[Object.keys(newData)[0]].sensors){
+					if(typeof newSensors[sensor]["value"] != 'undefined' ){
+						oldSensors[sensor]["value"] = newSensors[sensor]["value"];
+					}
+					if(typeof newSensors[sensor]["title"] != 'undefined' ){
+						oldSensors[sensor]["title"] = newSensors[sensor]["title"];
+					}
+					if(typeof newSensors[sensor]["units"] != 'undefined' ){
+						oldSensors[sensor]["units"] = newSensors[sensor]["units"];
+					}
+				}
+			}
+			if(newData[objectKeys].hasOwnProperty('cameras')){
+				oldCameras = dataOld[key]["cameras"];
+				newCameras = newData[objectKeys]["cameras"];
+				console.log('cameras = true');
+				for(var camera in newData[Object.keys(newData)[0]].cameras){
+					console.log(typeof newCameras[camera]["title"]);
+					if(typeof newCameras[camera]["value"] != 'undefined' ){
+						oldCameras[camera]["value"] = newCameras[camera]["value"];
+					}
+					if(typeof newCameras[camera]["image_url"] != 'undefined' ){
+						oldCameras[camera]["image_url"] = newCameras[camera]["image_url"];
+					}
+					if(typeof newCameras[camera]["image_size"] != 'undefined' ){	
+						oldCameras[camera]["image_size"] = newCameras[camera]["image_size"];
+					}
+					if(typeof newCameras[camera]["source_serial"] != 'undefined' ){
+						oldCameras[camera]["source_serial"] = newCameras[camera]["source_serial"];
+					}
+					if(typeof newCameras[camera]["source_ip_addr"] != 'undefined' ){
+						oldCameras[camera]["source_ip_addr"] = newCameras[camera]["source_ip_addr"];
+					}
+					if(typeof newCameras[camera]["source_ip_port"] != 'undefined' ){
+						oldCameras[camera]["source_ip_port"] = newCameras[camera]["source_ip_port"];
+					}
+					if(typeof newCameras[camera]["title"] != 'undefined' ){
+						oldCameras[camera]["title"] = newCameras[camera]["title"];
+					}
+				}
+			}
+			console.log(Date.now());
 			break;
 		}
-		console.log(Object.keys(newData)[0]);
 	}
 }
 function refreshTree(newData){
