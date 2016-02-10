@@ -15,6 +15,7 @@ var ageInterval;
 var staticRegexPeriod = /\./g; //global declaration to reduce overhead
 var isExpanded;
 var dataNow = {};
+var dataOld = {};
 var tempArray = [];
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
@@ -271,6 +272,7 @@ function treeitem(){
 		return classList;
 	};
 }
+
 function iterateStations(obj, stack, arr, lastk) {
 	var jsonItem, jsonItem2, id, path, parent, value, title, units, typeUnits, type;
 	for (var property in obj) {
@@ -303,7 +305,12 @@ function iterateStations(obj, stack, arr, lastk) {
 				iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
 			}
 			else if('undefined' !== typeof obj[property]['title'] && 'undefined' == typeof obj[property]['value'] && 'undefined' == typeof obj[property]['units'] && typeof obj[property] == "object"){
-				jsonItem ["text"] = obj[property]['title'];
+				if('object' !== typeof obj[property]['title']){
+					jsonItem ["text"] = obj[property]['title'];
+				}
+				else{
+					jsonItem ["text"] = property;
+				}
 				jsonItem ["id"] = id;
 				jsonItem ["parent"] = parent;
 				arr.push(jsonItem)
@@ -424,7 +431,6 @@ function iterateStations(obj, stack, arr, lastk) {
 				delete timeStamp;
 			}
 		}
-
     }
 }
 /*this is an important function because it converts the dot notation string into an actual object reference and then returns that reference*/
@@ -445,7 +451,7 @@ function dynamicUpdate(data) {
 	//console.log('update');
     cell_arr.forEach(function(objectFound){	
 		// since the object array has textblocks and img blocks, we need to weed them out
-		if(objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell'){
+		if((objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell')&& typeof ref(data, objectFound.path) != "undefined"){
 		id = objectFound.id;
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
 		if(id.indexOf("ageOfData") >= 0){
@@ -459,7 +465,7 @@ function dynamicUpdate(data) {
 			
 			value = ref(data, objectFound.path);
 						objectFound.value = value;
-
+			
 			objectFound.dataType = typeof value;
 			currentCam = $("#"+objectFound.fullId);
 			currentCam = currentCam.attr('id');
@@ -626,12 +632,14 @@ function clickToCreate(item, data, x ,y){
 		var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
 		console.log(tooltip);
 		var value = $('#stationTree').jstree(true).get_node(id).original.obj.value; 
+		console.log(value);
 		var units, title, type, typeUnits;
 		obj["path"] = path;
 		obj["id"] = id+"_"+idArrLen+rand;
 		obj["containerId"] = new_id+rand;
 		obj["fullId"] = new_id+rand;
 		obj["toolTip"] = tooltip;
+		obj["treeId"] = treeNode.original.id;
 		if(obj["path"] == "timeStamp"){
 			obj["value"] = 0;	
 		}
@@ -702,13 +710,13 @@ function clickToCreate(item, data, x ,y){
 				obj["toolTip"] = tooltip+' (type: number) ';
 				obj["dataType"] = 'number';
 				updatedPath = round(updatedPath, obj.precision);
-
+				obj["value"] = updatedPath;
 				
 		}
 		else{
 				obj["toolTip"] = tooltip+' (type: string) ';
 				obj["dataType"] = 'string';
-
+				obj["value"] = updatedPath;
 		}
 		obj.createHtml(cellCount, updatedPath, x ,y);
 		new_id = obj.parentId;
@@ -737,7 +745,11 @@ function clickToCreate(item, data, x ,y){
 		obj["toolTip"] = tooltip;
 		console.log(obj);
 		//cell_arr.push(obj);
-		var sendPath = ref(dataNow, path);
+		var sendPath = ref(dataOld, path);
+		if(sendPath == 'undefined'){
+			sendPath = path;
+			
+		}
 		console.log(sendPath);
 		obj.createHtml(cellCount, sendPath, x, y);
 		obj.setHover(true, obj.hoverDelay);
@@ -959,7 +971,7 @@ function data_update(data) {
 				console.log(rsp);
 				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
-				getConfigs(rsp.data)
+				getConfigs(rsp.data);
 				if (layout) {
 					loadState(loadedLayout);
 					$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -998,16 +1010,18 @@ function data_update(data) {
 			
 		}			
         });
-		
+		dataOld = data;
+
 	}
+	refreshTreeData(data);
 	var x = $(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
 		$( document ).on( "click", "#refreshTree" , function() {	
-			refreshTree(data);
+			refreshTree(dataOld);
 		});	
 		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
 		if(editMode == false && treeRefreshTimer >= 14){
-			//refreshTree(data);	
+			refreshTree(dataOld);	
 			console.log('refreshed');
 			treeRefreshTimer = 0;
 		}
@@ -1016,7 +1030,6 @@ function data_update(data) {
 	x = null;
 	//refreshCams(cams);
 	dynamicUpdate( data); //updates all data cells to their current values
-	
 }
 //gets parameters in url
 //called like: var host = getUrlVars()["host"];
@@ -1046,11 +1059,13 @@ function getConfigs(data) {
 
 function loadFromList(){
 	var arrlength = cell_arr.length;
+	var loadedLayout;
 	for(var i = 0; i< arrlength; i++){
 		console.log(cell_arr[i]);		
 		$('#'+cell_arr[i].parentId).remove();
 	}
 	cell_arr.length = 0;
+	var selected1 = $( "#configDrop option:selected" ).text();
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
 			// Couldn't get configuration data from server
@@ -1059,8 +1074,9 @@ function loadFromList(){
 		console.log(rsp);
 		console.log(loadedLayout);
 		var selected = $( "#configDrop option:selected" ).text();
-		var loadedLayout = rsp.data[selected];
-		
+		console.log(rsp.data[selected]);
+		loadedLayout = rsp.data[selected];
+		console.log(rsp.data);
 		loadState(rsp.data[selected]);
 		$('.gridlines').show();
 
@@ -1071,7 +1087,7 @@ function loadFromList(){
 		var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 		cellCount = parseInt(lastCell, 10)+1;
 	
-	},'webdisplay/configs');
+	},'webdisplay/configs/');
 	
 }
 var data_object;
@@ -1144,10 +1160,59 @@ function createImage(){
 	imgBlock.setSuppression(true);
 	imgBlock.setHover(false, imgBlock.hoverDelay);
 }
+function refreshTreeData(newData){
+	//console.log(Date.now());
+	var oldD, newD;
+	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
+	//for(var key in dataOld){
+	//iterates through the keys of the old data object
+	Object.keys(dataOld).forEach(function(key){		
+		//checks if the current key equals the key that we are looking for
+		if(dataOld.hasOwnProperty(key) && key == objectKeys && key != '_bserver_'){
+			//console.log(Date.now());			
+			//updates sensors
+			Object.keys(newData[objectKeys]).forEach(function(subkey){	
+				oldD = dataOld[key][subkey];
+				newD = newData[objectKeys][subkey];
+				if(typeof newD !== 'object'){
+						//console.log('non-object');
+						//console.log(newD);
+						oldD = newD;
+				}
+				else{
+					for(var levelThree in newD){
+						Object.keys( newD).forEach(function(key1){	
+							//console.log(newD[key1])
+							if(objectKeys == 'A4751'){ //debug
+									console.log(newData[objectKeys]);
+									console.log(newD[key1]);
+								}
+							Object.keys( newD[key1]).forEach(function(key2){
+								oldD[key1][key2] = newD[key1][key2];
+								if(oldD[key1][key2] === 'undefined'){ //debug
+									console.log('undefined');
+									console.log(oldD[key1])	
+								}
+								if(objectKeys == 'A4751'){ //debug
+									
+									console.log(newD[key1][key2]);
+								}
+							});
+						});
+					}
+				}
+			});
+			//console.log(Date.now());
+		}
+	});
+}
 function refreshTree(newData){
 	var lastk = "#";
 	var jsonArray = [];
-	iterateStations(newData, "", jsonArray, lastk);
+	console.log(newData);
+	
+	console.log(dataOld);
+	iterateStations(dataOld, "", jsonArray, lastk);
 	$('#stationTree').jstree(true).settings.core.data = jsonArray;
 	$('#stationTree').jstree(true).refresh();
 	//empty array for the sake of performance
@@ -2106,23 +2171,24 @@ function delHandle(objectFound){
 	}
 }
 function captureState(){
-	for(var k in cell_arr){
+	/*for(var k in cell_arr){
 		cell_arr[k].onChangeStyle();
 		console.log(cell_arr[k]);
 	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
-
 	var jsonString = JSON.stringify(cell_arr);
 	var configObject = JSON.parse(jsonString);
-	
+	console.log(jsonString);
 	data_object.ValueSet(function(rsp){
 		console.log(rsp);
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs/'+saveName,jsonString,true);
+	},'webdisplay/configs/'+saveName,jsonString,false);*/
 }
 function loadState(jsonString){
+	console.log(jsonString);
+
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
 
