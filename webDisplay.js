@@ -272,6 +272,7 @@ function treeitem(){
 		return classList;
 	};
 }
+
 function iterateStations(obj, stack, arr, lastk) {
 	var jsonItem, jsonItem2, id, path, parent, value, title, units, typeUnits, type;
 	for (var property in obj) {
@@ -1152,63 +1153,36 @@ function createImage(){
 	imgBlock.setHover(false, imgBlock.hoverDelay);
 }
 function refreshTreeData(newData){
+	console.log(Date.now());
 	console.log(newData);
-	var oldSensors, newSensors, oldCameras, newCameras;
-	var objectKeys = Object.keys(newData)[0];
-	for(var key in dataOld){
-		
-		
+	var oldSensors, newSensors, oldCameras, newCameras, oldD, newD;
+	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
+	//for(var key in dataOld){
+	//iterates through the keys of the old data object
+	Object.keys(dataOld).forEach(function(key){		
+		//checks if the current key equals the key that we are looking for
 		if(dataOld.hasOwnProperty(key) && key == objectKeys && key != '_bserver_'){
-			console.log(Date.now());
-			if(newData[objectKeys].hasOwnProperty('sensors')){
-				oldSensors = dataOld[key]["sensors"];
-				newSensors = newData[objectKeys]["sensors"];
-				console.log('sensors = true');
-				for(var sensor in newData[Object.keys(newData)[0]].sensors){
-					if(typeof newSensors[sensor]["value"] != 'undefined' ){
-						oldSensors[sensor]["value"] = newSensors[sensor]["value"];
+			console.log(Date.now());			
+			//updates sensors
+			Object.keys(newData[objectKeys]).forEach(function(subkey){	
+				oldD = dataOld[key][subkey];
+				newD= newData[objectKeys][subkey];
+				for(var levelThree in newD){
+					if(typeof newD !== 'object'){
+						console.log('non-object');
+						oldD = newD;
+						break;
 					}
-					if(typeof newSensors[sensor]["title"] != 'undefined' ){
-						oldSensors[sensor]["title"] = newSensors[sensor]["title"];
-					}
-					if(typeof newSensors[sensor]["units"] != 'undefined' ){
-						oldSensors[sensor]["units"] = newSensors[sensor]["units"];
-					}
-				}
-			}
-			if(newData[objectKeys].hasOwnProperty('cameras')){
-				oldCameras = dataOld[key]["cameras"];
-				newCameras = newData[objectKeys]["cameras"];
-				console.log('cameras = true');
-				for(var camera in newData[Object.keys(newData)[0]].cameras){
-					console.log(typeof newCameras[camera]["title"]);
-					if(typeof newCameras[camera]["value"] != 'undefined' ){
-						oldCameras[camera]["value"] = newCameras[camera]["value"];
-					}
-					if(typeof newCameras[camera]["image_url"] != 'undefined' ){
-						oldCameras[camera]["image_url"] = newCameras[camera]["image_url"];
-					}
-					if(typeof newCameras[camera]["image_size"] != 'undefined' ){	
-						oldCameras[camera]["image_size"] = newCameras[camera]["image_size"];
-					}
-					if(typeof newCameras[camera]["source_serial"] != 'undefined' ){
-						oldCameras[camera]["source_serial"] = newCameras[camera]["source_serial"];
-					}
-					if(typeof newCameras[camera]["source_ip_addr"] != 'undefined' ){
-						oldCameras[camera]["source_ip_addr"] = newCameras[camera]["source_ip_addr"];
-					}
-					if(typeof newCameras[camera]["source_ip_port"] != 'undefined' ){
-						oldCameras[camera]["source_ip_port"] = newCameras[camera]["source_ip_port"];
-					}
-					if(typeof newCameras[camera]["title"] != 'undefined' ){
-						oldCameras[camera]["title"] = newCameras[camera]["title"];
+					else{
+						Object.keys( newD).forEach(function(key1){								
+							oldD[key1] = newD[key1];	
+						});
 					}
 				}
-			}
+			});
 			console.log(Date.now());
-			break;
 		}
-	}
+	});
 }
 function refreshTree(newData){
 	var lastk = "#";
@@ -2175,7 +2149,7 @@ function delHandle(objectFound){
 	}
 }
 function captureState(){
-	for(var k in cell_arr){
+	/*for(var k in cell_arr){
 		cell_arr[k].onChangeStyle();
 		console.log(cell_arr[k]);
 	}
@@ -2189,7 +2163,7 @@ function captureState(){
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs/'+saveName,jsonString,true);
+	},'webdisplay/configs/'+saveName,jsonString,true);*/
 }
 function loadState(jsonString){
 	var configObject = JSON.parse(jsonString);
