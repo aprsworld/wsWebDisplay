@@ -703,8 +703,17 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 
 pageCell.prototype.loadHtml = function(cellCount){
 	var updatedPath = ref(dataOld, this.path);
-	if(this.dataType == 'number'){
+	console.log(this.path);
+	console.log(updatedPath);
+	if(typeof this.dataType == 'number'){
+		if(updatedPath != 'undefined'){
 		updatedPath = round(updatedPath, this.precision);
+		}
+		else{
+		updatedPath = 'Loading...'	
+		}
+			
+			
 	}	
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 	this.setDrag();

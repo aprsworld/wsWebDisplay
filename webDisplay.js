@@ -305,7 +305,12 @@ function iterateStations(obj, stack, arr, lastk) {
 				iterateStations(obj[property], stack + '.' + property, arr, lastk); //combine stack and property and call function recurssively
 			}
 			else if('undefined' !== typeof obj[property]['title'] && 'undefined' == typeof obj[property]['value'] && 'undefined' == typeof obj[property]['units'] && typeof obj[property] == "object"){
-				jsonItem ["text"] = obj[property]['title'];
+				if('object' !== typeof obj[property]['title']){
+					jsonItem ["text"] = obj[property]['title'];
+				}
+				else{
+					jsonItem ["text"] = property;
+				}
 				jsonItem ["id"] = id;
 				jsonItem ["parent"] = parent;
 				arr.push(jsonItem)
@@ -739,7 +744,7 @@ function clickToCreate(item, data, x ,y){
 		obj["id"] = id+"_pageCam_"+idArrLen+rand;
 		obj["toolTip"] = tooltip;
 		console.log(obj);
-		cell_arr.push(obj);
+		//cell_arr.push(obj);
 		var sendPath = ref(dataOld, path);
 		if(sendPath == 'undefined'){
 			sendPath = path;
@@ -966,7 +971,7 @@ function data_update(data) {
 				console.log(rsp);
 				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
-				getConfigs(rsp.data)
+				getConfigs(rsp.data);
 				if (layout) {
 					loadState(loadedLayout);
 					$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -1054,11 +1059,13 @@ function getConfigs(data) {
 
 function loadFromList(){
 	var arrlength = cell_arr.length;
+	var loadedLayout;
 	for(var i = 0; i< arrlength; i++){
 		console.log(cell_arr[i]);		
 		$('#'+cell_arr[i].parentId).remove();
 	}
 	cell_arr.length = 0;
+	var selected1 = $( "#configDrop option:selected" ).text();
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
 			// Couldn't get configuration data from server
@@ -1067,8 +1074,9 @@ function loadFromList(){
 		console.log(rsp);
 		console.log(loadedLayout);
 		var selected = $( "#configDrop option:selected" ).text();
-		var loadedLayout = rsp.data[selected];
-		
+		console.log(rsp.data[selected]);
+		loadedLayout = rsp.data[selected];
+		console.log(rsp.data);
 		loadState(rsp.data[selected]);
 		$('.gridlines').show();
 
@@ -1079,7 +1087,7 @@ function loadFromList(){
 		var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 		cellCount = parseInt(lastCell, 10)+1;
 	
-	},'webdisplay/configs');
+	},'webdisplay/configs/');
 	
 }
 var data_object;
@@ -1153,34 +1161,48 @@ function createImage(){
 	imgBlock.setHover(false, imgBlock.hoverDelay);
 }
 function refreshTreeData(newData){
-	console.log(Date.now());
-	console.log(newData);
-	var oldSensors, newSensors, oldCameras, newCameras, oldD, newD;
+	//console.log(Date.now());
+	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
 	//for(var key in dataOld){
 	//iterates through the keys of the old data object
 	Object.keys(dataOld).forEach(function(key){		
 		//checks if the current key equals the key that we are looking for
 		if(dataOld.hasOwnProperty(key) && key == objectKeys && key != '_bserver_'){
-			console.log(Date.now());			
+			//console.log(Date.now());			
 			//updates sensors
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
-				newD= newData[objectKeys][subkey];
-				for(var levelThree in newD){
-					if(typeof newD !== 'object'){
-						console.log('non-object');
+				newD = newData[objectKeys][subkey];
+				if(typeof newD !== 'object'){
+						//console.log('non-object');
+						//console.log(newD);
 						oldD = newD;
-						break;
-					}
-					else{
-						Object.keys( newD).forEach(function(key1){								
-							oldD[key1] = newD[key1];	
+				}
+				else{
+					for(var levelThree in newD){
+						Object.keys( newD).forEach(function(key1){	
+							//console.log(newD[key1])
+							if(objectKeys == 'A4751'){ //debug
+									console.log(newData[objectKeys]);
+									console.log(newD[key1]);
+								}
+							Object.keys( newD[key1]).forEach(function(key2){
+								oldD[key1][key2] = newD[key1][key2];
+								if(oldD[key1][key2] === 'undefined'){ //debug
+									console.log('undefined');
+									console.log(oldD[key1])	
+								}
+								if(objectKeys == 'A4751'){ //debug
+									
+									console.log(newD[key1][key2]);
+								}
+							});
 						});
 					}
 				}
 			});
-			console.log(Date.now());
+			//console.log(Date.now());
 		}
 	});
 }
@@ -2154,18 +2176,19 @@ function captureState(){
 		console.log(cell_arr[k]);
 	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
-
 	var jsonString = JSON.stringify(cell_arr);
 	var configObject = JSON.parse(jsonString);
-	
+	console.log(jsonString);
 	data_object.ValueSet(function(rsp){
 		console.log(rsp);
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs/'+saveName,jsonString,true);*/
+	},'webdisplay/configs/'+saveName,jsonString,false);*/
 }
 function loadState(jsonString){
+	console.log(jsonString);
+
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
 
