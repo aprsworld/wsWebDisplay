@@ -960,7 +960,7 @@ function data_update(data) {
 			
 		//grabs layout parameter fromt he url
 		//var layout = getUrlVars()["layout"];
-		var layout = getPathArray()[1];
+		var layout = getPathArray();
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
 				if(!rsp.data || rsp.error){
@@ -1044,7 +1044,13 @@ function getUrlVars() {
   }
 
 function getPathArray() {
-	return window.location.pathname.split( '/' );
+	var path = window.location.pathname.split( '/' );
+	if(path.length < 1){
+		return DEFAULT_LAYOUT;	
+	}
+	else{
+		return path[1];
+	}
 
 }
 
@@ -1103,15 +1109,20 @@ function data_start() {
 	$('#version').text(wdVersion);
 	//user defined host via url get parameter 
 	var host = getUrlVars()["host"];
+	var port = getUrlVars()["port"];
 	console.log(getUrlVars());
 	if(host == undefined){
 		host = HOST_DEFAULT;
 	}
+	if(port == undefined){
+		port = PORT_DEFAULT;
+	}
+	console.log(port);
 	//config_retr("http://"+host+":8888/.config");
     data_object = new BroadcastClient({
         callback_update: data_update,
         callback_error: data_error,
-		url: 'http://'+host+':8888/.data/',
+		url: 'http://'+host+':'+port+'/.data/',
     });
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
