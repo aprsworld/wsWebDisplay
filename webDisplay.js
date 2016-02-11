@@ -1033,10 +1033,12 @@ function data_update(data) {
 //called like: var host = getUrlVars()["host"];
 function getUrlVars() {
     var vars = {};
+	console.log(window.location.href);
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
     function(m,key,value) {
       vars[key] = value;
     });
+	console.log(vars);
     return vars;
   }
 
@@ -1095,6 +1097,7 @@ function data_start() {
 	$('#version').text(wdVersion);
 	//user defined host via url get parameter 
 	var host = getUrlVars()["host"];
+	console.log(getUrlVars());
 	if(host == undefined){
 		host = HOST_DEFAULT;
 	}
@@ -1182,18 +1185,18 @@ function refreshTreeData(newData){
 						Object.keys( newD).forEach(function(key1){	
 							//console.log(newD[key1])
 							if(objectKeys == 'A4751'){ //debug
-									console.log(newData[objectKeys]);
-									console.log(newD[key1]);
+									//console.log(newData[objectKeys]);
+									//console.log(newD[key1]);
 								}
 							Object.keys( newD[key1]).forEach(function(key2){
 								oldD[key1][key2] = newD[key1][key2];
 								if(oldD[key1][key2] === 'undefined'){ //debug
-									console.log('undefined');
-									console.log(oldD[key1])	
+									//console.log('undefined');
+									//console.log(oldD[key1])	
 								}
 								if(objectKeys == 'A4751'){ //debug
 									
-									console.log(newD[key1][key2]);
+									//console.log(newD[key1][key2]);
 								}
 							});
 						});
