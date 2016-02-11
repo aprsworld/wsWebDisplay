@@ -1120,6 +1120,8 @@ pageCam.prototype.loadHtml = function(){
 	console.log(this.style);
 	var camId = this.fullId;
 	var camObj = this;
+	console.log(this.path);
+	console.log(dataOld);
 	var updatedPath = ref(dataOld, this.path);
 	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');

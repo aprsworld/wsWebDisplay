@@ -440,6 +440,8 @@ function ref(obj, str) {
 	}
         obj = obj[str[i]];
     }
+	console.log("______________________________________________________________________________");
+	console.log(obj);
     return obj;
 }
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
@@ -971,6 +973,7 @@ function data_update(data) {
 				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
 				getConfigs(rsp.data);
+				console.log(layout);
 				if (layout) {
 					loadState(loadedLayout);
 					$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
@@ -1045,8 +1048,8 @@ function getUrlVars() {
 
 function getPathArray() {
 	var path = window.location.pathname.split( '/' );
-	if(path.length < 1){
-		return DEFAULT_LAYOUT;	
+	if(path.length < 1 || path[1] == 'wsWebDisplay'){
+		return false;	
 	}
 	else{
 		return path[1];
@@ -2189,11 +2192,12 @@ function delHandle(objectFound){
 	}
 }
 function captureState(){
-	/*for(var k in cell_arr){
+	for(var k in cell_arr){
 		cell_arr[k].onChangeStyle();
 		console.log(cell_arr[k]);
 	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
+	console.log(saveName);
 	var jsonString = JSON.stringify(cell_arr);
 	var configObject = JSON.parse(jsonString);
 	console.log(jsonString);
@@ -2202,10 +2206,10 @@ function captureState(){
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs/'+saveName,jsonString,false);*/
+	},'webdisplay/configs/'+saveName,jsonString,false);
 }
 function loadState(jsonString){
-	console.log(jsonString);
+	//console.log(jsonString);
 
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
