@@ -1125,7 +1125,7 @@ function data_start() {
     data_object = new BroadcastClient({
         callback_update: data_update,
         callback_error: data_error,
-		url: 'http://'+host+':'+port+'/.data/',
+		url: 'http://'+host+':'+port+'/data/now',
     });
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
