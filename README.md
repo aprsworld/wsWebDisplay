@@ -10,7 +10,8 @@ In order to get wsWebdisplay up and running, follow these steps:
 
 1) Config.js 
     
-    This file controls core functionality of the software with various constants. The default host, port, page title, and default layout can all be set in this file.
+    This file controls core functionality of the software with various constants. The default host, port, page title, and   
+    default layout can all be set in this file.
     
 2) URL format
 
