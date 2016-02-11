@@ -959,7 +959,8 @@ function data_update(data) {
 			
 			
 		//grabs layout parameter fromt he url
-		var layout = getUrlVars()["layout"];
+		//var layout = getUrlVars()["layout"];
+		var layout = getPathArray()[1];
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
 				if(!rsp.data || rsp.error){
@@ -1041,6 +1042,11 @@ function getUrlVars() {
 	console.log(vars);
     return vars;
   }
+
+function getPathArray() {
+	return window.location.pathname.split( '/' );
+
+}
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
