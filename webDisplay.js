@@ -1,6 +1,4 @@
-/********** Constants ************/
-const HOST_DEFAULT = 'cam.aprsworld.com';
-const TITLE_DEFAULT = 'wsWebDisplay';
+
 /***** Global variables ********/
 var editMode = false;
 var time; //incremental variable that keeps track of time since last data update
