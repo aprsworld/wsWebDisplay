@@ -916,10 +916,6 @@ function data_update(data) {
 					
 			});
 			//attempts to grab the get parameter to set background color
-			var bgColor = getUrlVars()["bgColor"];
-			if(bgColor !== undefined){
-				$('html').css('background-color',bgColor);
-			}
 			setInterval(timer,1000);
 			//populateCams(cams);
 			var lastk = "#";
