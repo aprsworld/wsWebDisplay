@@ -333,10 +333,11 @@ function iterateStations(obj, stack, arr, lastk) {
 				// get value 
 				if('undefined' !== typeof obj[property]['value']){
 					value = obj[property]['value'];	
+					
 					if(( value !== null && typeof value === 'object' )){
 						value = ' [Incorrect Format - \"value\" property is undefined] ';	
 					}
-					else if(value == '' ){
+					else if(value == '' && typeof value === 'object' ){
 						value = ' [No Data - Check format of \"value\" property] ';
 					}
 					if(typeof value === 'number'){
@@ -705,7 +706,7 @@ function clickToCreate(item, data, x ,y){
 		console.log(obj);
 		var updatedPath = ref(data, path);
 
-		if(typeof value === 'number'){
+		if(typeof updatedPath === 'number'){
 				obj["precision"] = 3;
 				obj["toolTip"] = tooltip+' (type: number) ';
 				obj["dataType"] = 'number';
@@ -953,11 +954,8 @@ function data_update(data) {
 
 				})
 
-			//sets up the drag and drop for the tree
-			
 			
 		//grabs layout parameter fromt he url
-		//var layout = getUrlVars()["layout"];
 		var layout = getPathArray();
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
@@ -1011,6 +1009,7 @@ function data_update(data) {
 		dataOld = data;
 
 	}
+	console.log(data);
 	refreshTreeData(data);
 	var x = $(document).ready(function() {
 		$( document ).off( "click", "#refreshTree" );
@@ -1107,6 +1106,7 @@ function data_start() {
 	ageTimer();
 	$('#version').text(wdVersion);
 	//user defined host via url get parameter 
+	var urlVars = getUrlVars();
 	var host = getUrlVars()["host"];
 	var port = getUrlVars()["port"];
 	console.log(getUrlVars());
@@ -1123,7 +1123,7 @@ function data_start() {
         callback_error: data_error,
 		url: 'http://'+host+':'+port+'/data/now',
     });
-	data_object.ValueGet(function(rsp){
+	/*data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
 			// Couldn't get configuration data from server
 			return;
@@ -1141,7 +1141,7 @@ function data_start() {
 				$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 				$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		}
-	},'webdisplay/configs');
+	},'webdisplay/configs');*/
 	var title = getUrlVars()["title"];
 	if(title == undefined){
     	document.title = TITLE_DEFAULT;
@@ -2202,7 +2202,7 @@ function captureState(){
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
 		}
-	},'webdisplay/configs/'+saveName,jsonString,false);
+	},'webdisplay/configs/'+saveName,jsonString,true);
 }
 function loadState(jsonString){
 	//console.log(jsonString);

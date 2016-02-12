@@ -567,7 +567,8 @@ var pageCell = function(){
 	this.toolTip;
 	this.value;
 	this.setType('pageCell');
-	this.units = '';				  
+	this.units = '';
+	
 }
 extend(pageCell,pageElement);
 
@@ -604,7 +605,8 @@ pageCell.prototype.backgroundColorChange = function(color){
 
 pageCell.prototype.fontSizeChange = function(size){
 	var containerId = this.fullId;
-	$('#'+containerId).closest('.tr').css('font-size', size);
+	size = size.trim();
+	$('#'+containerId).closest('.tr').css('font-size', size+'px');
 	var style = this.getStyle();
 	this.setStyle(style);
 }
@@ -624,8 +626,12 @@ pageCell.prototype.setTitle = function(text){
 
 pageCell.prototype.setLabel = function(text){
 	var containerId = this.fullId;	
-	$('#'+containerId).children('.label').text(text);
-	this.label = text;
+	console.log($('#'+containerId).find('.label').text());
+	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
+		$('#'+containerId).find('.label').text(text);
+		this.label = text;
+	}
+	
 	//this.units = text;
 }
 pageCell.prototype.setLabelOverride = function(value){
@@ -703,11 +709,33 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 
 pageCell.prototype.loadHtml = function(cellCount){
 	var updatedPath = ref(dataOld, this.path);
+	var result;
+	var label;
+	if(typeof updatedPath == 'string'){
+		this.dataType = 'string';	
+	}
+	else{
+		this.dataType = 'number';	
+	}
 	console.log(this.path);
 	console.log(updatedPath);
-	if(typeof this.dataType == 'number'){
-		if(updatedPath != 'undefined'){
-		updatedPath = round(updatedPath, this.precision);
+	console.log(this.dataType);
+	if(this.dataType !== 'string'){
+		if(updatedPath !== 'undefined'){
+			console.log(this.typeUnits+" "+this.typeChange+" "+updatedPath+" "+this.precision);
+			if(typeof this.typeUnits !== 'undefined' && typeof this.typeChange !== 'undefined' && (this.typeUnits.toUpperCase() !== this.typeChange.toUpperCase())){
+				console.log(this.title);
+				console.log(this.typeUnits+" "+this.typeChange);
+				console.log(updatedPath);
+				console.log(this.type);
+				console.log(this.typeChange);
+				result = chooseConversion(this.type, this.typeUnits.toUpperCase(), updatedPath, this.typeChange.toUpperCase());	
+				updatedPath = result.value;
+				console.log(result.label);
+				this.setLabel(result.label);
+			}
+			console.log(updatedPath);
+			updatedPath = round(updatedPath, this.precision);
 		}
 		else{
 		updatedPath = 'Loading...'	
@@ -718,6 +746,14 @@ pageCell.prototype.loadHtml = function(cellCount){
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
+	if(editMode == false){
+		$('#'+this.parentId).draggable({disabled:true});
+		$('#'+this.parentId).resizable({disabled:true});
+	}
+	else{
+		$('#'+this.parentId).draggable({disabled:false});
+		$('#'+this.parentId).resizable({disabled:false});
+	}
 }
 
 /***********************************************************************************
@@ -791,11 +827,11 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 				clearTimeout(camObj.timeOut);	
 				//sets a user-configurable timeout so that the hover does not trigger right away
 				camObj.timeOut = setTimeout(function() {
-					camObj.test = 'test';
 					console.log('time');
 					$(hoverImg).width(camWidth);
 					$(hoverImg).height(camHeight);
 					hoverImg.src = camSrc;
+					
 					hoverImgLink.href = camSrc;
 					hoverImgLink.target = '_blank';
 					hoverImgLink.appendChild(hoverImg);
@@ -1123,6 +1159,7 @@ pageCam.prototype.loadHtml = function(){
 	console.log(this.path);
 	console.log(dataOld);
 	var updatedPath = ref(dataOld, this.path);
+	camObj.src = updatedPath;
 	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
 	$('#preload_'+camId).load(function() {
@@ -1551,6 +1588,14 @@ pageImg.prototype.loadHtml = function(){
 	});
 	objectFound.setDrag();
 	objectFound.setResize();
+	if(editMode == false){
+		$('#'+objectFound.parentId).draggable({disabled:true});
+		$('#'+objectFound.parentId).resizable({disabled:true});
+	}
+	else{
+		$('#'+objectFound.parentId).draggable({disabled:false});
+		$('#'+objectFound.parentId).resizable({disabled:false});
+	}
 	
 }
 /***********************************************************************************
@@ -1604,14 +1649,23 @@ pageText.prototype.loadHtml = function(){
 	$('#'+this.parentId).attr('style', this.style);
 	this.setDrag();
 	this.setResize();
-
+	if(editMode == false){
+		$('#'+this.parentId).draggable({disabled:true});
+		$('#'+this.parentId).resizable({disabled:true});
+	}
+	else{
+		$('#'+this.parentId).draggable({disabled:false});
+		$('#'+this.parentId).resizable({disabled:false});
+	}
 }
 pageText.prototype.fontSizeChange = function(size){
 	if(size == ''){
 		size =  8;	
 	}
+	size = size.trim();
+
 	var containerId = this.parentId;
-	$('#'+containerId).css('font-size', size);
+	$('#'+containerId).css('font-size', size+'px');
 	var style = this.getStyle();
 	this.setStyle(style);
 }
