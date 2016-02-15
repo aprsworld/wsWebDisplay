@@ -96,8 +96,8 @@ var LengthConvert = {
 var SpeedConvert = {
 	//base unit: MPH
 	init: function(currentUnit, futureUnit, value){
-		if(currentUnit == 'KM/HR'){
-			//convert value from km/hr to the base unit, MPH
+		if(currentUnit == 'KPH'){
+			//convert value from KPH to the base unit, MPH
 			value = value*0.6213712;
 		  //call function again with MPH as current unit, the same future unit, and a new value.
 		  var result = speedConvert.init('MPH', futureUnit, value);
@@ -121,9 +121,9 @@ var SpeedConvert = {
 				result.label = ' mph';
 				return result;
 			}
-				else if(futureUnit == 'KM/HR'){
+				else if(futureUnit == 'KPH'){
 				result.value = value*1.61;
-				result.label = ' km/h';
+				result.label = ' kph';
 				return result;
 			}
 				else if(futureUnit == 'M/S'){
@@ -137,7 +137,7 @@ var SpeedConvert = {
 			}
 				else if(futureUnit == 'KTS'){
 				result.value = value*0.868976;
-				result.label = ' kn';
+				result.label = ' kts';
 				return result;
 			}
 		}
@@ -354,7 +354,7 @@ function chooseConversion(type, typeUnits, value, typeChange){
 function populateConversions(id){
 	$('#unitRow').hide();
 	var temperatureUnits = ['C','F','K'];
-	var speedUnits = ['KM/HR','MPH','M/S','KTS'];
+	var speedUnits = ['KPH','MPH','M/S','KTS'];
 	var lengthUnits = ['IN','FT','MI','MM','CM','M','KM'];
 	var timeUnits = ['UNIX','MYSQL'];
 	var apUnits = ['Atmosphere','Pascal','Bar','millibar','hectopascal','mmHg','inHg','psi'];
