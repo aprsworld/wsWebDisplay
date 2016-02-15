@@ -512,9 +512,7 @@ div.logo_container{
 }
 #positionDiv i{
 	display: inline-block;
-	margin-left: 2px;
-	margin-bottom: -4px;
-	margin-top: 4px;
+	
 	font-size: 14px !important;
 }
 #resizeSpan{

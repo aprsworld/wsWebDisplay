@@ -92,7 +92,7 @@ pageElement.prototype = {
 		var distanceTop;
 		var distanceLeft;
 		var currentL, currentT;
-
+		var posDiv
 		$('#'+this.parentId).draggable({
 			cursor: "move", disabled: false, delay: 50,
 			start: function(event, ui){
@@ -103,11 +103,10 @@ pageElement.prototype = {
 				var posLeft = ui.position.left;
 				var posTop = ui.position.top;
 				var posSpan = document.createElement("SPAN"); 
-				var posDiv = document.createElement("DIV");
+				posDiv = document.createElement("DIV");
 				posDiv.id = 'positionDiv';
-				$(this).append(posDiv);
-				console.log($(this));
-				posSpan.textContent = "("+posLeft+", "+posTop+")";
+				$('body').append(posDiv);
+				posSpan.textContent = " ("+posLeft+", "+posTop+")";
 				posSpan.id = 'positionSpan';
 				$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
 				$('#positionDiv').append(posSpan);
@@ -125,21 +124,28 @@ pageElement.prototype = {
 				distanceLeft = posLeft-startLeft;
 				var fullId;
 				
-				console.log(distanceTop+" "+distanceLeft);
 				if(tempArray.length > 0){
 					for(var i = 0; i< tempArray.length; i++){
 						fullId = tempArray[i].parentId;
-						
-						$('#'+fullId).css({
-							top: $('#'+fullId).offset().top+distanceTop,
-							left:  $('#'+fullId).offset().left+distanceLeft
-						});
-						$('#'+fullId).css('top');
+						if(thisObj.parentId != fullId){
+							$('#'+fullId).css({
+								top: $('#'+fullId).offset().top+distanceTop,
+								left:  $('#'+fullId).offset().left+distanceLeft
+							});
+							$('#'+fullId).css('top');
+						}
+						else{
+							console.log('debug');	
+						}
 					}
 				}
 				$('#positionSpan').text("("+posLeft+", "+posTop+")");
 				var width = posLeft+'px';	
 				var height = posTop+'px';
+				$('#positionDiv').css({
+					'top': posTop-18,
+					'left': posLeft-10
+				});
 				$(this).css({
 					'top': posTop,
 					'left': posLeft
