@@ -1713,6 +1713,9 @@ TEXT BLOCKS CASE
 		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizePrevious" , function() {	
 			pageObjectFound.previousElementDimensions();
+			objectFound.applyWidthHeight();
+
+
 		});
 		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#applyDimensions" , function() {	
@@ -1942,6 +1945,8 @@ DATA CELLS CASE
 		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizePrevious" , function() {	
 			pageObjectFound.previousElementDimensions();
+			objectFound.applyWidthHeight();
+
 		});
 		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#applyDimensions" , function() {	
