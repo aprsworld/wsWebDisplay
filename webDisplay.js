@@ -1284,6 +1284,7 @@ var editWindow =  function(e) {
 MULTIPLE SELECTIONS (ctrl key is held when clicking)
 ******************************************************************/			
 	if(e.ctrlKey && ($('#'+selectedModule).hasClass('imgCamContainer') || $('#'+selectedModule).hasClass('imgBlockContainer')||$('#'+selectedModule).hasClass('tr') ||$('#'+selectedModule).hasClass('textBlockContainer') )) {	
+		
 		var length = tempArray.length;
 		if(length > 0){
 			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();

@@ -133,10 +133,7 @@ pageElement.prototype = {
 								left:  $('#'+fullId).offset().left+distanceLeft
 							});
 							$('#'+fullId).css('top');
-						}
-						else{
-							console.log('debug');	
-						}
+						}	
 					}
 				}
 				$('#positionSpan').text("("+posLeft+", "+posTop+")");
@@ -866,7 +863,6 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		$( "#"+camId  ).unbind("mouseenter mouseleave");
 		$( "#"+camId ).hover(function(){
 			var camSrc = camObj.src;
-			console.log(camObj.src);
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
 			camHeight = parseInt(camObj.natHeight);
@@ -895,7 +891,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					$('#'+camId).addClass('focusedCam');
 					//Since Chrome and Safari like to mess things up, we need a separate class with extra math for those browsers
 					if (isWebkit) {
-						hoverImg.className = 'webKitCam';
+						hoverImgLink.className = 'webKitCam';
 						hoverImgLink.id = hoverImgId;
 						var top = ''+$('#'+camId).css('top');
 						var left = ''+$('#'+camId).css('left');
@@ -946,14 +942,14 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 
 					}
 					else{
-						hoverImg.className = 'expandedCam';
+						hoverImgLink.className = 'expandedCam';
 					}	
 				}, timeOut); //end hoverTimeOut
 			} //end if(editMode == false && suppressed == false)
 		}, function () {
 			if(editMode == false){	
 				clearTimeout(camObj.timeOut);
-				$(hoverImg).remove();
+				$('#'+hoverImgId).remove();
 				$('#'+camId).removeClass('focusedCam');
 				
 			}
