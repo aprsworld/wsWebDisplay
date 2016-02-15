@@ -958,6 +958,12 @@ function data_update(data) {
 		//grabs layout parameter fromt he url
 		//var layout = getPathArray();
 		var layout = getUrlVars()["layout"];
+		if(typeof layout ==='undefined'){
+			layout = DEFAULT_LAYOUT;
+			if(layout === ''){
+				layout = undefined;	
+			}
+		}
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
 				if(!rsp.data || rsp.error){
