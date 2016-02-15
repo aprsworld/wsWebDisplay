@@ -956,7 +956,8 @@ function data_update(data) {
 
 			
 		//grabs layout parameter fromt he url
-		var layout = getPathArray();
+		//var layout = getPathArray();
+		var layout = getUrlVars()["layout"];
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
 				if(!rsp.data || rsp.error){
