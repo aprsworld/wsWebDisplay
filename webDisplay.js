@@ -2019,15 +2019,15 @@ DATA CELLS CASE
 		$( document ).off( "keyup", "input.labelChange"); //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.labelChange" , function() {	
 			//label.text(htmlEntities(labelChange.val()));
-			console.log(labelChange);
+			console.log(labelChange.val());
 			if(labelChange.val() == ''){
-				objectFound.setLabelOverride(false);
+				var text = htmlEntities(labelChange.val());
+				objectFound.setLabelOverride(false, text);
 				console.log(objectFound.labelOverride);
 			}
 			else{
 				var text = htmlEntities(labelChange.val());
-				objectFound.setLabel(text);
-				objectFound.setLabelOverride(true);
+				objectFound.setLabelOverride(true, text);
 			}
 		});
 		

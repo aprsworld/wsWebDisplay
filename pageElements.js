@@ -628,7 +628,7 @@ pageCell.prototype.setLabel = function(text){
 	var containerId = this.fullId;	
 	console.log($('#'+containerId).find('.label').text());
 	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
-
+		$('#'+containerId).find('.label').text(text);
 	}
 	else{
 		$('#'+containerId).find('.label').text(text);
@@ -636,8 +636,23 @@ pageCell.prototype.setLabel = function(text){
 	}
 	//this.units = text;
 }
-pageCell.prototype.setLabelOverride = function(value){
-	this.labelOverride = value;
+pageCell.prototype.setLabelOverride = function(value, label){
+		this.labelOverride = value;
+
+	if(value){
+		$('#'+this.fullId).find('.label').text(label);
+	}
+	else{
+		var updatedLabel;
+		if(typeof this.typeUnits === 'undefined' || typeof this.type ==='undefined' || typeof this.typeChange === 'undefined' || this.value === 'undefined'){
+			updatedLabel = htmlEntities(this.units);	
+		}
+		else{
+			var result = chooseConversion(this.type, this.typeUnits.toUpperCase(), this.value, this.typeChange.toUpperCase());	
+			updatedLabel = htmlEntities(result.label);	
+		}
+		$('#'+this.fullId).find('.label').text(updatedLabel);
+	}
 }
 pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	var containerId = this.fullId;	
