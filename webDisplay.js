@@ -1281,7 +1281,7 @@ var editWindow =  function(e) {
 	
 	$(document).off('click','.tr, .textBlockContainer, .imgBlockContainer, .imgCamContainer');
 /*****************************************************************
-MULTIPLE SELECTIONS (shift key is held when clicking)
+MULTIPLE SELECTIONS (ctrl key is held when clicking)
 ******************************************************************/			
 	if(e.ctrlKey && ($('#'+selectedModule).hasClass('imgCamContainer') || $('#'+selectedModule).hasClass('imgBlockContainer')||$('#'+selectedModule).hasClass('tr') ||$('#'+selectedModule).hasClass('textBlockContainer') )) {	
 		var length = tempArray.length;

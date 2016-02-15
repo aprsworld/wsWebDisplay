@@ -817,11 +817,13 @@ select.backgroundColorChange option{
 #urlRow span{
 	text-align: left;	
 }
-#fontSizeRow span{
+#fontSizeRow label{
 	padding-top: 5px;
 	width: 75px;
 	float: left;
 	text-align: left;
+	display: block;
+	height: auto;
 }
 
 #opacitySlider, #zSlider{
@@ -907,9 +909,10 @@ select.backgroundColorChange option{
 }
 .custom-combobox{
 	width: 100% !important;	
+	display:block;
 }
 .custom-combobox-input{
-	width: 64% !important;	
+	width: 60% !important;	
 	float: left;
 	background: none !important;
 	background-color: white !important;
@@ -918,10 +921,7 @@ select.backgroundColorChange option{
 	overflow: hidden;
 	width: 30% !important;
 	float: right !important;
-	height: 26px !important;
-}
-#ul-id-1{
-	
+	height: 29px !important;
 }
 .ui-autocomplete{
 	position: fixed !important;
