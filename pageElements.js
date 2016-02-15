@@ -710,7 +710,10 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 pageCell.prototype.loadHtml = function(cellCount){
 	var updatedPath = ref(dataOld, this.path);
 	var result;
-	var label;
+	var label = this.label;
+	if(typeof label === 'undefined'){
+		label = this.units	
+	}
 	if(typeof updatedPath == 'string'){
 		this.dataType = 'string';	
 	}
@@ -732,7 +735,6 @@ pageCell.prototype.loadHtml = function(cellCount){
 				result = chooseConversion(this.type, this.typeUnits.toUpperCase(), updatedPath, this.typeChange.toUpperCase());	
 				updatedPath = result.value;
 				console.log(result.label);
-				this.setLabel(result.label);
 			}
 			console.log(updatedPath);
 			updatedPath = round(updatedPath, this.precision);
@@ -743,7 +745,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 			
 			
 	}	
-	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
 	if(editMode == false){
@@ -754,6 +756,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 		$('#'+this.parentId).draggable({disabled:false});
 		$('#'+this.parentId).resizable({disabled:false});
 	}
+
 }
 
 /***********************************************************************************
