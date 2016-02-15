@@ -87,7 +87,12 @@ pageElement.prototype = {
 	setDrag: function() {
 		console.log(this.parentId);
 		var thisObj = this;
-		
+		var startTop;
+		var startLeft;
+		var distanceTop;
+		var distanceLeft;
+		var currentL, currentT;
+
 		$('#'+this.parentId).draggable({
 			cursor: "move", disabled: false, delay: 50,
 			start: function(event, ui){
@@ -109,11 +114,29 @@ pageElement.prototype = {
 				$('#rulerBox, #rulerBox2, #rulerBox3').show();
 			},
 			drag: function(event, ui){
+				
 				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
 				ui.position.top = posTop;
 				ui.position.left = posLeft;
+				startTop = $(this).offset().top;
+				startLeft = $(this).offset().left;
+				distanceTop = posTop-startTop;
+				distanceLeft = posLeft-startLeft;
+				var fullId;
 				
+				console.log(distanceTop+" "+distanceLeft);
+				if(tempArray.length > 0){
+					for(var i = 0; i< tempArray.length; i++){
+						fullId = tempArray[i].parentId;
+						
+						$('#'+fullId).css({
+							top: $('#'+fullId).offset().top+distanceTop,
+							left:  $('#'+fullId).offset().left+distanceLeft
+						});
+						$('#'+fullId).css('top');
+					}
+				}
 				$('#positionSpan').text("("+posLeft+", "+posTop+")");
 				var width = posLeft+'px';	
 				var height = posTop+'px';
@@ -209,6 +232,12 @@ pageElement.prototype = {
 		console.log(cell_arr.length);
 		$('#'+objId).remove();
 		console.log(cell_arr);
+	},
+	getTop: function(){
+		return $("#"+this.parentId).css('top');
+	},
+	getLeft: function(){
+		return $("#"+this.parentId).css('left');
 	},
 	getWidth: function(){
 		return $("#"+this.parentId).width();
