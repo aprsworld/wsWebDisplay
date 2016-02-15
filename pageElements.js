@@ -628,10 +628,12 @@ pageCell.prototype.setLabel = function(text){
 	var containerId = this.fullId;	
 	console.log($('#'+containerId).find('.label').text());
 	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
+
+	}
+	else{
 		$('#'+containerId).find('.label').text(text);
 		this.label = text;
 	}
-	
 	//this.units = text;
 }
 pageCell.prototype.setLabelOverride = function(value){
@@ -1174,8 +1176,14 @@ pageCam.prototype.loadHtml = function(){
 		camObj.setDrag();
 		camObj.setResize();
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
-		$('#'+camObj.parentId).draggable({disabled:true});
-		$('#'+camObj.parentId).resizable({disabled:true});
+		if(editMode == false){
+			$('#'+camObj.parentId).draggable({disabled:true});
+			$('#'+camObj.parentId).resizable({disabled:true});
+		}
+		else{
+			$('#'+camObj.parentId).draggable({disabled:false});
+			$('#'+camObj.parentId).resizable({disabled:false});
+		}
 		//cell_arr.push(camObj);
 
 	});

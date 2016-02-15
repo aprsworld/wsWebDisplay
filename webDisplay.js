@@ -977,22 +977,12 @@ function data_update(data) {
 				console.log(layout);
 				if (layout) {
 					loadState(loadedLayout);
-					$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-					$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-					$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-					$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+					
 					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 					cellCount = parseInt(lastCell, 10)+1;
 				}
 
-			},'webdisplay/configs/');			
-		//if layout parameter found, load that layout
-		if(layout != undefined){
-		   $(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-		   $(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-		   $('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-		   $('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-		}
+			},'webdisplay/configs/');		
 		var objId = 'pageSettings';	
 		console.log(cell_arr);
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
@@ -1097,10 +1087,6 @@ function loadFromList(){
 		loadState(rsp.data[selected]);
 		$('.gridlines').show();
 
-		$(".imgCamContainer").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-		$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-		$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
-		$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 		var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 		cellCount = parseInt(lastCell, 10)+1;
 	
