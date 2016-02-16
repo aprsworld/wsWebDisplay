@@ -768,6 +768,7 @@ select.backgroundColorChange option{
 	float: left;
 	font-size: 14px;
 	margin-left: 10px;
+	display: block;
 }
 #createText i, #hideModule i, #cancelCrop i, #cropModule i, #resizeModule i, #endCrop i, #deleteModule i, #createImg i{
 	display: block; 

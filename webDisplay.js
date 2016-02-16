@@ -1474,6 +1474,7 @@ MULTIPLE SELECTIONS (ctrl key is held when clicking)
 CREATE STATIC ELEMENTS CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'createStatic'){
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 		$('.editWindow h2').text("Static Elements");
 		$('#staticRow').show();
 	}
@@ -1481,6 +1482,8 @@ CREATE STATIC ELEMENTS CASE
 CONFIGRATIONS CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'configMenu'){
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
+
 		$('.editWindow h2').text("Configurations");
 		$('#configRow').show();
 	}
@@ -1490,6 +1493,10 @@ PAGE EDIT CASE
 	else if($(this).attr('id') == 'pageEdit'){
 		tempArray.length = 0;
 		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3').show();
+		$('#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
+		
+		$('#accordion').accordion('refresh');
 		$('.editWindow h2').text("Page");
 		$('#gridRow, #titleRow,#backgroundColorRow,#opacityRow,#titleInputInfo').show();
 		$('#hideModule,#deleteModule').hide();
@@ -1581,8 +1588,11 @@ CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
 		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
+		$('#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').show();
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3').hide();
 		$('.editWindow h2').text($(this).attr('title'));
 		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
+		$('#accordion').accordion( "refresh" );
 		$(this).addClass('selectedShadow');
 		
 		moduleContainer = $(this).attr('id');
@@ -1692,6 +1702,10 @@ TEXT BLOCKS CASE
 ******************************************************************/
 	else if($(this).hasClass('textBlockContainer')){
 		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow').show();
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
+		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
+		$('#accordion').accordion( "refresh" );
+
 		id = $(this).attr('id');
 		$('.editWindow h2').text("Text "+id);
 		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
@@ -1815,6 +1829,9 @@ IMG BLOCKS CASE
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
 		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow').show();
+		$('#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').show();
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3').hide();
+		$('#accordion').accordion( "refresh" );
 		
 		moduleContainer = $(this).attr('id');
 		selectedModule = $(this).find('img').attr('id');
@@ -1918,6 +1935,11 @@ DATA CELLS CASE
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
 		$('#hideDelRow, #zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow').show();
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
+		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
+
+		$('#accordion').accordion( "refresh" );
+		
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text($(this).attr('title'));
