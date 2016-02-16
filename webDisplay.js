@@ -1015,7 +1015,7 @@ function data_update(data) {
 
 	}
 	refreshTreeData(data);
-	$('#bytesReceived').text(this.rx_data_counter() + ' Bytes Transferred');
+	$('#bytesReceived').text(this.rx_data_counter().toLocaleString() + ' Bytes Transferred');
 	var x = $(document).ready(function() {
 		
 		$( document ).off( "click", "#refreshTree" );
