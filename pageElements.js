@@ -765,6 +765,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 	if(typeof label === 'undefined'){
 		label = this.units	
 	}
+	
 	if(typeof updatedPath == 'string'){
 		this.dataType = 'string';	
 	}
@@ -799,6 +800,9 @@ pageCell.prototype.loadHtml = function(cellCount){
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
+	if(this.title == ''){
+		$('#'+this.fullId).siblings('.myTableTitle').css('background-color','rgba(0,0,0,0)');
+	}
 	if(editMode == false){
 		$('#'+this.parentId).draggable({disabled:true});
 		$('#'+this.parentId).resizable({disabled:true});
@@ -1039,7 +1043,7 @@ pageCam.prototype.camCrop = function(){
 		//sets the cropped postion to be maximum width and height and positioned in the top left corner
 		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 
-		$('.cropperwrapper > img').cropper({
+		$('.cropperWrapperImg').cropper({
 			dragCrop: true,
 			scaleable: false,
 			movable: false,
@@ -1071,22 +1075,24 @@ pageCam.prototype.camCrop = function(){
 	}
 	//if cam has not been cropped yet
 	else{
-		width = thisElement.css('width');
-		height = thisElement.css('height');
+		//width = thisElement.css('width');
+		//height = thisElement.css('height');
+		width = parseInt(thisObj.changedWidth);
+		height = parseInt(thisObj.changedHeight);
 		left = thisElement.css('left');
 		top = thisElement.css('top');
 		src = thisObj.src;
-		diffFromNatHeight = (height.slice(0,-2))/thisObj.natHeight;
-		diffFromNatWidth = (width.slice(0,-2))/thisObj.natWidth;
-		console.log(thisObj.natWidth+" "+width.slice(0,-2)+" "+width);
+		diffFromNatHeight = (height)/thisObj.natHeight;//(height.slice(0,-2))/thisObj.natHeight;
+		diffFromNatWidth = (height)/thisObj.natHeight;//(width.slice(0,-2))/thisObj.natWidth;
+		console.log(thisObj.natWidth+" "+width/*.slice(0,-2)*/+" "+width);
 		//disables controls
 		$('.controlsOverlay').show();
 		//creates a cropper window that is the size of the image that we are cropping
-		$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width*diffFromNatWidth)+' " height="'+(height*diffFromNatHeight)+' "src="'+src+'"></div>');
+		$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width)+' " height="'+(height)+' "src="'+src+'"></div>');
 		//sets the cropped postion to be maximum width and height and positioned in the top left corner
 		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 
-		$('.cropperwrapper > img').cropper({
+		$('.cropperWrapperImg').cropper({
 			aspectRatio: width / height,
 			autoCropArea: 1.0,
 			dragCrop: true,

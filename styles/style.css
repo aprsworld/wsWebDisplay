@@ -132,7 +132,7 @@ select{
 	height: auto;
 	position: fixed;
 	border-radius: 5px 5px 0px 0px;
-	bottom: 18;
+	bottom: 18px;
 	left: 45%;
 	background-color: rgba(200, 200, 200, 0.8);
 	z-index: 1001;
