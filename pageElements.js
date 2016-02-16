@@ -203,7 +203,7 @@ pageElement.prototype = {
 					top: event.clientY+5,
 					left: event.clientX+5
 				});
-				$('#'+thisObj.parentId).append(posSpan);
+				$('body').append(posSpan);
 				handleTarget = $(event.originalEvent.target);
 			},
 			resize: function(event, ui){

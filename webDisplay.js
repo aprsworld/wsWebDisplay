@@ -1183,16 +1183,24 @@ function refreshTreeData(newData){
 	//console.log(Date.now());
 	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
+	console.log(objectKeys);
 	//for(var key in dataOld){
 	//iterates through the keys of the old data object
-	Object.keys(dataOld).forEach(function(key){		
+	console.log(newData);
+	Object.keys(newData).forEach(function(key){		
 		//checks if the current key equals the key that we are looking for
-		if(dataOld.hasOwnProperty(key) && key == objectKeys && key != '_bserver_'){
+		console.log(key);
+		if(dataOld.hasOwnProperty(key)  && key != '_bserver_'){
 			//console.log(Date.now());			
 			//updates sensors
+			console.log(key);
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
 				newD = newData[objectKeys][subkey];
+				console.log(oldD);
+				if(typeof oldD === 'undefined'){
+					console.log('undefined');	
+				}
 				if(typeof newD !== 'object'){
 						//console.log('non-object');
 						//console.log(newD);
@@ -1223,6 +1231,11 @@ function refreshTreeData(newData){
 			});
 			//console.log(Date.now());
 		}
+		else{
+			console.log('does not exist');
+			//might need to add something here to add items to the tree that do not exist within the tree yet
+		}
+		
 	});
 }
 function refreshTree(newData){
