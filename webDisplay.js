@@ -194,6 +194,14 @@ $(function() {
 	};
 })(jQuery);
 
+$(function() {
+	$( "#accordion" ).accordion({
+		heightStyle: "content",
+		active: false , 
+		collapsible: true
+	});
+});
+
 //converts seconds into a time format (hours:minutes:seconds)
 function ageTimer(){
 	var length, k, value, id;
@@ -854,7 +862,7 @@ function collapseWindows(){
 	}
 	else{
 		$('.controls').animate({'width': '250px', 'padding-left': '10px', 'padding-right': '10px'},200);
-		$('.editWindow').animate({'width': '280px','padding': '20px'},200);	
+		$('.editWindow').animate({'width': '280px','padding': '2px'},200);	
 		$('.controlRow').show();
 		$('#stationTree').show();
 		console.log('now expanded');
@@ -1006,7 +1014,6 @@ function data_update(data) {
 		dataOld = data;
 
 	}
-	console.log(data);
 	refreshTreeData(data);
 	$('#bytesReceived').text(this.rx_data_counter() + ' Bytes Transferred');
 	var x = $(document).ready(function() {

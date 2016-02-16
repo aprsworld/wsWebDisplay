@@ -102,6 +102,7 @@ pageElement.prototype = {
 				}
 				var posLeft = ui.position.left;
 				var posTop = ui.position.top;
+				console.log('start: '+posLeft);
 				var posSpan = document.createElement("SPAN"); 
 				posDiv = document.createElement("DIV");
 				posDiv.id = 'positionDiv';
@@ -113,10 +114,11 @@ pageElement.prototype = {
 				$('#rulerBox, #rulerBox2, #rulerBox3').show();
 			},
 			drag: function(event, ui){
-				
+				console.log('before: '+ui.position.left);
 				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
 				ui.position.top = posTop;
+				console.log('after: '+ui.position.left);
 				ui.position.left = posLeft;
 				startTop = $(this).offset().top;
 				startLeft = $(this).offset().left;
@@ -124,7 +126,7 @@ pageElement.prototype = {
 				distanceLeft = posLeft-startLeft;
 				var fullId;
 				
-				if(tempArray.length > 0){
+				if(tempArray.length > 1){
 					for(var i = 0; i< tempArray.length; i++){
 						fullId = tempArray[i].parentId;
 						if(thisObj.parentId != fullId){

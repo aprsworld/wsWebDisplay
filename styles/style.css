@@ -610,6 +610,15 @@ div.logo_container{
 	max-height: 100vh;
 }
 
+#accordion .ui-accordion-content { padding: 0; }
+#accordion .ui-widget-content:not(.ui-slider):not(.evo-pop){
+	background: none; 
+	background-color: transparent;
+		border: none;
+
+}
+#accordion .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active{
+}
 #editMinimize{
 	position: fixed;
 	bottom:22px;
