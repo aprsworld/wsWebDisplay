@@ -543,6 +543,15 @@ div.logo_container{
 	background-color: rgba(200,200,200,.8);
 	z-index: 1000;
 }
+#bytesReceived{
+	color: #333;
+	font-size: 12px;
+	padding: 3px 10px 0px 10px;
+	float: right;
+	border-right: 1px solid #333;
+	border-left: 1px solid #333;
+	font-weight: 700;
+}
 #statusBar button{
 	width: 18px;
 	height: 18px;
@@ -569,17 +578,16 @@ div.logo_container{
 	float: right;
 	color: #333;
 	font-size: 12px;
-	padding-top: 3px;
-	padding-right: 10px;
+	padding: 3px 10px 0px 10px;
 	font-weight: 700;
+	border-right: 1px solid #333;
 }
 #camTimer{
 	display: block;
 	float: right;
 	color: #333;
 	font-size: 12px;
-	padding-top: 3px;
-	padding-right: 10px;
+	padding: 3px 10px 0px 10px;
 
 }
 

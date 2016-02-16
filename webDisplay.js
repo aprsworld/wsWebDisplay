@@ -1008,7 +1008,9 @@ function data_update(data) {
 	}
 	console.log(data);
 	refreshTreeData(data);
+	$('#bytesReceived').text(this.rx_data_counter() + ' Bytes Transferred');
 	var x = $(document).ready(function() {
+		
 		$( document ).off( "click", "#refreshTree" );
 		$( document ).on( "click", "#refreshTree" , function() {	
 			refreshTree(dataOld);
