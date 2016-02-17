@@ -113,8 +113,11 @@ select{
 	border: 2px solid black;
 	padding: 16px;
 }
+.dataLog h2{
+	color: #333 !important;
+}
 .logContainer{
-	height: 200px;
+	height: 250px;
 	overflow: auto;	
 	border-top: 1px solid #333;
 }

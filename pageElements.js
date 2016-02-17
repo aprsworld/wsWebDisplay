@@ -396,14 +396,14 @@ var pageLog = function(){
 	this.head = null;
 	this.tail = null;
 	this._length = 0;
-	this.interval = 1; //in seconds
+	this.interval = 5000; //in milliseconds
 }
 extend(pageLog, pageElement);
 
 pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 		var logId = this.parentId;
 
-	$('.top-container').append('<div id="'+logId+'"class="dataLog"><h2> Log: </h2><div class="logContainer"><ol></ol></div></div>');
+	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
 	console.log(logId);
 	$('#'+logId).css('top',pageY);
 	$('#'+logId).css('left',pageX);
@@ -432,10 +432,12 @@ pageLog.prototype.checkInterval = function(time){
 	}
 	var oldTime = this.tail.timeStamp;
 	var difference = time-oldTime;
-	if(difference >= this.interval){
+	if(difference > this.interval){
+		console.log('true');
 		return true;
 	}
 	else{
+		console.log('false');
 		return false;	
 	}
 };

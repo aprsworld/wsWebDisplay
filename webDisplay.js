@@ -579,17 +579,19 @@ function dynamicUpdate(data) {
     }
 	else if(objectFound.elementType == 'pageLog'){
 		var interval = objectFound.interval;
-		var timeStamp = new Date().getTime() / 1000;
-		timeStamp = Math.floor(timeStamp);
-		value = ref(data, objectFound.path);
+		var timeStamp = new Date();
+		//timeStamp = Math.floor(timeStamp);
+		value = ref(dataOld, objectFound.path);
+		console.log(value);
 					objectFound.value = value;
 
-		var readyToChange = objectFound.checkInterval(timeStamp);
+		var readyToChange = objectFound.checkInterval(timeStamp.getTime());
 		//console.log(readyToChange);
 		if(readyToChange){
-			objectFound.push(timeStamp, value);
+			
+			objectFound.push(timeStamp.getTime(), objectFound.value);
 			//console.log('ready');
-			$("#testLog").find('ol').append('<li class="logEntry" id="'+timeStamp+'">'+timeStamp+'  :  '+ value +'</li>');
+			$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+timeStamp.getMonth()+'-'+timeStamp.getDay()+'-'+timeStamp.getFullYear()+' '+timeStamp.getHours()+':'+timeStamp.getMinutes()+':'+timeStamp.getSeconds()+'  |  '+ value +'</li>');
 
 		}
 		//console.log(value);
@@ -618,7 +620,7 @@ function timer(){
 function clickToCreate(item, data, x ,y){
 	var id = $(item).closest('.jstree-node').attr('id');
 	var cellCount = cell_arr.length;
-	var obj, new_id;
+	var obj, new_id; 
 	
 	//if data cell or log
 	if($('#'+id).hasClass('dataDraggable') || $('#'+id).hasClass('jstree-leaf')){
@@ -770,6 +772,7 @@ function clickToCreate(item, data, x ,y){
 		console.log(obj);
 		positionDiv(obj, new_id);
 		cellCount++;
+		rand, idArrLen, instance, new_id, children, clength, i, path, tooltip, sendPath = null;
 	}
 		
 }
@@ -956,7 +959,7 @@ function data_update(data) {
 							}
 						}
 					});
-					$('.jstree-themeicon'/*, .jstree-contextmenubtn'*/).off('click').on('click', function(e) {
+					$('.jstree-themeicon, .jstree-contextmenubtn').off('click').on('click', function(e) {
 						var item = this;
 						console.log(item);
 						var pageX = e.pageX;
@@ -1038,7 +1041,7 @@ function data_update(data) {
 	dynamicUpdate( data); //updates all data cells to their current values
 }
 
-//calculates size for 
+//calculates size for data counter
 function calculateDownload(size){
 	var message;
 	var type;
@@ -1203,6 +1206,9 @@ function createImage(){
 	imgBlock.setSuppression(true);
 	imgBlock.setHover(false, imgBlock.hoverDelay);
 }
+
+//this function accepts the partial updates and combines them with the existing data structure
+//used to build the tree.
 function refreshTreeData(newData){
 	//console.log(Date.now());
 	var oldD, newD;
@@ -1224,6 +1230,7 @@ function refreshTreeData(newData){
 				console.log(oldD);
 				if(typeof oldD === 'undefined'){
 					console.log('undefined');	
+					console.log(newD);
 				}
 				if(typeof newD !== 'object'){
 						//console.log('non-object');
