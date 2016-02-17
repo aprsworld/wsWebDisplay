@@ -321,7 +321,6 @@ pageSettings.prototype.previousElementDimensions = function(){
 	console.log(dims);
 	$("#manualWidth").val(dims.getWidth());
 	$("#manualHeight").val(dims.getHeight());
-	
 }
 
 pageSettings.prototype.createGrid = function createGrid(size) {

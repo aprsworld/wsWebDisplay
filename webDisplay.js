@@ -1330,10 +1330,15 @@ var editWindow =  function(e) {
 MULTIPLE SELECTIONS (ctrl key is held when clicking)
 ******************************************************************/			
 	if(e.ctrlKey && ($('#'+selectedModule).hasClass('imgCamContainer') || $('#'+selectedModule).hasClass('imgBlockContainer')||$('#'+selectedModule).hasClass('tr') ||$('#'+selectedModule).hasClass('textBlockContainer') )) {	
-		
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3').show();
+		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').hide();
+
+		$('#accordion').accordion('refresh');
+
 		var length = tempArray.length;
 		if(length > 0){
 			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow').show();
+			
 		}
 		else{
 			$('#hideDelRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, .editWindow').hide();
@@ -2006,6 +2011,16 @@ DATA CELLS CASE
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
+		var zIndex = $('#'+moduleContainer).css('z-index'); 
+		$('#zSlider').slider({
+			min: 0,
+			max: 100,
+			value: zIndex,
+			slide: function( event, ui ) {
+				objectFound.setZindex(moduleContainer, ui.value);
+				//$('#'+moduleContainer).css('z-index', ui.value ); 
+			}
+		});
 		objectFound.setWidthHeightFields();
 		console.log(pageObjectFound);
 		pageObjectFound.updateElementDimensions(objectFound);
@@ -2160,16 +2175,7 @@ DATA CELLS CASE
 		$(titleChange).val(title.text());
 		$(labelChange).val(label.text());
 	}
-	var zIndex = $('#'+moduleContainer).css('z-index'); 
-	$('#zSlider').slider({
-		min: 0,
-		max: 100,
-		value: zIndex,
-		slide: function( event, ui ) {
-			objectFound.setZindex(moduleContainer, ui.value);
-			//$('#'+moduleContainer).css('z-index', ui.value ); 
-		}
-	});
+	
 };
 function edit(handler) {
 	editMode = true;
