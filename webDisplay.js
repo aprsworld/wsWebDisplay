@@ -248,6 +248,10 @@ function secToTime(sec){
 }
 //value = number being rounded, decimals = decimal places to round to
 function round(value, decimals) {
+	if(decimals < 0 ){
+		decimals = Math.pow(10, decimals);	
+		return Math.round(value*decimals)/decimals;
+	}
 	if(value === 0){
 		
 		return value.toFixed(decimals);
@@ -1014,8 +1018,7 @@ function data_update(data) {
 		dataOld = data;
 
 	}
-	refreshTreeData(data);
-	$('#bytesReceived').text(this.rx_data_counter().toLocaleString() + ' Bytes Transferred');
+	$('#bytesReceived').html(calculateDownload(this.rx_data_counter()));
 	var x = $(document).ready(function() {
 		
 		$( document ).off( "click", "#refreshTree" );
@@ -1033,6 +1036,27 @@ function data_update(data) {
 	x = null;
 	//refreshCams(cams);
 	dynamicUpdate( data); //updates all data cells to their current values
+}
+
+//calculates size for 
+function calculateDownload(size){
+	var message;
+	var type;
+	var originalSize = size;
+	size = size/1024; //convert to KB
+	type = ' KB';
+	if(size >= 1024){
+		size = size/1024;//convert to MB
+		type = ' MB';
+		if(size >= 1024){
+			size = size/1024;//convert to GB	
+			type = ' GB';
+		}
+	}
+	size = round(size, 2);
+	size = size.toLocaleString();
+	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> of broadcast data downloaded <i title="Downloaded data only counts data \n coming in from the webSocket" class="fa fa-question-circle"></i>';
+	return message;
 }
 //gets parameters in url
 //called like: var host = getUrlVars()["host"];
@@ -1272,7 +1296,7 @@ var editWindow =  function(e) {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo, #manualResizeRow').hide();
+	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo, #manualResizeRow, #resizePreviousRow').hide();
 	$('.editWindow').removeClass('editHide').show(150);
 	$("#editMaximize").hide();
 	$("#editMinimize").show();
@@ -1714,7 +1738,7 @@ CAMERA CASE
 TEXT BLOCKS CASE
 ******************************************************************/
 	else if($(this).hasClass('textBlockContainer')){
-		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow').show();
+		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
 		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 		$('#accordion').accordion( "refresh" );
@@ -1947,7 +1971,7 @@ DATA CELLS CASE
 ******************************************************************/
 	else if($(this).hasClass('tr')){
 		//show the appropriate parts of the edit window
-		$('#hideDelRow, #zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow').show();
+		$('#hideDelRow, #zRow, #unitRow, #titleRow, #labelRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow, #resizePreviousRow').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
 		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 
@@ -2003,7 +2027,13 @@ DATA CELLS CASE
 		$( document ).on( "keyup", "input.roundingChange" , function() {	
 			objectFound.setPrecision($('.roundingChange').val());
 			console.log($("#"+id).text());
-			var findVal = $('#'+selectedModule).find('.myTableValue').children('p').text();
+			var findVal;
+			if(typeof objectFound.convertedValue === 'undefined'){
+				findVal = objectFound.value;//$('#'+selectedModule).find('.myTableValue').children('p').text();
+			}
+			else{
+				findVal = objectFound.convertedValue;//$('#'+selectedModule).find('.myTableValue').children('p').text();
+			}
 			$('#'+selectedModule).find('.myTableValue').children('p').text( round(parseFloat(findVal), objectFound.precision));
 		});
 		
@@ -2030,6 +2060,7 @@ DATA CELLS CASE
 			var result = chooseConversion(type, typeUnits, objectFound.value, val);
 			var newLabel;
 			console.log(result.value);
+			objectFound.convertedValue = result.value;
 			var newValue = round(result.value, objectFound.precision);
 			if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
 				newLabel = objectFound.label;
