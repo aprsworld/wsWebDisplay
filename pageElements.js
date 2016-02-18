@@ -761,7 +761,8 @@ pageCell.prototype.setResize = function(){
 			var top = $('#positionDiv').css('top');
 			var left = $('#positionDiv').css('left');
 			var newWidth, newHeight;
-			
+			console.log(event);
+			console.log(ui);
 			
 			var direction = $(event.target).data('ui-resizable').axis;
 			if(direction == 'e' || direction == 'se' || direction == 's'){
