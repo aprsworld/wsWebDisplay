@@ -572,11 +572,37 @@ pageLog.prototype.setResize = function(){
 			var height = $('#'+thisObj.parentId).css('height');
 			var top = $('#positionDiv').css('top');
 			var left = $('#positionDiv').css('left');
+			var newWidth, newHeight;
+			
+			
+			var direction = $(event.target).data('ui-resizable').axis;
+			if(direction == 'e' || direction == 'se' || direction == 's'){
+				newWidth = (Math.floor(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newHeight = (Math.floor(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
+				$('#'+thisObj.parentId).width(newWidth);
+				$('#'+thisObj.parentId).height(newHeight);
+			}
+			else{
+				
+				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
+				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newWidth = (Math.ceil(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newHeight = (Math.ceil(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
+				
+				ui.position.top = posTop;
+				ui.position.left = posLeft;
+				$('#'+thisObj.parentId).css('top',posTop);
+				$('#'+thisObj.parentId).css('left',posLeft);
+				$('#'+thisObj.parentId).width(newWidth);
+				$('#'+thisObj.parentId).height(newHeight);
+				
+			}
+			
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
 			}); 
-			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
 		},
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
@@ -734,11 +760,37 @@ pageCell.prototype.setResize = function(){
 			var height = $('#'+thisObj.parentId).css('height');
 			var top = $('#positionDiv').css('top');
 			var left = $('#positionDiv').css('left');
+			var newWidth, newHeight;
+			
+			
+			var direction = $(event.target).data('ui-resizable').axis;
+			if(direction == 'e' || direction == 'se' || direction == 's'){
+				newWidth = (Math.floor(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newHeight = (Math.floor(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
+				$('#'+thisObj.parentId).width(newWidth);
+				$('#'+thisObj.parentId).height(newHeight);
+			}
+			else{
+				
+				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
+				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newWidth = (Math.ceil(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newHeight = (Math.ceil(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
+				
+				ui.position.top = posTop;
+				ui.position.left = posLeft;
+				$('#'+thisObj.parentId).css('top',posTop);
+				$('#'+thisObj.parentId).css('left',posLeft);
+				$('#'+thisObj.parentId).width(newWidth);
+				$('#'+thisObj.parentId).height(newHeight);
+				
+			}
+			
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
 			}); 
-			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
 		},
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
@@ -1762,11 +1814,37 @@ pageText.prototype.setResize = function(){
 			var height = $('#'+thisObj.parentId).css('height');
 			var top = $('#positionDiv').css('top');
 			var left = $('#positionDiv').css('left');
+			var newWidth, newHeight;
+			
+			
+			var direction = $(event.target).data('ui-resizable').axis;
+			if(direction == 'e' || direction == 'se' || direction == 's'){
+				newWidth = (Math.floor(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newHeight = (Math.floor(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
+				$('#'+thisObj.parentId).width(newWidth);
+				$('#'+thisObj.parentId).height(newHeight);
+			}
+			else{
+				
+				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
+				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newWidth = (Math.ceil(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
+				newHeight = (Math.ceil(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
+				
+				ui.position.top = posTop;
+				ui.position.left = posLeft;
+				$('#'+thisObj.parentId).css('top',posTop);
+				$('#'+thisObj.parentId).css('left',posLeft);
+				$('#'+thisObj.parentId).width(newWidth);
+				$('#'+thisObj.parentId).height(newHeight);
+				
+			}
+			
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
 			}); 
-			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
+			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
 		},
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
