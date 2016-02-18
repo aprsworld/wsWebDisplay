@@ -202,6 +202,13 @@ $(function() {
 	});
 });
 
+Date.prototype.yyyymmdd = function() {
+   var yyyy = this.getFullYear().toString();
+   var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+   var dd  = this.getDate().toString();
+   return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
+};
+
 //converts seconds into a time format (hours:minutes:seconds)
 function ageTimer(){
 	var length, k, value, id;
@@ -242,7 +249,6 @@ function secToTime(sec){
 	if ( days > 1 ) {
 		out = days + " days, "+('00'+hours).slice(-2)+":"+('00'+minutes).slice(-2)+":"+('00'+sec).slice(-2) ;
 	}
-	out+=" (hours:minutes:seconds)";
 	return out;
 	
 }
@@ -608,7 +614,7 @@ function timer(){
 	
 	treeRefreshTimer = treeRefreshTimer+1;
 	var convertedLoad = secToTime(loadedTime);
-	$('#timer').text("Last data received " + time + " seconds ago - "+convertedLoad+' since page was loaded');
+	$('#timer').html("<span>Last data received " + time + " seconds ago - "+convertedLoad+' since page was loaded</span> <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
 	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
 	if(time > 30){
 		$('#timer').text("30+ seconds since last data received. Try refreshing your browser window.");
@@ -1058,7 +1064,7 @@ function calculateDownload(size){
 	}
 	size = round(size, 2);
 	size = size.toLocaleString();
-	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> of broadcast data downloaded <i title="Downloaded data only counts data \n coming in from the webSocket" class="fa fa-question-circle"></i>';
+	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> of broadcast data downloaded <i title="Downloaded data only counts data \n coming in from the webSocket since page load" class="fa fa-question-circle"></i>';
 	return message;
 }
 //gets parameters in url

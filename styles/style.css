@@ -104,7 +104,7 @@ select{
 .dataLog{
 	position: absolute;
 	
-	width: 420px;
+	width: 425px;
 	height: auto;
 	background-color: #ddd;
 	color: #333;
@@ -550,7 +550,7 @@ div.logo_container{
 	color: #333;
 	font-size: 12px;
 	padding: 3px 10px 0px 10px;
-	float: right;
+	float: left;
 	border-right: 1px solid #333;
 	border-left: 1px solid #333;
 	font-weight: 700;
@@ -584,6 +584,7 @@ div.logo_container{
 	padding: 3px 10px 0px 10px;
 	font-weight: 700;
 	border-right: 1px solid #333;
+	border-left: 1px solid #333;
 }
 #camTimer{
 	display: block;

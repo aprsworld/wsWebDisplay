@@ -114,11 +114,9 @@ pageElement.prototype = {
 				$('#rulerBox, #rulerBox2, #rulerBox3').show();
 			},
 			drag: function(event, ui){
-				console.log('before: '+ui.position.left);
 				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
 				ui.position.top = posTop;
-				console.log('after: '+ui.position.left);
 				ui.position.left = posLeft;
 				startTop = $(this).offset().top;
 				startLeft = $(this).offset().left;
@@ -1150,8 +1148,7 @@ pageCam.prototype.camCrop = function(){
 			"left": leftcrop,
 			"width": widthcrop+"px",
 			"height": heightcrop+"px",
-			"background-size": width+"px "+height+"px ",
-			"overflow": "hidden"
+			"background-size": width+"px "+height+"px "
 		});
 		$('.controlsOverlay').hide();				
 		thisElement.resizable({disabled:true});
