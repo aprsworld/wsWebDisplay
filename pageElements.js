@@ -100,9 +100,10 @@ pageElement.prototype = {
 				if(isExpanded){
 					collapseWindows();
 				}
+				console.log(ui)
 				var posLeft = ui.position.left;
 				var posTop = ui.position.top;
-				console.log('start: '+posLeft);
+				console.log('start: '+posTop);
 				var posSpan = document.createElement("SPAN"); 
 				posDiv = document.createElement("DIV");
 				posDiv.id = 'positionDiv';
@@ -112,10 +113,15 @@ pageElement.prototype = {
 				$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
 				$('#positionDiv').append(posSpan);
 				$('#rulerBox, #rulerBox2, #rulerBox3').show();
+
+				
 			},
 			drag: function(event, ui){
-				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
-				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
+				console.log(ui);
+				console.log(ui.position.top);
+				console.log($(window).scrollTop());
+				var posTop = (Math.floor((ui.position.top-topOffSet) / thisObj.gridProps.size) * thisObj.gridProps.size);
+				var posLeft = (Math.floor((ui.position.left-leftOffSet) / thisObj.gridProps.size) * thisObj.gridProps.size);
 				ui.position.top = posTop;
 				ui.position.left = posLeft;
 				startTop = $(this).offset().top;

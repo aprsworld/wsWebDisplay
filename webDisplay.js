@@ -15,6 +15,8 @@ var isExpanded;
 var dataNow = {};
 var dataOld = {};
 var tempArray = [];
+var topOffSet = 0;
+var leftOffSet = 0;
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -1220,8 +1222,12 @@ function data_start() {
 /**** document ready ****/
 $(document).ready(function() {
 
-			setInterval(timer,1000);
-
+setInterval(timer,1000);
+window.onscroll = function (e)
+{
+    topOffSet = $(window).scrollTop();
+	leftOffSet = $(window).scrollLeft();
+}
 
 });
 
