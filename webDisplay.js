@@ -1151,13 +1151,37 @@ function data_start() {
 	if(port == undefined){
 		port = PORT_DEFAULT;
 	}
-	console.log(port);
 	//config_retr("http://"+host+":8888/.config");
-    data_object = new BroadcastClient({
-        callback_update: data_update,
-        callback_error: data_error,
-		url: 'http://'+host+':'+port+'/data/now',
-    });
+	
+	if(host === '' && port === ''){
+		data_object = new BroadcastClient({
+			callback_update: data_update,
+			callback_error: data_error
+		});
+	}
+	else if(host === '' && port !== ''){
+		data_object = new BroadcastClient({
+			callback_update: data_update,
+			callback_error: data_error,
+			port: port
+		});
+	}
+	else if(port === '' && host !== ''){
+		data_object = new BroadcastClient({
+			callback_update: data_update,
+			callback_error: data_error,
+			hostname: host
+		});
+	}
+	else{
+		data_object = new BroadcastClient({
+			callback_update: data_update,
+			callback_error: data_error,
+			hostname: host,
+			port: port
+		});
+	}
+	console.log(data_object);
 	/*data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
 			// Couldn't get configuration data from server
