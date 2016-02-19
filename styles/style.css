@@ -573,8 +573,17 @@ div.logo_container{
 	float: left;
 	color: #333;
 	font-size: 12px;
-	padding-top: 3px;
-	padding-right: 10px;
+	padding: 3px 10px 0px 10px;
+
+}
+#timer1{
+	display: block;
+	float: left;
+	color: #333;
+	font-size: 12px;
+	padding: 3px 10px 0px 10px;
+			border-left: 1px solid #333;
+
 }
 #version{
 	display: block;

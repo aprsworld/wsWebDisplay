@@ -265,7 +265,10 @@ function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
 }
 function data_error(errors, delay) {
-    $('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
+	console.log(errors[0]);
+	console.log(delay);
+    //$('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
+	$('#timer1').html('<span>'+errors[0] + ': connecting in ' + delay + ' s. </span>');
 }
 
 
@@ -606,18 +609,21 @@ function dynamicUpdate(data) {
 	});
 	
 }
-
+function sinceDataTimer(){
+	time = time+1;	
+	$('#timer1').html("<span>Last data received " + time + " seconds ago </span>");
+}
 function timer(){
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
-	time = time+1;
+	//time = time+1;
 	
 	treeRefreshTimer = treeRefreshTimer+1;
 	var convertedLoad = secToTime(loadedTime);
-	$('#timer').html("<span>Last data received " + time + " seconds ago - "+convertedLoad+' since page was loaded</span> <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
+	$('#timer').html("<span> "+convertedLoad+' since page was loaded</span> <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
 	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
 	if(time > 30){
-		$('#timer').text("30+ seconds since last data received. Try refreshing your browser window.");
+		
 	}
 	if(loadedTime%30 == 0){
 		console.log(convertedLoad+' since page was loaded');	
@@ -938,7 +944,7 @@ function data_update(data) {
 					
 			});
 			//attempts to grab the get parameter to set background color
-			setInterval(timer,1000);
+			setInterval(sinceDataTimer,1000);
 			//populateCams(cams);
 			var lastk = "#";
 			var jsonArray = [];
@@ -1209,6 +1215,16 @@ function data_start() {
 		document.title = title.replace('%20'," ");	
 	}
 }
+
+
+/**** document ready ****/
+$(document).ready(function() {
+
+			setInterval(timer,1000);
+
+
+});
+
 function createText(){
 	var textBlock, textTitle, textContent, title, index;
 	textBlock = new pageText();
