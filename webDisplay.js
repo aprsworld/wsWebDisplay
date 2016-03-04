@@ -498,12 +498,14 @@ function dynamicUpdate(data) {
 				var src = $(this).attr('src');
 				var cam = $(this).attr('id').replace("preload_","");
 				if(objectFound.src != src){	
+					$('#'+cam).find('img').attr('src', src);
 					objectFound.src = src;
 					objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
 				}
 				$('#'+cam).css('background-image', 'url('+src+')');	
 			});
 			//src is set after the .load() function
+			
 			$('#preload_'+currentCam).attr('src',value);		
 		}
 		//for other elements...

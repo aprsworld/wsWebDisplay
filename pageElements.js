@@ -1274,6 +1274,9 @@ pageCam.prototype.loadHtml = function(){
 	console.log(this.path);
 	console.log(dataOld);
 	var updatedPath = ref(dataOld, this.path);
+	if(typeof updatedPath === 'undefined'){
+		updatedPath = 'images/unavailable.svg';
+	}
 	camObj.src = updatedPath;
 	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');

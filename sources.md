@@ -15,3 +15,6 @@ This document contains licenses and sources for all content that was taken from 
 4.	* **image** ![drag](images/insert_image.svg)
 	* **url:** [wikimedia](https://commons.wikimedia.org/wiki/File:-Insert_image_here-.svg)
 	* **author:** [Diego Grez-Cañete](https://commons.wikimedia.org/wiki/User:Diego_Grez-Ca%C3%B1ete)
+5.  * **image** ![unavailable](images/unavailable.svg)
+    * **url** [wikimedia](https://commons.wikimedia.org/wiki/File%3ANo_image_available.svg)
+    * **author:** Cburnett
