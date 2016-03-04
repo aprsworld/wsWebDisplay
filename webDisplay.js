@@ -1035,6 +1035,7 @@ function data_update(data) {
 		dataOld = data;
 
 	}
+	refreshTreeData(data);
 	$('#bytesReceived').html(calculateDownload(this.rx_data_counter()));
 	var x = $(document).ready(function() {
 		
@@ -1052,7 +1053,7 @@ function data_update(data) {
 	// clears document ready function
 	x = null;
 	//refreshCams(cams);
-	dynamicUpdate( data); //updates all data cells to their current values
+	dynamicUpdate( dataOld); //updates all data cells to their current values
 }
 
 //calculates size for data counter
@@ -1280,9 +1281,11 @@ function refreshTreeData(newData){
 				oldD = dataOld[key][subkey];
 				newD = newData[objectKeys][subkey];
 				console.log(oldD);
+				
 				if(typeof oldD === 'undefined'){
 					console.log('undefined');	
 					console.log(newD);
+					oldD = newD;
 				}
 				if(typeof newD !== 'object'){
 						//console.log('non-object');
@@ -1290,8 +1293,11 @@ function refreshTreeData(newData){
 						oldD = newD;
 				}
 				else{
+					
+					
 					for(var levelThree in newD){
 						Object.keys( newD).forEach(function(key1){	
+						
 							//console.log(newD[key1])
 							if(objectKeys == 'A4751'){ //debug
 									//console.log(newData[objectKeys]);
@@ -1304,21 +1310,30 @@ function refreshTreeData(newData){
 									//console.log(oldD[key1])	
 								}
 								if(objectKeys == 'A4751'){ //debug
-									
+
 									//console.log(newD[key1][key2]);
 								}
 							});
 						});
 					}
 				}
+				
 			});
 			//console.log(Date.now());
 		}
-		else{
+		else if(!dataOld.hasOwnProperty(key) && key != '_bserver_'){
 			console.log('does not exist');
-			//might need to add something here to add items to the tree that do not exist within the tree yet
+			dataOld[key] = {};
+			dataOld[key] = newData[key];
+			console.log(key);
+			console.log(newData[objectKeys]);
+			console.log(newData[key]);
+			console.log(dataOld[key]);
+			console.log(newData);
 		}
-		
+		else{
+			console.log(key);
+		}
 	});
 }
 function refreshTree(newData){
