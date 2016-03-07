@@ -113,8 +113,22 @@ pageElement.prototype = {
 				$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
 				$('#positionDiv').append(posSpan);
 				$('#rulerBox, #rulerBox2, #rulerBox3').show();
-
 				
+				var fullId;
+
+				if(tempArray.length > 1){
+					for(var i = 0; i< tempArray.length; i++){
+						fullId = tempArray[i].parentId;
+						if(thisObj.parentId != fullId){
+							console.log(topOffSet);
+							$('#'+fullId).css({
+								top: $('#'+fullId).offset().top+topOffSet,
+								left:  $('#'+fullId).offset().left+leftOffSet
+							});
+							$('#'+fullId).css('top');
+						}	
+					}
+				}
 			},
 			drag: function(event, ui){
 				console.log(ui);
@@ -134,6 +148,7 @@ pageElement.prototype = {
 					for(var i = 0; i< tempArray.length; i++){
 						fullId = tempArray[i].parentId;
 						if(thisObj.parentId != fullId){
+							console.log(topOffSet);
 							$('#'+fullId).css({
 								top: $('#'+fullId).offset().top+distanceTop,
 								left:  $('#'+fullId).offset().left+distanceLeft
