@@ -464,8 +464,8 @@ function ref(obj, str) {
 	}
         obj = obj[str[i]];
     }
-	console.log("______________________________________________________________________________");
-	console.log(obj);
+	//console.log("______________________________________________________________________________");
+	//console.log(obj);
     return obj;
 }
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
@@ -989,11 +989,19 @@ function data_update(data) {
 		//grabs layout parameter fromt he url
 		//var layout = getPathArray();
 		var layout = getUrlVars()["layout"];
+		var layoutList;
+		if(layout.indexOf('|') > -1){		
+			layoutList = layout.split('|');
+			console.log(layoutList);
+			layout = layoutList[0];
+
+		}
 		if(typeof layout ==='undefined'){
 			layout = DEFAULT_LAYOUT;
 			if(layout === ''){
 				layout = undefined;	
 			}
+			
 		}
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
@@ -1025,6 +1033,10 @@ function data_update(data) {
 			pageSettingsObj = new pageSettings();
 			pageSettingsObj.setPageTitle('wsWebDisplay');
 			pageSettingsObj.createGrid(10);
+			pageSettingsObj.layoutList = layoutList;
+			if(pageSettingsObj.layoutList){
+				pageSettingsObj.currentLayoutIndex = 0;
+			}
 			cell_arr.push(pageSettingsObj);
 			//logElement = new pageLog();
 			//cell_arr.push(logElement);
@@ -1032,7 +1044,14 @@ function data_update(data) {
 			console.log(pageSettingsObj);
 			console.log(cell_arr);
 			
-		}			
+		}	
+		$( document ).on( "click", "#prevLayout" , function() {	
+			pageSettingsObj.prevItem();
+		});
+		$( document ).on( "click", "#nextLayout" , function() {	
+			pageSettingsObj.nextItem();
+		});
+			console.log(pageSettingsObj);
         });
 		dataOld = data;
 
@@ -1268,25 +1287,25 @@ function refreshTreeData(newData){
 	//console.log(Date.now());
 	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
-	console.log(objectKeys);
+	//console.log(objectKeys);
 	//for(var key in dataOld){
 	//iterates through the keys of the old data object
-	console.log(newData);
+	//console.log(newData);
 	Object.keys(newData).forEach(function(key){		
 		//checks if the current key equals the key that we are looking for
-		console.log(key);
+		//console.log(key);
 		if(dataOld.hasOwnProperty(key)  && key != '_bserver_'){
 			//console.log(Date.now());			
 			//updates sensors
-			console.log(key);
+			//console.log(key);
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
 				newD = newData[objectKeys][subkey];
-				console.log(oldD);
+				//console.log(oldD);
 				
 				if(typeof oldD === 'undefined'){
-					console.log('undefined');	
-					console.log(newD);
+					//console.log('undefined');	
+					//console.log(newD);
 					oldD = newD;
 				}
 				if(typeof newD !== 'object'){
@@ -1324,17 +1343,17 @@ function refreshTreeData(newData){
 			//console.log(Date.now());
 		}
 		else if(!dataOld.hasOwnProperty(key) && key != '_bserver_'){
-			console.log('does not exist');
+			//console.log('does not exist');
 			dataOld[key] = {};
 			dataOld[key] = newData[key];
-			console.log(key);
-			console.log(newData[objectKeys]);
-			console.log(newData[key]);
-			console.log(dataOld[key]);
-			console.log(newData);
+			//console.log(key);
+			//console.log(newData[objectKeys]);
+			//console.log(newData[key]);
+			//console.log(dataOld[key]);
+			//console.log(newData);
 		}
 		else{
-			console.log(key);
+			//console.log(key);
 		}
 	});
 }
@@ -2362,7 +2381,6 @@ function captureState(){
 }
 function loadState(jsonString){
 	//console.log(jsonString);
-
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
 

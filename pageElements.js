@@ -297,6 +297,8 @@ var pageSettings = function() {
 	this.title;
 	this.id = 'pageSettings';
 	this.gridSize = true;
+	this.layoutList;
+	this.currentLayoutIndex;
 }
 extend(pageSettings, pageElement);
 
@@ -311,6 +313,76 @@ pageSettings.prototype.backgroundColorChange = function(color){
 pageSettings.prototype.setPageTitle = function(title){
 	this.title = title;
 	document.title = title;
+}
+
+pageSettings.prototype.nextItem = function() {
+	var arr = this.layoutList;
+	if(typeof this.currentLayoutIndex !== 'undefined'){
+		this.currentLayoutIndex++;
+		if(this.currentLayoutIndex >= arr.length){
+			this.currentLayoutIndex = 0;	
+		}
+		var layout = arr[this.currentLayoutIndex]
+		var arrlength = cell_arr.length;
+		for(var i = 0; i< arrlength; i++){
+			console.log(cell_arr[i]);		
+			$('#'+cell_arr[i].parentId).remove();
+		}
+		cell_arr.length = 0;
+		data_object.ValueGet(function(rsp){
+				if(!rsp.data || rsp.error){
+					// Couldn't get configuration data from server
+					return;
+				}
+				console.log(rsp);
+				var loadedLayout = rsp.data[layout];
+				console.log(loadedLayout);
+				getConfigs(rsp.data);
+				console.log(layout);
+				if (layout) {
+					loadState(loadedLayout);
+					
+					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
+					cellCount = parseInt(lastCell, 10)+1;
+				}
+
+			},'webdisplay/configs/');
+	}
+}
+
+pageSettings.prototype.prevItem = function() {
+	var arr = this.layoutList;
+	if(typeof this.currentLayoutIndex !== 'undefined'){
+		this.currentLayoutIndex--;
+		if(this.currentLayoutIndex < 0){
+			this.currentLayoutIndex = arr.length-1;
+		}
+		var layout = arr[this.currentLayoutIndex]
+		var arrlength = cell_arr.length;
+		for(var i = 0; i< arrlength; i++){
+			console.log(cell_arr[i]);		
+			$('#'+cell_arr[i].parentId).remove();
+		}
+		cell_arr.length = 0;
+		data_object.ValueGet(function(rsp){
+				if(!rsp.data || rsp.error){
+					// Couldn't get configuration data from server
+					return;
+				}
+				console.log(rsp);
+				var loadedLayout = rsp.data[layout];
+				console.log(loadedLayout);
+				getConfigs(rsp.data);
+				console.log(layout);
+				if (layout) {
+					loadState(loadedLayout);
+					
+					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
+					cellCount = parseInt(lastCell, 10)+1;
+				}
+
+			},'webdisplay/configs/');
+	}
 }
 
 pageSettings.prototype.updateElementDimensions = function(obj){
