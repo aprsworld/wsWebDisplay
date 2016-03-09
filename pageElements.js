@@ -329,24 +329,8 @@ pageSettings.prototype.nextItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		data_object.ValueGet(function(rsp){
-				if(!rsp.data || rsp.error){
-					// Couldn't get configuration data from server
-					return;
-				}
-				console.log(rsp);
-				var loadedLayout = rsp.data[layout];
-				console.log(loadedLayout);
-				getConfigs(rsp.data);
-				console.log(layout);
-				if (layout) {
-					loadState(loadedLayout);
-					
-					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
-					cellCount = parseInt(lastCell, 10)+1;
-				}
-
-			},'webdisplay/configs/');
+		
+		loadState(layout);
 	}
 }
 
@@ -364,24 +348,8 @@ pageSettings.prototype.prevItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		data_object.ValueGet(function(rsp){
-				if(!rsp.data || rsp.error){
-					// Couldn't get configuration data from server
-					return;
-				}
-				console.log(rsp);
-				var loadedLayout = rsp.data[layout];
-				console.log(loadedLayout);
-				getConfigs(rsp.data);
-				console.log(layout);
-				if (layout) {
-					loadState(loadedLayout);
-					
-					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
-					cellCount = parseInt(lastCell, 10)+1;
-				}
-
-			},'webdisplay/configs/');
+		
+		loadState(layout);
 	}
 }
 

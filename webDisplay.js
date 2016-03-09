@@ -1012,6 +1012,7 @@ function data_update(data) {
 					console.log(rsp);
 					return;
 				}
+				console.log(layoutList);
 				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
 				getConfigs(rsp.data);
@@ -1021,6 +1022,12 @@ function data_update(data) {
 					
 					var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 					cellCount = parseInt(lastCell, 10)+1;
+				}
+				var i;
+				if(typeof layoutList !== 'undefined'){
+					for(i = 0; i < layoutList.length; i++){
+						layoutList[i] = rsp.data[layoutList[i]];
+					}
 				}
 
 			},'webdisplay/configs/');		
