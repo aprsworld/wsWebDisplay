@@ -268,6 +268,7 @@ function round(value, decimals) {
 }
 function data_error(errors, delay) {
 	console.log(errors[0]);
+	console.log(errors);
 	console.log(delay);
     //$('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 	$('#timer1').html('<span>'+errors[0] + ': connecting in ' + delay + ' s. </span>');
@@ -896,6 +897,7 @@ function collapseWindows(){
 }
 /*function that periodically updates the data */
 function data_update(data) {
+	console.log('dataupdate');
 	time=0;
 	var incomingData = data;
 	dataNow = data;
@@ -998,8 +1000,7 @@ function data_update(data) {
 			}
 			
 		}
-		if(layout.indexOf('|') > -1){	
-			alert('test');
+		else if(layout.indexOf("|") > -1){	
 			layoutList = layout.split('|');
 			console.log(layoutList);
 			layout = layoutList[0];
@@ -1008,9 +1009,9 @@ function data_update(data) {
 		data_object.ValueGet(function(rsp){
 				if(!rsp.data || rsp.error){
 					// Couldn't get configuration data from server
+					console.log(rsp);
 					return;
 				}
-				console.log(rsp);
 				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
 				getConfigs(rsp.data);
@@ -1036,6 +1037,7 @@ function data_update(data) {
 			pageSettingsObj.createGrid(10);
 			pageSettingsObj.layoutList = layoutList;
 			if(pageSettingsObj.layoutList){
+				
 				pageSettingsObj.currentLayoutIndex = 0;
 			}
 			cell_arr.push(pageSettingsObj);
