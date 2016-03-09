@@ -316,6 +316,7 @@ pageSettings.prototype.setPageTitle = function(title){
 }
 
 pageSettings.prototype.nextItem = function() {
+	$('.imgCamContainer').remove();
 	var arr = this.layoutList;
 	if(typeof this.currentLayoutIndex !== 'undefined'){
 		this.currentLayoutIndex++;
@@ -335,6 +336,7 @@ pageSettings.prototype.nextItem = function() {
 }
 
 pageSettings.prototype.prevItem = function() {
+	$('.imgCamContainer').remove();
 	var arr = this.layoutList;
 	if(typeof this.currentLayoutIndex !== 'undefined'){
 		this.currentLayoutIndex--;
@@ -371,6 +373,7 @@ pageSettings.prototype.updateElementDimensions = function(obj){
 		if(obj.containerId != oldObj.containerId){
 			this.elementDimensions.shift();
 			this.elementDimensions.push(obj);
+			
 		}
 	}
 	console.log(this.elementDimensions);

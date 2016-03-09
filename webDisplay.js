@@ -1067,6 +1067,18 @@ function data_update(data) {
 
 			}
 		});
+		var myElement = document.getElementById('content');
+		var hammertime = new Hammer(myElement);
+		hammertime.on('swipeleft', function(ev) {
+			if(ev.velocityX < 3){
+			pageSettingsObj.prevItem();
+			}
+		});
+		hammertime.on('swiperight', function(ev) {
+			if(ev.velocityX > 3){
+			pageSettingsObj.nextItem();
+			}
+		});
 		$( document ).on( "click", "#prevLayout" , function() {	
 			pageSettingsObj.prevItem();
 		});
