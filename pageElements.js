@@ -1023,7 +1023,6 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			if(camWidth <= divWidth && camObj.suppressed == true){
 				suppressed = true;
 			}
-			
 			if(editMode == false && suppressed == false){
 				clearTimeout(camObj.timeOut);	
 				//sets a user-configurable timeout so that the hover does not trigger right away
@@ -1092,12 +1091,14 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 
 					}
 					else{
+						hoverImgLink.id = hoverImgId;
 						hoverImgLink.className = 'expandedCam';
 					}	
 				}, timeOut); //end hoverTimeOut
 			} //end if(editMode == false && suppressed == false)
 		}, function () {
-			if(editMode == false){	
+			
+			if(editMode === false && suppressed == false){	
 				clearTimeout(camObj.timeOut);
 				$('#'+hoverImgId).remove();
 				$('#'+camId).removeClass('focusedCam');

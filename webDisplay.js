@@ -990,18 +990,19 @@ function data_update(data) {
 		//var layout = getPathArray();
 		var layout = getUrlVars()["layout"];
 		var layoutList;
-		if(layout.indexOf('|') > -1){		
-			layoutList = layout.split('|');
-			console.log(layoutList);
-			layout = layoutList[0];
-
-		}
+		
 		if(typeof layout ==='undefined'){
 			layout = DEFAULT_LAYOUT;
 			if(layout === ''){
 				layout = undefined;	
 			}
 			
+		}
+		if(layout.indexOf('|') > -1){	
+			alert('test');
+			layoutList = layout.split('|');
+			console.log(layoutList);
+			layout = layoutList[0];
 		}
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
