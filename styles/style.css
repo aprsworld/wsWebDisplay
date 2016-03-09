@@ -68,6 +68,97 @@ select{
 	color: #0550a5;	
 	font-size: 28px;	
 	float: left;
+	opacity: 30%;
+}
+#prevLayout{
+	top:0px;
+	left:0px;
+}
+#nextLayout{
+	top:0px;
+	right: 0px;
+}
+#cycleControl{
+	width: 200px;
+	height: 20px;
+	background-color: rgba(200,200,200,.8);
+	position: fixed;
+	margin-left: auto;
+	margin-right: auto;
+	bottom: 18px;
+	right 0px;
+	left: 50%; /* position the left edge of the element at the middle of the parent */
+	overflow: hidden;
+    transform: translate(-50%, 0%);
+	-webkit-transition: height 1s; /* Safari */
+    transition: height 1s;
+	border-style: solid;
+	border-color: #333;
+	border-width: 1px 1px 0px 1px;
+	z-index: 1000;
+	 border-top-right-radius: 10px;
+	 border-top-Left-radius: 10px;
+}
+#cycleControlToggle{
+	height: 20px;
+	width: 200px;
+	float: left;
+	cursor: pointer;
+}
+#cycleControlToggle:hover{
+	color: white;
+	background-color: black;
+}
+#cycleControlToggle span{
+	color: inherit;
+	text-align: center;
+	display: inline-block;
+	width: 100%;
+}
+.cycleButton{
+	margin-top: 5px;
+	cursor: pointer;
+	display: block;
+	width: 50px;
+	float: left;
+		display:none;
+	text-align: center;
+}
+.cycleButton i{
+	font-size: 30px;
+	opacity: 100;                /* Opacity (Transparency) */
+    color: #333;   /* RGBA Color (Alternative Transparency) */
+	
+    
+}
+.cycleButton i:hover{
+	opacity: 100;                /* Opacity (Transparency) */
+    color: #ddd;   /* RGBA Color (Alternative Transparency) */
+	
+    
+}
+#cycleIntervalContainer{
+	margin-top: 10px;
+	float: left;
+	width: 200px;
+	text-align: center;
+}
+#cycleIntervalInput{
+	width: 50px;
+	height: 27px;
+	border: 1px solid #333;
+	border-radius: 4px;
+	margin: 3px;
+	display: inline-block;
+	text-align: center;
+	font-size: 14px;
+}
+#cycleIntervalSubmit{
+	width: 80px;
+		margin: 3px;
+
+	height: 30px;
+	display: inline-block;
 }
 #rulerBox{
 	display:none;
@@ -148,8 +239,8 @@ select{
 }
 .top-container{
 	clear: both;
-	height: 500vh;
-	width: 500vw;
+	height: 100vh;
+	width: 100vw;
 	background-color: transparent;
 	z-index: 0;
 }

@@ -44,8 +44,7 @@
 </head>
 
 <body onload="data_start();">
-	<div id="prevLayout"> <i class="fa fa-arrow-left"></i> </div>
-	<div id="nextLayout"> <i class="fa fa-arrow-right"></i> </div>
+	
 <div id="preload">
 </div>
 <div id="rulerBox">	
@@ -58,6 +57,14 @@
 <div id="cropDialog">
 	<button id="cancelCrop"><i class="fa fa-minus-circle fa-2x"></i> Cancel Cropping </button>
 	<button id="endCrop"><i class="fa fa-thumbs-up fa-2x"></i> Finish Cropping </button>
+</div>
+<div id="cycleControl">
+	<div id="cycleControlToggle"><span>Show Cycle Controls</span></div>
+	<div class="cycleButton" id="prevLayout" > <i class="fa fa-arrow-left"></i> </div>
+	<div class="cycleButton" id="playLayout" > <i class="fa fa-play"></i> </div>
+	<div class="cycleButton" id="pauseLayout" > <i class="fa fa-pause"></i> </div>
+	<div class="cycleButton" id="nextLayout" > <i class="fa fa-arrow-right"></i> </div>
+	<div id="cycleIntervalContainer"> <input id="cycleIntervalInput" placeholder="ex: 2"><button id="cycleIntervalSubmit">Change</button></div>
 </div>
 	<!--<div id="testLog" class="dataLog">
 		<h2> Log: </h2>

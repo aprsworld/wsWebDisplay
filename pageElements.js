@@ -383,6 +383,8 @@ pageSettings.prototype.previousElementDimensions = function(){
 }
 
 pageSettings.prototype.createGrid = function createGrid(size) {
+		$('.gridlines').remove();
+
     var i,
     sel = $('.top-container'),
         height = sel.height(),

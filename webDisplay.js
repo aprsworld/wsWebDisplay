@@ -1004,6 +1004,7 @@ function data_update(data) {
 			layoutList = layout.split('|');
 			console.log(layoutList);
 			layout = layoutList[0];
+			$('.cycleButton').show();
 		}
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
@@ -1037,7 +1038,6 @@ function data_update(data) {
 		var pageSettingsObj = cell_arr[elementPos];
 		var logElement;
 		console.log(elementPos);
-		
 		if(elementPos <= -1){
 			pageSettingsObj = new pageSettings();
 			pageSettingsObj.setPageTitle('wsWebDisplay');
@@ -1054,7 +1054,19 @@ function data_update(data) {
 			console.log(pageSettingsObj);
 			console.log(cell_arr);
 			
-		}	
+		}
+		$( document ).on( "click", "#cycleControlToggle" , function() {	
+			if($('#cycleControl').height() < 80 ){
+				$('#cycleControl').css('height', '100px');
+				$('#cycleControlToggle').find('span').text('Hide Cycle Controls');
+			}
+			else{
+				$('#cycleControl').css('height', '20px');
+				$('#cycleControlToggle').find('span').text('Show Cycle Controls');
+
+
+			}
+		});
 		$( document ).on( "click", "#prevLayout" , function() {	
 			pageSettingsObj.prevItem();
 		});
@@ -1167,7 +1179,7 @@ function loadFromList(){
 		loadedLayout = rsp.data[selected];
 		console.log(rsp.data);
 		loadState(rsp.data[selected]);
-		$('.gridlines').show();
+		$('.gridlines').css("display","block");
 
 		var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
 		cellCount = parseInt(lastCell, 10)+1;
@@ -2305,12 +2317,12 @@ function edit(handler) {
 		$("#editMaximize").hide();
 		$("#editMinimize").show();
 	});
-	$('.gridlines').show();
+		$('.gridlines').css("display","block");
 	$('#masterEdit').css('background-color','green');
 	$('.tr').css('cursor','pointer');
 	$('.textBlockContainer').css('cursor','pointer');
 	$('.hide').css('visibility','visible');
-	$('.controls').show(200);
+	$('.controls').show();
 	$('#masterEdit').attr('onclick', 'nonEdit()');
 	
 	//delegate events
@@ -2332,7 +2344,7 @@ function edit(handler) {
 function nonEdit(handler) {
 	editMode = false;	
 	$( document ).off('keyup');
-	$('.gridlines').hide();
+		$('.gridlines').css("display","none");
 	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
 	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
 	$('#masterEdit').attr('onclick', 'edit()');
@@ -2415,7 +2427,7 @@ function loadState(jsonString){
 			configObject[k].backgroundColorChange(configObject[k].backgroundColor);
 			configObject[k].setPageTitle(configObject[k].title);
 			configObject[k].updateGrid(configObject[k].gridSize);
-			$('.gridlines').hide();
+		$('.gridlines').css("display","none");
 			cell_arr.push(configObject[k]);
 			console.log(cell_arr);
 		}
