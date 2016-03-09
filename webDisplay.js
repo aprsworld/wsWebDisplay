@@ -1825,7 +1825,7 @@ CAMERA CASE
 		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {		
-			objectFound.deleteElement();
+			objectFound.removeSelf();
 			$('.editWindow').hide(150);
 		});
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
