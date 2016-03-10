@@ -1080,12 +1080,12 @@ function data_update(data) {
 		}
 		$( document ).on( "click", "#cycleControlToggle" , function() {	
 			if($('#cycleControl').height() < 80 ){
-				$('#cycleControl').css('height', '100px');
-				$('#cycleControlToggle').find('span').text('Hide Cycle Controls');
+				$('#cycleControl').css('height', '120px');
+				$('#cycleControlToggle').find('span').html('<i class="fa fa-chevron-down"></i> Cycle Controls <i class="fa fa-chevron-down"></i>');
 			}
 			else{
 				$('#cycleControl').css('height', '20px');
-				$('#cycleControlToggle').find('span').text('Show Cycle Controls');
+				$('#cycleControlToggle').find('span').html('<i class="fa fa-chevron-up"></i> Cycle Controls <i class="fa fa-chevron-up"></i>');
 
 
 			}

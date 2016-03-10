@@ -63,12 +63,13 @@
 	<button id="endCrop"><i class="fa fa-thumbs-up fa-2x"></i> Finish Cropping </button>
 </div>
 <div id="cycleControl">
-	<div id="cycleControlToggle"><span>Show Cycle Controls</span></div>
+	<div id="cycleControlToggle"><span><i class="fa fa-chevron-up"></i> Cycle Controls <i class="fa fa-chevron-up"></i></span></div>
 	<div class="cycleButton" id="prevLayout" > <i class="fa fa-arrow-left"></i> </div>
 	<div class="cycleButton" id="playLayout" > <i class="fa fa-play"></i> </div>
-	<div class="cycleButton" id="pauseLayout" > <i class="fa fa-pause"></i> </div>
+	<div class="cycleButton" id="pauseLayout" > <i class="fa fa-stop"></i> </div>
 	<div class="cycleButton" id="nextLayout" > <i class="fa fa-arrow-right"></i> </div>
-	<div id="cycleIntervalContainer"> <input id="cycleIntervalInput" placeholder="ex: 2"><button id="cycleIntervalSubmit">Change</button></div>
+	<div id="cycleIntervalLabel"><span>Interval: </span></div>
+	<div id="cycleIntervalContainer"> <input title="Adjust the number of seconds between configuration changes" type="number" id="cycleIntervalInput" placeholder="ex: 2"><button id="cycleIntervalSubmit">Change</button></div>
 </div>
 	<!--<div id="testLog" class="dataLog">
 		<h2> Log: </h2>

@@ -121,6 +121,7 @@ select{
 	width: 200px;
 	float: left;
 	cursor: pointer;
+	background-color: grey;
 }
 #cycleControlToggle:hover{
 	color: white;
@@ -153,6 +154,15 @@ select{
     color: #ddd;   /* RGBA Color (Alternative Transparency) */
 	
     
+}
+#cycleIntervalLabel{
+	width: 200px;
+	height: 20px;
+	float: left;
+}
+#cycleIntervalLabel span{
+	display: inline-block;
+	padding:10px 5px 0px 10px;
 }
 #cycleIntervalContainer{
 	margin-top: 10px;
