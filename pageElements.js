@@ -323,7 +323,7 @@ pageSettings.prototype.cyclePlay = function() {
 	obj.cycleTimeout = setInterval(function(){ 
 		obj.nextItem();
 	}, obj.cycleInterval);
-	var message = "Auto Play Started"; 
+	var message = "Auto Play Started With An Interval Of "+obj.cycleInterval/1000+" Seconds"; 
 	createMessage(message, 2000);
 }
 pageSettings.prototype.changeInterval = function(){
@@ -352,6 +352,8 @@ pageSettings.prototype.nextItem = function() {
 	var arr = this.layoutList;
 	$('#cycleMessage').remove();
 	if(typeof this.currentLayoutIndex !== 'undefined'){
+		var message = "Next Configuration...";
+		createMessage(message, 2000);
 		this.currentLayoutIndex++;
 		if(this.currentLayoutIndex >= arr.length){
 			this.currentLayoutIndex = 0;	
@@ -363,8 +365,6 @@ pageSettings.prototype.nextItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		var message = "Next Configuration";
-		createMessage(message, 2000);
 		loadState(layout);
 	}
 }
@@ -374,6 +374,8 @@ pageSettings.prototype.prevItem = function() {
 	var arr = this.layoutList;
 	$('#cycleMessage').remove();
 	if(typeof this.currentLayoutIndex !== 'undefined'){
+		var message = "Previous Configuration..."; 
+		createMessage(message, 2000);
 		this.currentLayoutIndex--;
 		if(this.currentLayoutIndex < 0){
 			this.currentLayoutIndex = arr.length-1;
@@ -385,8 +387,7 @@ pageSettings.prototype.prevItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		var message = "Previous Configuration"; 
-		createMessage(message, 2000);
+		
 		loadState(layout);
 	}
 }
