@@ -329,14 +329,21 @@ pageSettings.prototype.cyclePlay = function() {
 pageSettings.prototype.changeInterval = function(){
 	var obj = this;
 	var value = $('#cycleIntervalInput').val();
-	value = parseInt(value, 10);
-	clearInterval(obj.cycleTimeout);
-	obj.cycleInterval = value*1000;
-	obj.cycleTimeout = setInterval(function(){ 
-		obj.nextItem();
-	}, obj.cycleInterval);
-	var message = "Changed Auto Play Interval To "+value+" seconds";
-	createMessage(message, 2000);
+	if(typeof value !== undefined && value !== ''){
+		value = parseInt(value, 10);
+		clearInterval(obj.cycleTimeout);
+		obj.cycleInterval = value*1000;
+		obj.cycleTimeout = setInterval(function(){ 
+			obj.nextItem();
+		}, obj.cycleInterval);
+		var message = "Changed Auto Play Interval To "+value+" seconds";
+		createMessage(message, 2000);
+	}
+	else if(value <= 2){
+		var message = "Please Enter a Value Greater Than 2 Into The Input Field";
+		createMessage(message, 2000);
+	}
+	
 }
 pageSettings.prototype.cyclePause = function() {
 	var obj = this;

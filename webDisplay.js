@@ -1027,7 +1027,7 @@ function data_update(data) {
 			layoutList = layout.split('|');
 			console.log(layoutList);
 			layout = layoutList[0];
-			$('.cycleButton').show();
+			$('#cycleControl').show();
 		}
 		var cellCount = cell_arr.length;
 		data_object.ValueGet(function(rsp){
@@ -1100,9 +1100,7 @@ function data_update(data) {
 			hammertime.on('swipeleft', function(ev) {
 				ev.preventDefault();
 				console.log(ev)
-				$('#swipeOverlay').show();
 				pageSettingsObj.prevItem();
-				$('#swipeOverlay').hide();
 
 				hammertime.off('swipeleft');
 				hammertime.off('swiperight');
@@ -1110,9 +1108,7 @@ function data_update(data) {
 			hammertime.on('swiperight', function(ev) {
 				ev.preventDefault();
 				console.log(ev);
-				$('#swipeOverlay').show();
 				pageSettingsObj.nextItem();
-				$('#swipeOverlay').hide();
 				hammertime.off('swipeleft');
 				hammertime.off('swiperight');
 			});
@@ -2453,6 +2449,9 @@ function captureState(){
 		console.log(rsp);
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
+		}
+		else{
+			createMessage('Configuration Saved',2000);
 		}
 	},'webdisplay/configs/'+saveName,jsonString,true);
 }

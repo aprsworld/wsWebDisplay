@@ -91,11 +91,13 @@ select{
 }
 #cycleMessage{
 	position: fixed;
-	font-size: 72;
+	font-size: 30px;
 	color: white;
+	text-shadow: 2px 2px black;
 	z-index: 1000;
 }
 #cycleControl{
+	display:none;
 	width: 200px;
 	height: 20px;
 	background-color: rgba(200,200,200,.8);
@@ -139,7 +141,6 @@ select{
 	display: block;
 	width: 50px;
 	float: left;
-		display:none;
 	text-align: center;
 }
 .cycleButton i{
