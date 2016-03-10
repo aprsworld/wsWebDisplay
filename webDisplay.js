@@ -32,6 +32,18 @@ $(function() {
 	})($.ui.resizable.prototype["_mouseStart"]));
 });
 
+(function($){
+    $.fn.extend({
+        center: function () {
+            return this.each(function() {
+                var top = ($(window).height() - $(this).outerHeight()) / 2;
+                var left = ($(window).width() - $(this).outerWidth()) / 2;
+                $(this).css({position:'absolute', margin:0, top: (top > 0 ? top : 0)+'px', left: (left > 0 ? left : 0)+'px'});
+            });
+        }
+    }); 
+})(jQuery);
+
   (function( $ ) {
     $.widget( "custom.combobox", {
       _create: function() {
@@ -1067,18 +1079,41 @@ function data_update(data) {
 
 			}
 		});
-		var myElement = document.getElementById('content');
-		var hammertime = new Hammer(myElement);
-		hammertime.on('swipeleft', function(ev) {
-			if(ev.velocityX < 3){
-			pageSettingsObj.prevItem();
+		var clickEventType = ((document.ontouchstart!==null)?'mousedown':'touchstart');
+		$( document ).bind(clickEventType, function(e) {			
+			var myElement = e.target;
+			if(myElement.id === 'swipeOverlay'){
+				return;	
 			}
+			var hammertime = new Hammer(myElement);
+			hammertime.on('swipeleft', function(ev) {
+				ev.preventDefault();
+				console.log(ev)
+				$('#swipeOverlay').show();
+				pageSettingsObj.prevItem();
+				$('#swipeOverlay').hide();
+
+				hammertime.off('swipeleft');
+				hammertime.off('swiperight');
+			});
+			hammertime.on('swiperight', function(ev) {
+				ev.preventDefault();
+				console.log(ev);
+				$('#swipeOverlay').show();
+				pageSettingsObj.nextItem();
+				$('#swipeOverlay').hide();
+				hammertime.off('swipeleft');
+				hammertime.off('swiperight');
+			});
 		});
-		hammertime.on('swiperight', function(ev) {
-			if(ev.velocityX > 3){
-			pageSettingsObj.nextItem();
-			}
+		
+		$( document ).on( "click", "#playLayout" , function() {	
+			pageSettingsObj.cyclePlay();
 		});
+		$( document ).on( "click", "#pauseLayout" , function() {	
+			pageSettingsObj.cyclePause();
+		});
+
 		$( document ).on( "click", "#prevLayout" , function() {	
 			pageSettingsObj.prevItem();
 		});
@@ -1171,12 +1206,7 @@ function getConfigs(data) {
 }
 
 function loadFromList(){
-	var arrlength = cell_arr.length;
-	var loadedLayout;
-	for(var i = 0; i< arrlength; i++){
-		console.log(cell_arr[i]);		
-		$('#'+cell_arr[i].parentId).remove();
-	}
+	
 	cell_arr.length = 0;
 	var selected1 = $( "#configDrop option:selected" ).text();
 	data_object.ValueGet(function(rsp){
@@ -2414,10 +2444,16 @@ function captureState(){
 	},'webdisplay/configs/'+saveName,jsonString,true);
 }
 function loadState(jsonString){
+	console.log("timing "+Date.now());
 	//console.log(jsonString);
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
-
+	var arrlength = cell_arr.length;
+	$('#preload').children().remove();
+	for(var i = 0; i< arrlength; i++){
+		console.log(cell_arr[i]);		
+		$('#'+cell_arr[i].parentId).remove();
+	}
 	for(var k in configObject){
 		if(configObject[k].count >= count){
 			count = configObject[k].count;
@@ -2482,4 +2518,9 @@ function loadState(jsonString){
 	cell_arr.length = count+1;
 	console.log(cell_arr.length);
 	console.log( cell_arr );
+	console.log($('#swipeOverlay'));
+	
+	console.log("timing "+Date.now());
+
+
 }

@@ -56,6 +56,17 @@ input:focus{
 select{
 	cursor: pointer;	
 }
+#swipeOverlay{
+	display: none;
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	z-index: 1000; 
+	top: 0px;
+	left: 0px;
+	background-color: black;
+}
+
 #header{
 	height: 35px;	
 	padding: 10px;
@@ -78,10 +89,16 @@ select{
 	top:0px;
 	right: 0px;
 }
+#cycleMessage{
+	position: fixed;
+	font-size: 72;
+	color: white;
+	z-index: 1000;
+}
 #cycleControl{
 	width: 200px;
 	height: 20px;
-	background-color: rgba(200,200,200,.8);
+	background-color: grey;
 	position: fixed;
 	margin-left: auto;
 	margin-right: auto;

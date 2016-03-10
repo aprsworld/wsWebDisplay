@@ -3,7 +3,7 @@
 <head>
 	<title>WS Web Display</title>
 		 <meta charset="UTF-8"> 
-
+		<meta name="viewport" content="width=device-width">
 	<script src="/wsWebDisplay/res/jquery-2.1.4.min.js"></script>
 	<!-- configuration -->
 	<script type="text/javascript" src="/wsWebDisplay/config.js"></script>
@@ -56,6 +56,8 @@
 </div>
 <div id="rulerBox3">	
 </div>	
+<div id="swipeOverlay">
+</div>
 <div id="cropDialog">
 	<button id="cancelCrop"><i class="fa fa-minus-circle fa-2x"></i> Cancel Cropping </button>
 	<button id="endCrop"><i class="fa fa-thumbs-up fa-2x"></i> Finish Cropping </button>
@@ -78,7 +80,7 @@
 <div id="content">
 	<div class="container">
 		
-		<div class="top-container">
+		<div id="hammerSpace" class="top-container">
 			<div class="controls">
 				<div title="Please finish cropping" class="controlsOverlay"></div>
 				<div class="controlsTitle">

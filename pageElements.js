@@ -299,6 +299,7 @@ var pageSettings = function() {
 	this.gridSize = true;
 	this.layoutList;
 	this.currentLayoutIndex;
+	this.cycleInterval = 10000;
 }
 extend(pageSettings, pageElement);
 
@@ -315,9 +316,41 @@ pageSettings.prototype.setPageTitle = function(title){
 	document.title = title;
 }
 
+pageSettings.prototype.cyclePlay = function() {
+	var obj = this;
+	clearInterval(obj.cycleTimeout);
+	$('#cycleMessage').remove();
+	obj.cycleTimeout = setInterval(function(){ 
+		obj.nextItem();
+	}, obj.cycleInterval);
+	var message = document.createElement("h1"); 
+	var content = document.createTextNode("Auto Play Started");
+	message.appendChild(content);
+	message.id= 'cycleMessage';
+	$('.top-container').append(message)
+	$('#cycleMessage').center();
+	$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });	
+}
+pageSettings.prototype.changeInterval = function(){
+	
+}
+pageSettings.prototype.cyclePause = function() {
+	var obj = this;
+	console.log(obj);
+	$('#cycleMessage').remove();
+	clearInterval(obj.cycleTimeout);
+	var message = document.createElement("h1"); 
+	var content = document.createTextNode("Auto Play Stopped");
+	message.appendChild(content);
+	message.id= 'cycleMessage';
+	$('.top-container').append(message)
+	$('#cycleMessage').center();
+	$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });
+}
 pageSettings.prototype.nextItem = function() {
 	$('.imgCamContainer').remove();
 	var arr = this.layoutList;
+	$('#cycleMessage').remove();
 	if(typeof this.currentLayoutIndex !== 'undefined'){
 		this.currentLayoutIndex++;
 		if(this.currentLayoutIndex >= arr.length){
@@ -330,7 +363,13 @@ pageSettings.prototype.nextItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		
+		var message = document.createElement("h1"); 
+		var content = document.createTextNode("Next Configuration");
+		message.appendChild(content);
+		message.id= 'cycleMessage';
+		$('.top-container').append(message)
+		$('#cycleMessage').center();
+		$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });
 		loadState(layout);
 	}
 }
@@ -338,6 +377,7 @@ pageSettings.prototype.nextItem = function() {
 pageSettings.prototype.prevItem = function() {
 	$('.imgCamContainer').remove();
 	var arr = this.layoutList;
+	$('#cycleMessage').remove();
 	if(typeof this.currentLayoutIndex !== 'undefined'){
 		this.currentLayoutIndex--;
 		if(this.currentLayoutIndex < 0){
@@ -350,7 +390,13 @@ pageSettings.prototype.prevItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		
+		var message = document.createElement("h1"); 
+		var content = document.createTextNode("Previous Configuration");
+		message.appendChild(content);
+		message.id= 'cycleMessage';
+		$('.top-container').append(message)
+		$('#cycleMessage').center();
+		$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });
 		loadState(layout);
 	}
 }
@@ -953,6 +999,7 @@ extend(pageCam,pageElement);
 
 //sets class for hover and sets delay time
 pageCam.prototype.setHover = function(boolHover, hoverTime){
+
 	var camObj, camId, radiobtn;
 	camObj = this;
 	clearTimeout(camObj.timeOut);	
@@ -1368,7 +1415,7 @@ pageCam.prototype.loadHtml = function(){
 pageCam.prototype.removeSelf = function(){
 	console.log('REMOVED');
 		var obj = this;
-		var objId = obj.parentId;
+		var objId = obj.fullid;
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		cell_arr.splice(elementPos, 1);
@@ -1376,6 +1423,8 @@ pageCam.prototype.removeSelf = function(){
 		$('#'+objId).remove();
 		$('#preload_'+objId).remove();
 		console.log(cell_arr);
+		alert('#preload_'+objId);
+
 	}
 
 /***********************************************************************************
