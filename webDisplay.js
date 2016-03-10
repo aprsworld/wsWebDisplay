@@ -1124,6 +1124,19 @@ function data_update(data) {
 		$( document ).on( "click", "#prevLayout" , function() {	
 			pageSettingsObj.prevItem();
 		});
+		$( document ).keyup(function(e) {
+			if (e.keyCode == 61){
+				pageSettingsObj.nextItem();
+			}
+		});
+		$( document ).on( "click", "#nextLayout" , function() {	
+			pageSettingsObj.nextItem();
+		});
+		$( document ).keyup(function(e) {
+			if (e.keyCode == 173){
+				pageSettingsObj.prevItem();
+			}
+		});
 		$( document ).on( "click", "#nextLayout" , function() {	
 			pageSettingsObj.nextItem();
 		});
