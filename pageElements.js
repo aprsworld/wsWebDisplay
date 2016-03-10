@@ -347,6 +347,14 @@ pageSettings.prototype.cyclePause = function() {
 	createMessage(message, 2000);
 
 }
+pageSettings.prototype.resetInterval = function() {
+	var obj = this;
+	clearInterval(obj.cycleTimeout);
+	obj.cycleTimeout = setInterval(function(){ 
+		obj.nextItem();
+	}, obj.cycleInterval);
+	
+}
 pageSettings.prototype.nextItem = function() {
 	$('.imgCamContainer').remove();
 	var arr = this.layoutList;
@@ -366,6 +374,7 @@ pageSettings.prototype.nextItem = function() {
 		}
 		cell_arr.length = 0;
 		loadState(layout);
+		this.resetInterval();
 	}
 }
 
@@ -387,7 +396,7 @@ pageSettings.prototype.prevItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		
+		this.resetInterval();
 		loadState(layout);
 	}
 }
