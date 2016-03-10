@@ -44,6 +44,17 @@ $(function() {
     }); 
 })(jQuery);
 
+function createMessage(text, delay){
+	$('#cycleMessage').remove();
+	var message = document.createElement("h1"); 
+	var content = document.createTextNode(text);
+	message.appendChild(content);
+	message.id= 'cycleMessage';
+	$('.top-container').append(message)
+	$('#cycleMessage').center();
+	$('#cycleMessage').fadeOut(delay, function() { $(this).remove(); });
+}
+
   (function( $ ) {
     $.widget( "custom.combobox", {
       _create: function() {
@@ -1120,7 +1131,9 @@ function data_update(data) {
 		$( document ).on( "click", "#nextLayout" , function() {	
 			pageSettingsObj.nextItem();
 		});
-			console.log(pageSettingsObj);
+		$( document ).on( "click", "#cycleIntervalSubmit" , function() {	
+			pageSettingsObj.changeInterval();
+		});
         });
 		dataOld = data;
 

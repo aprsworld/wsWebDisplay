@@ -323,29 +323,29 @@ pageSettings.prototype.cyclePlay = function() {
 	obj.cycleTimeout = setInterval(function(){ 
 		obj.nextItem();
 	}, obj.cycleInterval);
-	var message = document.createElement("h1"); 
-	var content = document.createTextNode("Auto Play Started");
-	message.appendChild(content);
-	message.id= 'cycleMessage';
-	$('.top-container').append(message)
-	$('#cycleMessage').center();
-	$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });	
+	var message = "Auto Play Started"; 
+	createMessage(message, 2000);
 }
 pageSettings.prototype.changeInterval = function(){
-	
+	var obj = this;
+	var value = $('#cycleIntervalInput').val();
+	value = parseInt(value, 10);
+	clearInterval(obj.cycleTimeout);
+	obj.cycleInterval = value*1000;
+	obj.cycleTimeout = setInterval(function(){ 
+		obj.nextItem();
+	}, obj.cycleInterval);
+	var message = "Changed Auto Play Interval To "+value+" seconds";
+	createMessage(message, 2000);
 }
 pageSettings.prototype.cyclePause = function() {
 	var obj = this;
 	console.log(obj);
 	$('#cycleMessage').remove();
 	clearInterval(obj.cycleTimeout);
-	var message = document.createElement("h1"); 
-	var content = document.createTextNode("Auto Play Stopped");
-	message.appendChild(content);
-	message.id= 'cycleMessage';
-	$('.top-container').append(message)
-	$('#cycleMessage').center();
-	$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });
+	var message = "Auto Play Stopped";
+	createMessage(message, 2000);
+
 }
 pageSettings.prototype.nextItem = function() {
 	$('.imgCamContainer').remove();
@@ -363,13 +363,8 @@ pageSettings.prototype.nextItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		var message = document.createElement("h1"); 
-		var content = document.createTextNode("Next Configuration");
-		message.appendChild(content);
-		message.id= 'cycleMessage';
-		$('.top-container').append(message)
-		$('#cycleMessage').center();
-		$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });
+		var message = "Next Configuration";
+		createMessage(message, 2000);
 		loadState(layout);
 	}
 }
@@ -390,13 +385,8 @@ pageSettings.prototype.prevItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		var message = document.createElement("h1"); 
-		var content = document.createTextNode("Previous Configuration");
-		message.appendChild(content);
-		message.id= 'cycleMessage';
-		$('.top-container').append(message)
-		$('#cycleMessage').center();
-		$('#cycleMessage').fadeOut(1000, function() { $(this).remove(); });
+		var message = "Previous Configuration"; 
+		createMessage(message, 2000);
 		loadState(layout);
 	}
 }
