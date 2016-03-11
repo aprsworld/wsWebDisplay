@@ -1109,7 +1109,7 @@ function data_update(data) {
 		hammertime = new Hammer(myElement, options);
 		//event handler for left swipe - changes configuration
 		hammertime.on('swipeleft', function(ev) {
-			if(editMode == false){
+			if(editMode == false && pageSettingsObj.layoutList.length > 0){
 				ev.preventDefault();
 				
 				pageSettingsObj.nextItem();
@@ -1118,7 +1118,7 @@ function data_update(data) {
 		});
 		//event handler for right swipe - changes configuration
 		hammertime.on('swiperight', function(ev) {
-			if(editMode == false){
+			if(editMode == false && pageSettingsObj.layoutList.length > 0){
 				ev.preventDefault();
 				
 				pageSettingsObj.prevItem();
@@ -1138,7 +1138,7 @@ function data_update(data) {
 			pageSettingsObj.prevItem();
 		});
 		$( document ).keyup(function(e) {
-			if (!e.ctrlKey && e.keyCode == 61 && !$(e.target).is('input, textarea')){
+			if (!e.ctrlKey && e.keyCode == 61 && !$(e.target).is('input, textarea') && pageSettingsObj.layoutList.length > 0){
 				pageSettingsObj.nextItem();
 			}
 		});
@@ -1147,7 +1147,7 @@ function data_update(data) {
 		});
 		$( document ).keyup(function(e) {
 			
-			if (!e.ctrlKey && e.keyCode == 173 && !$(e.target).is('input, textarea')){
+			if (!e.ctrlKey && e.keyCode == 173 && !$(e.target).is('input, textarea') && pageSettingsObj.layoutList.length > 0){
 				pageSettingsObj.prevItem();
 			}
 		});
@@ -1172,7 +1172,7 @@ function data_update(data) {
 		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
 		if(editMode == false && treeRefreshTimer >= 14){
 			refreshTree(dataOld);	
-			console.log('refreshed');
+			console.log('refreshed');s
 			treeRefreshTimer = 0;
 		}
 	});
@@ -1491,7 +1491,7 @@ var editWindow =  function(e) {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo, #manualResizeRow, #resizePreviousRow').hide();
+	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #hoverTargetRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo, #manualResizeRow, #resizePreviousRow').hide();
 	$('.editWindow').removeClass('editHide').show(150);
 	$("#editMaximize").hide();
 	$("#editMinimize").show();
@@ -1824,7 +1824,7 @@ PAGE EDIT CASE
 CAMERA CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgCamContainer')){
-		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow').show();
+		$('#hideDelRow,#cropRow, #cropModule, #resizeModule, #zRow, #hoverRow, #hoverTargetRow, #manualResizeRow').show();
 		$('#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3').hide();
 		$('.editWindow h2').text($(this).attr('title'));
@@ -1838,6 +1838,9 @@ CAMERA CASE
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		objectFound.setSelected();
+		objectFound.setWidthHeightFields();
+		console.log(pageObjectFound);
+		pageObjectFound.updateElementDimensions(objectFound);
 		tempArray.length = 0;
 		tempArray.push(objectFound);
 		if(objectFound.hoverable){
@@ -1870,19 +1873,30 @@ CAMERA CASE
 			suppressButton.checked = true;
 			camera.removeClass('suppressHover');
 		}	
-		
+		if(typeof objectFound.hoverTarget !== 'undefined'){
+			$('#hoverTarget').val(objectFound.hoverTarget);
+		}
+		else{
+			$('#hoverTarget').val(objectFound.src);
+		}
+		if(typeof objectFound.hoverTargetBehavior !== 'undefined'){
+			$('#targetSelect').val(objectFound.hoverTargetBehavior);
+		}
+		else{
+			$('#targetSelect').val('_blank');
+		}
 		var radioChecked;
 		$( document ).off( "change", "input[type=radio][name=hoverToggle]");
 		$( document ).on( "change", "input[type=radio][name=hoverToggle]", function(){
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
 				objectFound.setHover(true, objectFound.hoverDelay);
-				$('#hoverTimeRow, #suppressHoverable').show();		
+				$('#hoverTimeRow, #suppressHoverable, #hoverTargetRow').show();		
 
 			}
 			else{
 				objectFound.setHover(false, objectFound.hoverDelay);
-				$('#hoverTimeRow, #suppressHoverable').hide();		
+				$('#hoverTimeRow, #suppressHoverable, #hoverTargetRow').hide();		
 
 			}
 		});
@@ -1912,6 +1926,19 @@ CAMERA CASE
 
 			}
 		});
+		$( document ).off( "click", "#changeTarget");
+		$( document ).on( "click", "#changeTarget" , function() {
+			console.log($('input#hoverTarget').val());
+			objectFound.hoverTarget = $('input#hoverTarget').val();
+			objectFound.setHover(objectFound.hover,objectFound.hoverDelay);
+		});
+		$( document ).off( "click", "#changeTargetBehavior");
+		$( document ).on( "click", "#changeTargetBehavior" , function() {
+			console.log($('input#hoverTarget').val());
+			objectFound.hoverTargetBehavior =  $( "#targetSelect option:selected" ).val();
+			alert(objectFound.hoverTargetBehavior);
+			objectFound.setHover(objectFound.hover,objectFound.hoverDelay);
+		});
 		// delete event hanlder
 		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#deleteModule" , function() {		
@@ -1932,13 +1959,32 @@ CAMERA CASE
 		$( document ).on( "click", "#hideModule" , function() {
 			objectFound.setHidden(objectFound.parentId);				
 		});
-		
+		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousHeight" , function() {	
+			pageObjectFound.previousElementHeight();
+			objectFound.applyHeight();
+
+		});
+		$( document ).off( "click", "#resizePreviousWidth"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousWidth" , function() {	
+			pageObjectFound.previousElementWidth();
+			objectFound.applyWidth();
+
+		});
+		$( document ).off( "click", "#applyWidthDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyWidthDim" , function() {	
+			objectFound.applyWidth();
+		});
+		$( document ).off( "click", "#applyHeightDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyHeightDim" , function() {	
+			objectFound.applyHeight();
+		});
 	}
 /*****************************************************************
 TEXT BLOCKS CASE
 ******************************************************************/
 	else if($(this).hasClass('textBlockContainer')){
-		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow').show();
+		$('#hideDelRow, #zRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow, #hoverTargetRow').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
 		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 		$('#accordion').accordion( "refresh" );
@@ -1970,17 +2016,29 @@ TEXT BLOCKS CASE
 		console.log(pageObjectFound);
 		pageObjectFound.updateElementDimensions(objectFound);
 		
-		
-		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#resizePrevious" , function() {	
-			pageObjectFound.previousElementDimensions();
-			objectFound.applyWidthHeight();
+		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousHeight" , function() {	
+			pageObjectFound.previousElementHeight();
+			objectFound.applyHeight();
 
+		});
+		$( document ).off( "click", "#resizePreviousWidth"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousWidth" , function() {	
+			pageObjectFound.previousElementWidth();
+			objectFound.applyWidth();
 
 		});
 		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#applyDimensions" , function() {	
 			objectFound.applyWidthHeight();
+		});
+		$( document ).off( "click", "#applyWidthDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyWidthDim" , function() {	
+			objectFound.applyWidth();
+		});
+		$( document ).off( "click", "#applyHeightDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyHeightDim" , function() {	
+			objectFound.applyHeight();
 		});
 		
 		
@@ -2065,7 +2123,7 @@ IMG BLOCKS CASE
 ******************************************************************/	
 	else if($(this).hasClass('imgBlockContainer')){
 		//show appropriate parts of edit window
-		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow').show();
+		$('#hideDelRow, #zRow, #urlRow , #resizeModule, #cropModule, #cropRow, #hoverRow, #manualResizeRow').show();
 		$('#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3').hide();
 		$('#accordion').accordion( "refresh" );
@@ -2084,6 +2142,9 @@ IMG BLOCKS CASE
 		var objectFound = cell_arr[elementPos];
 		console.log(objectFound);
 		objectFound.setSelected();
+		objectFound.setWidthHeightFields();
+		console.log(pageObjectFound);
+		pageObjectFound.updateElementDimensions(objectFound);
 		tempArray.length = 0;
 		tempArray.push(objectFound);
 		console.log(objectFound);
@@ -2164,7 +2225,26 @@ IMG BLOCKS CASE
 		$( document ).on( "click", "#hideModule" , function() {
 			objectFound.setHidden(objectFound.parentId);				
 		});
-		
+		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousHeight" , function() {	
+			pageObjectFound.previousElementHeight();
+			objectFound.applyHeight();
+
+		});
+		$( document ).off( "click", "#resizePreviousWidth"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousWidth" , function() {	
+			pageObjectFound.previousElementWidth();
+			objectFound.applyWidth();
+
+		});
+		$( document ).off( "click", "#applyWidthDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyWidthDim" , function() {	
+			objectFound.applyWidth();
+		});
+		$( document ).off( "click", "#applyHeightDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyHeightDim" , function() {	
+			objectFound.applyHeight();
+		});
 	}
 /*****************************************************************
 DATA CELLS CASE
@@ -2221,17 +2301,30 @@ DATA CELLS CASE
 		pageObjectFound.updateElementDimensions(objectFound);
 		
 		
-		$( document ).off( "click", "#resizePrevious"); //unbind old events, and bind a new one
-		$( document ).on( "click", "#resizePrevious" , function() {	
-			pageObjectFound.previousElementDimensions();
-			objectFound.applyWidthHeight();
+		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousHeight" , function() {	
+			pageObjectFound.previousElementHeight();
+			objectFound.applyHeight();
+
+		});
+		$( document ).off( "click", "#resizePreviousWidth"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousWidth" , function() {	
+			pageObjectFound.previousElementWidth();
+			objectFound.applyWidth();
 
 		});
 		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#applyDimensions" , function() {	
 			objectFound.applyWidthHeight();
 		});
-		
+		$( document ).off( "click", "#applyWidthDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyWidthDim" , function() {	
+			objectFound.applyWidth();
+		});
+		$( document ).off( "click", "#applyHeightDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyHeightDim" , function() {	
+			objectFound.applyHeight();
+		});
 		
 		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
 		$( document ).on( "keyup", "input.roundingChange" , function() {	

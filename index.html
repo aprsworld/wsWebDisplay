@@ -243,24 +243,38 @@
 				<label> Hover Delay (Seconds)</label>
 				<input id="hoverTime" type="text" value="1"></input>
 			</div>
+			<div id="hoverTargetRow" class="editWindowRow">
+				<label> Hover Target Link </label>
+				<input id="hoverTarget" type="text" value=""></input>
+				<button title="Changes the URL that the hover-image navigates to when clicked - to return default functionality, leave blank and click change" id="changeTarget">Change</button>				
+
+				<label> Target Link Behavior </label>
+				<select id="targetSelect">
+					<option class="targetOption" value="_blank">New Tab</option>
+					<option class="targetOption" value="_self">Same Tab</option>		
+				</select>
+				<button  id="changeTargetBehavior">Change</button>				
+
+			</div>
 		</div>
 <!-- ------------------------------------------------
 	DIMENSIONS ROW		
 ------------------------------------------------- -->
 	  	<h3 id="sizingAccordionH3"> Sizing Options </h3>
 		<div id="sizingAccordion">
-			<div id="resizePreviousRow">
-				<button id="resizePrevious"> Use Last Element's Dimensions </button>
-			</div>
+			
 			<div id="zRow" class="editWindowRow">
 				<label id="zLabel"> Depth </label>
 				<div id="zSlider" ></div>	
 			</div>
 			<div id="manualResizeRow" class="editWindowRow">
-				<div><label id="manualWidthLabel"> Width </label><input id="manualWidth" type="text" value=""></input> </div>
-				<div><label id="manualHeightLabel"> Height </label><input id="manualHeight" type="text" value=""></input></div>
+				<div><label id="manualWidthLabel"> Width </label><input id="manualWidth" type="text" value=""></input><button id="applyWidthDim"> Apply </button> </div>
+				<button id="resizePreviousWidth"> Use Last Element's Width </button>
+
+				<div><label id="manualHeightLabel"> Height </label><input id="manualHeight" type="text" value=""></input><button id="applyHeightDim"> Apply </button></div>
+				<button id="resizePreviousHeight"> Use Last Element's Height </button>
 				
-				<button id="applyDimensions"> Apply Dimensions </button>
+
 			</div>
 			<div id="cropRow" class="editWindowRow">
 				<button id="resizeModule"><i class="fa fa-undo fa-2x"></i> Reset Image </button>

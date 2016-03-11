@@ -279,6 +279,25 @@ pageElement.prototype = {
 
 		//this.onChangeStyle();
 	},
+	applyWidth: function(){
+		var width = $("#manualWidth").val();
+		$("#"+this.parentId).css("width",width+"px");
+	},
+	applyHeight: function(){
+		var height = $("#manualHeight").val();
+		$("#"+this.parentId).css("height",height+"px");
+	},
+	setWidthField: function(){
+		var obj = this;
+		var width = this.getWidth();
+		$("#manualWidth").val(width);
+	},
+	setHeightField: function(){
+		var obj = this;
+		var height = this.getHeight();
+		$("#manualHeight").val(height);
+
+	},
 	setWidthHeightFields: function(){
 		var obj = this;
 		var width = this.getWidth();
@@ -437,7 +456,16 @@ pageSettings.prototype.previousElementDimensions = function(){
 	$("#manualWidth").val(dims.getWidth());
 	$("#manualHeight").val(dims.getHeight());
 }
-
+pageSettings.prototype.previousElementWidth = function(){
+	var dims = this.elementDimensions[0];
+	console.log(dims);
+	$("#manualWidth").val(dims.getWidth());	
+}
+pageSettings.prototype.previousElementHeight = function(){
+	var dims = this.elementDimensions[0];
+	console.log(dims);
+	$("#manualHeight").val(dims.getHeight());	
+}
 pageSettings.prototype.createGrid = function createGrid(size) {
 		$('.gridlines').remove();
 
@@ -1057,10 +1085,22 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					console.log('time');
 					$(hoverImg).width(camWidth);
 					$(hoverImg).height(camHeight);
-					hoverImg.src = camSrc;
 					
-					hoverImgLink.href = camSrc;
-					hoverImgLink.target = '_blank';
+					hoverImg.src = camSrc;
+				
+					if(typeof camObj.hoverTarget !== 'undefined' && camObj.hoverTarget !== ''){
+						hoverImgLink.href = camObj.hoverTarget;
+						
+					}
+					else{
+						hoverImgLink.href = camSrc;
+					}
+					if(typeof camObj.hoverTargetBehavior !== 'undefined' && camObj.hoverTargetBehavior !== ''){
+						hoverImgLink.target = camObj.hoverTargetBehavior;
+					}
+					else{
+						hoverImgLink.target = '_blank';
+					}
 					hoverImgLink.appendChild(hoverImg);
 					console.log(hoverImg);
 					$('#'+camId).append(hoverImgLink);
@@ -1156,12 +1196,12 @@ pageCam.prototype.setCrop = function(boolCrop){
 }
 
 //gets the natural height of the image
-pageCam.prototype.getWidth = function(){
+pageCam.prototype.getNatWidth = function(){
 	return this.natWidth;
 }
 
 //gets the natural height of the image
-pageCam.prototype.getHeight = function(){
+pageCam.prototype.getNatHeight = function(){
 	return this.natHeight;
 }
 
@@ -1190,6 +1230,62 @@ pageCam.prototype.resize = function(){
 	camObj.setResize();
 	camObj.setDrag();
 	
+}
+pageCam.prototype.getHeight = function(){
+		return $("#"+this.fullId).height();
+}
+pageCam.prototype.getWidth = function(){
+		return $("#"+this.fullId).width();
+}
+pageCam.prototype.applyWidth = function(){
+	var obj = this;
+	var width = $("#manualWidth").val();
+	var natHeight = obj.natHeight;
+	var natWidth = obj.natWidth;
+	var aspectRatio = natWidth/natHeight;
+	var adjustedHeight = width/aspectRatio;
+	$("#"+this.fullId).css("width",width+"px");
+	$("#"+this.fullId).css("height",adjustedHeight+"px");
+
+}
+pageCam.prototype.applyHeight = function(){
+	var obj = this;
+	var height = $("#manualHeight").val();
+	var natHeight = obj.natHeight;
+	var natWidth = obj.natWidth;
+	var aspectRatio = natHeight/natWidth;
+	var adjustedWidth = height/aspectRatio;
+	$("#"+this.fullId).css("height",height+"px");
+	$("#"+this.fullId).css("width",adjustedWidth+"px");
+	
+}
+pageCam.prototype.setWidthField = function(){
+	var obj = this;
+	var width = this.getWidth();
+	$("#manualWidth").val(width);
+}
+pageCam.prototype.setHeightField = function(){
+	var obj = this;
+	var height = this.getHeight();
+	$("#manualHeight").val(height);
+
+}
+pageCam.prototype.setWidthHeightFields = function(){
+	var obj = this;
+	var width = this.getWidth();
+	var height = this.getHeight();
+	$("#manualWidth").val(width);
+	$("#manualHeight").val(height);
+}
+pageCam.prototype.previousElementWidth = function(){
+	var dims = this.elementDimensions[0];
+	console.log(dims);
+	$("#manualWidth").val(dims.getWidth());	
+}
+pageCam.prototype.previousElementHeight = function(){
+	var dims = this.elementDimensions[0];
+	console.log(dims);
+	$("#manualHeight").val(dims.getHeight());	
 }
 pageCam.prototype.camCrop = function(){
 	var thisObj = this;
@@ -1752,6 +1848,53 @@ pageImg.prototype.imgCrop = function(){
 		$('.controlsOverlay').hide();								
 	});
 }
+pageImg.prototype.getHeight = function(){
+		return $("#"+this.parentId).height();
+}
+pageImg.prototype.getWidth = function(){
+		return $("#"+this.parentId).width();
+}
+pageImg.prototype.applyWidth = function(){
+	var obj = this;
+	var width = $("#manualWidth").val();
+	var natHeight = obj.natHeight;
+	var natWidth = obj.natWidth;
+	var aspectRatio = natWidth/natHeight;
+	var adjustedHeight = width/aspectRatio;
+	$("#"+this.parentId).css("width",width+"px");
+	$("#"+this.parentId).css("height",adjustedHeight+"px");
+
+}
+pageImg.prototype.applyHeight = function(){
+	var obj = this;
+	var height = $("#manualHeight").val();
+	var natHeight = obj.natHeight;
+	var natWidth = obj.natWidth;
+	var aspectRatio = natHeight/natWidth;
+	var adjustedWidth = height/aspectRatio;
+	$("#"+this.parentId).css("height",height+"px");
+	$("#"+this.parentId).css("width",adjustedWidth+"px");
+	
+}
+pageImg.prototype.setWidthField = function(){
+	var obj = this;
+	var width = this.getWidth();
+	$("#manualWidth").val(width);
+}
+pageImg.prototype.setHeightField = function(){
+	var obj = this;
+	var height = this.getHeight();
+	$("#manualHeight").val(height);
+
+}
+pageImg.prototype.setWidthHeightFields = function(){
+	var obj = this;
+	var width = this.getWidth();
+	var height = this.getHeight();
+	$("#manualWidth").val(width);
+	$("#manualHeight").val(height);
+}
+
 pageImg.prototype.resize = function(){
 	var width = this.natWidth;
 	var height = this.natHeight;

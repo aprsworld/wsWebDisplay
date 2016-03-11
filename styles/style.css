@@ -849,11 +849,18 @@ div.logo_container{
 .roundingChange{
 	width: 60%;	
 }
+#hoverTarget{
+	width: 60%;	
+}
 #manualWidth{
 	width: 20%;	
+	margin-right: 5px;
+	margin-bottom: 5px;
 }
 #manualHeight{
 	width: 20%;	
+	margin-right: 5px;
+	margin-bottom: 5px;
 }
 #unitSelect{
 	width: 60%;	
@@ -864,7 +871,7 @@ div.logo_container{
 #hoverRadios span, #suppressHoverable span{
 	color: #ccc !important;
 }
-#hoverTimeRow label, #hoverRow label{
+#hoverTimeRow label, #hoverRow label, #hoverTargetRow label{
 	width: 90%;	
 }
 .bodyChange{
@@ -941,12 +948,16 @@ select.backgroundColorChange option{
 	z-index: 200;
 	box-shadow: 0px 0px 10px black;
 }
+
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
 #cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, 
 #unitRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, 
-#backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow{
+#backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow, #hoverTargetRow{
 	display:none;	
 	clear: both;
+}
+#manualResizeRow div{
+	margin-top: 15px;	
 }
 #resizePreviousRow{
 	margin-top: 10px;	
