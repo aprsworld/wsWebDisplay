@@ -381,7 +381,7 @@ pageSettings.prototype.nextItem = function() {
 		}
 		cell_arr.length = 0;
 		loadState(layout);
-		this.resetInterval();
+		//this.resetInterval();
 	}
 }
 
@@ -403,7 +403,7 @@ pageSettings.prototype.prevItem = function() {
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
-		this.resetInterval();
+		//this.resetInterval();
 		loadState(layout);
 	}
 }

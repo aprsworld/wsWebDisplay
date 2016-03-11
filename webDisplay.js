@@ -1092,25 +1092,35 @@ function data_update(data) {
 		});
 		var myElement = document.getElementById("content");
 		var hammertime;
-
-		
+	
 		//gets rid of setting that removes highlighting from the page
 		delete Hammer.defaults.cssProps.userSelect;
-			
-		hammertime = new Hammer(myElement);
+		var options = {
+		  drag: true,
+		  drag_block_horizontal: true,
+		  drag_lock_min_distance: 20,
+		  hold: false,
+		  release: true,
+		  swipe: false,
+		  tap: false,
+		  touch: true,
+		  transform: false
+		};
+		hammertime = new Hammer(myElement, options);
+		//event handler for left swipe - changes configuration
 		hammertime.on('swipeleft', function(ev) {
 			if(editMode == false){
-				console.log(ev);
 				ev.preventDefault();
-				console.log(ev)
+				
 				pageSettingsObj.nextItem();
 			}
 			
 		});
+		//event handler for right swipe - changes configuration
 		hammertime.on('swiperight', function(ev) {
 			if(editMode == false){
 				ev.preventDefault();
-				console.log(ev);
+				
 				pageSettingsObj.prevItem();
 			}
 			
