@@ -1090,29 +1090,32 @@ function data_update(data) {
 
 			}
 		});
-		var clickEventType = ((document.ontouchstart!==null)?'mousedown':'touchstart');
-		$( document ).bind(clickEventType, function(e) {			
-			var myElement = e.target;
-			if(myElement.id === 'swipeOverlay'){
-				return;	
-			}
-			var hammertime = new Hammer(myElement);
-			hammertime.on('swipeleft', function(ev) {
+		var myElement = document.getElementById("content");
+		var hammertime;
+
+		
+		//gets rid of setting that removes highlighting from the page
+		delete Hammer.defaults.cssProps.userSelect;
+			
+		hammertime = new Hammer(myElement);
+		hammertime.on('swipeleft', function(ev) {
+			if(editMode == false){
+				console.log(ev);
 				ev.preventDefault();
 				console.log(ev)
-				pageSettingsObj.prevItem();
-
-				hammertime.off('swipeleft');
-				hammertime.off('swiperight');
-			});
-			hammertime.on('swiperight', function(ev) {
+				pageSettingsObj.nextItem();
+			}
+			
+		});
+		hammertime.on('swiperight', function(ev) {
+			if(editMode == false){
 				ev.preventDefault();
 				console.log(ev);
-				pageSettingsObj.nextItem();
-				hammertime.off('swipeleft');
-				hammertime.off('swiperight');
-			});
+				pageSettingsObj.prevItem();
+			}
+			
 		});
+		
 		
 		$( document ).on( "click", "#playLayout" , function() {	
 			pageSettingsObj.cyclePlay();
@@ -1125,7 +1128,7 @@ function data_update(data) {
 			pageSettingsObj.prevItem();
 		});
 		$( document ).keyup(function(e) {
-			if (e.keyCode == 61){
+			if (!e.ctrlKey && e.keyCode == 61 && !$(e.target).is('input, textarea')){
 				pageSettingsObj.nextItem();
 			}
 		});
@@ -1133,7 +1136,8 @@ function data_update(data) {
 			pageSettingsObj.nextItem();
 		});
 		$( document ).keyup(function(e) {
-			if (e.keyCode == 173){
+			
+			if (!e.ctrlKey && e.keyCode == 173 && !$(e.target).is('input, textarea')){
 				pageSettingsObj.prevItem();
 			}
 		});
