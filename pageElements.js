@@ -1465,7 +1465,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.hoverDelay = 1;
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		camObj.cropped = false;	
-		camObj.count = cellCount;
+		camObj.count = cellCount; 
 		camObj.src = value;
 		var currentMode = editMode
 		var width = $('#'+camId).children('img').width();
