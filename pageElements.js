@@ -1453,7 +1453,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	$('#'+camId).css('position', 'absolute');
 	$('#'+camId).css('display','inline-block');
 	$('#'+camId).css('top',pageY);
-	$('#'+camId).css('left',pageX);
+	$('#'+camId).css('left',pageX); 
 	$('#preload_'+camId).load(function() {
 				console.log('loaded - we should call setNatDimensions now');
 
