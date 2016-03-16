@@ -1518,7 +1518,7 @@ pageCam.prototype.loadHtml = function(){
 pageCam.prototype.removeSelf = function(){
 	console.log('REMOVED');
 		var obj = this;
-		var objId = obj.fullid;
+		var objId = obj.fullId;
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		cell_arr.splice(elementPos, 1);
@@ -1526,7 +1526,6 @@ pageCam.prototype.removeSelf = function(){
 		$('#'+objId).remove();
 		$('#preload_'+objId).remove();
 		console.log(cell_arr);
-		alert('#preload_'+objId);
 
 	}
 
