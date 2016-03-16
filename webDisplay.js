@@ -1425,22 +1425,22 @@ function refreshTreeData(newData){
 									//console.log('non-object');
 									//console.log(newD);
 									oldD[key1] = newD[key1];
-									if(objectKeys == 'Unconfigured'){ //debug
+									/*if(objectKeys == 'Unconfigured'){ //debug
 										console.log(newData[objectKeys]);
 										console.log(newD[key1]);
-									}
+									}*/
 							
 							}
 							else{
 							Object.keys( newD[key1]).forEach(function(key2){
 								oldD[key1][key2] = newD[key1][key2];
 								if(oldD[key1][key2] === 'undefined'){ //debug
-									console.log('undefined');
-									console.log(oldD[key1])	
+									//console.log('undefined');
+									//console.log(oldD[key1])	
 								}
 								if(objectKeys == 'Unconfigured'){ //debug
 
-									console.log(newD[key1][key2]);
+									//console.log(newD[key1][key2]);
 								}
 							});
 							}
