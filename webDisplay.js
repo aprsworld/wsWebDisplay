@@ -1179,8 +1179,9 @@ function data_update(data) {
 	// clears document ready function
 	x = null;
 	//refreshCams(cams);
-	console.log(dataOld);
 	dynamicUpdate( dataOld); //updates all data cells to their current values
+		console.log(dataOld);
+
 }
 
 //calculates size for data counter
@@ -1421,19 +1422,19 @@ function refreshTreeData(newData){
 						Object.keys( newD).forEach(function(key1){	
 						
 							//console.log(newD[key1])
-							if(objectKeys == 'A4751'){ //debug
-									//console.log(newData[objectKeys]);
-									//console.log(newD[key1]);
+							if(objectKeys == 'Unconfigured'){ //debug
+									console.log(newData[objectKeys]);
+									console.log(newD[key1]);
 								}
 							Object.keys( newD[key1]).forEach(function(key2){
 								oldD[key1][key2] = newD[key1][key2];
 								if(oldD[key1][key2] === 'undefined'){ //debug
-									//console.log('undefined');
-									//console.log(oldD[key1])	
+									console.log('undefined');
+									console.log(oldD[key1])	
 								}
-								if(objectKeys == 'A4751'){ //debug
+								if(objectKeys == 'Unconfigured'){ //debug
 
-									//console.log(newD[key1][key2]);
+									console.log(newD[key1][key2]);
 								}
 							});
 						});
