@@ -1491,7 +1491,7 @@ pageCam.prototype.loadHtml = function(){
 	camObj.src = updatedPath;
 	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
-	$('#preload_'+camId).load(function() {
+	$('#preload_'+camId).load(function() { 
 		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src="'+updatedPath+'"></div>');
 		$('#'+camObj.parentId).attr('style', camObj.style);
 		console.log(camObj.style);
