@@ -924,6 +924,7 @@ function data_update(data) {
 	time=0;
 	var incomingData = data;
 	dataNow = data;
+	console.log(data);
 	//var cams = getCamData(data);
     if (started === false) { //we only want the below block of code to execute once because it is in charge of data creation and initiating a path to the various nested object properties
 		started = true; //sets our boolean to true so the above only executes once
