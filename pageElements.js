@@ -1460,7 +1460,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		var src = $(this).attr("src");
 		$('#'+camId).css('background-image','url('+value+')');
 		console.log('test');
-		camObj.hoverable = true; 
+		camObj.hoverable = true;
 		camObj.suppressed = true;
 		camObj.hoverDelay = 1;
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
