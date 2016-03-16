@@ -1450,7 +1450,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	$('.top-container').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
 	camObj.setResize();
 		camObj.setDrag();
-	$('#'+camId).css('position', 'absolute');
+	$('#'+camId).css('position', 'absolute'); 
 	$('#'+camId).css('display','inline-block');
 	$('#'+camId).css('top',pageY);
 	$('#'+camId).css('left',pageX); 
