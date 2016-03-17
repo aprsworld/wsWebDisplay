@@ -1142,9 +1142,7 @@ function data_update(data) {
 				pageSettingsObj.nextItem();
 			}
 		});
-		$( document ).on( "click", "#nextLayout" , function() {	
-			pageSettingsObj.nextItem();
-		});
+		
 		$( document ).keyup(function(e) {
 			
 			if (!e.ctrlKey && e.keyCode == 173 && !$(e.target).is('input, textarea') && pageSettingsObj.layoutList.length > 0){
@@ -1245,20 +1243,21 @@ function getConfigs(data) {
 
 function loadFromList(){
 	
-	cell_arr.length = 0;
+	
 	var selected1 = $( "#configDrop option:selected" ).text();
 	data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
 			// Couldn't get configuration data from server
 			return;
 		}
+		var loadedLayout;
 		console.log(rsp);
 		console.log(loadedLayout);
 		var selected = $( "#configDrop option:selected" ).text();
 		console.log(rsp.data[selected]);
 		loadedLayout = rsp.data[selected];
-		console.log(rsp.data);
-		loadState(rsp.data[selected]);
+		console.log(rsp.data[selected]);
+		loadState(loadedLayout);
 		$('.gridlines').css("display","block");
 
 		var lastCell = $('#'+id_arr[id_arr.length-1]).parent().attr('id');
@@ -2589,12 +2588,15 @@ function loadState(jsonString){
 	//console.log(jsonString);
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
+	console.log(cell_arr);
 	var arrlength = cell_arr.length;
 	$('#preload').children().remove();
-	for(var i = 0; i< arrlength; i++){
-		console.log(cell_arr[i]);		
-		$('#'+cell_arr[i].parentId).remove();
-	}
+	var arrlength = cell_arr.length;
+		for(var i = 0; i< arrlength; i++){
+			console.log(cell_arr[i]);		
+			$('#'+cell_arr[i].parentId).remove();
+		}
+	cell_arr.length = 0;
 	for(var k in configObject){
 		if(configObject[k].count >= count){
 			count = configObject[k].count;

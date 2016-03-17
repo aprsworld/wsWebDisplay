@@ -415,6 +415,7 @@ pageSettings.prototype.prevItem = function() {
 		if(this.currentLayoutIndex < 0){
 			this.currentLayoutIndex = arr.length-1;
 		}
+
 		var layout = arr[this.currentLayoutIndex]
 		var arrlength = cell_arr.length;
 		for(var i = 0; i< arrlength; i++){
