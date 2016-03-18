@@ -998,6 +998,13 @@ pageCell.prototype.loadHtml = function(cellCount){
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
+	if(this.hidden){
+		$('#'+this.parentId).addClass('hide');
+		console.log($('#'+this.parentId).attr('class'));
+		if(editMode == false){
+			$('#'+this.parentId).css('visibility','hidden');
+		}
+	}	
 	if(this.title == ''){
 		$('#'+this.fullId).siblings('.myTableTitle').css('background-color','rgba(0,0,0,0)');
 	}
@@ -1509,9 +1516,18 @@ pageCam.prototype.loadHtml = function(){
 			$('#'+camObj.parentId).resizable({disabled:false});
 		}
 		//cell_arr.push(camObj);
-
+		console.log(camObj.hidden);
+		if(camObj.hidden){
+			$('#'+camObj.parentId).addClass('hide');
+			console.log($('#'+camObj.parentId).attr('class'));
+			if(editMode == false){
+				$('#'+camObj.parentId).css('visibility','hidden');
+			}
+		}	
 	});
+	
 	$('#preload_'+camId).attr('src', updatedPath);
+	
 
 }
 
@@ -1968,6 +1984,13 @@ pageImg.prototype.loadHtml = function(){
 		$('#'+objectFound.parentId).attr('style',objectFound.style);
 		objectFound.setSuppression(objectFound.suppressed);
 		objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
+		if(objectFound.hidden){
+		$('#'+objectFound.parentId).addClass('hide');
+		console.log($('#'+objectFound.parentId).attr('class'));
+		if(editMode == false){
+			$('#'+objectFound.parentId).css('visibility','hidden');
+		}
+	}	
 	});
 	objectFound.setDrag();
 	objectFound.setResize();
@@ -2032,6 +2055,13 @@ pageText.prototype.loadHtml = function(){
 	$('#'+this.parentId).attr('style', this.style);
 	this.setDrag();
 	this.setResize();
+	if(this.hidden){
+		$('#'+this.parentId).addClass('hide');
+		console.log($('#'+this.parentId).attr('class'));
+		if(editMode == false){
+			$('#'+this.parentId).css('visibility','hidden');
+		}
+	}	
 	if(editMode == false){
 		$('#'+this.parentId).draggable({disabled:true});
 		$('#'+this.parentId).resizable({disabled:true});
