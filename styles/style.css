@@ -646,6 +646,7 @@ div.logo_container{
 	font-weight: 900;
 	text-align: center;
 	padding: 7px;
+	z-index: 1000;
 }
 .container .td{
 	color: #333333;

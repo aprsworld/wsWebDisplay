@@ -574,9 +574,9 @@ function dynamicUpdate(data) {
 				}
 				if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
 					label = objectFound.label;
+
 					$('div#div_' + id + '').children('.label').html(label);
-				}
-				
+				}				
 				else{
 					label = result.label;
 					objectFound.setLabel(label);

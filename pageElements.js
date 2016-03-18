@@ -847,6 +847,7 @@ pageCell.prototype.setLabelOverride = function(value, label){
 
 	if(value){
 		$('#'+this.fullId).find('.label').text(label);
+		this.label = label;
 	}
 	else{
 		var updatedLabel;
