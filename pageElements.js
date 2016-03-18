@@ -49,8 +49,8 @@ pageElement.prototype = {
 			console.log(cell_arr);
 		}	
 	},
-	setZindex: function(id, zIndex){
-		$('#'+id).css('z-index', zIndex ); 
+	setZindex: function(zIndex){
+		$('#'+this.parentId).css('z-index', zIndex ); 
 		var style = this.getStyle();
 		this.setStyle(style);
 	},
@@ -833,7 +833,6 @@ pageCell.prototype.setTitle = function(text){
 
 pageCell.prototype.setLabel = function(text){
 	var containerId = this.fullId;	
-	console.log($('#'+containerId).find('.label').text());
 	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
 		$('#'+containerId).find('.label').text(text);
 	}

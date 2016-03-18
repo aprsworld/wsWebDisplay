@@ -660,6 +660,7 @@ function timer(){
 function clickToCreate(item, data, x ,y){
 	var id = $(item).closest('.jstree-node').attr('id');
 	var cellCount = cell_arr.length;
+	console.log(cellCount);
 	var obj, new_id; 
 	
 	//if data cell or log
@@ -920,7 +921,6 @@ function collapseWindows(){
 }
 /*function that periodically updates the data */
 function data_update(data) {
-	console.log('dataupdate');
 	time=0;
 	var incomingData = data;
 	dataNow = data;
@@ -1178,7 +1178,6 @@ function data_update(data) {
 	x = null;
 	//refreshCams(cams);
 	dynamicUpdate( dataOld); //updates all data cells to their current values
-		console.log(dataOld);
 
 }
 
@@ -1859,6 +1858,16 @@ CAMERA CASE
 		
 		var camera = $(this);
 		//checks to see if image has added hoverables class and checks appropriate radio button
+		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
+		$('#zSlider').slider({
+			min: 0,
+			max: 100,
+			value: zIndex,
+			slide: function( event, ui ) {
+				objectFound.setZindex(ui.value);
+				//$('#'+moduleContainer).css('z-index', ui.value ); 
+			}
+		});
 		var radiobtn
 		$('#hoverTime').val(objectFound.hoverDelay);
 		if(objectFound.hoverable == true){
@@ -2023,7 +2032,16 @@ TEXT BLOCKS CASE
 		objectFound.setWidthHeightFields();
 		console.log(pageObjectFound);
 		pageObjectFound.updateElementDimensions(objectFound);
-		
+		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
+		$('#zSlider').slider({
+			min: 0,
+			max: 100,
+			value: zIndex,
+			slide: function( event, ui ) {
+				objectFound.setZindex(ui.value);
+				//$('#'+moduleContainer).css('z-index', ui.value ); 
+			}
+		});
 		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizePreviousHeight" , function() {	
 			pageObjectFound.previousElementHeight();
@@ -2190,7 +2208,16 @@ IMG BLOCKS CASE
 				$('#hoverTimeRow').hide();
 			}
 		});
-		
+		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
+		$('#zSlider').slider({
+			min: 0,
+			max: 100,
+			value: zIndex,
+			slide: function( event, ui ) {
+				objectFound.setZindex(ui.value);
+				//$('#'+moduleContainer).css('z-index', ui.value ); 
+			}
+		});
 		$( document ).off( "keyup", "input#hoverTime");
 		$( document ).on( "keyup", "input#hoverTime" , function() {
 			var time = $('input#hoverTime').val();
@@ -2221,12 +2248,6 @@ IMG BLOCKS CASE
 		// unbind old event handler
 		$( document ).off( "click", "#resizeModule"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizeModule" , function() {
-			/*var width = document.getElementById(selectedModule).naturalWidth;
-			var height = document.getElementById(selectedModule).naturalHeight;
-			$("#"+selectedModule).css('width', width);
-			$("#"+selectedModule).css('height',height);
-			$("#"+selectedModule).parent().css('width', width);
-			$("#"+selectedModule).parent().css('height',height);*/
 			objectFound.resize();
 		});
 		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
@@ -2294,13 +2315,13 @@ DATA CELLS CASE
 		$('.roundingChange').val(objectFound.precision)
 		populateConversions(objId);
 		
-		var zIndex = $('#'+moduleContainer).css('z-index'); 
+		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
 		$('#zSlider').slider({
 			min: 0,
 			max: 100,
 			value: zIndex,
 			slide: function( event, ui ) {
-				objectFound.setZindex(moduleContainer, ui.value);
+				objectFound.setZindex(ui.value);
 				//$('#'+moduleContainer).css('z-index', ui.value ); 
 			}
 		});
@@ -2589,6 +2610,7 @@ function loadState(jsonString){
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
 	console.log(cell_arr);
+	
 	var arrlength = cell_arr.length;
 	$('#preload').children().remove();
 	var arrlength = cell_arr.length;
