@@ -191,7 +191,9 @@ $.widget( "evol.colorpicker", {
 				h+='</div>';
 		// indicator
 		if(opts.displayIndicator){
-			h+=this._colorIndHTML(this.options.color)+this._colorIndHTML('');
+			var curEle = jQuery('.selectedShadow').css('background-color');
+			
+			h+=this._colorIndHTML(/*this.options.color*/ curEle )+this._colorIndHTML('');
 		}
 		h+='</div>';
 		return h;
