@@ -98,7 +98,6 @@ pageElement.prototype = {
 			start: function(event, ui){
 				$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
-				console.log(thisObj);
 				$(this).removeAttr("title");			
 				$('#'+thisObj.parentId).on('mouseup', function(e) {
 					console.log(title);
@@ -221,6 +220,12 @@ pageElement.prototype = {
 		$('#'+thisObj.parentId).resizable({
 			grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
 			start: function(event, ui){
+				$('#'+thisObj.parentId).off('mouseup');
+				var title = thisObj.toolTip;
+				$(this).removeAttr("title");			
+				$('#'+thisObj.parentId).on('mouseup', function(e) {
+					$('#'+thisObj.parentId).attr('title',title);	
+				});
 				var width = $('#'+thisObj.parentId).css('width');
 				var height = $('#'+thisObj.parentId).css('height');
 				var posSpan = document.createElement("SPAN"); 
@@ -711,6 +716,12 @@ pageLog.prototype.setResize = function(){
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
 		start: function(event, ui){
+			$('#'+thisObj.parentId).off('mouseup');
+				var title = thisObj.toolTip;
+				$(this).removeAttr("title");			
+				$('#'+thisObj.parentId).on('mouseup', function(e) {
+					$('#'+thisObj.parentId).attr('title',title);	
+				});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
 			var posSpan = document.createElement("SPAN"); 
@@ -899,6 +910,12 @@ pageCell.prototype.setResize = function(){
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
 		start: function(event, ui){
+			$('#'+thisObj.parentId).off('mouseup');
+				var title = thisObj.toolTip;
+				$(this).removeAttr("title");			
+				$('#'+thisObj.parentId).on('mouseup', function(e) {
+					$('#'+thisObj.parentId).attr('title',title);	
+				});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
 			var posSpan = document.createElement("SPAN"); 
@@ -1942,6 +1959,12 @@ pageImg.prototype.setResize = function(){
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
 		start: function(event, ui){
+			$('#'+thisObj.parentId).off('mouseup');
+				var title = thisObj.toolTip;
+				$(this).removeAttr("title");			
+				$('#'+thisObj.parentId).on('mouseup', function(e) {
+					$('#'+thisObj.parentId).attr('title',title);	
+				});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
 			var posSpan = document.createElement("SPAN"); 
@@ -1978,17 +2001,17 @@ pageImg.prototype.setResize = function(){
 	});	
 }
 pageImg.prototype.createHtml = function(cellCount){
-	$('.top-container').append('<div id="'+this.parentId+'" style="background-image: url(images/insert_image.svg)" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id="'+this.id+'" alt="'+this.id+'" src="images/insert_image.svg"></img></div>');
+	$('.top-container').append('<div id="'+this.parentId+'" title="'+this.parentId+'" style="background-image: url(images/insert_image.svg)" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id="'+this.id+'" alt="'+this.id+'" src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
 	this.setDrag();
 	this.setResize();
 	this.count = cellCount;
-
+	this.toolTip = this.parentId;
 }
 pageImg.prototype.loadHtml = function(){
 	console.log('loadedImage');
 	var objectFound = this;
-	$('#content').append('<div id="'+this.parentId+'" style="background-image: url('+objectFound.src+')" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
+	$('#content').append('<div id="'+this.parentId+'" title="'+this.parentId+'" style="background-image: url('+objectFound.src+')" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
 	$('#'+this.id).load(function() {
 		$('#'+objectFound.parentId).attr('style',objectFound.style);
 		objectFound.setSuppression(objectFound.suppressed);
@@ -2035,6 +2058,9 @@ pageText.prototype.createHtml = function(cellCount){
 	this.text = textContent;
 	//incremental ID attribute
 	textBlock.id = "block"+cellCount+rand;
+	textBlock.title = textBlock.id;
+	
+	this.toolTip = textBlock.title;
 	this.id = "block"+cellCount+rand;
 	this.parentId = "block"+cellCount+rand;
 	//appends a textblock to the div with our default text
@@ -2044,6 +2070,7 @@ pageText.prototype.createHtml = function(cellCount){
 	this.count = cellCount;
 	this.setDrag();
 	this.setResize();
+	console.log(this);
 }
 
 pageText.prototype.loadHtml = function(){
@@ -2057,6 +2084,9 @@ pageText.prototype.loadHtml = function(){
 	textBlock.id = this.parentId;
 	this.id = this.parentId;
 	this.parentId = this.parentId;
+	textBlock.title = textBlock.id;
+	
+	this.toolTip = textBlock.title;
 	//appends a textblock to the div with our default text
 	$(textBlock).append('<p>'+textContent+'</p>');
 	//appends the textblock to the page
@@ -2104,6 +2134,12 @@ pageText.prototype.setResize = function(){
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
 		start: function(event, ui){
+			$('#'+thisObj.parentId).off('mouseup');
+			var title = thisObj.toolTip;
+			$(this).removeAttr("title");			
+			$('#'+thisObj.parentId).on('mouseup', function(e) {
+				$('#'+thisObj.parentId).attr('title',title);	
+			});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
 			var posSpan = document.createElement("SPAN"); 
