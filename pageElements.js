@@ -96,6 +96,14 @@ pageElement.prototype = {
 		$('#'+this.parentId).draggable({
 			cursor: "move", disabled: false, delay: 50,
 			start: function(event, ui){
+				$('#'+thisObj.parentId).off('mouseup');
+				var title = thisObj.toolTip;
+				console.log(thisObj);
+				$(this).removeAttr("title");			
+				$('#'+thisObj.parentId).on('mouseup', function(e) {
+					console.log(title);
+					$('#'+thisObj.parentId).attr('title',title);	
+				});
 				//collapses windows when dragging
 				if(isExpanded){
 					collapseWindows();

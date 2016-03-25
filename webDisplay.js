@@ -10,6 +10,7 @@ var path_arr = [];
 var cell_arr = [];
 var started = false; //this boolean makes sure we only execute some of our functions only once such as the jquery ui setup
 var ageInterval;
+var dataUpdateTime;
 var staticRegexPeriod = /\./g; //global declaration to reduce overhead
 var isExpanded;
 var dataNow = {};
@@ -638,7 +639,9 @@ function dynamicUpdate(data) {
 	
 }
 function sinceDataTimer(){
-	time = time+1;	
+	time = Date.now();
+	time = Math.floor((time - dataUpdateTime)/1000);
+	
 	$('#timer1').html("<span>Last data received " + time + " seconds ago </span>");
 }
 function timer(){
@@ -815,7 +818,7 @@ function clickToCreate(item, data, x ,y){
 		cellCount++;
 		rand, idArrLen, instance, new_id, children, clength, i, path, tooltip, sendPath = null;
 	}
-		
+	
 }
 
 function positionDiv(obj, new_id){
@@ -909,6 +912,18 @@ function collapseWindows(){
 		console.log('test');
 	}
 	else{
+		$('.controls').animate({'width': '250px', 'padding-left': '10px', 'padding-right': '10px'},200);
+		$('.editWindow').animate({'width': '280px','padding': '2px'},200);	
+		$('.controlRow').show();
+		$('#stationTree').show();
+		console.log('now expanded');
+		$("#editMaximize").hide();
+		$("#editMinimize").show();
+		isExpanded = true;
+	}
+}
+function forceOpenWindow(){
+	if(!isExpanded){
 		$('.controls').animate({'width': '250px', 'padding-left': '10px', 'padding-right': '10px'},200);
 		$('.editWindow').animate({'width': '280px','padding': '2px'},200);	
 		$('.controlRow').show();
@@ -1385,6 +1400,7 @@ function createImage(){
 //used to build the tree.
 function refreshTreeData(newData){
 	//console.log(Date.now());
+	dataUpdateTime = Date.now();
 	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
 	//console.log(objectKeys);
@@ -1483,9 +1499,7 @@ function brokenImg(id){
 
 
 var editWindow =  function(e) {
-	if(!isExpanded){
-		collapseWindows()
-	}
+	
 		$("#editMinimize").show();
 
 	var changeArray, moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
@@ -2496,7 +2510,7 @@ DATA CELLS CASE
 };
 function edit(handler) {
 	editMode = true;
-	isExpanded = true;
+	forceOpenWindow();
 	$( document ).keyup(function(e) {
 		if (e.keyCode == 27){
 			collapseWindows()			
