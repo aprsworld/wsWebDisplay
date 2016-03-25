@@ -1561,7 +1561,8 @@ var editWindow =  function(e) {
 	$('.backgroundColorChange, .textColorChange').colorpicker({
 		transparentColor: true,
 		defaultPalette: 'web',
-		showOn: "button"
+		showOn: "button",
+		displayIndicator: false
 	});
 	var bgColorVal = $('#'+selectedModule).css('background-color');
 	var textColorVal = $('#'+selectedModule).css('color');
