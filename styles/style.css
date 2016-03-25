@@ -1097,6 +1097,9 @@ select.backgroundColorChange option{
 ul.jstree-children{
 	height: auto !important;	
 }
+.evo-cHist{
+	padding-bottom: 10px !important;	
+}
 /* style changes for color picker color box*/
 .evo-colorind-ff{
 	width: 20% !important;

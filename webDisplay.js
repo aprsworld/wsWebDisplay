@@ -643,9 +643,12 @@ function dynamicUpdate(data) {
 function sinceDataTimer(){
 	time = Date.now();
 	time = Math.floor((time - dataUpdateTime)/1000);
+	//if it has been longer than our time out, we set the flag to be true
 	if(time > 30){
+		
 		timedOut = true;
 	}
+	//if timedout flag is true, it will attempt to send a full data update once data is sent again
 	if(timedOut){
 		console.log(timedOut);
 		console.log(updatelock);
@@ -1532,7 +1535,7 @@ function brokenImg(id){
 
 var editWindow =  function(e) {
 	
-		$("#editMinimize").show();
+	$("#editMinimize").show();
 
 	var changeArray, moduleContainer, selectedModule, body, title, label, url, titleChange, labelChange, textColor, bgColor, urlChange, id, value, submitButton, fontPlus, fontMinus, bodyChange, fontSize, originalTitle;
 	titleChange = $('.titleChange');
@@ -1564,7 +1567,7 @@ var editWindow =  function(e) {
 	var textColorVal = $('#'+selectedModule).css('color');
 	$('#backgroundColorRow').find('.evo-colorind-ff').css('background-color', bgColorVal);
 	$('#textColorRow').find('.evo-colorind-ff').css('background-color',textColorVal);
-
+	
 	$(".backgroundColorChange").off("change.color");
 	$(".backgroundColorChange").on("change.color", function(event, color){
     	$('#'+selectedModule).css('background-color', color);
@@ -1806,6 +1809,7 @@ PAGE EDIT CASE
 		$(".backgroundColorChange").off("change.color");
 		$(".backgroundColorChange").on("change.color", function(event, color){
 			if(color != undefined){
+				
 				objectFound.backgroundColorChange(color);
 				console.log(color);
 			}
