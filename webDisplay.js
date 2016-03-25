@@ -18,6 +18,8 @@ var dataOld = {};
 var tempArray = [];
 var topOffSet = 0;
 var leftOffSet = 0;
+var timedOut = false;
+var updatelock = false;
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -641,7 +643,32 @@ function dynamicUpdate(data) {
 function sinceDataTimer(){
 	time = Date.now();
 	time = Math.floor((time - dataUpdateTime)/1000);
-	
+	if(time > 30){
+		timedOut = true;
+	}
+	if(timedOut){
+		console.log(timedOut);
+		console.log(updatelock);
+		if(time < 30){
+
+			data_object.ValueGet(function(rsp){
+				updatelock = true;
+				if(!rsp.data || rsp.error){
+					// Couldn't get configuration data from server
+					console.log(rsp);
+					updatelock = false;
+					return;
+				}
+				dataOld = rsp.data
+				dynamicUpdate(dataOld);
+				console.log(rsp.data);
+
+				timedOut = false;
+				updatelock = false;
+			},'');	
+		}
+		
+	}
 	$('#timer1').html("<span>Last data received " + time + " seconds ago </span>");
 }
 function timer(){
@@ -1174,7 +1201,10 @@ function data_update(data) {
 		dataOld = data;
 
 	}
+	if(!updatelock){
 	refreshTreeData(data);
+	}
+	
 	$('#bytesReceived').html(calculateDownload(this.rx_data_counter()));
 	var x = $(document).ready(function() {
 		
@@ -1192,7 +1222,9 @@ function data_update(data) {
 	// clears document ready function
 	x = null;
 	//refreshCams(cams);
+	if(!updatelock){
 	dynamicUpdate( dataOld); //updates all data cells to their current values
+	}
 
 }
 
@@ -1967,7 +1999,6 @@ CAMERA CASE
 		$( document ).on( "click", "#changeTargetBehavior" , function() {
 			console.log($('input#hoverTarget').val());
 			objectFound.hoverTargetBehavior =  $( "#targetSelect option:selected" ).val();
-			alert(objectFound.hoverTargetBehavior);
 			objectFound.setHover(objectFound.hover,objectFound.hoverDelay);
 		});
 		// delete event hanlder
@@ -2139,6 +2170,7 @@ TEXT BLOCKS CASE
 		else{
 			sliderValue = 100;
 		}
+		
 		$('#opacitySlider .ui-slider-range').css('background', backgroundColor );
   		$('#opacitySlider .ui-slider-handle').css('border-color', backgroundColor);
 		$('#opacityPercent').text(' '+sliderValue+'%');
