@@ -1561,7 +1561,7 @@ var editWindow =  function(e) {
 	$(".backgroundColorChange").off("change.color");
 	$(".backgroundColorChange").on("change.color", function(event, color){
 		if(color == '#0000ffff'){
-			color = 'rgba(0,0,0,.1)';	
+			color = 'rgba(0,0,0,0)';	
 			$(".backgroundColorChange").val(color);
 		}
     	$('#'+selectedModule).css('background-color', color);
