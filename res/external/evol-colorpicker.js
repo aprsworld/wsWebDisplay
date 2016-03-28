@@ -162,11 +162,11 @@ $.widget( "evol.colorpicker", {
 			labels=opts.strings.split(',');
 
 		var h='<div class="evo-pop'+_ie+' ui-widget ui-widget-content ui-corner-all"'+
-			(this._isPopup?' style="position:absolute"':'')+'>'+
+			(this._isPopup?' style="position:absolute; left: -20px;"':'')+'>'+
 			// palette
 			'<span>'+this['_paletteHTML'+pIdx]()+'</span>'+
-			// links
-			'<div class="evo-more"><a href="javascript:void(0)">'+labels[1+pIdx]+'</a>';
+			// links (DISABLED CURRENTLY - uncomment to re-enable)
+			'<div class="evo-more">'/*<a href="javascript:void(0)">'+labels[1+pIdx]+'</a>'*/;
 		if(opts.history){
 			//h+='<a href="javascript:void(0)" class="evo-hist">'+labels[5]+'</a>';
 		}
@@ -261,7 +261,6 @@ $.widget( "evol.colorpicker", {
 		h+='</tr></table>';
 		return h; 
 	},
-	//TODO INSERT TRANSPARENT
 	_paletteHTML2: function() {
 		var i, iMax,
 			oTD='<td style="background-color:#',
@@ -283,6 +282,9 @@ $.widget( "evol.colorpicker", {
 		// gray scale colors
 		var h2='';
 		h+=oTableTR;
+			//MY CODE - added transparent color to greyscale
+			h+='<td class="evo-transparent style="background-color:#0000ffff'+cTD
+			h2+='<td class="evo-transparent style="background-color:#0000ffff'+cTD
 		for(i=255;i>10;i-=10){
 			h+=oTD+int2Hex3(i)+cTD;
 			i-=10;

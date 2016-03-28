@@ -681,7 +681,7 @@ function timer(){
 	
 	treeRefreshTimer = treeRefreshTimer+1;
 	var convertedLoad = secToTime(loadedTime);
-	$('#timer').html("<span> "+convertedLoad+' since page was loaded</span> <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
+	$('#timer').html("<span> "+convertedLoad+' since page was loaded</span>  <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
 	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
 	if(time > 30){
 		
@@ -1571,6 +1571,9 @@ var editWindow =  function(e) {
 	
 	$(".backgroundColorChange").off("change.color");
 	$(".backgroundColorChange").on("change.color", function(event, color){
+		if(color == '#0000ffff'){
+			color = 'rgba(0,0,0,.1)'	
+		}
     	$('#'+selectedModule).css('background-color', color);
 		$('#opacitySlider .ui-slider-range').css('background', color );
   		$('#opacitySlider .ui-slider-handle').css('border-color', color);
