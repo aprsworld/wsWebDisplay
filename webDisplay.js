@@ -1454,44 +1454,33 @@ function refreshTreeData(newData){
 				newD = newData[objectKeys][subkey];
 				//console.log(oldD);
 				
-				if(typeof oldD === 'undefined'){
+				if(typeof oldD === 'undefined' || typeof newD !=='object'){
 					//console.log('undefined');	
 					//console.log(newD);
 					oldD = newD;
-				}
-				if(typeof newD !== 'object'){
-						//console.log('non-object');
-						//console.log(newD);
-						oldD = newD;
 				}
 				else{
 					
 					
 					for(var levelThree in newD){
 						Object.keys( newD).forEach(function(key1){	
-							
-							if(typeof newD[key1] !== 'object'){
-									//console.log('non-object');
-									//console.log(newD);
-									oldD[key1] = newD[key1];
-									/*if(objectKeys == 'Unconfigured'){ //debug
-										console.log(newData[objectKeys]);
-										console.log(newD[key1]);
-									}*/
-							
+							if(typeof oldD[key1] === 'undefined' || typeof newD !=='object'){
+								//console.log('undefined');	
+								//console.log(newD);
+								oldD[key1] = newD[key1];
 							}
 							else{
-							Object.keys( newD[key1]).forEach(function(key2){
-								oldD[key1][key2] = newD[key1][key2];
-								if(oldD[key1][key2] === 'undefined'){ //debug
-									//console.log('undefined');
-									//console.log(oldD[key1])	
-								}
-								if(objectKeys == 'Unconfigured'){ //debug
+								Object.keys( newD[key1]).forEach(function(key2){
+									oldD[key1][key2] = newD[key1][key2];
+									if(oldD[key1][key2] === 'undefined'){ //debug
+										//console.log('undefined');
+										//console.log(oldD[key1])	
+									}
+									if(objectKeys == 'Unconfigured'){ //debug
 
-									//console.log(newD[key1][key2]);
-								}
-							});
+										//console.log(newD[key1][key2]);
+									}
+								});
 							}
 						});
 					}
@@ -1572,11 +1561,13 @@ var editWindow =  function(e) {
 	$(".backgroundColorChange").off("change.color");
 	$(".backgroundColorChange").on("change.color", function(event, color){
 		if(color == '#0000ffff'){
-			color = 'rgba(0,0,0,.1)'	
+			color = 'rgba(0,0,0,.1)';	
+			
 		}
     	$('#'+selectedModule).css('background-color', color);
 		$('#opacitySlider .ui-slider-range').css('background', color );
   		$('#opacitySlider .ui-slider-handle').css('border-color', color);
+		
 	});
 	$('#hideModule,#deleteModule').show();
 	
@@ -2123,6 +2114,9 @@ TEXT BLOCKS CASE
 		
 		$(".textColorChange").off("change.color");
 		$(".textColorChange").on("change.color", function(event, color){
+			if(color == '#0000ffff'){
+				color = 'rgba(0,0,0,.1)'	
+			}
 			objectFound.fontColorChange(color);
 		});
 		
@@ -2473,6 +2467,9 @@ DATA CELLS CASE
 		//delegate even handler for mousing over 
 		$(".textColorChange").off("change.color");
 		$(".textColorChange").on("change.color", function(event, color){
+			if(color == '#0000ffff'){
+			color = 'rgba(0,0,0,.1)'	
+		}
 			objectFound.fontColorChange(color);
 		});	
 
