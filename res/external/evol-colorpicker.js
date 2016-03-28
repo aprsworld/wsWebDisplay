@@ -191,8 +191,17 @@ $.widget( "evol.colorpicker", {
 				h+='</div>';
 		// indicator
 		if(opts.displayIndicator){
-			var curEle = jQuery('.selectedShadow').css('background-color');
-			
+			console.log(this._id);
+			var curEle;
+			if(this._id == 'evo-cp0'){
+				curEle = jQuery('.selectedShadow').css('background-color');
+			}
+			else if(this._id == 'evo-cp1'){
+				curEle = jQuery('.selectedShadow').css('color');
+			}
+			else{
+				curEle = 'Unknown Color';	
+			}
 			h+=this._colorIndHTML(/*this.options.color*/ curEle )+this._colorIndHTML('');
 		}
 		h+='</div>';
