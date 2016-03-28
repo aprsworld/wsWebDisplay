@@ -1562,7 +1562,7 @@ var editWindow =  function(e) {
 	$(".backgroundColorChange").on("change.color", function(event, color){
 		if(color == '#0000ffff'){
 			color = 'rgba(0,0,0,.1)';	
-			
+			$(".backgroundColorChange").val(color);
 		}
     	$('#'+selectedModule).css('background-color', color);
 		$('#opacitySlider .ui-slider-range').css('background', color );
@@ -2468,8 +2468,8 @@ DATA CELLS CASE
 		$(".textColorChange").off("change.color");
 		$(".textColorChange").on("change.color", function(event, color){
 			if(color == '#0000ffff'){
-			color = 'rgba(0,0,0,.1)'	
-		}
+				color = 'rgba(0,0,0,.1)'	
+			}
 			objectFound.fontColorChange(color);
 		});	
 
