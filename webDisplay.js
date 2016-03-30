@@ -542,7 +542,7 @@ function dynamicUpdate(data) {
 						cameraDataSize = cameraDataSize + ref(data, objectFound.path.replace('image_url','image_size'));
 						console.log(cameraDataSize);
 						//calculate data transferred now that image has fully loaded
-						calculateDownload();
+						$('#bytesReceived').html(calculateDownload());
 
 					}
 				}
@@ -1503,11 +1503,7 @@ function refreshTreeData(newData){
 									oldD[key1][key2] = newD[key1][key2];
 									if(oldD[key1][key2] === 'undefined'){ //debug
 										//console.log('undefined');
-										//console.log(oldD[key1])	
-									}
-									if(objectKeys == 'Unconfigured'){ //debug
-
-										//console.log(newD[key1][key2]);
+										console.log(oldD[key1])	
 									}
 								});
 							}

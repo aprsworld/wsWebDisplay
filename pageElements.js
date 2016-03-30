@@ -1533,7 +1533,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.setNaturalDimensions(height, width);
 		cell_arr.push(camObj);
 		
-		calculateDownload();
+		$('#bytesReceived').html(calculateDownload());
 
 
 	});	
