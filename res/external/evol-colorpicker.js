@@ -170,7 +170,7 @@ $.widget( "evol.colorpicker", {
 		if(opts.history){
 			//h+='<a href="javascript:void(0)" class="evo-hist">'+labels[5]+'</a>';
 		}
-		h+='</div>';
+		h+='<hr></div>';
 		//MY ADDITION
 		h+='<table class="evo-palette"><tr><th class="ui-widget-content">'+
 					labels[5]+'</th></tr></tr></table>'+
@@ -188,7 +188,7 @@ $.widget( "evol.colorpicker", {
 						}
 					}
 				}
-				h+='</div>';
+				h+='</div><hr><p>Current Color/New Color</p>';
 		// indicator
 		if(opts.displayIndicator){
 			console.log(this._id);

@@ -332,8 +332,34 @@ var pageSettings = function() {
 	this.layoutList;
 	this.currentLayoutIndex;
 	this.cycleInterval = 10000;
+	this.pageTable = new Array();
 }
 extend(pageSettings, pageElement);
+
+pageSettings.prototype.addToTable = function(path, value){
+	if(!this.tableHasItem(path)){
+		this.pageTable[path] = value;
+	}
+	console.log(this.pageTable);
+}
+
+pageSettings.prototype.tableHasItem = function(key){
+	return this.pageTable.hasOwnProperty(key);
+}
+
+pageSettings.prototype.isTableItemCurrent = function(key, newValue){
+	if(this.pageTable[key] != newValue){
+		this.pageTable[key] = newValue;
+		return false;	
+	}
+	else{
+		return true;	
+	}
+}
+
+pageSettings.prototype.removeTableEntry = function(key){
+	delete this.pageTable[key];	
+}
 
 pageSettings.prototype.backgroundColorChange = function(color){
 	this.backgroundColor = color;
@@ -1488,8 +1514,6 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	$('#'+camId).css('top',pageY);
 	$('#'+camId).css('left',pageX); 
 	$('#preload_'+camId).load(function() {
-				console.log('loaded - we should call setNatDimensions now');
-
 		var src = $(this).attr("src");
 		$('#'+camId).css('background-image','url('+value+')');
 		console.log('test'); 
@@ -1505,8 +1529,12 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		var height = $('#'+camId).children('img').height();	
 		var hov = true;
 		var delay = 1;
+
 		camObj.setNaturalDimensions(height, width);
 		cell_arr.push(camObj);
+		
+		calculateDownload();
+
 
 	});	
 	$('#preload_'+camId).attr('src', value);
@@ -1568,7 +1596,8 @@ pageCam.prototype.removeSelf = function(){
 		$('#'+objId).remove();
 		$('#preload_'+objId).remove();
 		console.log(cell_arr);
-
+		
+		
 	}
 
 /***********************************************************************************

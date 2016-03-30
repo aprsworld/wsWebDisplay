@@ -20,6 +20,8 @@ var topOffSet = 0;
 var leftOffSet = 0;
 var timedOut = false;
 var updatelock = false;
+var cameraDataSize = 0;
+var dataTransferred = 0;
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized
@@ -498,7 +500,13 @@ function ref(obj, str) {
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate(data) {
 	var idLength = cell_arr.length;
-	var value, cellObj, id, label, loadingObject;
+	var value, cellObj, id, label, loadingObject, pageObj;
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	pageObj= cell_arr[pageElementPos];
+	if(typeof pageObj.pageTable === 'undefined'){
+		pageObj.pageTable = new Array();
+	}
 	//console.log('update');
     cell_arr.forEach(function(objectFound){	
 		// since the object array has textblocks and img blocks, we need to weed them out
@@ -528,6 +536,15 @@ function dynamicUpdate(data) {
 					$('#'+cam).find('img').attr('src', src);
 					objectFound.src = src;
 					objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
+					//access table in pagesettings object to see if this image has already been loaded by the browser in another element - if not, we add the size of the image to the data counter
+					if(!pageObj.isTableItemCurrent(objectFound.path,objectFound.src)){
+						//get size of image
+						cameraDataSize = cameraDataSize + ref(data, objectFound.path.replace('image_url','image_size'));
+						console.log(cameraDataSize);
+						//calculate data transferred now that image has fully loaded
+						calculateDownload();
+
+					}
 				}
 				$('#'+cam).css('background-image', 'url('+src+')');	
 			});
@@ -694,7 +711,11 @@ function clickToCreate(item, data, x ,y){
 	var id = $(item).closest('.jstree-node').attr('id');
 	var cellCount = cell_arr.length;
 	console.log(cellCount);
-	var obj, new_id; 
+	var obj, pageObj, new_id; 
+	
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	pageObj= cell_arr[pageElementPos];
 	
 	//if data cell or log
 	if($('#'+id).hasClass('dataDraggable') || $('#'+id).hasClass('jstree-leaf')){
@@ -838,6 +859,13 @@ function clickToCreate(item, data, x ,y){
 		if(sendPath == 'undefined'){
 			sendPath = path;
 			
+		}
+		pageObj.addToTable(path, sendPath);
+		console.log(pageObj.pageTable);
+		if(!pageObj.tableHasItem(obj.path) || !pageObj.isTableItemCurrent(obj.path,obj.src)){
+			//get size of image
+			cameraDataSize = cameraDataSize + ref(dataOld, obj.path.replace('image_url','image_size'));
+			console.log(cameraDataSize);
 		}
 		console.log(sendPath);
 		obj.createHtml(cellCount, sendPath, x, y);
@@ -1207,8 +1235,8 @@ function data_update(data) {
 	if(!updatelock){
 	refreshTreeData(data);
 	}
-	
-	$('#bytesReceived').html(calculateDownload(this.rx_data_counter()));
+	dataTransferred = this.rx_data_counter();
+	$('#bytesReceived').html(calculateDownload());
 	var x = $(document).ready(function() {
 		
 		$( document ).off( "click", "#refreshTree" );
@@ -1232,11 +1260,12 @@ function data_update(data) {
 }
 
 //calculates size for data counter
-function calculateDownload(size){
+function calculateDownload(){
 	var message;
 	var type;
-	var originalSize = size;
-	size = size/1024; //convert to KB
+	var originalSize = dataTransferred+cameraDataSize;
+	var size = (dataTransferred+cameraDataSize)/1024; //convert to KB
+	console.log(size);
 	type = ' KB';
 	if(size >= 1024){
 		size = size/1024;//convert to MB
@@ -1890,6 +1919,9 @@ CAMERA CASE
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		objectFound.setSelected();
+		if(typeof objectFound === 'undefined'){
+			return;	
+		}
 		objectFound.setWidthHeightFields();
 		console.log(pageObjectFound);
 		pageObjectFound.updateElementDimensions(objectFound);
