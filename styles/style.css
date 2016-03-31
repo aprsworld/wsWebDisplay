@@ -232,15 +232,18 @@ select{
 	border: 2px solid black;
 	padding: 16px;
 }
-.dataLog h2{
-	color: #333 !important;
+.dataLog>h2{
+	color:inherit !important;
 }
 .logContainer{
 	height: 250px;
 	overflow: auto;	
 	border-top: 1px solid #333;
 }
+
 .logEntry{
+	color:inherit;
+	font-size: inherit;
 	margin: 0 2px;
 	padding: 0 1px;
 	border: 1px #333 solid;

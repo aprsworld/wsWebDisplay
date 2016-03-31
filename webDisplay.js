@@ -523,8 +523,7 @@ function dynamicUpdate(data) {
 			var currentCam;
 			
 			value = ref(data, objectFound.path);
-						objectFound.value = value;
-			
+			objectFound.value = value;
 			objectFound.dataType = typeof value;
 			currentCam = $("#"+objectFound.fullId);
 			currentCam = currentCam.attr('id');
@@ -640,7 +639,7 @@ function dynamicUpdate(data) {
 		//timeStamp = Math.floor(timeStamp);
 		value = ref(dataOld, objectFound.path);
 		console.log(value);
-					objectFound.value = value;
+		objectFound.value = value;
 
 		var readyToChange = objectFound.checkInterval(timeStamp.getTime());
 		//console.log(readyToChange);
@@ -1805,7 +1804,7 @@ PAGE EDIT CASE
 ******************************************************************/	
 	else if($(this).attr('id') == 'pageEdit'){
 		tempArray.length = 0;
-		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
+		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3').show();
 		$('#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 		
@@ -1905,7 +1904,7 @@ CAMERA CASE
 		$('#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3,#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3').hide();
 		$('.editWindow h2').text($(this).attr('title'));
-		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
+		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$('#accordion').accordion( "refresh" );
 		$(this).addClass('selectedShadow');
 		
@@ -2080,7 +2079,7 @@ TEXT BLOCKS CASE
 
 		id = $(this).attr('id');
 		$('.editWindow h2').text("Text "+id);
-		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
+		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$(this).addClass('selectedShadow');
 
 		body = $(this).children('p');
@@ -2235,7 +2234,7 @@ IMG BLOCKS CASE
 
 		//change title of edit window 
 		$('.editWindow h2').text("Image "+moduleContainer);
-		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');			
+		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$(this).addClass('selectedShadow');
 		
 		var objId = selectedModule;
@@ -2352,6 +2351,166 @@ IMG BLOCKS CASE
 		});
 	}
 /*****************************************************************
+DATA LOGS CASE
+******************************************************************/
+	else if($(this).hasClass('dataLog')){
+		//show the appropriate parts of the edit window
+		$('#hideDelRow, #zRow, #titleRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow').show();
+		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
+		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
+
+		$('#accordion').accordion( "refresh" );
+		id = $(this).attr('id');
+		var objId = id;	
+		var elementPos = cell_arr.map(function(x) {return x.parentId; }).indexOf(objId);
+		var objectFound = cell_arr[elementPos];
+		var backgroundColor = $('#'+objectFound.parentId).css('background-color');
+		console.log(objectFound);
+		$('.editWindow h2').text(objectFound.toolTip);
+		
+		//populate input fields with cell specific information
+		$('.backgroundColorChange').val($('#'+objectFound.parentId).css('background-color'));
+		$('.textColorChange').val($('#'+objectFound.parentId).css('color'));
+		$('.titleChange').val(objectFound.title);
+		$('#comboBoxInput').val($('#'+objectFound.parentId).css('font-size').slice(0, - 2))
+		
+		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
+		$(this).addClass('selectedShadow');
+
+		objectFound.setSelected();
+		tempArray.length = 0;
+		tempArray.push(objectFound);
+	
+		$( document ).off( "click", "#deleteModule"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#deleteModule" , function() {	
+			$("#"+selectedModule).remove();
+			objectFound.deleteElement();
+			$('.editWindow').hide(150);
+		});
+		
+		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
+		$('#zSlider').slider({
+			min: 0,
+			max: 100,
+			value: zIndex,
+			slide: function( event, ui ) {
+				objectFound.setZindex(ui.value);
+				//$('#'+moduleContainer).css('z-index', ui.value ); 
+			}
+		});
+		objectFound.setWidthHeightFields();
+		console.log(pageObjectFound);
+		pageObjectFound.updateElementDimensions(objectFound);
+		
+		
+		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousHeight" , function() {	
+			pageObjectFound.previousElementHeight();
+			objectFound.applyHeight();
+
+		});
+		$( document ).off( "click", "#resizePreviousWidth"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#resizePreviousWidth" , function() {	
+			pageObjectFound.previousElementWidth();
+			objectFound.applyWidth();
+
+		});
+		$( document ).off( "click", "#applyDimensions"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyDimensions" , function() {	
+			objectFound.applyWidthHeight();
+		});
+		$( document ).off( "click", "#applyWidthDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyWidthDim" , function() {	
+			objectFound.applyWidth();
+		});
+		$( document ).off( "click", "#applyHeightDim"); //unbind old events, and bind a new one
+		$( document ).on( "click", "#applyHeightDim" , function() {	
+			objectFound.applyHeight();
+		});
+		
+		$('#comboBoxInput').off('input');
+		$('#comboBoxInput').on('input', function() { 
+			console.log('fired');
+			var input = this;
+			setTimeout(function () {
+				var newSize = $(input).val(); // get the current value of the input field.
+				console.log(newSize);
+
+				objectFound.fontSizeChange(newSize);
+			}, 100);
+		});
+		
+		//delegate even handler for mousing over 
+		$(".textColorChange").off("change.color");
+		$(".textColorChange").on("change.color", function(event, color){
+			if(color == '#0000ffff'){
+				color = 'rgba(0,0,0,.1)'	
+			}
+			objectFound.fontColorChange(color);
+		});	
+
+		//title change event handler
+		$( document ).off( "keyup", "input.titleChange"); //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.titleChange" , function() {	
+			var text = titleChange.val();
+			objectFound.setTitle(text);
+		});
+		// label change event handler
+		$( document ).off( "keyup", "input.labelChange"); //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.labelChange" , function() {	
+			//label.text(htmlEntities(labelChange.val()));
+			console.log(labelChange.val());
+			if(labelChange.val() == ''){
+				var text = htmlEntities(labelChange.val());
+				objectFound.setLabelOverride(false, text);
+				console.log(objectFound.labelOverride);
+			}
+			else{
+				var text = htmlEntities(labelChange.val());
+				objectFound.setLabelOverride(true, text);
+			}
+		});
+		
+		//background color input change event handler
+		$( document ).off( "keyup", "input.backgroundColorChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.backgroundColorChange" , function() {	
+			var enteredColor = bgColor.val();
+			objectFound.backgroundColorChange(enteredColor);
+		});
+		//color input change event handler
+		$( document ).off( "keyup", "input.textColorChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.textColorChange" , function() {	
+			var enteredTextColor = textColor.val();
+			$('#'+moduleContainer).css('color', enteredTextColor);
+		});
+		var sliderValue;
+		if(backgroundColor.indexOf('rgba') >= 0){
+			var splitColor =  backgroundColor.split(',');
+			sliderValue = Math.round(parseFloat(splitColor[3].slice(0, - 1), 10)*100);
+		}
+		else{
+			sliderValue = 100;
+		}
+		$('#opacitySlider .ui-slider-range').css('background', backgroundColor );
+  		$('#opacitySlider .ui-slider-handle').css('border-color', backgroundColor);
+		$('#opacityPercent').text(' '+sliderValue+'%');
+		//opacity slider setup
+		$('#opacitySlider').slider({
+			min: 1,
+			max: 100,
+			range: "min",
+			value: sliderValue,
+			slide: function( event, ui ) {
+				var opacity = $(this).slider('value', ui.value);
+				objectFound.setOpacity(opacity, ui);
+			}
+		});
+		$( document ).off( "click", "#hideModule") //unbind old events, and bind a new one
+		$( document ).on( "click", "#hideModule" , function() {
+			objectFound.setHidden(objectFound.parentId);				
+		});
+	}
+/*****************************************************************
 DATA CELLS CASE
 ******************************************************************/
 	else if($(this).hasClass('tr')){
@@ -2365,7 +2524,7 @@ DATA CELLS CASE
 		moduleContainer = $(this).attr('id');
 		//change title of edit window
 		$('.editWindow h2').text($(this).attr('title'));
-		$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
+		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$(this).addClass('selectedShadow');
 
 		//find parts of the data cell and assign them to a variable
@@ -2404,7 +2563,6 @@ DATA CELLS CASE
 		objectFound.setWidthHeightFields();
 		console.log(pageObjectFound);
 		pageObjectFound.updateElementDimensions(objectFound);
-		
 		
 		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizePreviousHeight" , function() {	
@@ -2559,7 +2717,6 @@ DATA CELLS CASE
 			range: "min",
 			value: sliderValue,
 			slide: function( event, ui ) {
-				console.log('BLAH');
 				var opacity = $(this).slider('value', ui.value);
 				objectFound.setOpacity(opacity, selectedModule, ui);
 			}
@@ -2598,7 +2755,7 @@ function edit(handler) {
 	});
 		$('.gridlines').css("display","block");
 	$('#masterEdit').css('background-color','green');
-	$('.tr').css('cursor','pointer');
+	$('.tr, .dataLog').css('cursor','pointer');
 	$('.textBlockContainer').css('cursor','pointer');
 	$('.hide').css('visibility','visible');
 	$('.controls').show();
@@ -2606,7 +2763,7 @@ function edit(handler) {
 	
 	//delegate events
 	//$('.top-container').delegate('.tr','click', editWindow);
-	$('#content').delegate('.tr, .textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);	
+	$('#content').delegate('.tr, .dataLog, .textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);	
 	
 	//$('#content').delegate('.imgBlockContainer','click',editWindow);
 	//$('#content').delegate('.imgCamContainer','click',editWindow);
@@ -2619,15 +2776,16 @@ function edit(handler) {
 	$(".draggable").draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 	$('.textBlockContainer').draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 	$('.imgBlockContainer').draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
+	$('.dataLog').draggable( "option", "disabled", false ).resizable( "option", "disabled", false );
 }
 function nonEdit(handler) {
 	editMode = false;	
 	$( document ).off('keyup');
 		$('.gridlines').css("display","none");
 	$('#masterEdit').css('background-color',' rgba(222,222,222,.0)');
-	$('.imgBlockContainer, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');
+	$('.imgBlockContainer, .textBlockContainer, .dataLog, .imgCamContainer, .tr').removeClass('selectedShadow');
 	$('#masterEdit').attr('onclick', 'edit()');
-	$('.tr').css('cursor','initial');
+	$('.tr, .dataLog').css('cursor','initial');
 	$('.textBlockContainer').css('cursor','initial');
 	$('.hide').css('visibility', 'hidden');
 	$('.editWindow').hide(150);
@@ -2635,7 +2793,7 @@ function nonEdit(handler) {
 	$("#editMaximize").hide();
 	$("#editMinimize").hide();
 	//delegate events
-	$('#content').undelegate('.tr, .textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);
+	$('#content').undelegate('.tr, .dataLog, .textBlockContainer, .imgBlockContainer, .imgCamContainer','click', editWindow);
 	//$('.top-container').undelegate('.tr','click', editWindow);
 	//$('#content').undelegate('.imgBlockContainer','click',editWindow);
 	//$('#content').undelegate('.imgCamContainer','click',editWindow);
@@ -2648,6 +2806,7 @@ function nonEdit(handler) {
 	$(".draggable").draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 	$('.textBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 	$('.imgBlockContainer').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
+	$('.dataLog').draggable( "option", "disabled", true ).resizable( "option", "disabled", true );
 }
 //function that allows for the safe decoding of html entities	
 function htmlEntities(str) {
@@ -2729,6 +2888,14 @@ function loadState(jsonString){
 			configObject[k].__proto__ = cell.__proto__;
 			cell_arr.push(configObject[k]);
 			configObject[k].loadHtml();
+
+		}
+		else if(configObject[k].elementType == 'pageLog'){
+			var log = new pageLog();
+			console.log(cell);
+			configObject[k].__proto__ = log.__proto__;
+			configObject[k].loadHtml();
+			cell_arr.push(configObject[k]);
 
 		}
 		else if(configObject[k].elementType == 'pageCam'){

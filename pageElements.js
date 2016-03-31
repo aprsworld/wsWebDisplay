@@ -591,7 +591,7 @@ var pageLog = function(){
 	this.head = null;
 	this.tail = null;
 	this._length = 0;
-	this.interval = 5000; //in milliseconds
+	this.interval = 60000; //in milliseconds
 }
 extend(pageLog, pageElement);
 
@@ -607,7 +607,27 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.count = cellCount;	
 }
 pageLog.prototype.loadHtml = function(){
+	var logId = this.parentId;
+	console.log(this);
+	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
+	this.setDrag();
+	this.setResize();
+	if(this.hidden){
+		$('#'+this.parentId).addClass('hide');
+		console.log($('#'+this.parentId).attr('class'));
+		if(editMode == false){
+			$('#'+this.parentId).css('visibility','hidden');
+		}
+	}	
 	
+	if(editMode == false){
+		$('#'+this.parentId).draggable({disabled:true});
+		$('#'+this.parentId).resizable({disabled:true});
+	}
+	else{
+		$('#'+this.parentId).draggable({disabled:false});
+		$('#'+this.parentId).resizable({disabled:false});
+	}
 }
 /*
 *	the structure for an entry will be that of a doubly linked list. Therefore it will have to be its own object with a pointer
@@ -812,6 +832,54 @@ pageLog.prototype.setResize = function(){
 			thisObj.onChangeStyle();
 		}
 	});
+	
+}
+pageLog.prototype.fontSizeChange = function(size){
+	var containerId = this.parentId;
+	size = size.trim();
+	$('#'+containerId).css('font-size', size+'px');
+	/*var style = this.getStyle();
+	this.setStyle(style);*/
+}
+pageLog.prototype.setTitle = function(text){
+	var containerId = this.parentId;
+	if(text == ''){
+		$('#'+containerId).children('h2').text(text);	
+	}
+	else{
+		$('#'+containerId).children('h2').text(text);	
+			
+	}
+	this.title = text;
+}
+pageLog.prototype.fontColorChange = function(color){
+	var containerId = this.parentId;
+	$('#'+containerId).css('color', color);
+	/*var style = this.getStyle();
+	this.setStyle(style);*/
+}
+pageLog.prototype.setOpacity = function(opacity, ui) {
+	var containerId = this.parentId;	
+	opacity = opacity.toString();
+	var newColor;
+	var selectedModule = containerId;
+	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
+		console.log(ui.value);
+		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+(Math.round(ui.value)*.01).toFixed(2)+')').replace('rgb', 'rgba');
+	}
+	else{
+		var currentColor = $('#'+selectedModule).css('background-color');
+		var splitColor = currentColor.split(',');
+				console.log(ui.value);
+
+		newColor = splitColor[0] + "," + splitColor[1] + "," + splitColor[2] + "," + (Math.round(ui.value)*.01).toFixed(2) + ')';
+		$('#opacityPercent').text(' '+Math.round(ui.value)+'%');
+	}
+	$('#'+selectedModule).css('background-color', newColor);
+	$('.backgroundColorChange').val(''+newColor);
+	$('#opacitySlider .ui-slider-range').css('background', newColor );
+	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
+	
 }
 /***********************************************************************************
 * DATA CELL OBJECT
@@ -940,6 +1008,8 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	var style = this.getStyle();
 	this.setStyle(style);
 }
+
+//This function defines how resizing works for data cells
 pageCell.prototype.setResize = function(){
 	var handleTarget;
 	var thisObj = this;		
@@ -1514,19 +1584,29 @@ pageCam.prototype.camCrop = function(){
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	var camId = this.fullId;
 	var camObj = this; 
-	console.log(camId); 
+
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+camId+'" >');
 	$('.top-container').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
+	
+	//set resize and drag
 	camObj.setResize();
-		camObj.setDrag();
-	$('#'+camId).css('position', 'absolute'); 
-	$('#'+camId).css('display','inline-block');
-	$('#'+camId).css('top',pageY);
-	$('#'+camId).css('left',pageX); 
+	camObj.setDrag();
+	
+	//set css properties
+	$('#'+camId).css({
+		"position":"absolute",
+		"display":"inline-block",
+		"top":pageY,
+		"left":pageX
+	});
+	
+	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
+	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the 
+	//real image once it is completely loaded.
 	$('#preload_'+camId).load(function() {
 		var src = $(this).attr("src");
 		$('#'+camId).css('background-image','url('+value+')');
-		console.log('test'); 
+
 		camObj.hoverable = true;
 		camObj.suppressed = true;
 		camObj.hoverDelay = 1;
@@ -1534,6 +1614,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.cropped = false;	
 		camObj.count = cellCount; 
 		camObj.src = value;
+		
 		var currentMode = editMode
 		var width = $('#'+camId).children('img').width();
 		var height = $('#'+camId).children('img').height();	
@@ -1543,34 +1624,48 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.setNaturalDimensions(height, width);
 		cell_arr.push(camObj);
 		
+		//calcluate download
 		$('#bytesReceived').html(calculateDownload());
 
 
 	});	
+	
+	//update src after .load is called
+
 	$('#preload_'+camId).attr('src', value);
 }
+
 pageCam.prototype.loadHtml = function(){
-	console.log(this.style);
+	
 	var camId = this.fullId;
 	var camObj = this;
-	console.log(this.path);
-	console.log(dataOld);
+	
+	//get the image src value
 	var updatedPath = ref(dataOld, this.path);
 	if(typeof updatedPath === 'undefined'){
 		updatedPath = 'images/unavailable.svg';
 	}
+	
 	camObj.src = updatedPath;
 	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
+	
+	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
+	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the 
+	//real image once it is completely loaded.
 	$('#preload_'+camId).load(function() { 
 		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src="'+updatedPath+'"></div>');
 		$('#'+camObj.parentId).attr('style', camObj.style);
-		console.log(camObj.style);
+		
 		$('#'+camObj.parentId).css('background-image', 'url('+updatedPath+')');
-		console.log($('#'+camObj.parentId).attr('src'));
+		
+		//Allow dragging and resizing as well as a pop-out hover image
 		camObj.setDrag();
 		camObj.setResize();
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
+		
+		//if we are not in edit mode when loading, we want dragging and resizing to be disabled until
+		//we enter edit mode.
 		if(editMode == false){
 			$('#'+camObj.parentId).draggable({disabled:true});
 			$('#'+camObj.parentId).resizable({disabled:true});
@@ -1579,8 +1674,8 @@ pageCam.prototype.loadHtml = function(){
 			$('#'+camObj.parentId).draggable({disabled:false});
 			$('#'+camObj.parentId).resizable({disabled:false});
 		}
-		//cell_arr.push(camObj);
-		console.log(camObj.hidden);
+		
+		//if the loaded object states that it is hidden, we grant the new element the 'hide' class.
 		if(camObj.hidden){
 			$('#'+camObj.parentId).addClass('hide');
 			console.log($('#'+camObj.parentId).attr('class'));
@@ -1588,24 +1683,31 @@ pageCam.prototype.loadHtml = function(){
 				$('#'+camObj.parentId).css('visibility','hidden');
 			}
 		}	
+		
+		//we locate the pageSettings element in our object array so that we can update its hashtable with
+		//the path to our camera.
 		var pageObjId = 'pageSettings';	
 		var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 		var pageObj= cell_arr[pageElementPos];
-		console.log(pageObj);
+		
+		//add the path to the hash table
 		pageObj.addToTable(camObj.path, updatedPath);
-				console.log(updatedPath);
-
+		
+		//if table does not already have this image or the current image src is not up to date, add this image to the hash table.
 		if(!pageObj.tableHasItem(camObj.path) || !pageObj.isTableItemCurrent(camObj.path,camObj.src)){
 			//get size of image
 			var image_size = ref(dataOld, camObj.path.replace('image_url','image_size'));
 			if(typeof image_size === 'number'){
 				cameraDataSize = cameraDataSize + image_size;
 				console.log(cameraDataSize);
+				
+				//calculate the image size and upate the byte counter
 				$('#bytesReceived').html(calculateDownload());
 			}
 		}
 	});
 	
+	//update src after .load is called
 	$('#preload_'+camId).attr('src', updatedPath);
 	
 
