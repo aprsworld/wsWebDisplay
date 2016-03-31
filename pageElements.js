@@ -591,7 +591,7 @@ var pageLog = function(){
 	this.head = null;
 	this.tail = null;
 	this._length = 0;
-	this.interval = 60000; //in milliseconds
+	this.interval = 1000; //in milliseconds
 }
 extend(pageLog, pageElement);
 
