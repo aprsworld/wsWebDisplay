@@ -1597,10 +1597,12 @@ pageCam.prototype.loadHtml = function(){
 
 		if(!pageObj.tableHasItem(camObj.path) || !pageObj.isTableItemCurrent(camObj.path,camObj.src)){
 			//get size of image
-			cameraDataSize = cameraDataSize + ref(dataOld, camObj.path.replace('image_url','image_size'));
-			console.log(cameraDataSize);
-			$('#bytesReceived').html(calculateDownload());
-
+			var image_size = ref(dataOld, camObj.path.replace('image_url','image_size'));
+			if(typeof image_size === 'number'){
+				cameraDataSize = cameraDataSize + image_size;
+				console.log(cameraDataSize);
+				$('#bytesReceived').html(calculateDownload());
+			}
 		}
 	});
 	
