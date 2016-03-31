@@ -336,14 +336,20 @@ var pageSettings = function() {
 }
 extend(pageSettings, pageElement);
 
+/*
+*	Functions for hash table that keeps track of what elements are on the page
+*/
 pageSettings.prototype.addToTable = function(path, value){
-	if(!this.tableHasItem(path)){
+	if(typeof this.pageTable !== 'undefined' && !this.tableHasItem(path)){
 		this.pageTable[path] = value;
 	}
 	console.log(this.pageTable);
 }
 
 pageSettings.prototype.tableHasItem = function(key){
+	if(typeof this.pageTable === 'undefined'){
+		return false;
+	}
 	return this.pageTable.hasOwnProperty(key);
 }
 
@@ -360,6 +366,10 @@ pageSettings.prototype.isTableItemCurrent = function(key, newValue){
 pageSettings.prototype.removeTableEntry = function(key){
 	delete this.pageTable[key];	
 }
+
+/*
+*	End of functions for hashtable
+*/
 
 pageSettings.prototype.backgroundColorChange = function(color){
 	this.backgroundColor = color;
@@ -1578,6 +1588,20 @@ pageCam.prototype.loadHtml = function(){
 				$('#'+camObj.parentId).css('visibility','hidden');
 			}
 		}	
+		var pageObjId = 'pageSettings';	
+		var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+		var pageObj= cell_arr[pageElementPos];
+		console.log(pageObj);
+		pageObj.addToTable(camObj.path, updatedPath);
+				console.log(updatedPath);
+
+		if(!pageObj.tableHasItem(camObj.path) || !pageObj.isTableItemCurrent(camObj.path,camObj.src)){
+			//get size of image
+			cameraDataSize = cameraDataSize + ref(dataOld, camObj.path.replace('image_url','image_size'));
+			console.log(cameraDataSize);
+			$('#bytesReceived').html(calculateDownload());
+
+		}
 	});
 	
 	$('#preload_'+camId).attr('src', updatedPath);
