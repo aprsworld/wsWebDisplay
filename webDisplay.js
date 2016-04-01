@@ -648,7 +648,7 @@ function dynamicUpdate(data) {
 		var timeStamp = new Date();
 		//timeStamp = Math.floor(timeStamp);
 		value = ref(dataOld, objectFound.path);
-		console.log(value);
+		value = round(parseFloat(value), objectFound.precision);
 		objectFound.value = value;
 
 		var readyToChange = objectFound.checkInterval(timeStamp.getTime());
@@ -2365,7 +2365,7 @@ DATA LOGS CASE
 ******************************************************************/
 	else if($(this).hasClass('dataLog')){
 		//show the appropriate parts of the edit window
-		$('#hideDelRow, #zRow, #titleRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow').show();
+		$('#hideDelRow, #zRow, #titleRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow, #resizePreviousRow').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
 		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 
@@ -2383,6 +2383,8 @@ DATA LOGS CASE
 		$('.textColorChange').val($('#'+objectFound.parentId).css('color'));
 		$('.titleChange').val(objectFound.title);
 		$('#comboBoxInput').val($('#'+objectFound.parentId).css('font-size').slice(0, - 2))
+		$('.roundingChange').val(objectFound.precision)
+
 		
 		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$(this).addClass('selectedShadow');
@@ -2479,6 +2481,20 @@ DATA LOGS CASE
 				var text = htmlEntities(labelChange.val());
 				objectFound.setLabelOverride(true, text);
 			}
+		});
+		
+		$( document ).off( "keyup", "input.roundingChange") //unbind old events, and bind a new one
+		$( document ).on( "keyup", "input.roundingChange" , function() {	
+			objectFound.setPrecision($('.roundingChange').val());
+			console.log($("#"+id).text());
+			var findVal;
+			if(typeof objectFound.convertedValue === 'undefined'){
+				findVal = objectFound.value;//$('#'+selectedModule).find('.myTableValue').children('p').text();
+			}
+			else{
+				findVal = objectFound.convertedValue;//$('#'+selectedModule).find('.myTableValue').children('p').text();
+			}
+			$('#'+selectedModule).find('.myTableValue').children('p').text( round(parseFloat(findVal), objectFound.precision));
 		});
 		
 		//background color input change event handler

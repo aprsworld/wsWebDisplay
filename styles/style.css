@@ -224,31 +224,52 @@ select{
 	position: absolute;
 	
 	width: 420px;
-	height: auto;
-	background-color: #ddd;
-	color: #333;
+	height: 200px;
+	background-color: rgb(128,128,128);
+	color: #222;
 	overflow: hidden;
 		z-index: 100;
-	border: 2px solid black;
-	padding: 16px;
+	border: 1px solid;
+	padding: 0px;
+		border-color: #333;
+
 }
 .dataLog>h2{
 	color:inherit !important;
 }
 .logContainer{
-	height: 250px;
+	height: 100%;
 	overflow: auto;	
-	border-top: 1px solid #333;
+	border-top: 1px solid;
+
 }
 .logContainer table{
 	width: 100%;	
 }
+
 .logContainer th{
 	margin: auto;	
 	width: 50%;
+	border-bottom: 1px solid;
+	
+}
+.logContainer th:nth-child(2){
+	border-left: 1px solid;
+}
+.logContainer th:nth-child(1){
+	border-right: 1px solid;
 }
 .logContainer tr{
 	text-align: center;	
+}
+.logContainer tr td{
+	border-bottom: 1px solid;	
+}
+.logContainer tr td:nth-child(1){
+	border-right: 1px solid;	
+}
+.logContainer tr td:nth-child(2){
+	border-left: 1px solid;	
 }
 .logEntry{
 	color:inherit;
@@ -1065,6 +1086,21 @@ select.backgroundColorChange option{
 .fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
 .ui-state-disabled.ui-resizable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
 .ui-state-disabled.ui-draggable-disabled { opacity : 1 !important; filter: alpha(opacity = 50); }
+::-webkit-scrollbar
+{
+  width: 12px;  /* for vertical scrollbars */
+  height: 12px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 0.5);
+}
 .jstree-contextmenubtn { 
 	position:relative; 
 	cursor:pointer; 

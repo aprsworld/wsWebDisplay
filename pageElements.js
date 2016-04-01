@@ -595,9 +595,9 @@ var pageLog = function(){
 extend(pageLog, pageElement);
 
 pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
-		var logId = this.parentId;
-
-	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
+	var logId = this.parentId;
+	var tableId = this.parentId+'_table';
+	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	console.log(logId);
 	$('#'+logId).css('top',pageY);
 	$('#'+logId).css('left',pageX);
@@ -607,10 +607,12 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 }
 pageLog.prototype.loadHtml = function(){
 	var logId = this.parentId;
+			var tableId = this.parentId+'_table';
+
 	this.arrayToList();
 	console.log(this);
 	//$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
-	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
+	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	var length = this.nodeArray.length;
 	var index = 0;
 	for(index; index<length; index++){
@@ -657,22 +659,21 @@ pageLog.prototype.checkInterval = function(time){
 	var oldTime = this.tail.timeStamp;
 	var difference = time-oldTime;
 	if(difference > this.interval){
-		console.log('true');
 		return true;
 	}
 	else{
-		console.log('false');
 		return false;	
 	}
 };
 //creates a logEntry object and inserts it into the queue
 pageLog.prototype.push = function(time, currentTime, currentData){
+		var tableId = this.parentId+'_table';
+
 	if( this.tail == null || this.tail.timeStamp != time){
 		var node = new logEntry();
 		//case for a non-empty list
 		if (this._length) {
 			//removes first entry if the loglimit is reached
-			console.log(this._length+' '+this.logLimit);
 			if(this._length >= this.logLimit){
 				this.remove(1);
 			}
@@ -697,6 +698,7 @@ pageLog.prototype.push = function(time, currentTime, currentData){
 	} else {
 		console.log('duplicate');	
 	}
+
 };
 pageLog.prototype.listToArray = function() {
 	var currentNode, nextNode, previousNode, index;
@@ -915,6 +917,7 @@ pageLog.prototype.setTitle = function(text){
 pageLog.prototype.fontColorChange = function(color){
 	var containerId = this.parentId;
 	$('#'+containerId).css('color', color);
+	$('#'+containerId).css('border-color', color);
 	/*var style = this.getStyle();
 	this.setStyle(style);*/
 }
@@ -940,6 +943,16 @@ pageLog.prototype.setOpacity = function(opacity, ui) {
 	$('#opacitySlider .ui-slider-range').css('background', newColor );
 	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
 	
+}
+pageLog.prototype.setPrecision = function(value){
+	//need "||" because javascript interperets an empty string as zero
+	if(isNaN(value) || value == '' || parseInt(value) > 19){
+		this.precision = 0;
+	}
+	else{
+		this.precision = value;
+	}
+	console.log(this);
 }
 /***********************************************************************************
 * DATA CELL OBJECT
