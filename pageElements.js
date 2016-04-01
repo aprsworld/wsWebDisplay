@@ -617,7 +617,7 @@ pageLog.prototype.loadHtml = function(){
 	//$("#"+this.parentId).find('ol').append('<li class="logEntry" id="'+this.nodeArray[index].timeStamp.getTime()+'">'+this.nodeArray[index].timeStamp.getMonth()+'-'+this.nodeArray[index].timeStamp.getDay()+'-'+this.nodeArray[index].timeStamp.getFullYear()+' '+this.nodeArray[index].timeStamp.getHours()+':'+this.nodeArray[index].timeStamp.getMinutes()+':'+this.nodeArray[index].timeStamp.getSeconds()+'  |  '+ this.nodeArray[index].data +'</li>');
 		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ this.nodeArray[index].data +'</td></tr>');
 	}
-	this._length = this.nodeArray.length;
+	this._length = this.nodeArray.length+1;
 	this.nodeArray = null;
 	this.setDrag();
 	this.setResize();
