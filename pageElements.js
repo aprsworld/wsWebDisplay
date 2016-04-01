@@ -617,6 +617,7 @@ pageLog.prototype.loadHtml = function(){
 	//$("#"+this.parentId).find('ol').append('<li class="logEntry" id="'+this.nodeArray[index].timeStamp.getTime()+'">'+this.nodeArray[index].timeStamp.getMonth()+'-'+this.nodeArray[index].timeStamp.getDay()+'-'+this.nodeArray[index].timeStamp.getFullYear()+' '+this.nodeArray[index].timeStamp.getHours()+':'+this.nodeArray[index].timeStamp.getMinutes()+':'+this.nodeArray[index].timeStamp.getSeconds()+'  |  '+ this.nodeArray[index].data +'</li>');
 		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ this.nodeArray[index].data +'</td></tr>');
 	}
+	this._length = this.nodeArray.length;
 	this.nodeArray = null;
 	this.setDrag();
 	this.setResize();
@@ -666,12 +667,12 @@ pageLog.prototype.checkInterval = function(time){
 };
 //creates a logEntry object and inserts it into the queue
 pageLog.prototype.push = function(time, currentTime, currentData){
-	console.log(this.tail);
 	if( this.tail == null || this.tail.timeStamp != time){
 		var node = new logEntry();
 		//case for a non-empty list
 		if (this._length) {
 			//removes first entry if the loglimit is reached
+			console.log(this._length+' '+this.logLimit);
 			if(this._length >= this.logLimit){
 				this.remove(1);
 			}
@@ -788,7 +789,7 @@ pageLog.prototype.remove = function(position) {
     // 2nd use-case: the first node is removed
     if (position === 1) {
 		if (this.head){
-			var id = currentNode.timeStamp;
+			var id = this.parentId+'_'+currentNode.timeStamp;
         	this.head = currentNode.next;
 			this.head.previous = null;
 			$('#'+id).remove();
