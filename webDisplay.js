@@ -655,10 +655,10 @@ function dynamicUpdate(data) {
 		//console.log(readyToChange);
 		if(readyToChange){
 			var printTime = timeStamp.yyyymmddhhmmss();
-			objectFound.push(timeStamp.getTime(), objectFound.value);
+			objectFound.push(timeStamp.getTime(), printTime, objectFound.value);
 			//console.log('ready');
-			$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+printTime+'  |  '+ value +'</li>');
-
+			//$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+printTime+'  |  '+ value +'</li>');
+			$("#"+objectFound.parentId).find('tbody').append('<tr id="'+objectFound.parentId+'_'+timeStamp.getTime()+'"><td>'+printTime+'</td><td>'+ value +'</td></tr>');
 		}
 		//console.log(value);
 		

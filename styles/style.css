@@ -240,7 +240,16 @@ select{
 	overflow: auto;	
 	border-top: 1px solid #333;
 }
-
+.logContainer table{
+	width: 100%;	
+}
+.logContainer th{
+	margin: auto;	
+	width: 50%;
+}
+.logContainer tr{
+	text-align: center;	
+}
 .logEntry{
 	color:inherit;
 	font-size: inherit;

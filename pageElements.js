@@ -138,9 +138,7 @@ pageElement.prototype = {
 				}
 			},
 			drag: function(event, ui){
-				console.log(ui);
-				console.log(ui.position.top);
-				console.log($(window).scrollTop());
+				
 				var posTop = (Math.floor((ui.position.top-topOffSet) / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor((ui.position.left-leftOffSet) / thisObj.gridProps.size) * thisObj.gridProps.size);
 				ui.position.top = posTop;
@@ -599,7 +597,7 @@ extend(pageLog, pageElement);
 pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 		var logId = this.parentId;
 
-	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
+	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	console.log(logId);
 	$('#'+logId).css('top',pageY);
 	$('#'+logId).css('left',pageX);
@@ -611,12 +609,15 @@ pageLog.prototype.loadHtml = function(){
 	var logId = this.parentId;
 	this.arrayToList();
 	console.log(this);
-	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
+	//$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
+	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	var length = this.nodeArray.length;
 	var index = 0;
 	for(index; index<length; index++){
 	//$("#"+this.parentId).find('ol').append('<li class="logEntry" id="'+this.nodeArray[index].timeStamp.getTime()+'">'+this.nodeArray[index].timeStamp.getMonth()+'-'+this.nodeArray[index].timeStamp.getDay()+'-'+this.nodeArray[index].timeStamp.getFullYear()+' '+this.nodeArray[index].timeStamp.getHours()+':'+this.nodeArray[index].timeStamp.getMinutes()+':'+this.nodeArray[index].timeStamp.getSeconds()+'  |  '+ this.nodeArray[index].data +'</li>');
+		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ this.nodeArray[index].data +'</td></tr>');
 	}
+	this.nodeArray = null;
 	this.setDrag();
 	this.setResize();
 	if(this.hidden){
@@ -664,8 +665,8 @@ pageLog.prototype.checkInterval = function(time){
 	}
 };
 //creates a logEntry object and inserts it into the queue
-pageLog.prototype.push = function(time, currentData){
-	//console.log(this.tail);
+pageLog.prototype.push = function(time, currentTime, currentData){
+	console.log(this.tail);
 	if( this.tail == null || this.tail.timeStamp != time){
 		var node = new logEntry();
 		//case for a non-empty list
@@ -688,6 +689,7 @@ pageLog.prototype.push = function(time, currentData){
 			this.tail = node;
 		}
 		node.data = currentData;
+		node.timeValue = currentTime;
 		node.timeStamp = time;
 		this._length++;
 
