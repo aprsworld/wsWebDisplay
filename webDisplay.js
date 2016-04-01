@@ -238,7 +238,17 @@ Date.prototype.yyyymmdd = function() {
    var dd  = this.getDate().toString();
    return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
 };
-
+Date.prototype.yyyymmddhhmmss = function() {
+   var yyyy = this.getFullYear().toString();
+   var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+   var dd  = this.getDate().toString();
+   var h = this.getHours().toString();
+   var m = this.getMinutes().toString();
+   var s = this.getSeconds().toString();
+	
+   //prints yyyy-mm-dd h:m:s	
+   return yyyy +'-'+ (mm[1]?mm:"0"+mm[0]) +'-'+ (dd[1]?dd:"0"+dd[0]) +'  '+ (h[1]?h:"0"+h[0]) +':'+ (m[1]?m:"0"+m[0]) +':'+ (s[1]?s:"0"+s[0]); // padding
+};
 //converts seconds into a time format (hours:minutes:seconds)
 function ageTimer(){
 	var length, k, value, id;
@@ -644,10 +654,10 @@ function dynamicUpdate(data) {
 		var readyToChange = objectFound.checkInterval(timeStamp.getTime());
 		//console.log(readyToChange);
 		if(readyToChange){
-			
+			var printTime = timeStamp.yyyymmddhhmmss();
 			objectFound.push(timeStamp.getTime(), objectFound.value);
 			//console.log('ready');
-			$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+timeStamp.getMonth()+'-'+timeStamp.getDay()+'-'+timeStamp.getFullYear()+' '+timeStamp.getHours()+':'+timeStamp.getMinutes()+':'+timeStamp.getSeconds()+'  |  '+ value +'</li>');
+			$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+printTime+'  |  '+ value +'</li>');
 
 		}
 		//console.log(value);
@@ -2822,14 +2832,21 @@ function delHandle(objectFound){
 		}
 	}
 }
+
 function captureState(){
-	for(var k in cell_arr){
-		cell_arr[k].onChangeStyle();
-		console.log(cell_arr[k]);
+	var saveArr = $.map(cell_arr, function (obj) {
+                      return $.extend(true, {}, obj);
+                  });
+	for(var k in saveArr){
+		if(saveArr[k].elementType === 'pageLog'){
+			saveArr[k].listToArray();
+		}
+		saveArr[k].onChangeStyle();
+		console.log(saveArr[k]);
 	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
 	console.log(saveName);
-	var jsonString = JSON.stringify(cell_arr);
+	var jsonString = JSON.stringify(saveArr);
 	var configObject = JSON.parse(jsonString);
 	console.log(jsonString);
 	data_object.ValueSet(function(rsp){

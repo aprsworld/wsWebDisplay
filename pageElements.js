@@ -592,6 +592,7 @@ var pageLog = function(){
 	this.tail = null;
 	this._length = 0;
 	this.interval = 1000; //in milliseconds
+	this.nodeArray;
 }
 extend(pageLog, pageElement);
 
@@ -608,8 +609,14 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 }
 pageLog.prototype.loadHtml = function(){
 	var logId = this.parentId;
+	this.arrayToList();
 	console.log(this);
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
+	var length = this.nodeArray.length;
+	var index = 0;
+	for(index; index<length; index++){
+	//$("#"+this.parentId).find('ol').append('<li class="logEntry" id="'+this.nodeArray[index].timeStamp.getTime()+'">'+this.nodeArray[index].timeStamp.getMonth()+'-'+this.nodeArray[index].timeStamp.getDay()+'-'+this.nodeArray[index].timeStamp.getFullYear()+' '+this.nodeArray[index].timeStamp.getHours()+':'+this.nodeArray[index].timeStamp.getMinutes()+':'+this.nodeArray[index].timeStamp.getSeconds()+'  |  '+ this.nodeArray[index].data +'</li>');
+	}
 	this.setDrag();
 	this.setResize();
 	if(this.hidden){
@@ -688,7 +695,57 @@ pageLog.prototype.push = function(time, currentData){
 		console.log('duplicate');	
 	}
 };
-
+pageLog.prototype.listToArray = function() {
+	var currentNode, nextNode, previousNode, index;
+	this.nodeArray = [];
+	previousNode = null;
+	currentNode = this.head;
+	nextNode = currentNode.next;
+	index = 0;
+	
+	while(currentNode.next !== null){
+		//store current node in current index of array
+		this.nodeArray[index] = currentNode;
+		//set previous node to current node;
+		previousNode = currentNode;
+		//set current node to next node
+		currentNode = nextNode;
+		//set new next node
+		nextNode = currentNode.next;
+		//remove circular references that pose problems for json serialization
+		previousNode.previous = null;
+		previousNode.next = null;
+		index++;
+	}
+	
+	//get rid of head and tail properties
+	this.head = null;
+	this.tail = null;
+	this._length = null;
+	//cleanup
+	currentNode, nextNode, previousNode, index = null;
+}
+pageLog.prototype.arrayToList = function() {
+	var length = this.nodeArray.length;
+	var index = 1;
+	var currentNode, previousNode;
+	
+	this.head = this.nodeArray[0];
+	this.head.next = this.nodeArray[1];
+	previousNode = this.head;
+	for(index; index<length; index++){	
+		//set current node to the value of the current array position
+		currentNode = this.nodeArray[index];
+		console.log(currentNode);
+		//set previous node's next to the current node
+		previousNode.next = currentNode;
+		//link current node to previous node
+		currentNode.previous = this.nodeArray[index-1];
+		//prepare for next iteration
+		previousNode = currentNode;
+	}
+	this.tail = this.nodeArray[index-1];
+}
 pageLog.prototype.searchNodeAt = function(position) {
     var currentNode = this.head,
         length = this._length,
