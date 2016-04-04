@@ -1539,6 +1539,7 @@ function updateLogs(matches){
 		//timeStamp = Math.floor(timeStamp);
 		if(objectFound.elementType === 'pageLog'){
 		value = ref(dataOld, objectFound.path);
+		var oldValue = value;
 		var label;
 		if(objectFound.typeChange != objectFound.typeUnits && typeof value === 'number'){
 			var result = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), value, objectFound.typeChange);
@@ -1558,7 +1559,7 @@ function updateLogs(matches){
 		//console.log(readyToChange);
 		if(readyToChange){
 			var printTime = timeStamp.yyyymmddhhmmss();
-			objectFound.push(timeStamp.getTime(), printTime, objectFound.value);
+			objectFound.push(timeStamp.getTime(), printTime, oldValue);
 			//console.log('ready');
 			//$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+printTime+'  |  '+ value +'</li>');
 			$("#"+objectFound.parentId).find('tbody').append('<tr id="'+objectFound.parentId+'_'+timeStamp.getTime()+'"><td>'+printTime+'</td><td>'+ value +'<span class="logLabel">'+label+'</span></td></tr>');
@@ -2491,6 +2492,7 @@ DATA LOGS CASE
 			var typeUnits = objectFound.typeUnits.toUpperCase();
 			console.log(objectFound.value);
 			var result = chooseConversion(type, typeUnits, objectFound.value, val);
+			
 			var newLabel;
 			console.log(result.value);
 			objectFound.convertedValue = result.value;
@@ -2507,9 +2509,8 @@ DATA LOGS CASE
 					$('.labelChange').val(newLabel);
 				}
 			}
+			objectFound.convertAll();
 			console.log(newValue + " " + newLabel);
-			console.log($('#'+selectedModule).find('.myTableValue').children('p').text());
-			$('#'+selectedModule).find('.myTableValue').children('p').text(newValue);
 			
 			console.log(val);
 		});	

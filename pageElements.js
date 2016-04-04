@@ -785,6 +785,23 @@ pageLog.prototype.searchNodeAt = function(position) {
     return currentNode;
 };
 
+pageLog.prototype.convertAll = function() {
+	 var currentNode = this.head,
+        length = this._length,
+        count = 0,
+        message = {failure: 'Failure: non-existent node in this list.'},
+	 	objectFound = this;
+		var newVal;
+	 while (count < this._length) {
+		newVal = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), parseFloat(currentNode.data), $( "#unitSelect" ).val()).value;
+		//$("#"+objectFound.parentId).find('tbody').append('<tr id="'+objectFound.parentId+'_'+currentNode.timeStamp+'"><td>'+currentNode.timeValue+'</td><td>'+ currentNode.data +'<span class="logLabel">'+objectFound.units+'</span></td></tr>');
+		newVal = round(newVal, objectFound.precision);
+		 $("#"+objectFound.parentId+'_'+currentNode.timeStamp).html('<td>'+currentNode.timeValue+'</td><td>'+ newVal +'<span class="logLabel">'+objectFound.label+'</span></td>');
+		 currentNode = currentNode.next;
+		
+        count++;
+    }	
+}
 
 pageLog.prototype.remove = function(position) {
 	var currentNode = this.head,
