@@ -2914,7 +2914,9 @@ function delHandle(objectFound){
 }
 
 function captureState(){
+	/*console.log('gothere');
 	var saveArr = $.map(cell_arr, function (obj) {
+						console.log(obj);
                       return $.extend(true, {}, obj);
                   });
 	for(var k in saveArr){
@@ -2938,6 +2940,7 @@ function captureState(){
 			createMessage('Configuration Saved',2000);
 		}
 	},'webdisplay/configs/'+saveName,jsonString,true);
+	saveArr = null;*/
 }
 function loadState(jsonString){
 	console.log("timing "+Date.now());

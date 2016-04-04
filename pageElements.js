@@ -752,6 +752,11 @@ pageLog.prototype.listToArray = function() {
 		previousNode.next = null;
 		index++;
 	}
+
+
+
+
+	//PROBLEMATIC CODE - causes cyclic reference
 	this.nodeArray[index] = this.tail;
 	//get rid of head and tail properties
 	this.head = null;
