@@ -766,7 +766,8 @@ pageLog.prototype.arrayToList = function() {
 	var currentNode, previousNode;
 	this.head = this.nodeArray[0];
 	if(length > 0){
-	this.head.next = this.nodeArray[1];
+		this.head.next = this.nodeArray[1];
+		this._length = this.nodeArray.length;
 	}
 	else{
 		this.tail = null;
