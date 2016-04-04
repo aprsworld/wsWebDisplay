@@ -632,14 +632,19 @@ pageLog.prototype.loadHtml = function(){
 	var objectFound = this;
 	for(index; index<length; index++){
 		var newVal;
-		console.log(objectFound.type+" "+objectFound.typeUnits.toUpperCase()+" "+parseFloat(objectFound.nodeArray[index].data)+" "+objectFound.typeChange);
-		if(this.typeChange !== this.typeUnits){
-			newVal = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), parseFloat(objectFound.nodeArray[index].data), objectFound.typeChange);
+		if(this.dataType === 'number'){
+			console.log(objectFound.type+" "+objectFound.typeUnits.toUpperCase()+" "+parseFloat(objectFound.nodeArray[index].data)+" "+objectFound.typeChange);
+			if(this.typeChange !== this.typeUnits){
+				newVal = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), parseFloat(objectFound.nodeArray[index].data), objectFound.typeChange);
 
-			newVal = round(newVal.value, objectFound.precision);
+				newVal = round(newVal.value, objectFound.precision);
+			}
+			else{
+				newVal = round(parseFloat(objectFound.nodeArray[index].data), objectFound.precision);	
+			}
 		}
 		else{
-			newVal = round(parseFloat(objectFound.nodeArray[index].data), objectFound.precision);	
+			newVal = objectFound.nodeArray[index].data;
 		}
 	//$("#"+this.parentId).find('ol').append('<li class="logEntry" id="'+this.nodeArray[index].timeStamp.getTime()+'">'+this.nodeArray[index].timeStamp.getMonth()+'-'+this.nodeArray[index].timeStamp.getDay()+'-'+this.nodeArray[index].timeStamp.getFullYear()+' '+this.nodeArray[index].timeStamp.getHours()+':'+this.nodeArray[index].timeStamp.getMinutes()+':'+this.nodeArray[index].timeStamp.getSeconds()+'  |  '+ this.nodeArray[index].data +'</li>');
 		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ /*this.nodeArray[index].data*/ newVal +'<span class="logLabel">'+this.units+'</span></td></tr>');
@@ -764,7 +769,6 @@ pageLog.prototype.arrayToList = function() {
 	this.head.next = this.nodeArray[1];
 	}
 	else{
-		this.head = null;
 		this.tail = null;
 		this._length = 0;
 		return;
