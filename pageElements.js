@@ -629,11 +629,22 @@ pageLog.prototype.loadHtml = function(){
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	var length = this.nodeArray.length;
 	var index = 0;
+	var objectFound = this;
 	for(index; index<length; index++){
+		var newVal;
+		console.log(objectFound.type+" "+objectFound.typeUnits.toUpperCase()+" "+parseFloat(objectFound.nodeArray[index].data)+" "+objectFound.typeChange);
+		if(this.typeChange !== this.typeUnits){
+			newVal = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), parseFloat(objectFound.nodeArray[index].data), objectFound.typeChange);
+
+			newVal = round(newVal.value, objectFound.precision);
+		}
+		else{
+			newVal = round(parseFloat(objectFound.nodeArray[index].data), objectFound.precision);	
+		}
 	//$("#"+this.parentId).find('ol').append('<li class="logEntry" id="'+this.nodeArray[index].timeStamp.getTime()+'">'+this.nodeArray[index].timeStamp.getMonth()+'-'+this.nodeArray[index].timeStamp.getDay()+'-'+this.nodeArray[index].timeStamp.getFullYear()+' '+this.nodeArray[index].timeStamp.getHours()+':'+this.nodeArray[index].timeStamp.getMinutes()+':'+this.nodeArray[index].timeStamp.getSeconds()+'  |  '+ this.nodeArray[index].data +'</li>');
-		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ this.nodeArray[index].data +'</td></tr>');
+		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ /*this.nodeArray[index].data*/ newVal +'<span class="logLabel">'+this.units+'</span></td></tr>');
 	}
-	this._length = this.nodeArray.length+1;
+	//this._length = this.nodeArray.length+1;
 	this.nodeArray = null;
 	this.setDrag();
 	this.setResize();
@@ -736,7 +747,7 @@ pageLog.prototype.listToArray = function() {
 		previousNode.next = null;
 		index++;
 	}
-	
+	this.nodeArray[index] = this.tail;
 	//get rid of head and tail properties
 	this.head = null;
 	this.tail = null;
@@ -748,9 +759,16 @@ pageLog.prototype.arrayToList = function() {
 	var length = this.nodeArray.length;
 	var index = 1;
 	var currentNode, previousNode;
-	
 	this.head = this.nodeArray[0];
+	if(length > 0){
 	this.head.next = this.nodeArray[1];
+	}
+	else{
+		this.head = null;
+		this.tail = null;
+		this._length = 0;
+		return;
+	}
 	previousNode = this.head;
 	for(index; index<length; index++){	
 		//set current node to the value of the current array position
@@ -788,11 +806,11 @@ pageLog.prototype.searchNodeAt = function(position) {
 pageLog.prototype.convertAll = function() {
 	 var currentNode = this.head,
         length = this._length,
-        count = 0,
+        count = 1,
         message = {failure: 'Failure: non-existent node in this list.'},
 	 	objectFound = this;
 		var newVal;
-	 while (count < this._length) {
+	 while (count <= this._length) {
 		newVal = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), parseFloat(currentNode.data), $( "#unitSelect" ).val()).value;
 		//$("#"+objectFound.parentId).find('tbody').append('<tr id="'+objectFound.parentId+'_'+currentNode.timeStamp+'"><td>'+currentNode.timeValue+'</td><td>'+ currentNode.data +'<span class="logLabel">'+objectFound.units+'</span></td></tr>');
 		newVal = round(newVal, objectFound.precision);
@@ -1233,7 +1251,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 				console.log(updatedPath);
 				console.log(this.type);
 				console.log(this.typeChange);
-				result = chooseConversion(this.type, this.typeUnits.toUpperCase(), updatedPath, this.typeChange.toUpperCase());	
+				result = chooseConversion(this.type, this.typeUnits.toUpperCase(), updatedPath, this.typeChange.toUpperCase()).value;	
 				updatedPath = result.value;
 				console.log(result.label);
 			}
