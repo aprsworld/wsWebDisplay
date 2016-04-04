@@ -315,8 +315,20 @@ pageElement.prototype = {
 		var height = this.getHeight();
 		$("#manualWidth").val(width);
 		$("#manualHeight").val(height);
+	},
+	updateSelf: function(){
+		switch(this.elementType){
+			case 'pageCell':
+				
+				break;
+			case 'pageCam':
+				
+				break;
+			case 'pageLog':
+				
+				break;
+		}
 	}
-	
 }
 /***********************************************************************************
 * PAGE SETTINGS OBJECT
@@ -329,7 +341,7 @@ var pageSettings = function() {
 	this.gridSize = true;
 	this.layoutList;
 	this.currentLayoutIndex;
-	this.cycleInterval = 10000;
+	this.cycleInterval = 1000;
 	this.pageTable = new Array();
 }
 extend(pageSettings, pageElement);
@@ -576,8 +588,8 @@ var pageLog = function(){
 	this.value;
 	this.type;
 	this.typeUnits;
-	this.units;
-	this.label;
+	this.units = '';
+	this.label = '';
 	this.path;
 	this.title;
 	this.id;
@@ -597,6 +609,7 @@ extend(pageLog, pageElement);
 pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	var logId = this.parentId;
 	var tableId = this.parentId+'_table';
+	this.id = this.parentId;
 	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	console.log(logId);
 	$('#'+logId).css('top',pageY);
@@ -604,6 +617,7 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.setDrag();
 	this.setResize();
 	this.count = cellCount;	
+	this.typeChange = this.typeUnits;
 }
 pageLog.prototype.loadHtml = function(){
 	var logId = this.parentId;
@@ -828,6 +842,21 @@ pageLog.prototype.remove = function(position) {
  
     this._length--;
 };
+
+pageLog.prototype.setTypeChange = function(type){
+	this.typeChange = type;
+}
+pageLog.prototype.setLabel = function(text){
+	var containerId = this.parentId;	
+	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
+		$('#'+containerId).find('.label').text(text);
+	}
+	else{
+		$('#'+containerId).find('.label').text(text);
+		this.label = text;
+	}
+	//this.units = text;
+}
 pageLog.prototype.setResize = function(){
 	var handleTarget;
 	var thisObj = this;		

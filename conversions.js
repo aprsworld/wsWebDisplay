@@ -328,26 +328,26 @@ var directionConvert = {
 
 
 function chooseConversion(type, typeUnits, value, typeChange){
-	if(type == "temperature"){
-		var x = TemperatureConvert.init(typeUnits, typeChange, value);
-		return x;
-	}
-	else if(type == "speed"){
-		return SpeedConvert.init(typeUnits, typeChange, value);
-	}
-	else if(type == "length"){
-		return LengthConvert.init(typeUnits, typeChange, value);
-	}
-	else if(type == "time"){
-		return TimeConvert.init(typeUnits, typeChange, value);
-	}
-	else if(type == "atmosphericPressure"){
-		typeChange = typeChange.toUpperCase();
-		return AtmosphericPressureConvert.init(typeUnits, typeChange, value);	
-	}
-	else if(type == "direction"){
-		return directionConvert.init(value);
-	}
+		if(type == "temperature"){
+			var x = TemperatureConvert.init(typeUnits, typeChange, value);
+			return x;
+		}
+		else if(type == "speed"){
+			return SpeedConvert.init(typeUnits, typeChange, value);
+		}
+		else if(type == "length"){
+			return LengthConvert.init(typeUnits, typeChange, value);
+		}
+		else if(type == "time"){
+			return TimeConvert.init(typeUnits, typeChange, value);
+		}
+		else if(type == "atmosphericPressure"){
+			typeChange = typeChange.toUpperCase();
+			return AtmosphericPressureConvert.init(typeUnits, typeChange, value);	
+		}
+		else if(type == "direction"){
+			return directionConvert.init(value);
+		}
 }
 
 //populates the conversion dropdown based on the id

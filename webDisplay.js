@@ -644,11 +644,13 @@ function dynamicUpdate(data) {
 		ageTimer();
     }
 	else if(objectFound.elementType == 'pageLog'){
-		var interval = objectFound.interval;
+		/*var interval = objectFound.interval;
 		var timeStamp = new Date();
 		//timeStamp = Math.floor(timeStamp);
 		value = ref(dataOld, objectFound.path);
-		value = round(parseFloat(value), objectFound.precision);
+		if(typeof value === 'number'){
+			value = round(parseFloat(value), objectFound.precision);
+		}
 		objectFound.value = value;
 
 		var readyToChange = objectFound.checkInterval(timeStamp.getTime());
@@ -659,7 +661,7 @@ function dynamicUpdate(data) {
 			//console.log('ready');
 			//$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+printTime+'  |  '+ value +'</li>');
 			$("#"+objectFound.parentId).find('tbody').append('<tr id="'+objectFound.parentId+'_'+timeStamp.getTime()+'"><td>'+printTime+'</td><td>'+ value +'</td></tr>');
-		}
+		}*/
 		//console.log(value);
 		
 	}
@@ -797,7 +799,6 @@ function clickToCreate(item, data, x ,y){
 			}
 			tooltip = tooltip+title;
 			obj["toolTip"] = tooltip;
-			console.log(tooltipSplit);
 		}
 		//case for elements with no valid path
 		else{
@@ -1274,7 +1275,6 @@ function calculateDownload(){
 	var type;
 	var originalSize = dataTransferred+cameraDataSize;
 	var size = (dataTransferred+cameraDataSize)/1024; //convert to KB
-	console.log(size);
 	type = ' KB';
 	if(size >= 1024){
 		size = size/1024;//convert to MB
@@ -1472,72 +1472,101 @@ function createImage(){
 //this function accepts the partial updates and combines them with the existing data structure
 //used to build the tree.
 function refreshTreeData(newData){
-	//console.log(Date.now());
 	dataUpdateTime = Date.now();
 	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
-	//console.log(objectKeys);
-	//for(var key in dataOld){
 	//iterates through the keys of the old data object
-	//console.log(newData);
-	Object.keys(newData).forEach(function(key){		
+	Object.keys(newData).forEach(function(key){	
 		//checks if the current key equals the key that we are looking for
-		//console.log(key);
 		if(dataOld.hasOwnProperty(key)  && key != '_bserver_'){
-			//console.log(Date.now());			
-			//updates sensors
-			//console.log(key);
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
-				newD = newData[objectKeys][subkey];
-				//console.log(oldD);
-				
+				newD = newData[objectKeys][subkey];				
 				if(typeof oldD === 'undefined' || typeof newD !=='object'){
-					//console.log('undefined');	
-					//console.log(newD);
 					oldD = newD;
 				}
-				else{
-					
-					
+				else{	
 					for(var levelThree in newD){
 						Object.keys( newD).forEach(function(key1){	
 							if(typeof oldD[key1] === 'undefined' || typeof newD !=='object'){
-								//console.log('undefined');	
-								//console.log(newD);
 								oldD[key1] = newD[key1];
 							}
 							else{
 								Object.keys( newD[key1]).forEach(function(key2){
 									oldD[key1][key2] = newD[key1][key2];
 									if(oldD[key1][key2] === 'undefined'){ //debug
-										//console.log('undefined');
-										console.log(oldD[key1])	
+										//console.log(oldD[key1])	
 									}
+									if(typeof newD[key1][key2] !=='object'){
+										
+										var matches = $.grep(cell_arr, function(item, index) {
+											if(item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
+												return item;
+											}
+											
+										});
+										if(matches.length > 0){
+										
+											updateLogs(matches);
+										}
+										matches = null;
+									}								
 								});
 							}
 						});
 					}
-				}
-				
+				}				
 			});
+			
 			//console.log(Date.now());
 		}
 		else if(!dataOld.hasOwnProperty(key) && key != '_bserver_'){
-			//console.log('does not exist');
 			dataOld[key] = {};
 			dataOld[key] = newData[key];
-			//console.log(key);
-			//console.log(newData[objectKeys]);
-			//console.log(newData[key]);
-			//console.log(dataOld[key]);
-			//console.log(newData);
+			
 		}
-		else{
+		else{ //debug
 			//console.log(key);
 		}
 	});
 }
+
+function updateLogs(matches){
+	$.each(matches, function( index, value ) {
+		var objectFound = matches[index];
+		var interval = objectFound.interval;
+		var timeStamp = new Date();
+		//timeStamp = Math.floor(timeStamp);
+		if(objectFound.elementType === 'pageLog'){
+		value = ref(dataOld, objectFound.path);
+		var label;
+		if(objectFound.typeChange != objectFound.typeUnits && typeof value === 'number'){
+			var result = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), value, objectFound.typeChange);
+			value = result.value;
+			label = result.label;
+		}	
+		if(typeof value === 'number'){
+			value = round(parseFloat(value), objectFound.precision);
+			
+		}
+		if(typeof label === 'undefined'){
+			label = objectFound.units;	
+		}
+		objectFound.value = value;
+
+		var readyToChange = objectFound.checkInterval(timeStamp.getTime());
+		//console.log(readyToChange);
+		if(readyToChange){
+			var printTime = timeStamp.yyyymmddhhmmss();
+			objectFound.push(timeStamp.getTime(), printTime, objectFound.value);
+			//console.log('ready');
+			//$("#"+objectFound.parentId).find('ol').append('<li class="logEntry" id="'+timeStamp.getTime()+'">'+printTime+'  |  '+ value +'</li>');
+			$("#"+objectFound.parentId).find('tbody').append('<tr id="'+objectFound.parentId+'_'+timeStamp.getTime()+'"><td>'+printTime+'</td><td>'+ value +'<span class="logLabel">'+label+'</span></td></tr>');
+		}
+		}
+	});
+}
+
 function refreshTree(newData){
 	var lastk = "#";
 	var jsonArray = [];
@@ -2365,7 +2394,7 @@ DATA LOGS CASE
 ******************************************************************/
 	else if($(this).hasClass('dataLog')){
 		//show the appropriate parts of the edit window
-		$('#hideDelRow, #zRow, #titleRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow, #resizePreviousRow').show();
+		$('#hideDelRow, #zRow, #titleRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow, #unitRow, #resizePreviousRow').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
 		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 
@@ -2377,7 +2406,8 @@ DATA LOGS CASE
 		var backgroundColor = $('#'+objectFound.parentId).css('background-color');
 		console.log(objectFound);
 		$('.editWindow h2').text(objectFound.toolTip);
-		
+				populateConversions(objId);
+
 		//populate input fields with cell specific information
 		$('.backgroundColorChange').val($('#'+objectFound.parentId).css('background-color'));
 		$('.textColorChange').val($('#'+objectFound.parentId).css('color'));
@@ -2451,6 +2481,39 @@ DATA LOGS CASE
 				objectFound.fontSizeChange(newSize);
 			}, 100);
 		});
+		
+		//event handler for converting units
+		$("#unitSelect").off('change');
+		$("#unitSelect").on('change', function() {
+			var val = $( "#unitSelect" ).val();
+			objectFound.setTypeChange(val);
+			var type = objectFound.type;
+			var typeUnits = objectFound.typeUnits.toUpperCase();
+			console.log(objectFound.value);
+			var result = chooseConversion(type, typeUnits, objectFound.value, val);
+			var newLabel;
+			console.log(result.value);
+			objectFound.convertedValue = result.value;
+			var newValue = round(result.value, objectFound.precision);
+			if(objectFound.hasOwnProperty('labelOverride') && objectFound.labelOverride == true){
+				newLabel = objectFound.label;
+				$('#'+selectedModule).children('.label').html(newLabel);
+			}	
+			else{
+				newLabel = result.label;
+				objectFound.setLabel(newLabel);
+				$('#'+selectedModule).children('.label').html(newLabel);
+				if(objectFound.selected){
+					$('.labelChange').val(newLabel);
+				}
+			}
+			console.log(newValue + " " + newLabel);
+			console.log($('#'+selectedModule).find('.myTableValue').children('p').text());
+			$('#'+selectedModule).find('.myTableValue').children('p').text(newValue);
+			
+			console.log(val);
+		});	
+		
 		
 		//delegate even handler for mousing over 
 		$(".textColorChange").off("change.color");
