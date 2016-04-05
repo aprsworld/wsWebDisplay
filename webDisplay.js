@@ -671,8 +671,8 @@ function dynamicUpdate(data) {
 function sinceDataTimer(){
 	time = Date.now();
 	time = Math.floor((time - dataUpdateTime)/1000);
-	console.log(timedOut);
-	console.log(updatelock);
+	//console.log(timedOut);
+	//console.log(updatelock);
 	timedOut = false;
 	//if it has been longer than our time out, we set the flag to be true
 	if(time > 30){
@@ -681,8 +681,8 @@ function sinceDataTimer(){
 	}
 	//if timedout flag is true, it will attempt to send a full data update once data is sent again
 	if(timedOut){
-		console.log(timedOut);
-		console.log(updatelock);
+		//console.log(timedOut);
+		//console.log(updatelock);
 		if(this.connect){
 
 			data_object.ValueGet(function(rsp){

@@ -1006,7 +1006,7 @@ pageLog.prototype.setPrecision = function(value){
 	console.log(this);
 }
 pageLog.prototype.setLogLimit = function(limit){
-	
+	limit = parseInt(limit);
 	//first use-case: new limit is larger than current limit
 	if(limit >= this._length){
 		this.logLimit = limit;	
