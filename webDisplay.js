@@ -683,8 +683,9 @@ function sinceDataTimer(){
 	if(timedOut){
 		//console.log(timedOut);
 		//console.log(updatelock);
-		if(this.connect){
-
+		
+		if(data_object.ws_error !== false){
+				
 			data_object.ValueGet(function(rsp){
 				updatelock = true;
 				if(!rsp.data || rsp.error){

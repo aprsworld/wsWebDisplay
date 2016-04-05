@@ -262,9 +262,11 @@ select{
 }
 .logContainer tr{
 	text-align: center;	
+	
 }
 .logContainer tr td{
 	border-bottom: 1px solid;	
+	padding-bottom: 3px;
 }
 .logContainer tr td:nth-child(1){
 	border-right: 1px solid;
