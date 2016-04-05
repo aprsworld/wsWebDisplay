@@ -621,16 +621,19 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 }
 pageLog.prototype.loadHtml = function(){
 	var logId = this.parentId;
-			var tableId = this.parentId+'_table';
+		var tableId = this.parentId+'_table';
 
-	this.arrayToList();
+	//this.arrayToList();
 	console.log(this);
+	this._length = 0;
+	this.head = null;
+	this.tail = null;
 	//$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><ol></ol></div></div>');
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
-	var length = this.nodeArray.length;
-	var index = 0;
+	//var length = this.nodeArray.length;
+	//var index = 0;
 	var objectFound = this;
-	for(index; index<length; index++){
+	/*for(index; index<length; index++){
 		var newVal;
 		if(this.dataType === 'number'){
 			console.log(objectFound.type+" "+objectFound.typeUnits.toUpperCase()+" "+parseFloat(objectFound.nodeArray[index].data)+" "+objectFound.typeChange);
@@ -647,12 +650,13 @@ pageLog.prototype.loadHtml = function(){
 			newVal = objectFound.nodeArray[index].data;
 		}
 	//$("#"+this.parentId).find('ol').append('<li class="logEntry" id="'+this.nodeArray[index].timeStamp.getTime()+'">'+this.nodeArray[index].timeStamp.getMonth()+'-'+this.nodeArray[index].timeStamp.getDay()+'-'+this.nodeArray[index].timeStamp.getFullYear()+' '+this.nodeArray[index].timeStamp.getHours()+':'+this.nodeArray[index].timeStamp.getMinutes()+':'+this.nodeArray[index].timeStamp.getSeconds()+'  |  '+ this.nodeArray[index].data +'</li>');
-		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ /*this.nodeArray[index].data*/ newVal +'<span class="logLabel">'+this.units+'</span></td></tr>');
-	}
+		$("#"+this.parentId).find('tbody').append('<tr id="'+this.parentId+'_'+this.nodeArray[index].timeStamp+'"><td>'+this.nodeArray[index].timeValue+'</td><td>'+ newVal +'<span class="logLabel">'+this.units+'</span></td></tr>');
+	}*/
 	//this._length = this.nodeArray.length+1;
-	this.nodeArray = null;
+	//this.nodeArray = null;
 	this.setDrag();
 	this.setResize();
+	
 	if(this.hidden){
 		$('#'+this.parentId).addClass('hide');
 		console.log($('#'+this.parentId).attr('class'));
@@ -752,12 +756,9 @@ pageLog.prototype.listToArray = function() {
 		previousNode.next = null;
 		index++;
 	}
-
-
-
-
+	currentNode.previous = null;
 	//PROBLEMATIC CODE - causes cyclic reference
-	this.nodeArray[index] = this.tail;
+	this.nodeArray[index] = currentNode;
 	//get rid of head and tail properties
 	this.head = null;
 	this.tail = null;

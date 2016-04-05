@@ -1503,7 +1503,7 @@ function refreshTreeData(newData){
 									if(typeof newD[key1][key2] !=='object'){
 										
 										var matches = $.grep(cell_arr, function(item, index) {
-											if(item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
+											if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
 												return item;
 											}
 											
@@ -2916,21 +2916,28 @@ function delHandle(objectFound){
 	}
 }
 
+function replacer(key,value)
+{
+    if (key=="head") return undefined;
+    else if (key=="tail") return undefined;
+    else return value;
+}
+
 function captureState(){
-	var saveArr = $.map(cell_arr, function (obj) {
+	/*var saveArr = $.map(cell_arr, function (obj) {
 						console.log(obj);
                       return $.extend(true, {}, obj);
-                  });
-	for(var k in saveArr){
-		if(saveArr[k].elementType === 'pageLog'){
+                  });*/
+	for(var k in cell_arr){
+		/*if(saveArr[k].elementType === 'pageLog'){
 			saveArr[k].listToArray();
-		}
-		saveArr[k].onChangeStyle();
-		console.log(saveArr[k]);
+		}*/
+		cell_arr[k].onChangeStyle();
+		console.log(cell_arr[k]);
 	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
 	console.log(saveName);
-	var jsonString = JSON.stringify(saveArr);
+	var jsonString = JSON.stringify(cell_arr, replacer);
 	var configObject = JSON.parse(jsonString);
 	console.log(jsonString);
 	data_object.ValueSet(function(rsp){
@@ -2942,7 +2949,7 @@ function captureState(){
 			createMessage('Configuration Saved',2000);
 		}
 	},'webdisplay/configs/'+saveName,jsonString,true);
-	saveArr = null;
+	//saveArr = null;
 }
 function loadState(jsonString){
 	console.log("timing "+Date.now());
