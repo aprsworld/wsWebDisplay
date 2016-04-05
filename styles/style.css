@@ -482,7 +482,7 @@ div.logo_container{
 	width: 100%;
 	height: 30px;
 }
-.fontContainer{
+.fontContainer, #limitSelector{
 	width: 80px;	
 	height:36px;
 	float: left;
@@ -988,7 +988,7 @@ select.backgroundColorChange option{
 
 /* all rows are hidden to start with - javascript unhides them when they are necessary */
 #cropRow, #hideDelRow, #configRow, #staticRow, #zRow, #roundingRow, 
-#unitRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, 
+#unitRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow,#limitRow, 
 #backgroundColorRow, #textColorRow, #opacityRow, #manualResizeRow, #resizePreviousRow, #hoverTargetRow{
 	display:none;	
 	clear: both;
@@ -1010,6 +1010,12 @@ select.backgroundColorChange option{
 }
 #titleRow span{
 	text-align: left;	
+}
+#limitRow span{
+	text-align: left;	
+}
+#limitRow{
+	height: 34px;	
 }
 #labelRow span{
 	text-align: left;	

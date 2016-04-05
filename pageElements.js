@@ -684,7 +684,7 @@ pageLog.prototype.push = function(time, currentTime, currentData){
 		//case for a non-empty list
 		if (this._length) {
 			//removes first entry if the loglimit is reached
-			if(this._length >= this.logLimit){
+			if(this.logLimit !== 'infinity' && this._length >= this.logLimit){
 				this.remove(1);
 			}
 			//finds the next property of the current tail node and makes it equal to the logEntry we just created
@@ -1004,6 +1004,35 @@ pageLog.prototype.setPrecision = function(value){
 		this.precision = value;
 	}
 	console.log(this);
+}
+pageLog.prototype.setLogLimit = function(limit){
+	
+	//first use-case: new limit is larger than current limit
+	if(limit >= this._length){
+		this.logLimit = limit;	
+	}
+	
+	//second use-case: new limit is smaller than current limit - we need to delete nodes
+	else{
+		var start = this.searchNodeAt(limit),
+			currentNode = start.next,
+			nextNode = start.next;
+		
+		this._length = limit;
+		this.logLimit = limit;
+		this.tail = start;
+		
+		//start deleting nodes
+		while(currentNode !== null){
+			nextNode = currentNode.next;
+			$("#"+this.parentId+'_'+currentNode.timeStamp).remove();
+			currentNode.next = null;
+			currentNode.previous = null;
+			currentNode = null;
+			currentNode = nextNode;
+		}
+		
+	}
 }
 /***********************************************************************************
 * DATA CELL OBJECT

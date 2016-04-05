@@ -1603,7 +1603,7 @@ var editWindow =  function(e) {
 	fontMinus = $('#fontSizeMinus');
 	bgColor = $('.backgroundColorChange');
 	textColor= $('.textColorChange');
-	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #hoverTimeRow, #hoverRow, #hoverTargetRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo, #manualResizeRow, #resizePreviousRow').hide();
+	$('#gridRow, #cropRow, #hideDelRow, #configRow, #staticRow, #limitRow, #hoverTimeRow, #hoverRow, #hoverTargetRow, #roundingRow, #unitRow, #zRow, #titleRow, #labelRow, #urlRow, #bodyRow, #fontSizeRow, #backgroundColorRow, #textColorRow, #opacityRow, #resizeModule, #cropModule, #endCrop, #suppressHoverable, #titleInputInfo, #manualResizeRow, #resizePreviousRow').hide();
 	$('.editWindow').removeClass('editHide').show(150);
 	$("#editMaximize").hide();
 	$("#editMinimize").show();
@@ -2398,7 +2398,7 @@ DATA LOGS CASE
 ******************************************************************/
 	else if($(this).hasClass('dataLog')){
 		//show the appropriate parts of the edit window
-		$('#hideDelRow, #zRow, #titleRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #roundingRow, #opacityRow, #manualResizeRow, #unitRow, #resizePreviousRow').show();
+		$('#hideDelRow, #zRow, #titleRow, #fontSizeRow,#backgroundColorRow, #textColorRow, #limitRow, #roundingRow, #opacityRow, #manualResizeRow, #unitRow, #resizePreviousRow').show();
 		$('#colorAccordion,#colorAccordionContent,#colorAccordionH3,#textAccordion,#textAccordionContent,#textAccordionH3,#sizingAccordion,#sizingAccordionContent,#sizingAccordionH3').show();
 		$('#hoverAccordion,#hoverAccordionContent,#hoverAccordionH3').hide();
 
@@ -2418,7 +2418,7 @@ DATA LOGS CASE
 		$('.titleChange').val(objectFound.title);
 		$('#comboBoxInput').val($('#'+objectFound.parentId).css('font-size').slice(0, - 2))
 		$('.roundingChange').val(objectFound.precision)
-
+		$('#limitSelector').val(objectFound.logLimit);
 		
 		$('.imgBlockContainer, .dataLog, .textBlockContainer, .imgCamContainer, .tr').removeClass('selectedShadow');	
 		$(this).addClass('selectedShadow');
@@ -2448,6 +2448,11 @@ DATA LOGS CASE
 		console.log(pageObjectFound);
 		pageObjectFound.updateElementDimensions(objectFound);
 		
+		$("#limitSelector").off('change');
+		$("#limitSelector").on('change', function() {
+			var limitVal = $("#limitSelector").val();
+			objectFound.setLogLimit(limitVal);
+		});
 		
 		$( document ).off( "click", "#resizePreviousHeight"); //unbind old events, and bind a new one
 		$( document ).on( "click", "#resizePreviousHeight" , function() {	
