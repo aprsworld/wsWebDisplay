@@ -671,16 +671,19 @@ function dynamicUpdate(data) {
 function sinceDataTimer(){
 	time = Date.now();
 	time = Math.floor((time - dataUpdateTime)/1000);
+	console.log(timedOut);
+	console.log(updatelock);
+	timedOut = false;
 	//if it has been longer than our time out, we set the flag to be true
 	if(time > 30){
-		
+		console.log(time);
 		timedOut = true;
 	}
 	//if timedout flag is true, it will attempt to send a full data update once data is sent again
 	if(timedOut){
 		console.log(timedOut);
 		console.log(updatelock);
-		if(time < 30){
+		if(this.connect){
 
 			data_object.ValueGet(function(rsp){
 				updatelock = true;
@@ -693,7 +696,7 @@ function sinceDataTimer(){
 				dataOld = rsp.data
 				dynamicUpdate(dataOld);
 				console.log(rsp.data);
-
+				dataUpdateTime = Date.now();
 				timedOut = false;
 				updatelock = false;
 			},'');	
@@ -2914,7 +2917,6 @@ function delHandle(objectFound){
 }
 
 function captureState(){
-	/*console.log('gothere');
 	var saveArr = $.map(cell_arr, function (obj) {
 						console.log(obj);
                       return $.extend(true, {}, obj);
@@ -2940,7 +2942,7 @@ function captureState(){
 			createMessage('Configuration Saved',2000);
 		}
 	},'webdisplay/configs/'+saveName,jsonString,true);
-	saveArr = null;*/
+	saveArr = null;
 }
 function loadState(jsonString){
 	console.log("timing "+Date.now());
