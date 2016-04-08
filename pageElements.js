@@ -607,9 +607,12 @@ var pageLog = function(){
 extend(pageLog, pageElement);
 
 pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
+	var log = this;
 	var logId = this.parentId;
 	var tableId = this.parentId+'_table';
 	this.id = this.parentId;
+	var treeTime = $('#stationTree').jstree(true).get_node(log.treeId).original.obj.time;
+	
 	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	console.log(logId);
 	$('#'+logId).css('top',pageY);

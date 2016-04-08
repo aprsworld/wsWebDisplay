@@ -16,6 +16,7 @@ var isExpanded;
 var dataNow = {};
 var dataOld = {};
 var tempArray = [];
+var jsonArray = [];
 var topOffSet = 0;
 var leftOffSet = 0;
 var timedOut = false;
@@ -356,7 +357,8 @@ function iterateStations(obj, stack, arr, lastk) {
 				jsonItem ["text"] = property;
 				jsonItem ["obj"] = {
 					"path": stack + '.' + property+".image_url", 
-					"class": "draggableCamNode"
+					"class": "draggableCamNode",
+					"time": ""
 				};
 				arr.push(jsonItem);
 				delete jsonItem;
@@ -504,9 +506,7 @@ function ref(obj, str) {
 	}
         obj = obj[str[i]];
     }
-	//console.log("______________________________________________________________________________");
-	//console.log(obj);
-    return obj;
+	return obj;
 }
 /*this function takes in the array of ids, the array of dot notation reference strings and our data object. it uses the length of the id array to find all values that need to be changed and then changes them dynamically*/
 function dynamicUpdate(data) {
@@ -523,9 +523,7 @@ function dynamicUpdate(data) {
 		// since the object array has textblocks and img blocks, we need to weed them out
 		if((objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell')&& typeof ref(data, objectFound.path) != "undefined"){
 		id = objectFound.id;
-		if(typeof objectFound.lastData != 'undefined'){
-			$('#'+objectFound.parentId).attr('title', 'Last data received: '+objectFound.lastData+" \n "+objectFound.toolTip);
-		}
+		
 		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)			
 		if(id.indexOf("ageOfData") >= 0){
 			value = 0+" seconds old";
@@ -535,7 +533,11 @@ function dynamicUpdate(data) {
 		//cam update
 		else if(id.indexOf("pageCam") >= 0){
 			var currentCam;
-			
+			var timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
+			if(!isNaN(timeSinceData) && typeof timeSinceData === 'number'){
+				timeSinceData = secToTime(timeSinceData)
+				$('#'+objectFound.parentId).attr('title', 'Last data received: '+timeSinceData+' \n '+objectFound.toolTip);
+			}
 			value = ref(data, objectFound.path);
 			objectFound.value = value;
 			objectFound.dataType = typeof value;
@@ -558,6 +560,7 @@ function dynamicUpdate(data) {
 						$('#bytesReceived').html(calculateDownload());
 
 					}
+					
 				}
 				$('#'+cam).css('background-image', 'url('+src+')');	
 			});
@@ -639,7 +642,12 @@ function dynamicUpdate(data) {
 			}
 			//objectFound.value = 0;
 			$('div#div_' + objectFound.id + '').children('p').text(value);
-
+			var timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
+			if(!isNaN(timeSinceData) && typeof timeSinceData === 'number'){
+				timeSinceData = secToTime(timeSinceData)
+				$('#'+objectFound.parentId).attr('title', 'Last data received: '+timeSinceData+' \n '+objectFound.toolTip);
+			}
+		
 		}
 		if (value === undefined) {
 			value = 'MISSING DATA!';
@@ -730,7 +738,8 @@ function clickToCreate(item, data, x ,y){
 	var pageObjId = 'pageSettings';	
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 	pageObj= cell_arr[pageElementPos];
-	
+				console.log($('#stationTree').jstree(true).get_node(id).original);
+	var treeTime = $('#stationTree').jstree(true).get_node(id).original.obj.time; 
 	//if data cell or log
 	if($('#'+id).hasClass('dataDraggable') || $('#'+id).hasClass('jstree-leaf')){
 		//if the log icon was clicked
@@ -1062,7 +1071,7 @@ function data_update(data) {
 			setInterval(sinceDataTimer,1000);
 			//populateCams(cams);
 			var lastk = "#";
-			var jsonArray = [];
+			jsonArray = [];
 			var json = iterateStations(data, "", jsonArray, lastk);
 			//sets up our tree
 			$(function () {$('#stationTree').jstree({ 'core' : {'multiple' : false, 'cache':false, 'data' : jsonArray},"plugins" : [ "sort","contextmenubtn" ]})});
@@ -1245,7 +1254,7 @@ function data_update(data) {
 
 	}
 	if(!updatelock){
-	refreshTreeData(data);
+		refreshTreeData(data);
 	}
 	dataTransferred = this.rx_data_counter();
 	$('#bytesReceived').html(calculateDownload());
@@ -1258,6 +1267,7 @@ function data_update(data) {
 		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
 		if(editMode == false && treeRefreshTimer >= 14){
 			refreshTree(dataOld);	
+			console.log(jsonArray);
 			console.log('refreshed');
 			treeRefreshTimer = 0;
 		}
@@ -1505,29 +1515,32 @@ function refreshTreeData(newData){
 										//console.log(oldD[key1])	
 									}
 									if(typeof newD[key1][key2] !=='object'){
-										
+										//console.log(treeid);
+										//finds elements on the page and updates them with a timestamp
 										var matches = $.grep(cell_arr, function(item, index) {
 											if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
-												var date = new Date();
-												date = date.yyyymmddhhmmss();
-												item.lastData = date;
+								
+												item.lastData = Date.now();
 												//item.toolTip = 'Last data received: '+item.lastData+" \n "+item.path.substring(1).replace(staticRegexPeriod, " >> ");
-												$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
+												//$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
 												return item;
 											}
 											else if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1){
-												var date = new Date();
-												date = date.yyyymmddhhmmss();
-												item.lastData = date;
-												$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
+												
+												item.lastData = Date.now();
+											
+												//$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
 
 											}
 											
 										});
+										//finds logs and updates data
 										if(matches.length > 0){
 										
 											updateLogs(matches);
 										}
+										//console.log($('#stationTree').jstree(true).get_node("ws_"+key+subkey+key1+key2+"_x"));										
+										//$('#stationTree').jstree(true).get_node("ws_"+key+subkey+key1+"_x").original.obj.time = date1;
 										matches = null;
 									}								
 								});
@@ -1589,7 +1602,7 @@ function updateLogs(matches){
 
 function refreshTree(newData){
 	var lastk = "#";
-	var jsonArray = [];
+	jsonArray = [];
 	console.log(newData);
 	
 	console.log(dataOld);
