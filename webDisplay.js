@@ -498,6 +498,7 @@ function iterateStations(obj, stack, arr, lastk) {
 function ref(obj, str) {
     str = str.split("."); //splits the dot notation
     for (var i = 1; i < str.length; i++) {
+
 	if (obj === undefined) {
 		return undefined;
 	}
@@ -517,12 +518,15 @@ function dynamicUpdate(data) {
 	if(typeof pageObj.pageTable === 'undefined'){
 		pageObj.pageTable = new Array();
 	}
-	//console.log('update');
     cell_arr.forEach(function(objectFound){	
+		
 		// since the object array has textblocks and img blocks, we need to weed them out
 		if((objectFound.elementType == 'pageCam' || objectFound.elementType == 'pageCell')&& typeof ref(data, objectFound.path) != "undefined"){
 		id = objectFound.id;
-		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)
+		if(typeof objectFound.lastData != 'undefined'){
+			$('#'+objectFound.parentId).attr('title', 'Last data received: '+objectFound.lastData+" \n "+objectFound.toolTip);
+		}
+		//check if ID belongs to an age of data element (special case since it is programatically added after data comes in)			
 		if(id.indexOf("ageOfData") >= 0){
 			value = 0+" seconds old";
 			objectFound.value = 0;
@@ -539,7 +543,7 @@ function dynamicUpdate(data) {
 			currentCam = currentCam.attr('id');
 			$('#preload_'+currentCam).unbind();
 			$('#preload_'+currentCam).load(function() {
-				var src = $(this).attr('src');
+				var src = objectFound.value;
 				var cam = $(this).attr('id').replace("preload_","");
 				if(objectFound.src != src){	
 					$('#'+cam).find('img').attr('src', src);
@@ -684,7 +688,7 @@ function sinceDataTimer(){
 		//console.log(timedOut);
 		//console.log(updatelock);
 		
-		if(data_object.ws_error !== false){
+		if(data_object.ws_error !== false || time < 30){
 				
 			data_object.ValueGet(function(rsp){
 				updatelock = true;
@@ -709,15 +713,10 @@ function sinceDataTimer(){
 function timer(){
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
-	//time = time+1;
 	
 	treeRefreshTimer = treeRefreshTimer+1;
 	var convertedLoad = secToTime(loadedTime);
 	$('#timer').html("<span> "+convertedLoad+' since page was loaded</span>  <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
-	//$('#camTimer').text("Camera image from approximately " + camTime + " seconds ago");
-	if(time > 30){
-		
-	}
 	if(loadedTime%30 == 0){
 		console.log(convertedLoad+' since page was loaded');	
 	}
@@ -1173,13 +1172,12 @@ function data_update(data) {
 			else{
 				$('#cycleControl').css('height', '20px');
 				$('#cycleControlToggle').find('span').html('<i class="fa fa-chevron-up"></i> Cycle Controls <i class="fa fa-chevron-up"></i>');
-
-
 			}
 		});
+		
+		//swipe setup for layouts	
 		var myElement = document.getElementById("content");
 		var hammertime;
-	
 		//gets rid of setting that removes highlighting from the page
 		delete Hammer.defaults.cssProps.userSelect;
 		var options = {
@@ -1267,8 +1265,10 @@ function data_update(data) {
 	// clears document ready function
 	x = null;
 	//refreshCams(cams);
+	
+	//locks partial updates until a full set of data can be loaded - used when client comes back from hibernation
 	if(!updatelock){
-	dynamicUpdate( dataOld); //updates all data cells to their current values
+		dynamicUpdate(dataOld); //updates all data cells to their current values
 	}
 
 }
@@ -1304,7 +1304,7 @@ function getUrlVars() {
     });
 	console.log(vars);
     return vars;
-  }
+}
 
 function getPathArray() {
 	var path = window.location.pathname.split( '/' );
@@ -1434,14 +1434,16 @@ function data_start() {
 
 
 /**** document ready ****/
+
+//starts timers;
 $(document).ready(function() {
 
-setInterval(timer,1000);
-window.onscroll = function (e)
-{
-    topOffSet = $(window).scrollTop();
-	leftOffSet = $(window).scrollLeft();
-}
+	setInterval(timer,1000);
+	window.onscroll = function (e)
+	{
+		topOffSet = $(window).scrollTop();
+		leftOffSet = $(window).scrollLeft();
+	}
 
 });
 
@@ -1494,6 +1496,7 @@ function refreshTreeData(newData){
 						Object.keys( newD).forEach(function(key1){	
 							if(typeof oldD[key1] === 'undefined' || typeof newD !=='object'){
 								oldD[key1] = newD[key1];
+								
 							}
 							else{
 								Object.keys( newD[key1]).forEach(function(key2){
@@ -1505,7 +1508,19 @@ function refreshTreeData(newData){
 										
 										var matches = $.grep(cell_arr, function(item, index) {
 											if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
+												var date = new Date();
+												date = date.yyyymmddhhmmss();
+												item.lastData = date;
+												//item.toolTip = 'Last data received: '+item.lastData+" \n "+item.path.substring(1).replace(staticRegexPeriod, " >> ");
+												$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
 												return item;
+											}
+											else if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1){
+												var date = new Date();
+												date = date.yyyymmddhhmmss();
+												item.lastData = date;
+												$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
+
 											}
 											
 										});
@@ -1580,6 +1595,7 @@ function refreshTree(newData){
 	console.log(dataOld);
 	iterateStations(dataOld, "", jsonArray, lastk);
 	$('#stationTree').jstree(true).settings.core.data = jsonArray;
+	console.log(jsonArray);
 	$('#stationTree').jstree(true).refresh();
 	//empty array for the sake of performance
 	jsonArray.length = 0;
@@ -3017,8 +3033,8 @@ function loadState(jsonString){
 			var cam = new pageCam();
 			console.log(cell);
 			configObject[k].__proto__ = cam.__proto__;
-			configObject[k].loadHtml();
 			cell_arr.push(configObject[k]);
+			configObject[k].loadHtml();
 
 		}
 		else if(configObject[k].elementType == 'pageImg'){

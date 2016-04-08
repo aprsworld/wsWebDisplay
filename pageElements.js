@@ -1794,6 +1794,8 @@ pageCam.prototype.loadHtml = function(){
 	var camObj = this;
 	
 	//get the image src value
+	
+	
 	var updatedPath = ref(dataOld, this.path);
 	if(typeof updatedPath === 'undefined'){
 		updatedPath = 'images/unavailable.svg';
