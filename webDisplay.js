@@ -1603,12 +1603,9 @@ function updateLogs(matches){
 function refreshTree(newData){
 	var lastk = "#";
 	jsonArray = [];
-	console.log(newData);
 	
-	console.log(dataOld);
 	iterateStations(dataOld, "", jsonArray, lastk);
 	$('#stationTree').jstree(true).settings.core.data = jsonArray;
-	console.log(jsonArray);
 	$('#stationTree').jstree(true).refresh();
 	//empty array for the sake of performance
 	jsonArray.length = 0;
