@@ -654,6 +654,19 @@ div.logo_container{
 .draggable_focus_in{
 	box-shadow: 0px 0px 20px #0550a5;
 }
+.timerBlock{
+	position: absolute;
+	display: inline-block;
+	width: 200px;
+	font-size: 12px;
+	top: 0;
+	right: 0;
+	color: #ddd !important;
+	font-weight: 900;
+	text-align: center;
+	background-color: rgba(0,0,0,.5);
+	z-index: 100000000;
+}
 #positionDiv{
 	position: absolute;
 	top: -17;
@@ -1083,10 +1096,10 @@ select.backgroundColorChange option{
 	border: 1px solid black;
 	max-height: 92vh;
 	max-width: 92vw;
-	z-index: 100000000 !important;
+	z-index: 10000000 !important;
 }
 .focusedCam{
-	z-index: 100000000 !important;
+	z-index: 10000000 !important;
 }
 .selectedShadow {
     box-shadow: 0px 0px 20px #0550a5;

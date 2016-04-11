@@ -5,6 +5,7 @@ var time; //incremental variable that keeps track of time since last data update
 var	treeRefreshTimer = 0;
 var loadedTime = 0;
 var camTime = 0; //incremental variable that keeps track of time since last camera image update
+var currentTime;
 var id_arr = [];
 var path_arr = [];
 var cell_arr = [];
@@ -250,6 +251,7 @@ Date.prototype.yyyymmddhhmmss = function() {
    //prints yyyy-mm-dd h:m:s	
    return yyyy +'-'+ (mm[1]?mm:"0"+mm[0]) +'-'+ (dd[1]?dd:"0"+dd[0]) +'  '+ (h[1]?h:"0"+h[0]) +':'+ (m[1]?m:"0"+m[0]) +':'+ (s[1]?s:"0"+s[0]); // padding
 };
+
 //converts seconds into a time format (hours:minutes:seconds)
 function ageTimer(){
 	var length, k, value, id;
@@ -333,7 +335,6 @@ function treeitem(){
 		return classList;
 	};
 }
-
 function iterateStations(obj, stack, arr, lastk) {
 	var jsonItem, jsonItem2, id, path, parent, value, title, units, typeUnits, type;
 	for (var property in obj) {
@@ -533,11 +534,7 @@ function dynamicUpdate(data) {
 		//cam update
 		else if(id.indexOf("pageCam") >= 0){
 			var currentCam;
-			var timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
-			if(!isNaN(timeSinceData) && typeof timeSinceData === 'number'){
-				timeSinceData = secToTime(timeSinceData)
-				$('#'+objectFound.parentId).attr('title', 'Last data received: '+timeSinceData+' \n '+objectFound.toolTip);
-			}
+			
 			value = ref(data, objectFound.path);
 			objectFound.value = value;
 			objectFound.dataType = typeof value;
@@ -642,11 +639,7 @@ function dynamicUpdate(data) {
 			}
 			//objectFound.value = 0;
 			$('div#div_' + objectFound.id + '').children('p').text(value);
-			var timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
-			if(!isNaN(timeSinceData) && typeof timeSinceData === 'number'){
-				timeSinceData = secToTime(timeSinceData)
-				$('#'+objectFound.parentId).attr('title', 'Last data received: '+timeSinceData+' \n '+objectFound.toolTip);
-			}
+			
 		
 		}
 		if (value === undefined) {
@@ -719,6 +712,7 @@ function sinceDataTimer(){
 	$('#timer1').html("<span>Last data received " + time + " seconds ago </span>");
 }
 function timer(){
+	currentTime = Date.now();
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
 	

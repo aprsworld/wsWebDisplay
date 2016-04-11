@@ -98,10 +98,13 @@ pageElement.prototype = {
 			start: function(event, ui){
 				$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
-				$(this).removeAttr("title");			
+				$(this).removeAttr("title");
+				$('.timerBlock').css('display','none');
 				$('#'+thisObj.parentId).on('mouseup', function(e) {
 					console.log(title);
-					$('#'+thisObj.parentId).attr('title',title);	
+					$('#'+thisObj.parentId).attr('title',title);
+					$('.timerBlock').css('display','inline-block');
+
 				});
 				//collapses windows when dragging
 				if(isExpanded){
@@ -328,6 +331,50 @@ pageElement.prototype = {
 				
 				break;
 		}
+	},
+	timerAppend: function() {
+		//set variables in this scope so that they work in the hover handler and the callback
+		var appendedDiv = document.createElement('span'),
+		objectFound = this,
+		timeSinceData,
+		parentWidth,
+		parentTop,
+		divWidth,
+		parentLeft;
+		
+		appendedDiv.className = 'timerBlock';
+		$( "#"+this.parentId ).hover(function(e){
+			//reset text content
+			appendedDiv.textContent = '';
+			//append div on hover
+			$("body").append(appendedDiv);
+			
+			//set positioning of div
+			divWidth = $(appendedDiv).width();
+			parentWidth = $( "#"+objectFound.parentId ).width();
+			parentLeft = $( "#"+objectFound.parentId )[0].offsetLeft+5;
+			parentTop = $( "#"+objectFound.parentId )[0].offsetTop-12;
+			parentWidth = parentWidth+parentLeft;
+
+			$(appendedDiv).css('top',parentTop+'px');
+			$(appendedDiv).css('left',parentWidth+'px');
+			
+			//set interval to change text content every second
+			objectFound.timeInterval = setInterval( function(){
+				//human readable time
+				timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
+				console.log(timeSinceData);
+				if(!isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
+					timeSinceData = secToTime(timeSinceData)
+					appendedDiv.textContent = 'Last data received: '+timeSinceData;
+				}
+			}, 1000 );
+		}, function () {
+
+			//when user "un-hovers," clear interval and remove text
+			clearInterval(objectFound.timeInterval);
+			appendedDiv.remove();
+		});	
 	}
 }
 /***********************************************************************************
@@ -619,6 +666,7 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	$('#'+logId).css('left',pageX);
 	this.setDrag();
 	this.setResize();
+	this.timerAppend();
 	this.count = cellCount;	
 	this.typeChange = this.typeUnits;
 }
@@ -635,7 +683,9 @@ pageLog.prototype.loadHtml = function(){
 	var objectFound = this;
 	this.setDrag();
 	this.setResize();
-	
+	this.lastData = null;
+
+	this.timerAppend();
 	if(this.hidden){
 		$('#'+this.parentId).addClass('hide');
 		console.log($('#'+this.parentId).attr('class'));
@@ -1241,6 +1291,7 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	$('#'+cellId).css('left',pageX);
 	this.setDrag();
 	this.setResize();
+	this.timerAppend();
 	this.count = cellCount;
 }
 
@@ -1286,6 +1337,10 @@ pageCell.prototype.loadHtml = function(cellCount){
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
+	this.lastData = null;
+
+	this.timerAppend();
+	
 	if(this.hidden){
 		$('#'+this.parentId).addClass('hide');
 		console.log($('#'+this.parentId).attr('class'));
@@ -1360,8 +1415,9 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			$( "#"+camId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);	
 			return;
 		}
-		$( "#"+camId  ).unbind("mouseenter mouseleave");
-		$( "#"+camId ).hover(function(){
+		$( "#"+camId  ).unbind("mouseenter", camObj.hoverFunction);
+		$( "#"+camId  ).unbind("mouseleave",camObj.hoverFunction);
+		camObj.hoverFunction = $( "#"+camId ).hover(function(){
 			var camSrc = camObj.src;
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
@@ -1459,7 +1515,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 				}, timeOut); //end hoverTimeOut
 			} //end if(editMode == false && suppressed == false)
 		}, function () {
-			
+			clearInterval(camObj.timerInterval);
+			$("#"+camObj.parentId).find('.timerBlock').remove();
 			if(editMode === false && suppressed == false){	
 				clearTimeout(camObj.timeOut);
 				$('#'+hoverImgId).remove();
@@ -1779,11 +1836,10 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 
 		camObj.setNaturalDimensions(height, width);
 		cell_arr.push(camObj);
-		
 		//calcluate download
 		$('#bytesReceived').html(calculateDownload());
 
-
+		camObj.timerAppend();
 	});	
 	
 	//update src after .load is called
@@ -1820,6 +1876,8 @@ pageCam.prototype.loadHtml = function(){
 		//Allow dragging and resizing as well as a pop-out hover image
 		camObj.setDrag();
 		camObj.setResize();
+		camObj.lastData = null;
+		camObj.timerAppend();
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		
 		//if we are not in edit mode when loading, we want dragging and resizing to be disabled until
@@ -2339,6 +2397,7 @@ pageImg.prototype.loadHtml = function(){
 		}
 	}	
 	});
+
 	objectFound.setDrag();
 	objectFound.setResize();
 	if(editMode == false){
