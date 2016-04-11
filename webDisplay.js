@@ -24,6 +24,28 @@ var timedOut = false;
 var updatelock = false;
 var cameraDataSize = 0;
 var dataTransferred = 0;
+var newestElement = {};
+var oldestElement = {};
+var elementStats = function(){	
+	var oldest = 0;
+	var date = Date.now();
+	var oldestEle;
+	jQuery.each(cell_arr, function(index, item) {
+		if(item.elementType == 'pageLog' ||item.elementType == 'pageCell' ||item.elementType == 'pageCam' ){
+			if((date-item.lastData) > oldest){
+				oldest = date-item.lastData;
+				oldestEle = item;
+			}
+			if(item.lastData > newestElement.time || typeof newestElement.time === 'undefined' || newestElement.time === null){
+				newestElement.time = item.lastData;
+				newestElement.item = item.parentId;
+			}
+		}
+	});	
+	oldestElement.time = oldestEle.lastData;
+	oldestElement.item = oldestEle.parentId;
+}
+
 /********************************************************************
 Work around for jquery ui bug that causes aspect ratio option to fail
 on resizables that have already been initialized

@@ -363,10 +363,19 @@ pageElement.prototype = {
 			objectFound.timeInterval = setInterval( function(){
 				//human readable time
 				timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
-				console.log(timeSinceData);
 				if(!isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
 					timeSinceData = secToTime(timeSinceData)
 					appendedDiv.textContent = 'Last data received: '+timeSinceData;
+					elementStats();
+					if(objectFound.lastData == oldestElement.time){
+						console.log('oldest');
+						appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Oldest Data on Page';
+
+					}
+					if(objectFound.lastData == newestElement.time){
+						console.log('newest');
+						appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Newest Data on Page';
+					}
 				}
 			}, 1000 );
 		}, function () {
