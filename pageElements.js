@@ -45,6 +45,8 @@ pageElement.prototype = {
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(this.id);
 		if (elementPos > -1) {
 			$('#'+this.parentId).remove();
+			$('.timerBlock').remove();
+
 			cell_arr.splice(elementPos, 1);	
 			console.log(cell_arr);
 		}	
@@ -268,6 +270,8 @@ pageElement.prototype = {
 		console.log(cell_arr.length);
 		cell_arr.splice(elementPos, 1);
 		console.log(cell_arr.length);
+		$('.timerBlock').remove();
+
 		$('#'+objId).remove();
 		console.log(cell_arr);
 	},
@@ -375,6 +379,12 @@ pageElement.prototype = {
 					if(objectFound.lastData == newestElement.time){
 						console.log('newest');
 						appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Newest Data on Page';
+					}
+					if(objectFound.lastData == newestElement.time && objectFound.lastData == oldestElement.time){
+						appendedDiv.textContent = 'Last data received: '+timeSinceData;
+					}
+					if(objectFound.lastData != newestElement.time && objectFound.lastData != oldestElement.time){
+						//appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Newest Data on Page is '+newestElement.item+' \n Oldest Data on page '+oldestElement.item;
 					}
 				}
 			}, 1000 );
@@ -1940,12 +1950,14 @@ pageCam.prototype.loadHtml = function(){
 
 pageCam.prototype.removeSelf = function(){
 	console.log('REMOVED');
+	
 		var obj = this;
 		var objId = obj.fullId;
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 		var objectFound = cell_arr[elementPos];
 		cell_arr.splice(elementPos, 1);
 		console.log(objId);
+		$('.timerBlock').remove();
 		$('#'+objId).remove();
 		$('#preload_'+objId).remove();
 		console.log(cell_arr);

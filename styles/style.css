@@ -663,7 +663,7 @@ div.logo_container{
 	right: 0;
 	color: #ddd !important;
 	font-weight: 900;
-	text-align: center;
+	text-align: left;
 	background-color: rgba(0,0,0,.5);
 	z-index: 100000000;
 }
