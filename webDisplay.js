@@ -38,12 +38,16 @@ var elementStats = function(){
 			}
 			if(item.lastData > newestElement.time || typeof newestElement.time === 'undefined' || newestElement.time === null){
 				newestElement.time = item.lastData;
-				newestElement.item = item.parentId;
+				newestElement.item = item.toolTip;
 			}
 		}
 	});	
 	oldestElement.time = oldestEle.lastData;
-	oldestElement.item = oldestEle.parentId;
+	oldestElement.item = oldestEle.toolTip;
+	$('.eleAge').attr('title','Oldest on Page: \n '+oldestElement.item+' \n Newest on Page: \n '+newestElement.item);
+	/*$('.oldestElement').html('<span>Oldest:</span> '+oldestElement.item);
+	$('.newestElement').html('<span>Newest:</span> '+newestElement.item);*/
+
 }
 
 /********************************************************************
@@ -731,16 +735,17 @@ function sinceDataTimer(){
 		}
 		
 	}
-	$('#timer1').html("<span>Last data received " + time + " seconds ago </span>");
+	$('#timer1').html("<span>Data received " + time + " sec. ago </span>");
 }
 function timer(){
 	currentTime = Date.now();
 	loadedTime = loadedTime+1;
 	camTime = camTime+1;
-	
+	elementStats();
+
 	treeRefreshTimer = treeRefreshTimer+1;
 	var convertedLoad = secToTime(loadedTime);
-	$('#timer').html("<span> "+convertedLoad+' since page was loaded</span>  <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
+	$('#timer').html("<span> "+convertedLoad+' since page-load</span>  <i title="Format - Hours:Minutes:Seconds" class="fa fa-question-circle"></i>');
 	if(loadedTime%30 == 0){
 		console.log(convertedLoad+' since page was loaded');	
 	}
@@ -1316,7 +1321,7 @@ function calculateDownload(){
 	}
 	size = round(size, 2);
 	size = size.toLocaleString();
-	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> of broadcast data downloaded <i title="Downloaded data only counts data \n coming in from the webSocket since page load" class="fa fa-question-circle"></i>';
+	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> Data Transfered <i title="Downloaded data only counts data coming \n in from the webSocket since page load" class="fa fa-question-circle"></i>';
 	return message;
 }
 //gets parameters in url
@@ -1387,7 +1392,7 @@ var data_object;
 /*function initiates the data transfer*/
 function data_start() {
 	ageTimer();
-	$('#version').text(wdVersion);
+	$('#version').attr('title',wdVersion);
 	//user defined host via url get parameter 
 	var urlVars = getUrlVars();
 	var host = getUrlVars()["host"];

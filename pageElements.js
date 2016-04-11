@@ -346,34 +346,20 @@ pageElement.prototype = {
 		divWidth,
 		parentLeft;
 		
-		appendedDiv.className = 'timerBlock';
 		$( "#"+this.parentId ).hover(function(e){
-			//reset text content
-			appendedDiv.textContent = '';
-			//append div on hover
-			$("body").append(appendedDiv);
-			
-			//set positioning of div
-			divWidth = $(appendedDiv).width();
-			parentWidth = $( "#"+objectFound.parentId ).width();
-			parentLeft = $( "#"+objectFound.parentId )[0].offsetLeft+5;
-			parentTop = $( "#"+objectFound.parentId )[0].offsetTop-12;
-			parentWidth = parentWidth+parentLeft;
-
-			$(appendedDiv).css('top',parentTop+'px');
-			$(appendedDiv).css('left',parentWidth+'px');
-			
+						
 			//set interval to change text content every second
 			objectFound.timeInterval = setInterval( function(){
 				//human readable time
 				timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
 				if(!isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
 					timeSinceData = secToTime(timeSinceData)
-					appendedDiv.textContent = 'Last data received: '+timeSinceData;
-					elementStats();
-					if(objectFound.lastData == oldestElement.time){
+					$('#dataAge').text('This Element: '+timeSinceData+' old');
+
+					/*if(objectFound.lastData == oldestElement.time){
 						console.log('oldest');
 						appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Oldest Data on Page';
+						$('#dataAge').text('Last data received: '+timeSinceData);
 
 					}
 					if(objectFound.lastData == newestElement.time){
@@ -384,12 +370,12 @@ pageElement.prototype = {
 						appendedDiv.textContent = 'Last data received: '+timeSinceData;
 					}
 					if(objectFound.lastData != newestElement.time && objectFound.lastData != oldestElement.time){
-						//appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Newest Data on Page is '+newestElement.item+' \n Oldest Data on page '+oldestElement.item;
-					}
+						//appendedDiv.textContent = 'Last data received: '+timeSinceData+' Newest Data on Page is '+newestElement.item+' Oldest Data on page '+oldestElement.item;
+					}*/
 				}
 			}, 1000 );
 		}, function () {
-
+			$('#dataAge').text('');
 			//when user "un-hovers," clear interval and remove text
 			clearInterval(objectFound.timeInterval);
 			appendedDiv.remove();
@@ -510,6 +496,7 @@ pageSettings.prototype.nextItem = function() {
 	$('.imgCamContainer').remove();
 	var arr = this.layoutList;
 	$('#cycleMessage').remove();
+	$('.itemBlock').remove();
 	if(typeof this.currentLayoutIndex !== 'undefined'){
 		var message = "Next Configuration...";
 		createMessage(message, 2000);
@@ -533,6 +520,7 @@ pageSettings.prototype.prevItem = function() {
 	$('.imgCamContainer').remove();
 	var arr = this.layoutList;
 	$('#cycleMessage').remove();
+	$('.itemBlock').remove();
 	if(typeof this.currentLayoutIndex !== 'undefined'){
 		var message = "Previous Configuration..."; 
 		createMessage(message, 2000);

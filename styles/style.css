@@ -657,14 +657,14 @@ div.logo_container{
 .timerBlock{
 	position: absolute;
 	display: inline-block;
-	width: 200px;
-	font-size: 12px;
+	width: 250px;
+	font-size: 14px;
 	top: 0;
 	right: 0;
 	color: #ddd !important;
 	font-weight: 900;
-	text-align: left;
-	background-color: rgba(0,0,0,.5);
+	text-align: center;
+	background-color: rgba(0,0,0,.8);
 	z-index: 100000000;
 }
 #positionDiv{
@@ -739,12 +739,30 @@ div.logo_container{
 	transition: background-color 0.5s ease;	
 	padding-top: 3px;
 }
+.statusTimers{
+	display: block;
+	float: left;
+	color: #333;
+	font-size: 12px;
+	padding: 3px 10px 0px 10px;	
+	font-weight: 300;
+			border-left: 1px solid #333;
+
+}
+#dataAge{
+	display: block;
+	float: left;
+	color: #333;
+	font-size: 12px;
+	padding: 3px 10px 0px 10px;	
+}
 #timer{
 	display: block;
 	float: left;
 	color: #333;
 	font-size: 12px;
 	padding: 3px 10px 0px 10px;
+	border-left: 1px solid #333;
 
 }
 #timer1{
