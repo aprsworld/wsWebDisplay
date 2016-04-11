@@ -558,9 +558,9 @@ function dynamicUpdate(data) {
 			$('div#div_' + objectFound.id + '').children('p').text(value);
 		}
 		//cam update
-		else if(id.indexOf("pageCam") >= 0){
+		else if(objectFound.elementType == 'pageCam'){
 			var currentCam;
-			
+			console.log(id);
 			value = ref(data, objectFound.path);
 			objectFound.value = value;
 			objectFound.dataType = typeof value;
@@ -568,6 +568,7 @@ function dynamicUpdate(data) {
 			currentCam = currentCam.attr('id');
 			$('#preload_'+currentCam).unbind();
 			$('#preload_'+currentCam).load(function() {
+				console.log(id);
 				var src = objectFound.value;
 				var cam = $(this).attr('id').replace("preload_","");
 				if(objectFound.src != src){	
@@ -1060,6 +1061,7 @@ function data_update(data) {
 			}
         });
         $(document).ready(function() {
+			
 			$( "#fontComboBox" ).combobox({
 				 select: function (event, ui) { 
 					$('#comboBoxInput').attr('value', this.value);
@@ -1462,7 +1464,6 @@ function data_start() {
 		document.title = title.replace('%20'," ");	
 	}
 }
-
 
 /**** document ready ****/
 

@@ -112,11 +112,13 @@
 <div id="statusBar">
 	<span id="timer"> loading page... </span>
 	<span id="timer1"> Data not yet received from socket </span>
-	
 	<button id="masterEdit" onclick="edit()"> </button>
-	<span id="camTimer"> Edit Window </span>
-	<span id="version"> | version 1.0 | </span>	
-	<span id="bytesReceived"> 0 Bytes Transferred</span>
+	<span class="statusTimers" id="version"> <i class="fa fa-calendar" aria-hidden="true"></i> </span>	
+	<span class="statusTimers" id="bytesReceived"> 0 Bytes Transferred</span>
+	<span class="statusTimers eleAge">Oldest and Newest Element <i class="fa fa-clock-o" aria-hidden="true"></i></span>
+	<span class="statusTimers" id="dataAge"></span>
+
+
 </div>
 <div class="editWindow " class="editWindowRow">
 	<h1> Edit </h1>
@@ -306,5 +308,6 @@
 	
 	<button title="Minimize Edit Window (shortcut: esc key)" id="editMinimize"><span>Hide </span><i class="fa fa-long-arrow-right"></i></button>
 	<button title="Expand Edit Window" id="editMaximize"><i class="fa fa-long-arrow-left"></i> Show</button>
+
 </body>
 </html>
