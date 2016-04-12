@@ -2358,21 +2358,25 @@ pageImg.prototype.createHtml = function(cellCount){
 	this.count = cellCount;
 	this.toolTip = this.parentId;
 }
-pageImg.prototype.loadHtml = function(){
+pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
 	console.log('loadedImage');
 	var objectFound = this;
-	$('#content').append('<div id="'+this.parentId+'" title="'+this.parentId+'" style="background-image: url('+objectFound.src+')" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
+	$('#content').append('<div id="'+this.parentId+'" title="'+this.parentId+'" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
 	$('#'+this.id).load(function() {
 		$('#'+objectFound.parentId).attr('style',objectFound.style);
+		$('#'+objectFound.parentId).css("background-repeat", "no-repeat");
 		objectFound.setSuppression(objectFound.suppressed);
 		objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
 		if(objectFound.hidden){
-		$('#'+objectFound.parentId).addClass('hide');
-		console.log($('#'+objectFound.parentId).attr('class'));
-		if(editMode == false){
-			$('#'+objectFound.parentId).css('visibility','hidden');
-		}
-	}	
+			$('#'+objectFound.parentId).addClass('hide');
+			console.log($('#'+objectFound.parentId).attr('class'));
+			if(editMode == false){
+				$('#'+objectFound.parentId).css('visibility','hidden');
+			}
+
+		}	
+					adjustDimensions(widthRatio, heightRatio, objectFound);
+
 	});
 
 	objectFound.setDrag();

@@ -754,7 +754,6 @@ function timer(){
 function clickToCreate(item, data, x ,y){
 	var id = $(item).closest('.jstree-node').attr('id');
 	var cellCount = cell_arr.length;
-	console.log(cellCount);
 	var obj, pageObj, new_id; 
 	
 	var pageObjId = 'pageSettings';	
@@ -890,7 +889,6 @@ function clickToCreate(item, data, x ,y){
 		var i;
 		var path = $('#stationTree').jstree(true).get_node(id).original.obj.path;
 		var tooltip = path.substring(1).replace(staticRegexPeriod, " >> ");
-		console.log('TOOLTIP '+tooltip);
 		obj["path"] = path;
 		obj["containerId"] = new_id;
 		obj["fullId"] = new_id;
@@ -914,7 +912,6 @@ function clickToCreate(item, data, x ,y){
 		console.log(sendPath);
 		obj.createHtml(cellCount, sendPath, x, y);
 		obj.setHover(true, obj.hoverDelay);
-		console.log($('#'+new_id));
 		console.log(obj);
 		positionDiv(obj, new_id);
 		cellCount++;
@@ -931,7 +928,6 @@ var posTop, posLeft, width, height;
 	posDiv.id = 'positionDiv';
 	console.log(new_id);
 	$('#rulerBox2').append(posDiv);
-	console.log($('#'+new_id));
 	posSpan.textContent = "("+posLeft+", "+posTop+")";
 	posSpan.id = 'positionSpan';
 	$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
@@ -1011,7 +1007,6 @@ function collapseWindows(){
 		$("#editMaximize").show();
 		$("#editMinimize").hide();
 		isExpanded = false;
-		console.log('test');
 	}
 	else{
 		$('.controls').animate({'width': '250px', 'padding-left': '10px', 'padding-right': '10px'},200);
@@ -1120,7 +1115,6 @@ function data_update(data) {
 					});
 					$('.jstree-themeicon, .jstree-contextmenubtn').off('click').on('click', function(e) {
 						var item = this;
-						console.log(item);
 						var pageX = e.pageX;
 						var pageY = e.pageY;
 						clickToCreate(item, incomingData, pageX, pageY)
@@ -1290,7 +1284,6 @@ function data_update(data) {
 		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
 		if(editMode == false && treeRefreshTimer >= 14){
 			refreshTree(dataOld);	
-			console.log(jsonArray);
 			console.log('refreshed');
 			treeRefreshTimer = 0;
 		}
@@ -3061,11 +3054,35 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
 	else if(thisObj.elementType === 'pageImg'){
+		if(thisObj.cropped){
+			var pos = $('#'+thisObj.parentId).css("background-position").split(" ");
+			pos[0] = parseInt(pos[0],10)*widthRatio;
+			pos[1] = parseInt(pos[1],10)*heightRatio;
+			var bgSize = $('#'+thisObj.parentId).css("background-size").split(" ");
+			bgSize[0] = parseInt(bgSize[0],10)*widthRatio;
+			bgSize[1] = parseInt(bgSize[1],10)*heightRatio;
+			
+			$('#'+thisObj.parentId).css({"background-position": pos[0]+"px " + pos[1] + "px","background-size": bgSize[0]+"px " + bgSize[1] + "px"});
+		}
 		$('#'+thisObj.parentId).css({
 			"top": eleTop+"px",
 			"left": eleLeft+"px",
 			"width": eleWidth+"px",
-			"height": eleHeight+"px" 
+			"height": eleHeight+"px"
+		});
+		thisObj.natWidth = thisObj.natWidth*widthRatio;
+		thisObj.natHeight = thisObj.natHeight*heightRatio;
+		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
+	}
+	else if(thisObj.elementType === 'pageText'){
+		var eleFontSize = parseInt($('#'+thisObj.parentId).css('font-size'),10)*heightRatio;
+		$('#'+thisObj.parentId).css({
+			"top": eleTop+"px",
+			"left": eleLeft+"px",
+			"width": eleWidth+"px",
+			"height": eleHeight+"px", 
+			"font-size": eleFontSize+"px"
+
 		});
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
@@ -3161,8 +3178,9 @@ function loadState(jsonString){
 			var img = new pageImg();
 			configObject[k].__proto__ = img.__proto__;
 			console.log(cell_arr);
-			configObject[k].loadHtml();
-			cell_arr.push(configObject[k]);			
+			configObject[k].loadHtml(widthRatio, heightRatio);
+			cell_arr.push(configObject[k]);	
+
 
 		}
 		else if(configObject[k].elementType == 'pageText'){
@@ -3172,6 +3190,8 @@ function loadState(jsonString){
 
 			cell_arr.push(configObject[k]);
 			configObject[k].loadHtml();
+			adjustDimensions(widthRatio, heightRatio, configObject[k]);
+
 		}
 		else{
 			console.log('undefined');	
