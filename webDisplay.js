@@ -3031,21 +3031,21 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
 	else if(thisObj.elementType === 'pageCam'){
-		var pos = $('#'+thisObj.parentId).css("background-position").split(" ");
-		pos[0] = parseInt(pos[0],10)*widthRatio;
-		pos[1] = parseInt(pos[1],10)*heightRatio;
-		var bgSize = $('#'+thisObj.parentId).css("background-size").split(" ");
-				console.log(bgSize[0]+" "+bgSize[1]+" "+pos[0]+" "+pos[1]);
-
-		bgSize[0] = parseInt(bgSize[0],10)*widthRatio;
-		bgSize[1] = parseInt(bgSize[1],10)*heightRatio;
+		if(thisObj.cropped){
+			var pos = $('#'+thisObj.parentId).css("background-position").split(" ");
+			pos[0] = parseInt(pos[0],10)*widthRatio;
+			pos[1] = parseInt(pos[1],10)*heightRatio;
+			var bgSize = $('#'+thisObj.parentId).css("background-size").split(" ");
+			bgSize[0] = parseInt(bgSize[0],10)*widthRatio;
+			bgSize[1] = parseInt(bgSize[1],10)*heightRatio;
+			
+			$('#'+thisObj.parentId).css({"background-position": pos[0]+"px " + pos[1] + "px","background-size": bgSize[0]+"px " + bgSize[1] + "px"});
+		}
 		$('#'+thisObj.parentId).css({
 			"top": eleTop+"px",
 			"left": eleLeft+"px",
 			"width": eleWidth+"px",
-			"height": eleHeight+"px", 
-			"background-position": pos[0]+"px " + pos[1] + "px",
-			"background-size": bgSize[0]+"px " + bgSize[1] + "px"
+			"height": eleHeight+"px"
 		});
 		thisObj.natWidth = thisObj.natWidth*widthRatio;
 		thisObj.natHeight = thisObj.natHeight*heightRatio;

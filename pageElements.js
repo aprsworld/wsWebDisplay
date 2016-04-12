@@ -1497,10 +1497,11 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 						top = '-'+$('#'+camId).css('top');
 						left= '-'+$('#'+camId).css('left');
 						
-						/*detects if camera is bigger than the viewport in either width or height
-						* This changes where the cam is positioned so that the hover cam does not
-						* go off-screen
-						*/
+						
+						///*detects if camera is bigger than the viewport in either width or height
+						//* This changes where the cam is positioned so that the hover cam does not
+						//* go off-screen
+						//*/
 						if(window.innerWidth-camWidth < 0 || window.innerHeight-camHeight < 0){
 							
 							$('#'+hoverImgId).css({'top':''+distanceTop+'','left':''+distanceLeft+''});
