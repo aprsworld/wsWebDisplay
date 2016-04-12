@@ -1877,11 +1877,6 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 		var pageObjId = 'pageSettings';	
 		var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 		var pageObj= cell_arr[pageElementPos];
-		
-		//add the path to the hash table
-		pageObj.addToTable(camObj.path, updatedPath);
-		
-		//if table does not already have this image or the current image src is not up to date, add this image to the hash table.
 		if(!pageObj.tableHasItem(camObj.path) || !pageObj.isTableItemCurrent(camObj.path,camObj.src)){
 			//get size of image
 			var image_size = ref(dataOld, camObj.path.replace('image_url','image_size'));
@@ -1893,6 +1888,11 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 				$('#bytesReceived').html(calculateDownload());
 			}
 		}
+		//add the path to the hash table
+		pageObj.addToTable(camObj.path, updatedPath);
+		
+		//if table does not already have this image or the current image src is not up to date, add this image to the hash table.
+		
 		adjustDimensions(widthRatio, heightRatio, camObj);
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 
