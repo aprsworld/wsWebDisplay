@@ -1464,7 +1464,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					$('#'+camId).append(hoverImgLink);
 					$('#'+camId).addClass('focusedCam');
 					//Since Chrome and Safari like to mess things up, we need a separate class with extra math for those browsers
-					if (isWebkit) {
+					/*if (false) {
 						hoverImgLink.className = 'webKitCam';
 						hoverImgLink.id = hoverImgId;
 						var top = ''+$('#'+camId).css('top');
@@ -1498,10 +1498,10 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 						left= '-'+$('#'+camId).css('left');
 						
 						
-						///*detects if camera is bigger than the viewport in either width or height
+						//*detects if camera is bigger than the viewport in either width or height
 						//* This changes where the cam is positioned so that the hover cam does not
 						//* go off-screen
-						//*/
+						//*
 						if(window.innerWidth-camWidth < 0 || window.innerHeight-camHeight < 0){
 							
 							$('#'+hoverImgId).css({'top':''+distanceTop+'','left':''+distanceLeft+''});
@@ -1515,13 +1515,31 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 							//$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+left+' + '+scrollLeft+'px - '+widthoffset+'px), calc(0% + '+top+' + '+scrollTop+'px - '+heightoffset+'px)'});
 							$('#'+hoverImgId).css({'-webkit-transform':'translate(calc(0% + '+distanceLeft+'px), calc(0% + '+distanceTop+'px)'});
 						}
-						console.log(top);
 
 					}
+					else{*/
+					hoverImgLink.id = hoverImgId;
+					hoverImgLink.className = 'expandedCam';
+					var top = parseInt($('#'+camId).css('top'),10)
+					var height = parseInt(camObj.natHeight,10);
+					var left = parseInt($('#'+camId).css('left'),10)
+					var width = parseInt(camObj.natWidth,10);
+					console.log(window);
+					console.log(left+((window.innerWidth-width)/2));
+					console.log(left);
+					if(isWebkit){
+						$('#'+hoverImgId).css({
+							"top": (((window.innerHeight-height)/2)-top)+"px",
+							"left": (((window.innerWidth-width)/2)-left)+"px"	
+						});
+					}
 					else{
-						hoverImgLink.id = hoverImgId;
-						hoverImgLink.className = 'expandedCam';
-					}	
+						$('#'+hoverImgId).css({
+							"top": (((window.innerHeight-height)/2))+"px",
+							"left": (((window.innerWidth-width)/2))+"px"
+						});
+					}
+					/*}*/	
 				}, timeOut); //end hoverTimeOut
 			} //end if(editMode == false && suppressed == false)
 		}, function () {
