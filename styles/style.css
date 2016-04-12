@@ -309,6 +309,7 @@ select{
 	width: 100vw;
 	background-color: transparent;
 	z-index: 0;
+	overflow: hidden;
 }
 .top-container h2{
 	color: #DEDEDE;
@@ -647,7 +648,9 @@ div.logo_container{
 	z-index: 100;
 	color: #efefef;	
 	background-color: rgba(0,0,0,0.01);
+	
 }
+
 .titleText{
 	display: inline-block;	
 }

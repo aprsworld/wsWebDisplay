@@ -1504,6 +1504,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 						if(window.innerWidth-camWidth < 0 || window.innerHeight-camHeight < 0){
 							
 							$('#'+hoverImgId).css({'top':''+distanceTop+'','left':''+distanceLeft+''});
+							$('#'+hoverImgId).css({'width':''+window.innerWidth*.95+'','height':''+window.innerHeight*.95+''});
+
 							console.log(scrollLeft+" "+elementOffsetLeft+" "+distanceLeft);
 
 						}
@@ -1854,7 +1856,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	$('#preload_'+camId).attr('src', value);
 }
 
-pageCam.prototype.loadHtml = function(){
+pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 	
 	var camId = this.fullId;
 	var camObj = this;
@@ -1885,7 +1887,6 @@ pageCam.prototype.loadHtml = function(){
 		camObj.setResize();
 		camObj.lastData = null;
 		camObj.timerAppend();
-		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		
 		//if we are not in edit mode when loading, we want dragging and resizing to be disabled until
 		//we enter edit mode.
@@ -1928,6 +1929,9 @@ pageCam.prototype.loadHtml = function(){
 				$('#bytesReceived').html(calculateDownload());
 			}
 		}
+		adjustDimensions(widthRatio, heightRatio, camObj);
+		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
+
 	});
 	
 	//update src after .load is called

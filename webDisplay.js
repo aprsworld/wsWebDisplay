@@ -42,9 +42,11 @@ var elementStats = function(){
 			}
 		}
 	});	
-	oldestElement.time = oldestEle.lastData;
-	oldestElement.item = oldestEle.toolTip;
-	$('.eleAge').attr('title','Oldest on Page: \n '+oldestElement.item+' \n Newest on Page: \n '+newestElement.item);
+	if(typeof oldestEle !== 'undefined'){
+		oldestElement.time = oldestEle.lastData;
+		oldestElement.item = oldestEle.toolTip;
+		$('.eleAge').attr('title','Oldest on Page: \n '+oldestElement.item+' \n Newest on Page: \n '+newestElement.item);
+	}
 	/*$('.oldestElement').html('<span>Oldest:</span> '+oldestElement.item);
 	$('.newestElement').html('<span>Newest:</span> '+newestElement.item);*/
 
@@ -560,7 +562,6 @@ function dynamicUpdate(data) {
 		//cam update
 		else if(objectFound.elementType == 'pageCam'){
 			var currentCam;
-			console.log(id);
 			value = ref(data, objectFound.path);
 			objectFound.value = value;
 			objectFound.dataType = typeof value;
@@ -568,7 +569,6 @@ function dynamicUpdate(data) {
 			currentCam = currentCam.attr('id');
 			$('#preload_'+currentCam).unbind();
 			$('#preload_'+currentCam).load(function() {
-				console.log(id);
 				var src = objectFound.value;
 				var cam = $(this).attr('id').replace("preload_","");
 				if(objectFound.src != src){	
@@ -1469,7 +1469,6 @@ function data_start() {
 
 //starts timers;
 $(document).ready(function() {
-
 	setInterval(timer,1000);
 	window.onscroll = function (e)
 	{
@@ -2978,10 +2977,15 @@ function replacer(key,value)
 }
 
 function captureState(){
-	/*var saveArr = $.map(cell_arr, function (obj) {
-						console.log(obj);
-                      return $.extend(true, {}, obj);
-                  });*/
+	
+	var objId = 'pageSettings';	
+	console.log(cell_arr);
+	var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+	var pageSettingsObj = cell_arr[elementPos];
+
+	pageSettingsObj.screenWidth = window.screen.availWidth;
+	pageSettingsObj.screenHeight = window.screen.availHeight;
+
 	for(var k in cell_arr){
 		/*if(saveArr[k].elementType === 'pageLog'){
 			saveArr[k].listToArray();
@@ -3005,11 +3009,81 @@ function captureState(){
 	},'webdisplay/configs/'+saveName,jsonString,true);
 	//saveArr = null;
 }
+
+function adjustDimensions(widthRatio, heightRatio, thisObj){
+	console.log(heightRatio+" "+widthRatio);
+	var eleWidth, eleHeight, eleTop, eleLeft;
+	eleWidth = parseInt(thisObj.getWidth(), 10)*widthRatio;
+	eleHeight = parseInt(thisObj.getHeight(), 10)*heightRatio;
+	eleTop = parseInt(thisObj.getTop(), 10)*heightRatio;
+	eleLeft = parseInt(thisObj.getLeft(), 10)*widthRatio;
+	
+	if(thisObj.elementType === 'pageCell'){
+		var eleFontSize = parseInt($('#'+thisObj.parentId).css('font-size'),10)*heightRatio;
+		$('#'+thisObj.parentId).css({
+			"top": eleTop+"px",
+			"left": eleLeft+"px",
+			"width": eleWidth+"px",
+			"height": eleHeight+"px",
+			"font-size": eleFontSize+"px"
+		});
+		
+		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
+	}
+	else if(thisObj.elementType === 'pageCam'){
+		var pos = $('#'+thisObj.parentId).css("background-position").split(" ");
+		pos[0] = parseInt(pos[0],10)*widthRatio;
+		pos[1] = parseInt(pos[1],10)*heightRatio;
+		var bgSize = $('#'+thisObj.parentId).css("background-size").split(" ");
+				console.log(bgSize[0]+" "+bgSize[1]+" "+pos[0]+" "+pos[1]);
+
+		bgSize[0] = parseInt(bgSize[0],10)*widthRatio;
+		bgSize[1] = parseInt(bgSize[1],10)*heightRatio;
+		$('#'+thisObj.parentId).css({
+			"top": eleTop+"px",
+			"left": eleLeft+"px",
+			"width": eleWidth+"px",
+			"height": eleHeight+"px", 
+			"background-position": pos[0]+"px " + pos[1] + "px",
+			"background-size": bgSize[0]+"px " + bgSize[1] + "px"
+		});
+		thisObj.natWidth = thisObj.natWidth*widthRatio;
+		thisObj.natHeight = thisObj.natHeight*heightRatio;
+		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
+	}
+	else if(thisObj.elementType === 'pageLog'){
+		$('#'+thisObj.parentId).css({
+			"top": eleTop+"px",
+			"left": eleLeft+"px",
+			"width": eleWidth+"px",
+			"height": eleHeight+"px" 
+		});
+		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
+	}
+	else if(thisObj.elementType === 'pageImg'){
+		$('#'+thisObj.parentId).css({
+			"top": eleTop+"px",
+			"left": eleLeft+"px",
+			"width": eleWidth+"px",
+			"height": eleHeight+"px" 
+		});
+		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
+	}
+	else{
+		
+	}
+}
+
 function loadState(jsonString){
 	console.log("timing "+Date.now());
 	//console.log(jsonString);
 	var configObject = JSON.parse(jsonString);
 	var count = 0;
+	var pageSettings1;
+	var height = window.screen.availHeight;
+	var width = window.screen.availWidth;
+	var heightRatio = 1;
+	var widthRatio = 1;
 	console.log(cell_arr);
 	
 	var arrlength = cell_arr.length;
@@ -3030,7 +3104,7 @@ function loadState(jsonString){
 			var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
 			var pageSettingsObj = cell_arr[elementPos];
 			console.log(elementPos);
-
+			
 			if(elementPos > -1){
 				cell_arr.splice(elementPos, 1);
 			}
@@ -3041,6 +3115,15 @@ function loadState(jsonString){
 			configObject[k].backgroundColorChange(configObject[k].backgroundColor);
 			configObject[k].setPageTitle(configObject[k].title);
 			configObject[k].updateGrid(configObject[k].gridSize);
+			pageSettings1 = configObject[k];
+
+			if(typeof pageSettings1.screenWidth !== "undefined" && typeof pageSettings1.screenHeight !== 'undefined'){
+								console.log(width+" , "+height+" , "+pageSettings1.screenWidth+" , "+pageSettings1.screenHeight);
+
+				widthRatio = width/pageSettings1.screenWidth;
+				heightRatio = height/pageSettings1.screenHeight;
+				
+			}
 		$('.gridlines').css("display","none");
 			cell_arr.push(configObject[k]);
 			console.log(cell_arr);
@@ -3051,7 +3134,9 @@ function loadState(jsonString){
 			configObject[k].__proto__ = cell.__proto__;
 			cell_arr.push(configObject[k]);
 			configObject[k].loadHtml();
-
+			console.log(widthRatio+" , "+heightRatio);
+			adjustDimensions(widthRatio, heightRatio, configObject[k]);
+			
 		}
 		else if(configObject[k].elementType == 'pageLog'){
 			var log = new pageLog();
@@ -3066,7 +3151,10 @@ function loadState(jsonString){
 			console.log(cell);
 			configObject[k].__proto__ = cam.__proto__;
 			cell_arr.push(configObject[k]);
-			configObject[k].loadHtml();
+			configObject[k].loadHtml(widthRatio, heightRatio);
+			/*$('#preload_'+configObject[k].fullId).load(function() { 
+				adjustDimensions(widthRatio, heightRatio, configObject[k]);
+			});*/
 
 		}
 		else if(configObject[k].elementType == 'pageImg'){
