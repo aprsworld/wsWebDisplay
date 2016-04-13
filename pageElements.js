@@ -2374,6 +2374,8 @@ pageImg.prototype.setResize = function(){
 			thisObj.height = height;
 			thisObj.changedWidth = thisObj.width;
 			thisObj.changedHeight = thisObj.height;
+			thisObj.heightToSave = $('#'+thisObj.parentId).height();
+			thisObj.widthToSave = $('#'+thisObj.parentId).width();
 		}
 	});	
 }
