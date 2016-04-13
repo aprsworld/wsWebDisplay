@@ -1132,11 +1132,13 @@ var pageCell = function(){
 }
 extend(pageCell,pageElement);
 
+//sets the precision property of the object - discards non-integer values
 pageCell.prototype.setPrecision = function(value){
 	//need "||" because javascript interperets an empty string as zero
 	if(isNaN(value) || value == '' || parseInt(value) > 19){
 		this.precision = 0;
 	}
+	//negative numbers will affect places to the left of the decimal point
 	else{
 		this.precision = value;
 	}
@@ -1147,6 +1149,7 @@ pageCell.prototype.setTypeChange = function(type){
 	this.typeChange = type;
 }
 
+//changes font color of element
 pageCell.prototype.fontColorChange = function(color){
 	var containerId = this.fullId;
 	$('#'+containerId).closest('.tr').css('color', color+'');
@@ -1154,6 +1157,7 @@ pageCell.prototype.fontColorChange = function(color){
 	this.setStyle(style);
 }
 
+//changes background color of element
 pageCell.prototype.backgroundColorChange = function(color){
 	var containerId = this.fullId;
 	$('#'+containerId).closest('.tr').css('background-color', color);
@@ -1163,6 +1167,7 @@ pageCell.prototype.backgroundColorChange = function(color){
 	this.setStyle(style);
 }
 
+//changes font size of element
 pageCell.prototype.fontSizeChange = function(size){
 	var containerId = this.fullId;
 	size = size.trim();
@@ -1171,8 +1176,14 @@ pageCell.prototype.fontSizeChange = function(size){
 	this.setStyle(style);
 }
 
+//changes value of title in element html
+// |``````````title```````````|
+// |``````````````````````````| 
+// |      value   label       |
+// ````````````````````````````
 pageCell.prototype.setTitle = function(text){
 	var containerId = this.fullId;
+	//removes title from element if text = ''
 	if(text == ''){
 		$('#'+containerId).siblings('.myTableTitle').children('p').text(text);	
 		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0)');	
@@ -1182,10 +1193,16 @@ pageCell.prototype.setTitle = function(text){
 		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0.35)');	
 	}
 	this.title = text;
-}
+} 
 
+//changes value of label in element html
+// |``````````title```````````|
+// |``````````````````````````| 
+// |      value   label       |
+// ````````````````````````````
 pageCell.prototype.setLabel = function(text){
 	var containerId = this.fullId;	
+	//if label override is on, label will not change
 	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
 		$('#'+containerId).find('.label').text(text);
 	}
@@ -1195,6 +1212,8 @@ pageCell.prototype.setLabel = function(text){
 	}
 	//this.units = text;
 }
+
+//sets label override so that updating the value of this data cell does not replace it with the default label
 pageCell.prototype.setLabelOverride = function(value, label){
 		this.labelOverride = value;
 
@@ -1214,14 +1233,18 @@ pageCell.prototype.setLabelOverride = function(value, label){
 		$('#'+this.fullId).find('.label').text(updatedLabel);
 	}
 }
+
+//sets opacity using RGBA( r, g, b, a)
 pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	var containerId = this.fullId;	
 	opacity = opacity.toString();
 	var newColor;
+	//background color is in rgba format...
 	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
 		console.log(ui.value);
 		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+(Math.round(ui.value)*.01).toFixed(2)+')').replace('rgb', 'rgba');
 	}
+	//if background color is not in rgba format, we must conver it.
 	else{
 		var currentColor = $('#'+selectedModule).css('background-color');
 		var splitColor = currentColor.split(',');
@@ -1240,11 +1263,14 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 }
 
 //This function defines how resizing works for data cells
+//these resize functions could be refactores so that start, resize, and stop 
+// all call functions instead of the code duplication that I have now
 pageCell.prototype.setResize = function(){
 	var handleTarget;
 	var thisObj = this;		
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
+		//function that executes when resizing starts
 		start: function(event, ui){
 			$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
@@ -1264,6 +1290,7 @@ pageCell.prototype.setResize = function(){
 			$('#'+thisObj.parentId).append(posSpan);
 			handleTarget = $(event.originalEvent.target);
 		},
+		//function that executes during resizing
 		resize: function(event, ui){
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
@@ -1273,6 +1300,7 @@ pageCell.prototype.setResize = function(){
 			
 			
 			var direction = $(event.target).data('ui-resizable').axis;
+			//we have to change the way resizing works when dragging from the e, se and s sides
 			if(direction == 'e' || direction == 'se' || direction == 's'){
 				newWidth = (Math.floor(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
 				newHeight = (Math.floor(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
@@ -1300,7 +1328,9 @@ pageCell.prototype.setResize = function(){
 				left: event.clientX+5
 			}); 
 			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
+			
 		},
+		//function that executes after resizing
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
 			thisObj.onChangeStyle();
@@ -1309,6 +1339,8 @@ pageCell.prototype.setResize = function(){
 		}
 	});
 }
+
+//creates the html from the object properties
 pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	
 	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+currentData+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
@@ -1326,6 +1358,7 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.count = cellCount;
 }
 
+//re-creates html from loaded object properties
 pageCell.prototype.loadHtml = function(cellCount){
 	var updatedPath = ref(dataOld, this.path);
 	var result;
@@ -1333,7 +1366,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 	if(typeof label === 'undefined'){
 		label = this.units	
 	}
-	
+	//set datatype based on value in json
 	if(typeof updatedPath == 'string'){
 		this.dataType = 'string';	
 	}
@@ -1343,6 +1376,8 @@ pageCell.prototype.loadHtml = function(cellCount){
 	console.log(this.path);
 	console.log(updatedPath);
 	console.log(this.dataType);
+	
+	//if the data type is a number, then it can be manipulated
 	if(this.dataType !== 'string'){
 		if(updatedPath !== 'undefined'){
 			console.log(this.typeUnits+" "+this.typeChange+" "+updatedPath+" "+this.precision);
@@ -1369,7 +1404,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 	this.setDrag();
 	this.setResize();
 	this.lastData = null;
-
+	//this handles the time since the data has been updated for this element
 	this.timerAppend();
 	
 	if(this.hidden){
@@ -1563,6 +1598,8 @@ pageCam.prototype.setNaturalDimensions = function(height, width){
 	this.changedHeight = height;
 	this.changedWidth = width;
 }
+
+//resizes image to original, native size - resets drag and resize with new information
 pageCam.prototype.resize = function(){
 	var camObj = this;
 	var camId = this.containerId;
@@ -1580,12 +1617,18 @@ pageCam.prototype.resize = function(){
 	camObj.setDrag();
 	
 }
+
+//gets current height of the camera
 pageCam.prototype.getHeight = function(){
 		return $("#"+this.fullId).height();
 }
+
+//gets current width of the camera
 pageCam.prototype.getWidth = function(){
 		return $("#"+this.fullId).width();
 }
+
+//applies width using the value in the width field in edit window
 pageCam.prototype.applyWidth = function(){
 	var obj = this;
 	var width = $("#manualWidth").val();
@@ -1597,6 +1640,8 @@ pageCam.prototype.applyWidth = function(){
 	$("#"+this.fullId).css("height",adjustedHeight+"px");
 
 }
+
+//applies height using the value in the height field in the edit window
 pageCam.prototype.applyHeight = function(){
 	var obj = this;
 	var height = $("#manualHeight").val();
@@ -1608,17 +1653,23 @@ pageCam.prototype.applyHeight = function(){
 	$("#"+this.fullId).css("width",adjustedWidth+"px");
 	
 }
+
+//sets teh value of the width field in the edit window
 pageCam.prototype.setWidthField = function(){
 	var obj = this;
 	var width = this.getWidth();
 	$("#manualWidth").val(width);
 }
+
+//sets the value of the height field in the edit window
 pageCam.prototype.setHeightField = function(){
 	var obj = this;
 	var height = this.getHeight();
 	$("#manualHeight").val(height);
 
 }
+
+//sets both fields in the edit window
 pageCam.prototype.setWidthHeightFields = function(){
 	var obj = this;
 	var width = this.getWidth();
@@ -1626,16 +1677,23 @@ pageCam.prototype.setWidthHeightFields = function(){
 	$("#manualWidth").val(width);
 	$("#manualHeight").val(height);
 }
+
+//applies the width value of the previous element - resizing the camera in the process
 pageCam.prototype.previousElementWidth = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
 	$("#manualWidth").val(dims.getWidth());	
 }
+
+//applie the height value of the previous element - resizing the camera to the hat height in the process
 pageCam.prototype.previousElementHeight = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
 	$("#manualHeight").val(dims.getHeight());	
 }
+
+//method that handles cropping of camera
+//may need to be refactored at some point
 pageCam.prototype.camCrop = function(){
 	var thisObj = this;
 	var thisElement = $("#"+thisObj.parentId);
@@ -1660,6 +1718,7 @@ pageCam.prototype.camCrop = function(){
 		//sets the cropped postion to be maximum width and height and positioned in the top left corner
 		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 
+		//set up the config for the croper object
 		$('.cropperWrapperImg').cropper({
 			dragCrop: true,
 			scaleable: false,
@@ -1930,6 +1989,7 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 
 }
 
+//removes the cam and deletes it from teh array of objects so that it is not saved
 pageCam.prototype.removeSelf = function(){
 	console.log('REMOVED');
 	
