@@ -211,6 +211,8 @@ pageElement.prototype = {
 					'top': roundedTop,
 					'left': roundedLeft
 				});
+				thisObj.top = roundedTop;
+				thisObj.left = roundedLeft;
 				thisObj.onChangeStyle();
 				$('#rulerBox, #rulerBox2, #rulerBox3').hide();
 				
@@ -254,9 +256,12 @@ pageElement.prototype = {
 			},
 			stop: function(event, ui){
 				$('#resizeSpan').remove();
-				thisObj.onChangeStyle();
 				thisObj.changedWidth = $('#'+thisObj.parentId).css('width');
 				thisObj.changedHeight = $('#'+thisObj.parentId).css('height');
+				thisObj.heightToSave = $('#'+thisObj.parentId).height();
+				thisObj.widthToSave = $('#'+thisObj.parentId).width();
+				thisObj.onChangeStyle();
+
 			}
 		});
 	},
@@ -276,9 +281,15 @@ pageElement.prototype = {
 		console.log(cell_arr);
 	},
 	getTop: function(){
+		if(typeof this.top !== 'undefined'){
+			return this.top;
+		}
 		return $("#"+this.parentId).css('top');
 	},
 	getLeft: function(){
+		if(typeof this.left !== 'undefined'){
+			return this.left;
+		}
 		return $("#"+this.parentId).css('left');
 	},
 	getWidth: function(){
@@ -675,6 +686,10 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.setResize();
 	this.timerAppend();
 	this.count = cellCount;	
+	this.top = pageY;
+	this.left = pageX;
+	this.heightToSave = $('#'+this.parentId).height();
+	this.widthToSave = $('#'+this.parentId).width();
 	this.typeChange = this.typeUnits;
 }
 pageLog.prototype.loadHtml = function(){
@@ -1003,6 +1018,8 @@ pageLog.prototype.setResize = function(){
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
 			thisObj.onChangeStyle();
+			thisObj.heightToSave = $('#'+thisObj.parentId).height();
+			thisObj.widthToSave = $('#'+thisObj.parentId).width();
 		}
 	});
 	
@@ -1287,6 +1304,8 @@ pageCell.prototype.setResize = function(){
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
 			thisObj.onChangeStyle();
+			thisObj.heightToSave = $('#'+thisObj.parentId).height();
+			thisObj.widthToSave = $('#'+thisObj.parentId).width();
 		}
 	});
 }
@@ -1299,6 +1318,11 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.setDrag();
 	this.setResize();
 	this.timerAppend();
+	
+	this.top = pageY;
+	this.left = pageX;
+	this.heightToSave = $('#'+this.parentId).height();
+	this.widthToSave = $('#'+this.parentId).width();
 	this.count = cellCount;
 }
 
@@ -1806,8 +1830,10 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		var height = $('#'+camId).children('img').height();	
 		var hov = true;
 		var delay = 1;
-
+		
 		camObj.setNaturalDimensions(height, width);
+		camObj.heightToSave = height;
+		camObj.widthToSave = width;
 		cell_arr.push(camObj);
 		//calcluate download
 		$('#bytesReceived').html(calculateDownload());
@@ -2062,6 +2088,7 @@ pageImg.prototype.setSrc = function(){
 		objectFound.natWidth = width;
 		objectFound.changedHeight = objectFound.natHeight;
 		objectFound.changedWidth = objectFound.natWidth;
+		
 	});
 	//wait split second for paste of new url
 	setTimeout(function () {

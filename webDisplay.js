@@ -940,7 +940,8 @@ var posTop, posLeft, width, height;
 		posLeft = (Math.floor(e.pageX / obj.gridProps.size) * obj.gridProps.size);
 		width = posLeft+'px';	
 		height = posTop+'px';
-
+		obj.top = posTop;
+		obj.left = posLeft;
 		$('#positionSpan').text("("+posLeft+", "+posTop+")");
 		$('#'+new_id).css({
 			'top': posTop,
@@ -963,6 +964,7 @@ var posTop, posLeft, width, height;
 		});
 	});
 	$( document ).on('mousedown', function(e){
+		
 		console.log('click');
 		$('#rulerBox, #rulerBox2, #rulerBox3').hide();	
 		$('#positionDiv').remove();
@@ -1476,6 +1478,10 @@ function createText(){
 	textBlock = new pageText();
 	index = cell_arr.length;
 	textBlock.createHtml(index);
+	textBlock.widthToSave = textBlock.getWidth();
+	textBlock.heightToSave = textBlock.getHeight();
+	textBlock.top = textBlock.getTop();
+	textBlock.left = textBlock.getLeft();
 	cell_arr.push(textBlock);
 
 }
@@ -1491,6 +1497,10 @@ function createImage(){
 	imgBlock.natHeight = 240;
 	imgBlock.natWidth = 320;
 	cell_arr.push(imgBlock);
+	imgBlock.widthToSave = imgBlock.getWidth();
+	imgBlock.heightToSave = imgBlock.getHeight();
+	imgBlock.top = imgBlock.getTop();
+	imgBlock.left = imgBlock.getLeft();
 	//allows images to be hoverable outside of edit function
 	var hoverTime;
 	var hoverImage = document.createElement('img');
@@ -3006,13 +3016,26 @@ function captureState(){
 function adjustDimensions(widthRatio, heightRatio, thisObj){
 	console.log(heightRatio+" "+widthRatio);
 	var eleWidth, eleHeight, eleTop, eleLeft;
-	eleWidth = parseInt(thisObj.getWidth(), 10)*widthRatio;
-	eleHeight = parseInt(thisObj.getHeight(), 10)*heightRatio;
-	eleTop = parseInt(thisObj.getTop(), 10)*heightRatio;
-	eleLeft = parseInt(thisObj.getLeft(), 10)*widthRatio;
+	
+	eleWidth = parseFloat(thisObj.widthToSave)*widthRatio;
+	eleHeight = parseFloat(thisObj.heightToSave)*heightRatio;
+	thisObj.heightToSave = eleHeight;
+	thisObj.widthToSave = eleWidth;
+	eleTop = thisObj.getTop();
+	eleLeft = thisObj.getLeft();
+	if(typeof eleTop === 'number' && typeof eleLeft === 'number'){
+		eleTop = parseFloat(eleTop)*heightRatio;
+		eleLeft = parseFloat(eleLeft)*widthRatio;
+		thisObj.top = eleTop;
+		thisObj.left = eleLeft;
+	}
+	else{
+		eleTop = parseInt(eleTop, 10)*heightRatio;
+		eleLeft = parseInt(eleLeft, 10)*widthRatio;
+	}
 	
 	if(thisObj.elementType === 'pageCell'){
-		var eleFontSize = parseInt($('#'+thisObj.parentId).css('font-size'),10)*heightRatio;
+		var eleFontSize = parseFloat($('#'+thisObj.parentId).css('font-size'))*heightRatio;
 		$('#'+thisObj.parentId).css({
 			"top": eleTop+"px",
 			"left": eleLeft+"px",
@@ -3031,7 +3054,7 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 			var bgSize = $('#'+thisObj.parentId).css("background-size").split(" ");
 			bgSize[0] = parseInt(bgSize[0],10)*widthRatio;
 			bgSize[1] = parseInt(bgSize[1],10)*heightRatio;
-			
+			console.log(eleTop);
 			$('#'+thisObj.parentId).css({"background-position": pos[0]+"px " + pos[1] + "px","background-size": bgSize[0]+"px " + bgSize[1] + "px"});
 		}
 		$('#'+thisObj.parentId).css({
@@ -3040,6 +3063,8 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 			"width": eleWidth+"px",
 			"height": eleHeight+"px"
 		});
+		thisObj.changedWidth = (parseInt(thisObj.changedWidth,10)*widthRatio)+"px";
+		thisObj.changedHeight = (parseInt(thisObj.natHeight,10)*heightRatio)+"px";
 		thisObj.natWidth = thisObj.natWidth*widthRatio;
 		thisObj.natHeight = thisObj.natHeight*heightRatio;
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
@@ -3075,7 +3100,7 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
 	else if(thisObj.elementType === 'pageText'){
-		var eleFontSize = parseInt($('#'+thisObj.parentId).css('font-size'),10)*heightRatio;
+		var eleFontSize = parseFloat($('#'+thisObj.parentId).css('font-size'),10)*heightRatio;
 		$('#'+thisObj.parentId).css({
 			"top": eleTop+"px",
 			"left": eleLeft+"px",
