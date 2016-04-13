@@ -1966,13 +1966,18 @@ function pageImg(){
 }
 extend(pageImg,pageElement);
 
+//function in charge of setting popout image behavior
 pageImg.prototype.setHover = function(boolHover, hoverTime){
 	var imgObj, imgId, radiobtn;
 	imgObj = this;
 	console.log(this);
+	
+	//clear old timeout
 	clearTimeout(imgObj.timeOut);	
 	imgId = imgObj.parentId;
 	console.log(imgId);
+	
+	//if hovering is not enabled, return out of the function
 	if(boolHover == false){
 		console.log('false');
 		imgObj.hoverable = false;
@@ -2059,20 +2064,32 @@ pageImg.prototype.setSuppression = function(boolSuppress){
 	this.suppressed = boolSuppress;
 }
 
+/*This method grabs the url from Edit URL input field in the edit menu - 
+ * it then changes the src to that value
+*/
 pageImg.prototype.setSrc = function(){
+	
+	//capture 'this' so that we can use it in the load event below
 	var objectFound = this;
+	
+	//reset the image size so we are working a clean slate with no defined height and width
 	objectFound.resize();
+	
+	//create a temporary image so that we can pre-load the incoming image
 	var tempImg = document.createElement('img');
 	var selectedChild = this.id;
 	var selectedModule = this.parentId;
 	console.log(selectedModule);
 	var url = $("#"+selectedModule).find('img');
+	
+	//wait for temporary image to load so we can set the src among other things
 	$(tempImg).one('load', function() {
+		//grab natural width and height of image so we can pull the image in at native size
 		var width = tempImg.naturalWidth;
 		var height = tempImg.naturalHeight;
 		var newSrc = $('.urlChange').val();
 		console.log(width+' '+height);
-
+		
 		url.attr('width',width);
 		url.attr('height',height);
 		$("#"+selectedChild).width(width);
@@ -2084,6 +2101,8 @@ pageImg.prototype.setSrc = function(){
 		$("#"+selectedModule).css('background-image', 'url('+newSrc+')');
 		$("#"+selectedModule).css('background-repeat','no-repeat');
 		url.attr('src', $('.urlChange').val());
+		
+		//now that image is loaded we can adjust all of the object properties accurately
 		objectFound.src = $('.urlChange').val();
 		objectFound.natHeight = height;
 		objectFound.natWidth = width;
@@ -2101,6 +2120,7 @@ pageImg.prototype.setSrc = function(){
 	}, 100); 
 }
 
+//this sets our cropped value and refreshes the style
 pageImg.prototype.setCrop = function(boolCrop){
 	if(boolCrop == true){
 		var style = this.getStyle();
@@ -2115,12 +2135,17 @@ pageImg.prototype.setCrop = function(boolCrop){
 
 }
 
-
+//Large, ridiculous function for cropping - may have to be refactored some day
 pageImg.prototype.imgCrop = function(){
+	
+	//capture 'this' in a variable so it can be used within the scopes below
 	var thisObj = this;
 	var thisElement = $("#"+thisObj.parentId);
+	
+	//hide the DOM element while we work on croppying
 	thisElement.hide();
 	var width, height, left, top, src, diffFromNatWidth, diffFromNatHeight, cropTop, cropLeft, cropWidth, cropHeight, originalWidth, originalHeight;
+	
 	//cropping situation if our camera has already been cropped
 	if(thisObj.cropped == true){
 		width = parseInt(thisObj.changedWidth);
@@ -2140,6 +2165,7 @@ pageImg.prototype.imgCrop = function(){
 		//sets the cropped postion to be maximum width and height and positioned in the top left corner
 		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 
+		//set up the cropper configuration
 		$('.cropperwrapper > img').cropper({
 			dragCrop: true,
 			scaleable: false,
@@ -2268,12 +2294,19 @@ pageImg.prototype.imgCrop = function(){
 		$('.controlsOverlay').hide();								
 	});
 }
+
+//This function gets the current height
 pageImg.prototype.getHeight = function(){
 		return $("#"+this.parentId).height();
 }
+
+//This function gets the current width
 pageImg.prototype.getWidth = function(){
 		return $("#"+this.parentId).width();
 }
+
+//this function is applies the width value in the input field 
+//under sizing options in the edit menu
 pageImg.prototype.applyWidth = function(){
 	var obj = this;
 	var width = $("#manualWidth").val();
@@ -2285,6 +2318,9 @@ pageImg.prototype.applyWidth = function(){
 	$("#"+this.parentId).css("height",adjustedHeight+"px");
 
 }
+
+//this function is applies the height value in the input field 
+//under sizing options in the edit menu
 pageImg.prototype.applyHeight = function(){
 	var obj = this;
 	var height = $("#manualHeight").val();
@@ -2296,17 +2332,26 @@ pageImg.prototype.applyHeight = function(){
 	$("#"+this.parentId).css("width",adjustedWidth+"px");
 	
 }
+
+//this function uses our object's property to set the width field
+//under sizing options in the edit menu
 pageImg.prototype.setWidthField = function(){
 	var obj = this;
 	var width = this.getWidth();
 	$("#manualWidth").val(width);
 }
+
+//this function uses our object's property to set the height field
+//under sizing options in the edit menu
 pageImg.prototype.setHeightField = function(){
 	var obj = this;
 	var height = this.getHeight();
 	$("#manualHeight").val(height);
 
 }
+
+//this function uses our object's property to set the height and Width fields
+//under sizing options in the edit menu
 pageImg.prototype.setWidthHeightFields = function(){
 	var obj = this;
 	var width = this.getWidth();
@@ -2315,6 +2360,7 @@ pageImg.prototype.setWidthHeightFields = function(){
 	$("#manualHeight").val(height);
 }
 
+//resizes image back to original
 pageImg.prototype.resize = function(){
 	var width = this.natWidth;
 	var height = this.natHeight;
@@ -2332,12 +2378,15 @@ pageImg.prototype.resize = function(){
 	this.setDrag();
 }
 
+//sets up the jqueryUI resizing function used to resize the element
 pageImg.prototype.setResize = function(){
 	var handleTarget;
 	var thisObj = this;		
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
+		//function that executes when user starts resizing
 		start: function(event, ui){
+			//this event is for removing the title property during resizing
 			$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
 				$(this).removeAttr("title");			
@@ -2349,6 +2398,7 @@ pageImg.prototype.setResize = function(){
 			var posSpan = document.createElement("SPAN"); 
 			posSpan.id = 'resizeSpan';
 			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
+			//creates an info box near the user's cursor that shows the current height and width
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
@@ -2356,6 +2406,7 @@ pageImg.prototype.setResize = function(){
 			$('#'+thisObj.parentId).append(posSpan);
 			handleTarget = $(event.originalEvent.target);
 		},
+		//function that executes while element is being resized
 		resize: function(event, ui){
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
@@ -2367,6 +2418,7 @@ pageImg.prototype.setResize = function(){
 			}); 
 			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
 		},
+		//function that executes after finishes resizing
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
 			thisObj.onChangeStyle();
@@ -2381,6 +2433,7 @@ pageImg.prototype.setResize = function(){
 		}
 	});	
 }
+//creates the html associated with this object
 pageImg.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div id="'+this.parentId+'" title="'+this.parentId+'" style="background-image: url(images/insert_image.svg)" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id="'+this.id+'" alt="'+this.id+'" src="images/insert_image.svg"></img></div>');
 	this.src = "images/insert_image.svg";	
@@ -2389,15 +2442,22 @@ pageImg.prototype.createHtml = function(cellCount){
 	this.count = cellCount;
 	this.toolTip = this.parentId;
 }
+//loads html associated with this object
 pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
 	console.log('loadedImage');
 	var objectFound = this;
 	$('#content').append('<div id="'+this.parentId+'" title="'+this.parentId+'" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
 	$('#'+this.id).load(function() {
+		
 		$('#'+objectFound.parentId).attr('style',objectFound.style);
 		$('#'+objectFound.parentId).css("background-repeat", "no-repeat");
+		
+		//set hovering event
 		objectFound.setSuppression(objectFound.suppressed);
 		objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
+		
+		//if the hidden property is set to true, the element must be hidden when we load it (depending on if we are in edit
+		//mode or not)
 		if(objectFound.hidden){
 			$('#'+objectFound.parentId).addClass('hide');
 			console.log($('#'+objectFound.parentId).attr('class'));
@@ -2406,12 +2466,15 @@ pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
 			}
 
 		}	
-					adjustDimensions(widthRatio, heightRatio, objectFound);
+		//adjusts dimensions of object to fit our current screen resolution
+		adjustDimensions(widthRatio, heightRatio, objectFound);
 
 	});
 
 	objectFound.setDrag();
 	objectFound.setResize();
+	
+	//disable dragging and reszing if we are not in edit mode
 	if(editMode == false){
 		$('#'+objectFound.parentId).draggable({disabled:true});
 		$('#'+objectFound.parentId).resizable({disabled:true});
