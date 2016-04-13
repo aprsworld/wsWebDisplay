@@ -3084,11 +3084,14 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
 	else if(thisObj.elementType === 'pageLog'){
+		var eleFontSize = parseFloat($('#'+thisObj.parentId).css('font-size'))*heightRatio;
 		$('#'+thisObj.parentId).css({
 			"top": eleTop+"px",
 			"left": eleLeft+"px",
 			"width": eleWidth+"px",
-			"height": eleHeight+"px" 
+			"height": eleHeight+"px", 
+			"font-size": eleFontSize+"px"
+
 		});
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
