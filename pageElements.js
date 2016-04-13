@@ -671,6 +671,7 @@ var pageLog = function(){
 }
 extend(pageLog, pageElement);
 
+//creates html from object properties
 pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	var log = this;
 	var logId = this.parentId;
@@ -692,6 +693,8 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.widthToSave = $('#'+this.parentId).width();
 	this.typeChange = this.typeUnits;
 }
+
+//creates html based on loaded object properties
 pageLog.prototype.loadHtml = function(){
 	var logId = this.parentId;
 		var tableId = this.parentId+'_table';
@@ -737,6 +740,9 @@ var logEntry = function(){
 	this.data;
 	this.timeStamp;
 };
+//Not currently in use
+//this was used when logs were on a fixed interval
+//it checks to see if the interval has passed and returns a boolean based on the result
 pageLog.prototype.checkInterval = function(time){
 	if(this.tail == null){
 		return true;	
@@ -785,6 +791,9 @@ pageLog.prototype.push = function(time, currentTime, currentData){
 	}
 
 };
+
+//converts the doubly linked list to an array
+//not currently in use
 pageLog.prototype.listToArray = function() {
 	var currentNode, nextNode, previousNode, index;
 	this.nodeArray = [];
@@ -817,6 +826,8 @@ pageLog.prototype.listToArray = function() {
 	//cleanup
 	currentNode, nextNode, previousNode, index = null;
 }
+//converts an array to a list 
+//not currently in use
 pageLog.prototype.arrayToList = function() {
 	var length = this.nodeArray.length;
 	var index = 1;
@@ -845,6 +856,7 @@ pageLog.prototype.arrayToList = function() {
 	}
 	this.tail = this.nodeArray[index-1];
 }
+//searches for a node at a specific position in the doubly linked list
 pageLog.prototype.searchNodeAt = function(position) {
     var currentNode = this.head,
         length = this._length,
@@ -865,6 +877,7 @@ pageLog.prototype.searchNodeAt = function(position) {
     return currentNode;
 };
 
+//converts current value and all previous values
 pageLog.prototype.convertAll = function() {
 	 var currentNode = this.head,
         length = this._length,
@@ -872,6 +885,7 @@ pageLog.prototype.convertAll = function() {
         message = {failure: 'Failure: non-existent node in this list.'},
 	 	objectFound = this;
 		var newVal;
+	//iterates through all values in list
 	 while (count <= this._length) {
 		newVal = chooseConversion(objectFound.type, objectFound.typeUnits.toUpperCase(), parseFloat(currentNode.data), $( "#unitSelect" ).val()).value;
 		//$("#"+objectFound.parentId).find('tbody').append('<tr id="'+objectFound.parentId+'_'+currentNode.timeStamp+'"><td>'+currentNode.timeValue+'</td><td>'+ currentNode.data +'<span class="logLabel">'+objectFound.units+'</span></td></tr>');
@@ -883,6 +897,7 @@ pageLog.prototype.convertAll = function() {
     }	
 }
 
+//removes an element from the doubly linked list and links remaining nodes together
 pageLog.prototype.remove = function(position) {
 	var currentNode = this.head,
         length = this._length,
@@ -940,9 +955,12 @@ pageLog.prototype.remove = function(position) {
     this._length--;
 };
 
+//sets the type changes for our conversions javascript
 pageLog.prototype.setTypeChange = function(type){
 	this.typeChange = type;
 }
+
+//sets the label
 pageLog.prototype.setLabel = function(text){
 	var containerId = this.parentId;	
 	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
@@ -954,11 +972,14 @@ pageLog.prototype.setLabel = function(text){
 	}
 	//this.units = text;
 }
+
+//allows for the element to be resized by the user
 pageLog.prototype.setResize = function(){
 	var handleTarget;
 	var thisObj = this;		
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
+		//start function
 		start: function(event, ui){
 			$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
@@ -978,6 +999,7 @@ pageLog.prototype.setResize = function(){
 			$('#'+thisObj.parentId).append(posSpan);
 			handleTarget = $(event.originalEvent.target);
 		},
+		//during function
 		resize: function(event, ui){
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
@@ -1015,6 +1037,7 @@ pageLog.prototype.setResize = function(){
 			}); 
 			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
 		},
+		//after function
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
 			thisObj.onChangeStyle();
@@ -1024,6 +1047,8 @@ pageLog.prototype.setResize = function(){
 	});
 	
 }
+
+//function that changes the fontsize
 pageLog.prototype.fontSizeChange = function(size){
 	var containerId = this.parentId;
 	size = size.trim();
@@ -1031,6 +1056,8 @@ pageLog.prototype.fontSizeChange = function(size){
 	/*var style = this.getStyle();
 	this.setStyle(style);*/
 }
+
+//sets title of log, erases title if text variable empty string
 pageLog.prototype.setTitle = function(text){
 	var containerId = this.parentId;
 	if(text == ''){
@@ -1042,6 +1069,8 @@ pageLog.prototype.setTitle = function(text){
 	}
 	this.title = text;
 }
+
+//changes font color and border color (highlights)
 pageLog.prototype.fontColorChange = function(color){
 	var containerId = this.parentId;
 	$('#'+containerId).css('color', color);
@@ -1049,15 +1078,20 @@ pageLog.prototype.fontColorChange = function(color){
 	/*var style = this.getStyle();
 	this.setStyle(style);*/
 }
+
+//sets the opacity of the background using rgba(r,g,b,a)
 pageLog.prototype.setOpacity = function(opacity, ui) {
 	var containerId = this.parentId;	
 	opacity = opacity.toString();
 	var newColor;
 	var selectedModule = containerId;
+	
+	//checks to see if our background-color property is in rgba format
 	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
 		console.log(ui.value);
 		newColor = $('#'+selectedModule).css('background-color').replace(')', ', '+(Math.round(ui.value)*.01).toFixed(2)+')').replace('rgb', 'rgba');
 	}
+	//if background-color not in rgba, we convert it
 	else{
 		var currentColor = $('#'+selectedModule).css('background-color');
 		var splitColor = currentColor.split(',');
@@ -1072,8 +1106,11 @@ pageLog.prototype.setOpacity = function(opacity, ui) {
 	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
 	
 }
+
+//sets the precision of the value properties
 pageLog.prototype.setPrecision = function(value){
 	//need "||" because javascript interperets an empty string as zero
+	//discards non-number and non-integer properties and defaults to zero
 	if(isNaN(value) || value == '' || parseInt(value) > 19){
 		this.precision = 0;
 	}
@@ -1082,6 +1119,8 @@ pageLog.prototype.setPrecision = function(value){
 	}
 	console.log(this);
 }
+
+//sets the limit to how many nodes can reside in our list
 pageLog.prototype.setLogLimit = function(limit){
 	limit = parseInt(limit);
 	//first use-case: new limit is larger than current limit
