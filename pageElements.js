@@ -311,10 +311,14 @@ pageElement.prototype = {
 	applyWidth: function(){
 		var width = $("#manualWidth").val();
 		$("#"+this.parentId).css("width",width+"px");
+		this.widthToSave = $('#'+this.parentId).width();
+		this.heightToSave = $('#'+this.parentId).height();
 	},
 	applyHeight: function(){
 		var height = $("#manualHeight").val();
 		$("#"+this.parentId).css("height",height+"px");
+		this.widthToSave = $('#'+this.parentId).width();
+		this.heightToSave = $('#'+this.parentId).height();
 	},
 	setWidthField: function(){
 		var obj = this;
@@ -333,19 +337,6 @@ pageElement.prototype = {
 		var height = this.getHeight();
 		$("#manualWidth").val(width);
 		$("#manualHeight").val(height);
-	},
-	updateSelf: function(){
-		switch(this.elementType){
-			case 'pageCell':
-				
-				break;
-			case 'pageCam':
-				
-				break;
-			case 'pageLog':
-				
-				break;
-		}
 	},
 	timerAppend: function() {
 		//set variables in this scope so that they work in the hover handler and the callback
@@ -419,12 +410,14 @@ pageSettings.prototype.addToTable = function(path, value){
 	console.log(this.pageTable);
 }
 
+//checks if the hash table contains the element we are looking for
 pageSettings.prototype.tableHasItem = function(key){
 	if(typeof this.pageTable === 'undefined'){
 		return false;
 	}
 	return this.pageTable.hasOwnProperty(key);
 }
+
 
 pageSettings.prototype.isTableItemCurrent = function(key, newValue){
 	if(this.pageTable[key] != newValue){
@@ -1677,6 +1670,8 @@ pageCam.prototype.applyWidth = function(){
 	var adjustedHeight = width/aspectRatio;
 	$("#"+this.fullId).css("width",width+"px");
 	$("#"+this.fullId).css("height",adjustedHeight+"px");
+	this.widthToSave = $('#'+this.parentId).width();
+	this.heightToSave = $('#'+this.parentId).height();
 
 }
 
@@ -1690,7 +1685,8 @@ pageCam.prototype.applyHeight = function(){
 	var adjustedWidth = height/aspectRatio;
 	$("#"+this.fullId).css("height",height+"px");
 	$("#"+this.fullId).css("width",adjustedWidth+"px");
-	
+	this.widthToSave = $('#'+this.parentId).width();
+	this.heightToSave = $('#'+this.parentId).height();
 }
 
 //sets teh value of the width field in the edit window
@@ -1722,6 +1718,8 @@ pageCam.prototype.previousElementWidth = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
 	$("#manualWidth").val(dims.getWidth());	
+	this.widthToSave = $('#'+this.parentId).width();
+
 }
 
 //applie the height value of the previous element - resizing the camera to the hat height in the process
@@ -1729,6 +1727,8 @@ pageCam.prototype.previousElementHeight = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
 	$("#manualHeight").val(dims.getHeight());	
+	this.heightToSave = $('#'+this.parentId).height();
+
 }
 
 //method that handles cropping of camera
@@ -1870,6 +1870,7 @@ pageCam.prototype.camCrop = function(){
 		thisElement.resizable({disabled:true});
 		thisObj.setCrop(true);
 		thisElement.show();
+		
 	});
 	//event for canceling the cropping
 	$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
@@ -2429,7 +2430,8 @@ pageImg.prototype.applyHeight = function(){
 	var adjustedWidth = height/aspectRatio;
 	$("#"+this.parentId).css("height",height+"px");
 	$("#"+this.parentId).css("width",adjustedWidth+"px");
-	
+	this.widthToSave = $('#'+this.parentId).width();
+	this.heightToSave = $('#'+this.parentId).height();
 }
 
 //this function uses our object's property to set the width field
@@ -2740,6 +2742,8 @@ pageText.prototype.setResize = function(){
 		stop: function(event, ui){
 			$('#resizeSpan').remove();
 			thisObj.onChangeStyle();
+			thisObj.heightToSave = thisObj.getHeight();
+			thisObj.widthToSave = thisObj.getWidth();
 		}
 	});
 }

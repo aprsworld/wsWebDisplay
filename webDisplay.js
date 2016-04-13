@@ -2995,6 +2995,11 @@ function captureState(){
 		}*/
 		cell_arr[k].onChangeStyle();
 		console.log(cell_arr[k]);
+		cell_arr[k].heightToSave = cell_arr[k].getHeight();
+		cell_arr[k].widthToSave = cell_arr[k].getWidth();
+		cell_arr[k].top = cell_arr[k].getTop();
+		cell_arr[k].left = cell_arr[k].getLeft();
+
 	}
 	var titleval = $('#saveAs').val();
 	titleval = titleval.replace(/[^a-z\d\s]+/gi, "");
@@ -3029,8 +3034,8 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 	eleHeight = parseFloat(thisObj.heightToSave)*heightRatio;
 	thisObj.heightToSave = eleHeight;
 	thisObj.widthToSave = eleWidth;
-	eleTop = thisObj.getTop();
-	eleLeft = thisObj.getLeft();
+	eleTop = parseFloat(thisObj.getTop());
+	eleLeft = parseFloat(thisObj.getLeft());
 	if(typeof eleTop === 'number' && typeof eleLeft === 'number'){
 		eleTop = parseFloat(eleTop)*heightRatio;
 		eleLeft = parseFloat(eleLeft)*widthRatio;
@@ -3065,6 +3070,7 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 			console.log(eleTop);
 			$('#'+thisObj.parentId).css({"background-position": pos[0]+"px " + pos[1] + "px","background-size": bgSize[0]+"px " + bgSize[1] + "px"});
 		}
+		
 		$('#'+thisObj.parentId).css({
 			"top": eleTop+"px",
 			"left": eleLeft+"px",
@@ -3194,6 +3200,8 @@ function loadState(jsonString){
 			configObject[k].__proto__ = log.__proto__;
 			configObject[k].loadHtml();
 			cell_arr.push(configObject[k]);
+			adjustDimensions(widthRatio, heightRatio, configObject[k]);
+
 
 		}
 		else if(configObject[k].elementType == 'pageCam'){
