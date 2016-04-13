@@ -2082,13 +2082,15 @@ pageImg.prototype.setSrc = function(){
 		$("#"+selectedModule).css('width', 'auto');
 		$("#"+selectedModule).css('height','auto');
 		$("#"+selectedModule).css('background-image', 'url('+newSrc+')');
+		$("#"+selectedModule).css('background-repeat','no-repeat');
 		url.attr('src', $('.urlChange').val());
 		objectFound.src = $('.urlChange').val();
 		objectFound.natHeight = height;
 		objectFound.natWidth = width;
-		objectFound.changedHeight = objectFound.natHeight;
-		objectFound.changedWidth = objectFound.natWidth;
-		
+		objectFound.heightToSave = objectFound.getHeight();
+		objectFound.widthToSave = objectFound.getWidth();
+		objectFound.top = objectFound.getTop();
+		objectFound.left = objectFound.getLeft();
 	});
 	//wait split second for paste of new url
 	setTimeout(function () {
