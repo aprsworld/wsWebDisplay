@@ -2996,7 +2996,15 @@ function captureState(){
 		cell_arr[k].onChangeStyle();
 		console.log(cell_arr[k]);
 	}
+	var titleval = $('#saveAs').val();
+	titleval = titleval.replace(/[^a-z\d\s]+/gi, "");
+	if(titleval === '' || titleval === ' '){
+		return false;	
+	}
 	var saveName = $('#saveAs').val().replace(' ','%20');
+	
+		
+	
 	console.log(saveName);
 	var jsonString = JSON.stringify(cell_arr, replacer);
 	var configObject = JSON.parse(jsonString);
