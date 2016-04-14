@@ -1373,11 +1373,13 @@ function loadFromList(){
 		}
 		var loadedLayout;
 		console.log(rsp);
-		console.log(loadedLayout);
+
 		var selected = $( "#configDrop option:selected" ).text();
 		console.log(rsp.data[selected]);
 		loadedLayout = rsp.data[selected];
 		console.log(rsp.data[selected]);
+		$('#jsonExport').val(loadedLayout);
+
 		loadState(loadedLayout);
 		$('.gridlines').css("display","block");
 
