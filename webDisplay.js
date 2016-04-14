@@ -1150,9 +1150,11 @@ function data_update(data) {
 					console.log(rsp);
 					return;
 				}
+				
 				console.log(layoutList);
 				var loadedLayout = rsp.data[layout];
 				console.log(loadedLayout);
+				$('#jsonExport').val(loadedLayout);
 				getConfigs(rsp.data);
 				console.log(layout);
 				if (layout) {
@@ -1640,6 +1642,8 @@ function brokenImg(id){
 }
 
 
+
+
 var editWindow =  function(e) {
 	
 	$("#editMinimize").show();
@@ -1892,6 +1896,21 @@ CONFIGRATIONS CASE
 
 		$('.editWindow h2').text("Configurations");
 		$('#configRow').show();
+		
+		$(document).off('click','#jsonClipBoard');
+		$(document).on('click','#jsonClipBoard', function(event){	
+		  var copyTextarea = $('#jsonExport');
+		  copyTextarea.select();
+
+		  try {
+			var successful = document.execCommand('copy');
+			var msg = successful ? 'successful' : 'unsuccessful';
+			alert('Copying to clipboard was ' + msg + '. You can use Ctrl+v to paste your configuration');
+		  } catch (err) {
+			console.log('Oops, unable to copy');
+		  }
+		});
+		
 	}
 /*****************************************************************
 PAGE EDIT CASE
