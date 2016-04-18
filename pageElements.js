@@ -1740,8 +1740,8 @@ pageCam.prototype.camCrop = function(){
 	var width, height, left, top, src, diffFromNatWidth, diffFromNatHeight, cropTop, cropLeft, cropWidth, cropHeight, originalWidth, originalHeight;
 	//cropping situation if our camera has already been cropped
 	if(thisObj.cropped == true){
-		width = parseInt(thisObj.changedWidth);
-		height = parseInt(thisObj.changedHeight);
+		width = parseFloat(thisObj.changedWidth);
+		height = parseFloat(thisObj.changedHeight);
 		originalWidth = thisElement.css('width');
 		originalHeight = thisElement.css('height');
 		left = thisElement.css('left');
@@ -1792,8 +1792,8 @@ pageCam.prototype.camCrop = function(){
 	else{
 		//width = thisElement.css('width');
 		//height = thisElement.css('height');
-		width = parseInt(thisObj.changedWidth);
-		height = parseInt(thisObj.changedHeight);
+		width = parseFloat(thisObj.changedWidth);
+		height = parseFloat(thisObj.changedHeight);
 		left = thisElement.css('left');
 		top = thisElement.css('top');
 		src = thisObj.src;
@@ -1805,6 +1805,7 @@ pageCam.prototype.camCrop = function(){
 		//creates a cropper window that is the size of the image that we are cropping
 		$('#content').append('<div class="cropperWrapper"><img class="cropperWrapperImg" width="'+(width)+' " height="'+(height)+' "src="'+src+'"></div>');
 		//sets the cropped postion to be maximum width and height and positioned in the top left corner
+		console.log(window);
 		$('.cropperWrapper').css({ "position":"absolute","top": top, "left": left, "width": width, "height": height });
 
 		$('.cropperWrapperImg').cropper({
@@ -1822,6 +1823,7 @@ pageCam.prototype.camCrop = function(){
 				cropWidth = Math.round(e.width);
 				cropLeft = Math.round(e.x);
 				cropTop = Math.round(e.y);
+				console.log(cropHeight+ " "+cropWidth);
 			}
 		});
 	}	

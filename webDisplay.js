@@ -574,6 +574,7 @@ function dynamicUpdate(data) {
 				if(objectFound.src != src){	
 					$('#'+cam).find('img').attr('src', src);
 					objectFound.src = src;
+					console.log(objectFound.src);
 					objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
 					//access table in pagesettings object to see if this image has already been loaded by the browser in another element - if not, we add the size of the image to the data counter
 					if(!pageObj.isTableItemCurrent(objectFound.path,objectFound.src)){
@@ -715,7 +716,7 @@ function sinceDataTimer(){
 	if(timedOut){
 		//console.log(timedOut);
 		//console.log(updatelock);
-		
+		console.log(timedOut);
 		if(data_object.ws_error !== false || time < 30){
 				
 			data_object.ValueGet(function(rsp){
@@ -727,6 +728,7 @@ function sinceDataTimer(){
 					return;
 				}
 				dataOld = rsp.data
+				console.log(dataOld);
 				dynamicUpdate(dataOld);
 				console.log(rsp.data);
 				dataUpdateTime = Date.now();
@@ -1275,6 +1277,7 @@ function data_update(data) {
 
 	}
 	if(!updatelock){
+		console.log(data);
 		refreshTreeData(data);
 	}
 	dataTransferred = this.rx_data_counter();
@@ -1547,7 +1550,6 @@ function refreshTreeData(newData){
 										//finds elements on the page and updates them with a timestamp
 										var matches = $.grep(cell_arr, function(item, index) {
 											if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
-								
 												item.lastData = Date.now();
 												//item.toolTip = 'Last data received: '+item.lastData+" \n "+item.path.substring(1).replace(staticRegexPeriod, " >> ");
 												//$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
@@ -3098,8 +3100,8 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 			"width": eleWidth+"px",
 			"height": eleHeight+"px"
 		});
-		thisObj.changedWidth = (parseInt(thisObj.changedWidth,10)*widthRatio)+"px";
-		thisObj.changedHeight = (parseInt(thisObj.natHeight,10)*heightRatio)+"px";
+		thisObj.changedWidth = (parseFloat(thisObj.changedWidth)*widthRatio)+"px";
+		thisObj.changedHeight = (parseFloat(thisObj.changedHeight)*heightRatio)+"px";
 		thisObj.natWidth = thisObj.natWidth*widthRatio;
 		thisObj.natHeight = thisObj.natHeight*heightRatio;
 		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
