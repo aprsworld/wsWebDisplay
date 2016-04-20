@@ -3222,7 +3222,6 @@ function loadState(jsonString){
 		}
 		else if(configObject[k].elementType == 'pageLog'){
 			var log = new pageLog();
-			console.log(cell);
 			configObject[k].__proto__ = log.__proto__;
 			configObject[k].loadHtml();
 			cell_arr.push(configObject[k]);
@@ -3232,7 +3231,7 @@ function loadState(jsonString){
 		}
 		else if(configObject[k].elementType == 'pageCam'){
 			var cam = new pageCam();
-			console.log(cell);
+			console.log('_____________________________PAGE CAM__________________________________');
 			configObject[k].__proto__ = cam.__proto__;
 			cell_arr.push(configObject[k]);
 			configObject[k].loadHtml(widthRatio, heightRatio);
@@ -3261,6 +3260,7 @@ function loadState(jsonString){
 
 		}
 		else{
+			console.log(configObject[k]);
 			console.log('undefined');	
 		}
 	}

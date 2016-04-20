@@ -593,7 +593,8 @@ pageSettings.prototype.createGrid = function createGrid(size) {
         width = sel.width(),
         ratioW = Math.floor(width / size),
         ratioH = Math.floor(height / size);
-	
+			console.log(width+" "+height);
+
     for (i = 0; i <= ratioW; i++) { // vertical grid lines
       $('<div />').css({
             'top': 0,
@@ -601,6 +602,7 @@ pageSettings.prototype.createGrid = function createGrid(size) {
             'width': '0px',
 		  	'border-left': '1px solid #444',
             'height': height
+
       })
         .addClass('gridlines')
         .appendTo(sel);
@@ -613,6 +615,7 @@ pageSettings.prototype.createGrid = function createGrid(size) {
             'width': width,
 		  	'border-bottom': '1px solid #444',
             'height': '0px'
+
 		  
       })
         .addClass('gridlines')
@@ -1963,14 +1966,19 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 	camObj.src = updatedPath;
 	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
-	
+	$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
+	$('#'+camObj.parentId).css('width',camObj.changedWidth);
+	$('#'+camObj.parentId).css('height',camObj.changedHeight);
+	$('#'+camObj.parentId).css('left',camObj.left);
+	$('#'+camObj.parentId).css('top',camObj.top);
 	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
 	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the 
 	//real image once it is completely loaded.
 	$('#preload_'+camId).load(function() { 
-		$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src="'+updatedPath+'"></div>');
+		console.log(camObj);
+		console.log(camObj.style);
 		$('#'+camObj.parentId).attr('style', camObj.style);
-		
+		$('#'+camObj.parentId).find('img').attr('src', updatedPath);
 		$('#'+camObj.parentId).css('background-image', 'url('+updatedPath+')');
 		
 		//Allow dragging and resizing as well as a pop-out hover image
