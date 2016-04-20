@@ -1488,7 +1488,7 @@ pageCam.prototype.setClickable = function(boolClick){
 	var camObj = this;
 	if(!boolClick){
 		this.clickable = false;
-		$( "#"+camObj.parentId ).unbind("click", camObj.clickFunction);
+		$( "#"+camObj.parentId ).off("click", camObj.clickFunction);
 	}
 	//if we are setting clickable to true
 	else{
@@ -1496,7 +1496,7 @@ pageCam.prototype.setClickable = function(boolClick){
 		//click event bound to object property so that we can clear it later
 		camObj.clickFunction = $('#'+camObj.parentId).on("click", function(e) {
 			//if ctrl key is held during click 
-			if(e.ctrlKey && !editMode) {
+			if(e.ctrlKey && !editMode && camObj.clickable) {
 			 	
 				//Add elements to DOM for our hover image
 				var hoverImg = document.createElement('img'),
@@ -1509,8 +1509,8 @@ pageCam.prototype.setClickable = function(boolClick){
 				
 				//are we using a webkit browser?
 				var isWebkit = 'WebkitAppearance' in document.documentElement.style,
-				hoverImgId = camObj.parentId+'hover';
-
+				hoverImgId = camObj.parentId+'hover1';
+				$(hoverImgId).remove();
 				//set the width and height of our hover image to the native width and height
 				$(hoverImg).width(camWidth);
 				$(hoverImg).height(camHeight);
@@ -1554,9 +1554,9 @@ pageCam.prototype.setClickable = function(boolClick){
 				//seperate click events
 				setTimeout(function(){
 					//click event for closing out the hover image
-					$(document.body).one("click", ":not(#"+hoverImgId+", #"+hoverImgId+" *)", function(e){ 
+					$(document.body).one("click", ":not(#"+hoverImgId+", #"+hoverImgId+" *,#"+camObj.parentId+", #"+camObj.parentId+" *)", function(e){ 
 						
-						 $('#'+hoverImgId).remove();
+						$('#'+hoverImgId).remove();
 						$('#'+camObj.parentId).removeClass('focusedCam');
 					});
 				 },100);

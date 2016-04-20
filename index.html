@@ -240,13 +240,18 @@
 <!-- ------------------------------------------------
 	HOVER ROW		
 ------------------------------------------------- -->
-	    <h3 id="hoverAccordionH3"> Hover Options </h3>
+	    <h3 id="hoverAccordionH3"> Pop-Out Image </h3>
 		<div id="hoverAccordion">
 			<div id="hoverRow" class="editWindowRow">
 				<label id="hoverLabel"> Hoverable </label>
 				<div id="hoverRadios">
 					<input id="hoverEnabled" type="radio" name="hoverToggle" value="enabled" checked> <span> Enabled</span> </input>
 					<input id="hoverDisabled" type="radio" name="hoverToggle" value="disabled"><span> Disabled</span> </input>	
+				</div>
+				<label id="clickableLabel"> Clickable </label>
+				<div id="clickableRadios">
+					<input id="clickableEnabled" type="radio" name="clickableToggle" value="enabled" checked> <span> Enabled</span> </input>
+					<input id="clickableDisabled" type="radio" name="clickableToggle" value="disabled"><span> Disabled</span> </input>	
 				</div>
 			<div id="suppressHoverable">
 				<label>Suppress When Size &ge; Native</label>
@@ -260,7 +265,7 @@
 				<input id="hoverTime" type="text" value="1"></input>
 			</div>
 			<div id="hoverTargetRow" class="editWindowRow">
-				<label> Hover Target Link </label>
+				<label> Pop-Out Image Link </label>
 				<input id="hoverTarget" type="text" value=""></input>
 				<button title="Changes the URL that the hover-image navigates to when clicked - to return default functionality, leave blank and click change" id="changeTarget">Change</button>				
 

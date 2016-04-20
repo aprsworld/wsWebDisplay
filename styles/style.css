@@ -941,7 +941,7 @@ div.logo_container{
 #hoverTime{
 	width: 10% !important;	
 }
-#hoverRadios span, #suppressHoverable span{
+#clickableRadios span, #hoverRadios span, #suppressHoverable span{
 	color: #ccc !important;
 }
 #hoverTimeRow label, #hoverRow label, #hoverTargetRow label{

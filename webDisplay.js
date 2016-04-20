@@ -2068,6 +2068,15 @@ CAMERA CASE
 			radiobtn = document.getElementById("hoverDisabled");
 			radiobtn.checked = true;
 		}
+		var radiobtn1;
+		if(objectFound.clickable == true){
+			radiobtn = document.getElementById("clickableEnabled");
+			radiobtn.checked = true;
+		}
+		else{
+			radiobtn = document.getElementById("clickableDisabled");
+			radiobtn.checked = true;
+		}
 		var suppressButton;
 		if(objectFound.suppressed == true){
 			suppressButton = document.getElementById("suppressHover");
@@ -2097,12 +2106,27 @@ CAMERA CASE
 			radioChecked = $('input[name=hoverToggle]:checked').val();
 			if(radioChecked == 'enabled'){
 				objectFound.setHover(true, objectFound.hoverDelay);
-				$('#hoverTimeRow, #suppressHoverable, #hoverTargetRow').show();		
-
+				$('#hoverTimeRow, #suppressHoverable, #hoverTargetRow').show();	
+				objectFound.clickable = false;
+				$("input[name=clickableToggle][value='disabled']").prop("checked", true)
 			}
 			else{
 				objectFound.setHover(false, objectFound.hoverDelay);
 				$('#hoverTimeRow, #suppressHoverable, #hoverTargetRow').hide();		
+
+			}
+		});
+		var radioChecked1;
+		$( document ).off( "change", "input[type=radio][name=clickableToggle]");
+		$( document ).on( "change", "input[type=radio][name=clickableToggle]", function(){
+			radioChecked1 = $('input[name=clickableToggle]:checked').val();
+			if(radioChecked1 == 'enabled'){
+				objectFound.clickable = true;
+				objectFound.setHover(false, objectFound.hoverDelay);
+				$("input[name=hoverToggle][value='disabled']").prop("checked", true)
+			}
+			else{
+				objectFound.clickable = false;
 
 			}
 		});
