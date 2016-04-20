@@ -1493,9 +1493,74 @@ pageCam.prototype.setClickable = function(boolClick){
 	//if we are setting clickable to true
 	else{
 		this.clickable = true;
+		//click event bound to object property so that we can clear it later
 		camObj.clickFunction = $('#'+camObj.parentId).on("click", function(e) {
-			 if(e.ctrlKey && !editMode) {
-			 
+			//if ctrl key is held during click 
+			if(e.ctrlKey && !editMode) {
+			 	
+				//Add elements to DOM for our hover image
+				var hoverImg = document.createElement('img'),
+				hoverImgLink = document.createElement('a');
+				
+				//get camera properties
+			 	var camSrc = camObj.src,
+				camWidth = parseInt(camObj.natWidth),
+				camHeight = parseInt(camObj.natHeight);
+				
+				//are we using a webkit browser?
+				var isWebkit = 'WebkitAppearance' in document.documentElement.style,
+				hoverImgId = camObj.parentId+'hover';
+
+				//set the width and height of our hover image to the native width and height
+				$(hoverImg).width(camWidth);
+				$(hoverImg).height(camHeight);
+				hoverImg.src = camSrc;
+				
+				if(typeof camObj.hoverTarget !== 'undefined' && camObj.hoverTarget !== ''){
+					hoverImgLink.href = camObj.hoverTarget;
+				}
+				else{
+					hoverImgLink.href = camSrc;
+				}
+				if(typeof camObj.hoverTargetBehavior !== 'undefined' && camObj.hoverTargetBehavior !== ''){
+					hoverImgLink.target = camObj.hoverTargetBehavior;
+				}
+				else{
+					hoverImgLink.target = '_blank';
+				}
+				hoverImgLink.appendChild(hoverImg);
+				$('#'+camObj.parentId).append(hoverImgLink);
+				$('#'+camObj.parentId).addClass('focusedCam');
+
+				hoverImgLink.id = hoverImgId;
+				hoverImgLink.className = 'expandedCam';
+				var top = parseInt($('#'+camObj.parentId).css('top'),10)
+				var height = parseInt(camObj.natHeight,10);
+				var left = parseInt($('#'+camObj.parentId).css('left'),10)
+				var width = parseInt(camObj.natWidth,10);
+				
+				if(isWebkit){
+					$('#'+hoverImgId).css({
+						"top": (((window.innerHeight-height)/2)-top)+"px",
+						"left": (((window.innerWidth-width)/2)-left)+"px"	
+					});
+				}
+				else{
+					$('#'+hoverImgId).css({
+						"top": (((window.innerHeight-height)/2))+"px",
+						"left": (((window.innerWidth-width)/2))+"px"
+					});
+				}
+				//seperate click events
+				setTimeout(function(){
+					//click event for closing out the hover image
+					$(document.body).one("click", ":not(#"+hoverImgId+", #"+hoverImgId+" *)", function(e){ 
+						
+						 $('#'+hoverImgId).remove();
+						$('#'+camObj.parentId).removeClass('focusedCam');
+					});
+				 },100);
+
 			 }
 		});
 	}
