@@ -1468,7 +1468,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 ************************************************************************************/
 var pageCam = function(){
 	this.setType('pageCam');
-	this.hoverable;
+	this.hoverable = false;
 	this.suppressed;
 	this.hoverDelay;
 	this.cropped;	
@@ -1482,6 +1482,24 @@ var pageCam = function(){
 	this.timeOut;
 }
 extend(pageCam,pageElement);
+
+pageCam.prototype.setClickable = function(boolClick){
+	//if we are setting clickable to false
+	var camObj = this;
+	if(!boolClick){
+		this.clickable = false;
+		$( "#"+camObj.parentId ).unbind("click", camObj.clickFunction);
+	}
+	//if we are setting clickable to true
+	else{
+		this.clickable = true;
+		camObj.clickFunction = $('#'+camObj.parentId).on("click", function(e) {
+			 if(e.ctrlKey && !editMode) {
+			 
+			 }
+		});
+	}
+}	
 
 //sets class for hover and sets delay time
 pageCam.prototype.setHover = function(boolHover, hoverTime){
@@ -1905,7 +1923,6 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	//set resize and drag
 	camObj.setResize();
 	camObj.setDrag();
-	
 	//set css properties
 	$('#'+camId).css({
 		"position":"absolute",
@@ -1921,7 +1938,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		var src = $(this).attr("src");
 		$('#'+camId).css('background-image','url('+value+')');
 
-		camObj.hoverable = true;
+		camObj.hoverable = false;
 		camObj.suppressed = true;
 		camObj.hoverDelay = 1;
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
@@ -1938,6 +1955,8 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.setNaturalDimensions(height, width);
 		camObj.heightToSave = height;
 		camObj.widthToSave = width;
+			camObj.setClickable(true);
+
 		cell_arr.push(camObj);
 		//calcluate download
 		$('#bytesReceived').html(calculateDownload());
