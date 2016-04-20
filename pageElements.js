@@ -1469,6 +1469,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 var pageCam = function(){
 	this.setType('pageCam');
 	this.hoverable = false;
+	this.clickable = true;
 	this.suppressed;
 	this.hoverDelay;
 	this.cropped;	
@@ -2050,11 +2051,8 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 	camObj.src = updatedPath;
 	console.log(updatedPath);
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
-	$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
-	$('#'+camObj.parentId).css('width',camObj.changedWidth);
-	$('#'+camObj.parentId).css('height',camObj.changedHeight);
-	$('#'+camObj.parentId).css('left',camObj.left);
-	$('#'+camObj.parentId).css('top',camObj.top);
+	$('#content').append('<div style="display:none" title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
+	console.log($('#'+camObj.parentId+''));
 	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
 	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the 
 	//real image once it is completely loaded.
@@ -2111,9 +2109,9 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 		pageObj.addToTable(camObj.path, updatedPath);
 		
 		//if table does not already have this image or the current image src is not up to date, add this image to the hash table.
-		
-		adjustDimensions(widthRatio, heightRatio, camObj);
+
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
+		adjustDimensions(widthRatio, heightRatio, camObj);
 
 	});
 	

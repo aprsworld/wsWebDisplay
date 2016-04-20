@@ -1,4 +1,3 @@
-
 /***** Global variables ********/
 var editMode = false;
 var time; //incremental variable that keeps track of time since last data update
@@ -1547,6 +1546,7 @@ function refreshTreeData(newData){
 									}
 									if(typeof newD[key1][key2] !=='object'){
 										//console.log(treeid);
+										
 										//finds elements on the page and updates them with a timestamp
 										var matches = $.grep(cell_arr, function(item, index) {
 											if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
@@ -1562,7 +1562,6 @@ function refreshTreeData(newData){
 												//$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
 
 											}
-											
 										});
 										//finds logs and updates data
 										if(matches.length > 0){
@@ -2124,10 +2123,11 @@ CAMERA CASE
 				objectFound.clickable = true;
 				objectFound.setHover(false, objectFound.hoverDelay);
 				$("input[name=hoverToggle][value='disabled']").prop("checked", true)
+				$('#hoverTargetRow').show();
 			}
 			else{
 				objectFound.clickable = false;
-
+				$('#hoverTargetRow').hide();
 			}
 		});
 		var suppressedChecked;
