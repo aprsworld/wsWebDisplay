@@ -1900,7 +1900,7 @@ CONFIGRATIONS CASE
 
 		$('.editWindow h2').text("Configurations");
 		$('#configRow').show();
-		
+		$('#jsonClipBoard').val(populateJsonField());
 		$(document).off('click','#jsonClipBoard');
 		$(document).on('click','#jsonClipBoard', function(event){	
 		  var copyTextarea = $('#jsonExport');
@@ -3047,6 +3047,32 @@ function captureState(){
 		}
 	},'webdisplay/configs/'+saveName,jsonString,true);
 	//saveArr = null;
+}
+
+function populateJsonField(){
+	var objId = 'pageSettings';	
+	console.log(cell_arr);
+	var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
+	var pageSettingsObj = cell_arr[elementPos];
+
+	pageSettingsObj.screenWidth = window.screen.availWidth;
+	pageSettingsObj.screenHeight = window.screen.availHeight;
+
+	for(var k in cell_arr){
+		/*if(saveArr[k].elementType === 'pageLog'){
+			saveArr[k].listToArray();
+		}*/
+		cell_arr[k].onChangeStyle();
+		console.log(cell_arr[k]);
+		cell_arr[k].heightToSave = cell_arr[k].getHeight();
+		cell_arr[k].widthToSave = cell_arr[k].getWidth();
+		cell_arr[k].top = cell_arr[k].getTop();
+		cell_arr[k].left = cell_arr[k].getLeft();
+
+	}
+			
+	var jsonString = JSON.stringify(cell_arr, replacer);
+	return jsonString;
 }
 
 function adjustDimensions(widthRatio, heightRatio, thisObj){
