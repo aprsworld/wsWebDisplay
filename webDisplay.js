@@ -1281,19 +1281,14 @@ function data_update(data) {
 	}
 	dataTransferred = this.rx_data_counter();
 	$('#bytesReceived').html(calculateDownload());
-	var x = $(document).ready(function() {
 		
-		$( document ).off( "click", "#refreshTree" );
-		$( document ).on( "click", "#refreshTree" , function() {	
-			refreshTree(dataOld);
-		});	
-		//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
-		if(editMode == false && treeRefreshTimer >= 14){
-			refreshTree(dataOld);	
-			console.log('refreshed');
-			treeRefreshTimer = 0;
-		}
-	});
+		
+	//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
+	if(editMode == false && treeRefreshTimer >= 14){
+		refreshTree(dataOld);	
+		console.log('refreshed');
+		treeRefreshTimer = 0;
+	}
 	// clears document ready function
 	x = null;
 	//refreshCams(cams);
@@ -1438,6 +1433,7 @@ function data_start() {
 		});
 	}
 	console.log(data_object);
+	
 	/*data_object.ValueGet(function(rsp){
 		if(!rsp.data || rsp.error){
 			// Couldn't get configuration data from server
@@ -1476,7 +1472,10 @@ $(document).ready(function() {
 		topOffSet = $(window).scrollTop();
 		leftOffSet = $(window).scrollLeft();
 	}
-
+	$( document ).off( "click", "#refreshTree" );
+	$( document ).on( "click", "#refreshTree" , function() {	
+		refreshTree(dataOld);
+	});	
 });
 
 function createText(){
@@ -1899,7 +1898,11 @@ CONFIGRATIONS CASE
 
 		$('.editWindow h2').text("Configurations");
 		$('#configRow').show();
-		$('#jsonClipBoard').val(populateJsonField());
+		$('#jsonExport').attr('readonly','false');
+		$('#jsonExport').val(populateJsonField());
+		$('#jsonExport').text(populateJsonField());
+		$('#jsonExport').attr('readonly','true');
+
 		$(document).off('click','#jsonClipBoard');
 		$(document).on('click','#jsonClipBoard', function(event){	
 		  var copyTextarea = $('#jsonExport');
@@ -1913,6 +1916,7 @@ CONFIGRATIONS CASE
 			console.log('Oops, unable to copy');
 		  }
 		});
+		
 		
 	}
 /*****************************************************************
@@ -3035,7 +3039,7 @@ function captureState(){
 
 	pageSettingsObj.screenWidth = window.screen.availWidth;
 	pageSettingsObj.screenHeight = window.screen.availHeight;
-
+	pageSettingsObj.updateTable = [];
 	for(var k in cell_arr){
 		/*if(saveArr[k].elementType === 'pageLog'){
 			saveArr[k].listToArray();
@@ -3061,7 +3065,7 @@ function captureState(){
 	var jsonString = JSON.stringify(cell_arr, replacer);
 	var configObject = JSON.parse(jsonString);
 	console.log(jsonString);
-	data_object.ValueSet(function(rsp){
+	/*data_object.ValueSet(function(rsp){
 		console.log(rsp);
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
@@ -3069,7 +3073,7 @@ function captureState(){
 		else{
 			createMessage('Configuration Saved',2000);
 		}
-	},'webdisplay/configs/'+saveName,jsonString,true);
+	},'webdisplay/configs/'+saveName,jsonString,true);*/
 	//saveArr = null;
 }
 
@@ -3256,6 +3260,8 @@ function loadState(jsonString){
 				heightRatio = height/pageSettings1.screenHeight;
 				
 			}
+			configObject[k].updateTable= [];
+			
 		$('.gridlines').css("display","none");
 			cell_arr.push(configObject[k]);
 			console.log(cell_arr);

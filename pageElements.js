@@ -397,6 +397,7 @@ var pageSettings = function() {
 	this.currentLayoutIndex;
 	this.cycleInterval = 1000;
 	this.pageTable = new Array();
+	this.updateTable = [];
 }
 extend(pageSettings, pageElement);
 
@@ -688,6 +689,21 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.heightToSave = $('#'+this.parentId).height();
 	this.widthToSave = $('#'+this.parentId).width();
 	this.typeChange = this.typeUnits;
+	
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	var pageObj= cell_arr[pageElementPos];
+	var updatePath = this.path.split(".");
+	
+	updatePath.length = updatePath.length-1;
+	updatePath = updatePath.join();
+	updatePath = updatePath.replace(/\,/g,"/");
+	if(SUBSCRIBE){
+		pageObj.updateTable.push(updatePath);
+		console.log(pageObj.updateTable);
+		data_object.filters_set(pageObj.updateTable);
+
+	}
 }
 
 //creates html based on loaded object properties
@@ -722,6 +738,20 @@ pageLog.prototype.loadHtml = function(){
 	else{
 		$('#'+this.parentId).draggable({disabled:false});
 		$('#'+this.parentId).resizable({disabled:false});
+	}
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	var pageObj= cell_arr[pageElementPos];
+	var updatePath = this.path.split(".");
+	
+	updatePath.length = updatePath.length-1;
+	updatePath = updatePath.join();
+	updatePath = updatePath.replace(/\,/g,"/");
+	if(SUBSCRIBE){
+		pageObj.updateTable.push(updatePath);
+		console.log(pageObj.updateTable);
+		data_object.filters_set(pageObj.updateTable);
+
 	}
 }
 /*
@@ -1391,6 +1421,21 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.heightToSave = $('#'+this.parentId).height();
 	this.widthToSave = $('#'+this.parentId).width();
 	this.count = cellCount;
+	
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	var pageObj= cell_arr[pageElementPos];
+	var updatePath = this.path.split(".");
+	
+	updatePath.length = updatePath.length-1;
+	updatePath = updatePath.join();
+	updatePath = updatePath.replace(/\,/g,"/");
+	if(SUBSCRIBE){
+		pageObj.updateTable.push(updatePath);
+		console.log(pageObj.updateTable);
+		data_object.filters_set(pageObj.updateTable);
+
+	}
 }
 
 //re-creates html from loaded object properties
@@ -1460,6 +1505,20 @@ pageCell.prototype.loadHtml = function(cellCount){
 		$('#'+this.parentId).draggable({disabled:false});
 		$('#'+this.parentId).resizable({disabled:false});
 	}
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	var pageObj= cell_arr[pageElementPos];
+	var updatePath = this.path.split(".");
+	
+	updatePath.length = updatePath.length-1;
+	updatePath = updatePath.join();
+	updatePath = updatePath.replace(/\,/g,"/");
+	if(SUBSCRIBE){
+		pageObj.updateTable.push(updatePath);
+		console.log(pageObj.updateTable);
+		data_object.filters_set(pageObj.updateTable);
+
+	}
 
 }
 
@@ -1469,7 +1528,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 var pageCam = function(){
 	this.setType('pageCam');
 	this.hoverable = false;
-	this.clickable = true;
+	this.clickable = false;
 	this.suppressed;
 	this.hoverDelay;
 	this.cropped;	
@@ -2033,6 +2092,22 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	//update src after .load is called
 
 	$('#preload_'+camId).attr('src', value);
+	
+	var pageObjId = 'pageSettings';	
+	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
+	var pageObj= cell_arr[pageElementPos];
+	var updatePath = this.path.split(".");
+	
+	updatePath.length = updatePath.length-1;
+	updatePath = updatePath.join();
+	updatePath = updatePath.replace(/\,/g,"/");
+	if(SUBSCRIBE){
+		pageObj.updateTable.push(updatePath);
+		console.log(pageObj.updateTable);
+		data_object.filters_set(pageObj.updateTable);
+
+	}
+	
 }
 
 pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
@@ -2050,13 +2125,20 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 	
 	camObj.src = updatedPath;
 	console.log(updatedPath);
-	$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
-	$('#content').append('<div style="display:none" title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
+	
+	var img = document.createElement("IMG");
+	img.alt = "camimage";
+	img.id = 'preload_'+this.fullId
+	$('#preload').append(img);
+	
+	//$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
+	$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
 	console.log($('#'+camObj.parentId+''));
+	
 	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
 	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the 
 	//real image once it is completely loaded.
-	$('#preload_'+camId).load(function() { 
+	$(img).load( null, function() { 
 		console.log(camObj);
 		console.log(camObj.style);
 		$('#'+camObj.parentId).attr('style', camObj.style);
@@ -2094,6 +2176,17 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 		var pageObjId = 'pageSettings';	
 		var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 		var pageObj= cell_arr[pageElementPos];
+		var updatePath = camObj.path.split(".");
+
+		updatePath.length = updatePath.length-1;
+		updatePath = updatePath.join();
+		updatePath = updatePath.replace(/\,/g,"/");
+		if(SUBSCRIBE){
+			pageObj.updateTable.push(updatePath);
+			console.log(pageObj.updateTable);
+			data_object.filters_set(pageObj.updateTable);
+
+		}
 		if(!pageObj.tableHasItem(camObj.path) || !pageObj.isTableItemCurrent(camObj.path,camObj.src)){
 			//get size of image
 			var image_size = ref(dataOld, camObj.path.replace('image_url','image_size'));
@@ -2109,15 +2202,15 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 		pageObj.addToTable(camObj.path, updatedPath);
 		
 		//if table does not already have this image or the current image src is not up to date, add this image to the hash table.
-
+		camObj.setClickable(true);
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		adjustDimensions(widthRatio, heightRatio, camObj);
 
 	});
 	
 	//update src after .load is called
-	$('#preload_'+camId).attr('src', updatedPath);
-	
+	//$('#preload_'+camId).attr('src', updatedPath);
+	img.src = updatedPath;
 
 }
 
