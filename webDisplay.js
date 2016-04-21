@@ -1474,7 +1474,7 @@ $(document).ready(function() {
 	}
 	$( document ).off( "click", "#refreshTree" );
 	$( document ).on( "click", "#refreshTree" , function() {	
-		refreshTree(dataOld);
+		refreshTreeFull();
 	});	
 });
 
@@ -1631,6 +1631,32 @@ function updateLogs(matches){
 		}
 		}
 	});
+}
+
+function refreshTreeFull(){
+	var lastk = "#";
+	jsonArray = [];
+	data_object.ValueGet(function(rsp){
+		updatelock = true;
+		if(!rsp.data || rsp.error){
+			// Couldn't get configuration data from server
+			console.log(rsp);
+			updatelock = false;
+			return;
+		}
+		dataOld = rsp.data
+		console.log(dataOld);
+		dynamicUpdate(dataOld);
+		console.log(rsp.data);
+		dataUpdateTime = Date.now();
+		timedOut = false;
+		updatelock = false;
+	},'');	
+	iterateStations(dataOld, "", jsonArray, lastk);
+	$('#stationTree').jstree(true).settings.core.data = jsonArray;
+	$('#stationTree').jstree(true).refresh();
+	//empty array for the sake of performance
+	jsonArray.length = 0;
 }
 
 function refreshTree(newData){
