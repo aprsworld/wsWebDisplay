@@ -3159,6 +3159,10 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 			"width": eleWidth+"px",
 			"height": eleHeight+"px"
 		});
+		$('#'+thisObj.parentId).find('img').css({
+			"width": eleWidth+"px",
+			"height": eleHeight+"px"
+		});
 		thisObj.changedWidth = (parseFloat(thisObj.changedWidth)*widthRatio)+"px";
 		thisObj.changedHeight = (parseFloat(thisObj.changedHeight)*heightRatio)+"px";
 		thisObj.natWidth = thisObj.natWidth*widthRatio;
