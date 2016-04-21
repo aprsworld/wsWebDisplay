@@ -690,6 +690,9 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.widthToSave = $('#'+this.parentId).width();
 	this.typeChange = this.typeUnits;
 	
+	$('#'+this.parentId).css('z-index',this.count);
+
+	
 	var pageObjId = 'pageSettings';	
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 	var pageObj= cell_arr[pageElementPos];
@@ -1421,6 +1424,8 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.heightToSave = $('#'+this.parentId).height();
 	this.widthToSave = $('#'+this.parentId).width();
 	this.count = cellCount;
+	$('#'+this.parentId).css('z-index',this.count);
+
 	
 	var pageObjId = 'pageSettings';	
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
@@ -1459,7 +1464,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 	
 	//if the data type is a number, then it can be manipulated
 	if(this.dataType !== 'string'){
-		if(updatedPath !== 'undefined'){
+ 		if(updatedPath !== 'undefined'){
 			console.log(this.typeUnits+" "+this.typeChange+" "+updatedPath+" "+this.precision);
 			if(typeof this.typeUnits !== 'undefined' && typeof this.typeChange !== 'undefined' && (this.typeUnits.toUpperCase() !== this.typeChange.toUpperCase())){
 				console.log(this.title);
@@ -1468,16 +1473,18 @@ pageCell.prototype.loadHtml = function(cellCount){
 				console.log(this.type);
 				console.log(this.typeChange);
 				result = chooseConversion(this.type, this.typeUnits.toUpperCase(), updatedPath, this.typeChange.toUpperCase()).value;	
-				updatedPath = result.value;
+				updatedPath = result;
 				console.log(result.label);
 			}
 			console.log(updatedPath);
 			updatedPath = round(updatedPath, this.precision);
+
 		}
+
 		else{
 		updatedPath = 'Loading...'	
 		}
-			
+	
 			
 	}	
 	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
@@ -2041,7 +2048,6 @@ pageCam.prototype.camCrop = function(){
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	var camId = this.fullId;
 	var camObj = this; 
-
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+camId+'" >');
 	$('.top-container').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
 	
@@ -2085,7 +2091,8 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		cell_arr.push(camObj);
 		//calcluate download
 		$('#bytesReceived').html(calculateDownload());
-
+		
+		$('#'+camId).css('z-index',camObj.count);
 		camObj.timerAppend();
 	});	
 	
@@ -2132,7 +2139,6 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 	$('#preload').append(img);
 	
 	//$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
-	$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
 	console.log($('#'+camObj.parentId+''));
 	
 	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
@@ -2141,6 +2147,8 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 	$(img).load( null, function() { 
 		console.log(camObj);
 		console.log(camObj.style);
+			$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
+
 		$('#'+camObj.parentId).attr('style', camObj.style);
 		$('#'+camObj.parentId).find('img').attr('src', updatedPath);
 		$('#'+camObj.parentId).css('background-image', 'url('+updatedPath+')');
@@ -2727,6 +2735,8 @@ pageImg.prototype.createHtml = function(cellCount){
 	this.setResize();
 	this.count = cellCount;
 	this.toolTip = this.parentId;
+	$('#'+this.parentId).css('z-index',this.count);
+
 }
 //loads html associated with this object
 pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
@@ -2806,6 +2816,8 @@ pageText.prototype.createHtml = function(cellCount){
 	this.setDrag();
 	this.setResize();
 	console.log(this);
+	$('#'+this.parentId).css('z-index',this.count);
+
 }
 
 pageText.prototype.loadHtml = function(){

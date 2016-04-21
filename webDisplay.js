@@ -1526,12 +1526,17 @@ function refreshTreeData(newData){
 		if(dataOld.hasOwnProperty(key)  && key != '_bserver_'){
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
-				newD = newData[objectKeys][subkey];				
+				newD = newData[key][subkey];					
 				if(typeof oldD === 'undefined' || typeof newD !=='object'){
+					console.log('test');
 					oldD = newD;
 				}
 				else{	
 					for(var levelThree in newD){
+						if(typeof oldD[levelThree] === 'undefined'){
+							console.log(newD[levelThree]);
+							oldD[levelThree] = newD[levelThree];
+						}
 						Object.keys( newD).forEach(function(key1){	
 							if(typeof oldD[key1] === 'undefined' || typeof newD !=='object'){
 								oldD[key1] = newD[key1];
@@ -1541,7 +1546,7 @@ function refreshTreeData(newData){
 								Object.keys( newD[key1]).forEach(function(key2){
 									oldD[key1][key2] = newD[key1][key2];
 									if(oldD[key1][key2] === 'undefined'){ //debug
-										//console.log(oldD[key1])	
+											
 									}
 									if(typeof newD[key1][key2] !=='object'){
 										//console.log(treeid);
