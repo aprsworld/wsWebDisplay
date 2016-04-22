@@ -2084,7 +2084,7 @@ CAMERA CASE
 		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
 		$('#zSlider').slider({
 			min: 0,
-			max: 100,
+			max: 100+cell_arr.length,
 			value: zIndex,
 			slide: function( event, ui ) {
 				objectFound.setZindex(ui.value);
@@ -2282,7 +2282,7 @@ TEXT BLOCKS CASE
 		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
 		$('#zSlider').slider({
 			min: 0,
-			max: 100,
+			max: 100+cell_arr.length,
 			value: zIndex,
 			slide: function( event, ui ) {
 				objectFound.setZindex(ui.value);
@@ -2462,7 +2462,7 @@ IMG BLOCKS CASE
 		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
 		$('#zSlider').slider({
 			min: 0,
-			max: 100,
+			max: 100+cell_arr.length,
 			value: zIndex,
 			slide: function( event, ui ) {
 				objectFound.setZindex(ui.value);
@@ -2570,7 +2570,7 @@ DATA LOGS CASE
 		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
 		$('#zSlider').slider({
 			min: 0,
-			max: 100,
+			max: 100+cell_arr.length,
 			value: zIndex,
 			slide: function( event, ui ) {
 				objectFound.setZindex(ui.value);
@@ -2784,7 +2784,7 @@ DATA CELLS CASE
 		var zIndex = $('#'+objectFound.parentId).css('z-index'); 
 		$('#zSlider').slider({
 			min: 0,
-			max: 100,
+			max: 100+cell_arr.length,
 			value: zIndex,
 			slide: function( event, ui ) {
 				objectFound.setZindex(ui.value);

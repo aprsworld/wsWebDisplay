@@ -349,7 +349,7 @@ select{
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 102;
+	z-index: 10000000002;
 	box-shadow: 0px 0px 4px #222;
 	text-align: center;
 	display: none;
@@ -718,7 +718,7 @@ div.logo_container{
 	width: 100%;
 	height: 18px;
 	background-color: rgba(200,200,200,.8);
-	z-index: 1000;
+	z-index: 100000003;
 }
 #bytesReceived{
 	color: #333;
@@ -808,7 +808,7 @@ div.logo_container{
 	border: 1px solid #000;
 	padding-left: 0px;
 	padding-right: 0px;
-	z-index: 102;
+	z-index: 100002;
 	color: #333;
 	text-align: center;
 	box-shadow: 0px 0px 3px #222;
@@ -831,7 +831,7 @@ div.logo_container{
 	color: white;
 	cursor: pointer;
 	width: 200px;
-	z-index: 103;
+	z-index: 1000000004;
 	display:none;
 }
 #editMaximize{
