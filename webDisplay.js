@@ -3058,6 +3058,8 @@ function replacer(key,value)
 {
     if (key=="head") return undefined;
     else if (key=="tail") return undefined;
+	else if (key=="updateTable") return undefined;
+	else if (key=="pageTable") return undefined;
     else return value;
 }
 
@@ -3070,10 +3072,10 @@ function captureState(){
 
 	pageSettingsObj.screenWidth = window.screen.availWidth;
 	pageSettingsObj.screenHeight = window.screen.availHeight;
-	var tempUpdateTable = pageSettingsObj.updateTable;
-	var tempPageTable = pageSettingsObj.pageTable;
-	pageSettingsObj.updateTable = null;
-	pageSettingsObj.pageTable = null;
+	//var tempUpdateTable = pageSettingsObj.updateTable;
+	//var tempPageTable = pageSettingsObj.pageTable;
+	//pageSettingsObj.updateTable = null;
+	//pageSettingsObj.pageTable = null;
 	for(var k in cell_arr){
 		/*if(saveArr[k].elementType === 'pageLog'){
 			saveArr[k].listToArray();
@@ -3110,8 +3112,8 @@ function captureState(){
 		}
 	},'webdisplay/configs/'+saveName,jsonString,true);*/
 	//saveArr = null;
-	pageSettingsObj.updateTable = tempUpdateTable;
-	pageSettingsObj.pageTable = tempPageTable; 
+	//pageSettingsObj.updateTable = tempUpdateTable;
+	//pageSettingsObj.pageTable = tempPageTable; 
 }
 
 function populateJsonField(){
