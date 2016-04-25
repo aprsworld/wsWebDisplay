@@ -3107,7 +3107,7 @@ function captureState(){
 	var jsonString = JSON.stringify(cell_arr, replacer);
 	var configObject = JSON.parse(jsonString);
 	console.log(jsonString);
-	/*data_object.ValueSet(function(rsp){
+	data_object.ValueSet(function(rsp){
 		console.log(rsp);
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
@@ -3116,7 +3116,7 @@ function captureState(){
 		else{
 			createMessage('Configuration Saved',5000);
 		}
-	},'webdisplay/configs/'+saveName,jsonString,true);*/
+	},'webdisplay/configs/'+saveName,jsonString,true);
 	//saveArr = null;
 	//pageSettingsObj.updateTable = tempUpdateTable;
 	//pageSettingsObj.pageTable = tempPageTable; 
