@@ -349,7 +349,7 @@ select{
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 10000000002;
+	z-index: 100002;
 	box-shadow: 0px 0px 4px #222;
 	text-align: center;
 	display: none;
@@ -1185,7 +1185,7 @@ select.backgroundColorChange option{
 
 }
 .ui-tooltip, .arrow:after {
-  z-index:100004;
+  z-index:100010;
 }
 
 ul.jstree-children{
