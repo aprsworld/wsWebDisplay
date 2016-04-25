@@ -1317,7 +1317,7 @@ function calculateDownload(){
 	}
 	size = round(size, 2);
 	size = size.toLocaleString();
-	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> Data Transfered <i title="Downloaded data only counts data coming \n in from the webSocket since page load" class="fa fa-question-circle"></i>';
+	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> Data Transfered <i title="Downloaded data counts data coming in \n from the webSocket since page load as well \n as well image size of camera elements" class="fa fa-question-circle"></i>';
 	return message;
 }
 //gets parameters in url
@@ -3070,7 +3070,10 @@ function captureState(){
 
 	pageSettingsObj.screenWidth = window.screen.availWidth;
 	pageSettingsObj.screenHeight = window.screen.availHeight;
-	pageSettingsObj.updateTable = [];
+	var tempUpdateTable = pageSettingsObj.updateTable;
+	var tempPageTable = pageSettingsObj.pageTable;
+	pageSettingsObj.updateTable = null;
+	pageSettingsObj.pageTable = null;
 	for(var k in cell_arr){
 		/*if(saveArr[k].elementType === 'pageLog'){
 			saveArr[k].listToArray();
@@ -3100,12 +3103,15 @@ function captureState(){
 		console.log(rsp);
 		if (rsp.error) {
 			alert('Failed to save configuration to server!');
+
 		}
 		else{
-			createMessage('Configuration Saved',2000);
+			createMessage('Configuration Saved',5000);
 		}
 	},'webdisplay/configs/'+saveName,jsonString,true);*/
 	//saveArr = null;
+	pageSettingsObj.updateTable = tempUpdateTable;
+	pageSettingsObj.pageTable = tempPageTable; 
 }
 
 function populateJsonField(){

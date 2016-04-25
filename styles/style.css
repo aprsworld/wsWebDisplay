@@ -1180,10 +1180,14 @@ select.backgroundColorChange option{
 .ui-autocomplete{
 	position: fixed !important;
 	overflow-y: scroll !important;
-	z-index:1000 !important;
+	z-index:100004 !important;
 	height: 200px !important;
 
 }
+.ui-tooltip, .arrow:after {
+  z-index:100004;
+}
+
 ul.jstree-children{
 	height: auto !important;	
 }
