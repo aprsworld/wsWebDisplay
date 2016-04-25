@@ -340,13 +340,13 @@ pageElement.prototype = {
 	},
 	timerAppend: function() {
 		//set variables in this scope so that they work in the hover handler and the callback
-		var appendedDiv = document.createElement('span'),
-		objectFound = this,
-		timeSinceData,
-		parentWidth,
-		parentTop,
-		divWidth,
-		parentLeft;
+		//var appendedDiv = document.createElement('span'),
+		var objectFound = this,
+			timeSinceData,
+			parentWidth,
+			parentTop,
+			divWidth,
+			parentLeft;
 		
 		$( "#"+this.parentId ).hover(function(e){
 						
@@ -380,7 +380,7 @@ pageElement.prototype = {
 			$('#dataAge').text('');
 			//when user "un-hovers," clear interval and remove text
 			clearInterval(objectFound.timeInterval);
-			appendedDiv.remove();
+			//appendedDiv.remove();
 		});	
 	}
 }
@@ -1563,12 +1563,13 @@ pageCam.prototype.setClickable = function(boolClick){
 		//click event bound to object property so that we can clear it later
 		camObj.clickFunction = $('#'+camObj.parentId).on("click", function(e) {
 			//if ctrl key is held during click 
-			if(e.ctrlKey && !editMode && camObj.clickable) {
+			
+			if(e.ctrlKey && !editMode && camObj.clickable && !camObj.clicked) {
 			 	
 				//Add elements to DOM for our hover image
 				var hoverImg = document.createElement('img'),
 				hoverImgLink = document.createElement('a');
-				
+				camObj.clicked = true;
 				//get camera properties
 			 	var camSrc = camObj.src,
 				camWidth = parseInt(camObj.natWidth),
@@ -1622,7 +1623,7 @@ pageCam.prototype.setClickable = function(boolClick){
 				setTimeout(function(){
 					//click event for closing out the hover image
 					$(document.body).one("click", ":not(#"+hoverImgId+", #"+hoverImgId+" *,#"+camObj.parentId+", #"+camObj.parentId+" *)", function(e){ 
-						
+						camObj.clicked = false;
 						$('#'+hoverImgId).remove();
 						$('#'+camObj.parentId).removeClass('focusedCam');
 					});

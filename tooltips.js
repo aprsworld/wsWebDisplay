@@ -24,5 +24,8 @@ var tooltips = {
 			"<li> <b> Move </b> your mouse and <b>click</b> anywhere on the grid and the item will be added to the page</li>"+
 			"<li> Alternatively, your <b> esc key </b> will cancel the process </li>"+
 			"<li> These items can now be dragged and resized while in edit mode </li>"+
-			"</ul>"
+			"</ul>",
+	//tooltip that described menu option for clickable pop-out event
+	clickableRadios : "<p> When 'Clickable' is enabled, the Camera image can be Ctrl+clicked to show a popout image at native resolution. </p>",
+	hoverableRadios : "<p> when 'Hoverable' is enabled, the Camera image will display a pop-out image at native resolution when hovered upon for more than the designated time period. </p>"
 }

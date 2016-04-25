@@ -1082,6 +1082,12 @@ function data_update(data) {
 					else if( element.is( "#jsTreeInfo" )){
 						return tooltips.jsTree;
 					}
+					else if( element.is( "#clickableRadios" )){
+						return tooltips.clickableRadios;
+					}
+					else if( element.is( "#hoverRadios" )){
+						return tooltips.hoverableRadios;
+					}
 					else{
 						return element.attr( "title" );
 					}
