@@ -729,6 +729,13 @@ function sinceDataTimer(){
 				dataOld = rsp.data
 				console.log(dataOld);
 				dynamicUpdate(dataOld);
+				
+								
+				var lastk = "#";
+				jsonArray = [];
+				iterateStations(dataOld, "", jsonArray, lastk);
+
+				
 				console.log(rsp.data);
 				dataUpdateTime = Date.now();
 				timedOut = false;
