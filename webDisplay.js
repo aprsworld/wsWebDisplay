@@ -705,9 +705,8 @@ function sinceDataTimer(){
 	time = Math.floor((time - dataUpdateTime)/1000);
 	//console.log(timedOut);
 	//console.log(updatelock);
-	timedOut = false;
 	//if it has been longer than our time out, we set the flag to be true
-	if(time > 30){
+	if(time > 1800){
 		console.log(time);
 		timedOut = true;
 	}
@@ -716,8 +715,8 @@ function sinceDataTimer(){
 		//console.log(timedOut);
 		//console.log(updatelock);
 		console.log(timedOut);
-		if(data_object.ws_error !== false || time < 30){
-				
+		if(data_object.ws_error !== false || time < 1800){
+				console.log(time);
 			data_object.ValueGet(function(rsp){
 				updatelock = true;
 				if(!rsp.data || rsp.error){
@@ -1539,8 +1538,14 @@ function refreshTreeData(newData){
 		if(dataOld.hasOwnProperty(key)  && key != '_bserver_'){
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
-				newD = newData[key][subkey];					
-				if(typeof oldD === 'undefined' || typeof newD !=='object'){
+				newD = newData[key][subkey];		
+				if( Object.prototype.toString.call( newD ) === '[object Array]' && typeof oldD !== 'object') {
+					console.log(oldD);
+					console.log(newD);
+					oldD = [];
+					oldD = newD.slice(0);
+				}
+				else if(typeof oldD === 'undefined' || typeof newD !=='object'){
 					console.log('test');
 					oldD = newD;
 				}
@@ -1550,6 +1555,7 @@ function refreshTreeData(newData){
 							console.log(newD[levelThree]);
 							oldD[levelThree] = newD[levelThree];
 						}
+
 						Object.keys( newD).forEach(function(key1){	
 							if(typeof oldD[key1] === 'undefined' || typeof newD !=='object'){
 								oldD[key1] = newD[key1];
