@@ -1547,7 +1547,6 @@ function refreshTreeData(newData){
 						console.log(newD);
 						dataOld[key][subkey] = newD.slice(0);
 					}else{
-						
 						oldD = newD;
 					}
 					
