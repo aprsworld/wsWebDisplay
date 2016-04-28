@@ -1,5 +1,0 @@
-#!/bin/bash
-NOW=$(date)
-echo "changing version.js"
-echo "var wdVersion = 'version updated - $NOW';" > version.js
-echo "changed"
