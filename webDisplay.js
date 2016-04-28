@@ -1529,6 +1529,7 @@ function createImage(){
 //this function accepts the partial updates and combines them with the existing data structure
 //used to build the tree.
 function refreshTreeData(newData){
+	console.log('partial data update initiated');
 	dataUpdateTime = Date.now();
 	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
@@ -1538,16 +1539,19 @@ function refreshTreeData(newData){
 		if(dataOld.hasOwnProperty(key)  && key != '_bserver_'){
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
-				newD = newData[key][subkey];		
-				if( Object.prototype.toString.call( newD ) === '[object Array]' && typeof oldD !== 'object') {
-					console.log(oldD);
-					console.log(newD);
-					oldD = [];
-					oldD = newD.slice(0);
-				}
-				else if(typeof oldD === 'undefined' || typeof newD !=='object'){
+				newD = newData[key][subkey];	
+				if(typeof oldD === 'undefined' || typeof newD !=='object'){
 					console.log('test');
-					oldD = newD;
+					if( Object.prototype.toString.call( newD ) === '[object Array]' && typeof oldD === 'undefined') {
+						console.log(oldD);
+						console.log(newD);
+						dataOld[key][subkey] = newD.slice(0);
+					}else{
+						
+						oldD = newD;
+					}
+					
+					
 				}
 				else{	
 					for(var levelThree in newD){
