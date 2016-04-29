@@ -1541,17 +1541,31 @@ function refreshTreeData(newData){
 				oldD = dataOld[key][subkey];
 				newD = newData[key][subkey];	
 				if(typeof oldD === 'undefined' || typeof newD !=='object'){
-					console.log('test');
-					if( Object.prototype.toString.call( newD ) === '[object Array]' && typeof oldD === 'undefined') {
-						console.log(oldD);
-						console.log(newD);
-						dataOld[key][subkey] = newD.slice(0);
-					}else{
-						oldD = newD;
-					}
-					
-					
-				}
+                    console.log('test');
+                    console.log(newD);
+                        dataOld[key][subkey] = {};
+                   
+                    for(var levelThree in newD){
+                        console.log(levelThree);
+                       
+                        dataOld[key][subkey][levelThree] = newD[levelThree];
+                        /*if(Object.prototype.toString.call(newD[levelThree]) === '[object Array]'){
+                            console.log(newD[levelThree]);
+
+                            dataOld[key][subkey] = newD[levelThree].slice(0);
+
+                        }*/
+                    }
+                    /*if( Object.prototype.toString.call( newD ) === '[object Array]' && typeof oldD === 'undefined') {
+                        console.log(oldD);
+                        console.log(newD);
+                        dataOld[key][subkey] = newD.slice(0);
+                    }else{
+                        oldD = newD;
+                    }*/
+                   
+                   
+                }
 				else{	
 					for(var levelThree in newD){
 						if(typeof oldD[levelThree] === 'undefined'){
