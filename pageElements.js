@@ -1582,6 +1582,8 @@ pageCam.prototype.setClickable = function(boolClick){
 				//set the width and height of our hover image to the native width and height
 				$(hoverImg).width(camWidth);
 				$(hoverImg).height(camHeight);
+				$(hoverImgLink).width(camWidth);
+				$(hoverImgLink).height(camHeight);
 				hoverImg.src = camSrc;
 				
 				if(typeof camObj.hoverTarget !== 'undefined' && camObj.hoverTarget !== ''){
@@ -1688,7 +1690,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					console.log('time');
 					$(hoverImg).width(camWidth);
 					$(hoverImg).height(camHeight);
-					
+					$(hoverImgLink).width(camWidth);
+					$(hoverImgLink).height(camHeight);
 					hoverImg.src = camSrc;
 				
 					if(typeof camObj.hoverTarget !== 'undefined' && camObj.hoverTarget !== ''){
