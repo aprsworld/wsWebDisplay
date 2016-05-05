@@ -99,14 +99,10 @@ pageElement.prototype = {
 			cursor: "move", disabled: false, delay: 50,
 			start: function(event, ui){
 				$('#'+thisObj.parentId).off('mouseup');
-				var title = thisObj.toolTip;
-				$(this).removeAttr("title");
 				$('.timerBlock').css('display','none');
-				$('#'+thisObj.parentId).on('mouseup', function(e) {
-					console.log(title);
-					$('#'+thisObj.parentId).attr('title',title);
-					$('.timerBlock').css('display','inline-block');
 
+				$('#'+thisObj.parentId).on('mouseup', function(e) {
+					$('.timerBlock').css('display','inline-block');
 				});
 				//collapses windows when dragging
 				if(isExpanded){
@@ -349,22 +345,40 @@ pageElement.prototype = {
 			parentLeft;
 		
 		$( "#"+this.parentId ).hover(function(e){
-			console.log(e);
+			if(!editMode){
 			//set interval to change text content every second
 			objectFound.timeInterval = setInterval( function(){
 				//human readable time
 				timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
+				
+					
+					$('#filePathSpan').text(objectFound.toolTip);
 				if(!isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
 					console.log('tick');
 					timeSinceData = secToTime(timeSinceData);
-					$('#dataAge').css({
-						"display" : "block",
-						"top": objectFound.top-10,
-						"left": objectFound.left+objectFound.widthToSave+10
-					});
-					console.log(e);
-					$('#dataAge').text('This Element: '+timeSinceData+' old');
-
+					$('#dataAge').text(timeSinceData+' old');
+				}
+				var finalleft, finaltop;
+				console.log($('#wsToolTip').width());
+					if(objectFound.left+objectFound.widthToSave+$('#wsToolTip').width() > $(window).width()){
+						
+						finalleft = objectFound.left-($('#wsToolTip').width()+20);
+					}
+					else{
+						finalleft = objectFound.left+objectFound.widthToSave+10;	
+					}
+					if(objectFound.top+objectFound.heightToSave+100 > $(window).height()){
+						finaltop = objectFound.top-(110);
+					}
+					else{
+						finaltop = objectFound.top;
+					}
+				$('#wsToolTip').css({
+					"display" : "block",
+					"top": finaltop,
+					"left": finalleft
+				});
+					
 					/*if(objectFound.lastData == oldestElement.time){
 						console.log('oldest');
 						appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Oldest Data on Page';
@@ -381,11 +395,12 @@ pageElement.prototype = {
 					if(objectFound.lastData != newestElement.time && objectFound.lastData != oldestElement.time){
 						//appendedDiv.textContent = 'Last data received: '+timeSinceData+' Newest Data on Page is '+newestElement.item+' Oldest Data on page '+oldestElement.item;
 					}*/
-				}
+				
 			}, 1000 );
+			}
 		}, function () {
 			console.log('unhover');
-			$('#dataAge').css('display','none');
+			$('#wsToolTip').css('display','none');
 			$('#dataAge').text('');
 			//when user "un-hovers," clear interval and remove text
 			clearInterval(objectFound.timeInterval);
@@ -728,7 +743,7 @@ pageLog.prototype.loadHtml = function(){
 	this._length = 0;
 	this.head = null;
 	this.tail = null;
-	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
+	$('.top-container').append('<div style="'+this.style+'" title="" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	var objectFound = this;
 	this.setDrag();
 	this.setResize();
@@ -1496,7 +1511,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 	
 			
 	}	
-	$('.top-container').append('<div style="'+this.style+'" title="'+this.toolTip+'" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
+	$('.top-container').append('<div style="'+this.style+'" title="" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
 	this.lastData = null;
@@ -2160,7 +2175,7 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 	$(img).load( null, function() { 
 		console.log(camObj);
 		console.log(camObj.style);
-			$('#content').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
+			$('#content').append('<div title="" class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
 
 		$('#'+camObj.parentId).attr('style', camObj.style);
 		$('#'+camObj.parentId).find('img').attr('src', updatedPath);
@@ -2844,7 +2859,6 @@ pageText.prototype.loadHtml = function(){
 	textBlock.id = this.parentId;
 	this.id = this.parentId;
 	this.parentId = this.parentId;
-	textBlock.title = textBlock.id;
 	
 	this.toolTip = textBlock.title;
 	//appends a textblock to the div with our default text
