@@ -349,13 +349,20 @@ pageElement.prototype = {
 			parentLeft;
 		
 		$( "#"+this.parentId ).hover(function(e){
-						
+			console.log(e);
 			//set interval to change text content every second
 			objectFound.timeInterval = setInterval( function(){
 				//human readable time
 				timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
 				if(!isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
-					timeSinceData = secToTime(timeSinceData)
+					console.log('tick');
+					timeSinceData = secToTime(timeSinceData);
+					$('#dataAge').css({
+						"display" : "block",
+						"top": objectFound.top,
+						"left": objectFound.left+objectFound.widthToSave
+					});
+					console.log(e);
 					$('#dataAge').text('This Element: '+timeSinceData+' old');
 
 					/*if(objectFound.lastData == oldestElement.time){
@@ -377,6 +384,8 @@ pageElement.prototype = {
 				}
 			}, 1000 );
 		}, function () {
+			console.log('unhover');
+			$('#dataAge').css('display','none');
 			$('#dataAge').text('');
 			//when user "un-hovers," clear interval and remove text
 			clearInterval(objectFound.timeInterval);
@@ -1549,7 +1558,6 @@ var pageCam = function(){
 	this.timeOut;
 }
 extend(pageCam,pageElement);
-
 pageCam.prototype.setClickable = function(boolClick){
 	//if we are setting clickable to false
 	var camObj = this;
@@ -1648,8 +1656,9 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 	* options in the edit window responsible for configuring hover. 
 	*/
 	if(boolHover == false){
+		console.log('BOOOOOOL HOVER '+ boolHover);
 		camObj.hoverable = false;
-		$( '#'+camId ).off("mouseenter mouseleave");
+		$( '#'+camId ).off("mouseenter mouseleave",camObj.hoverFunction);
 		$('#hoverTimeRow, #suppressHoverable').hide();		
 		return;	
 	}

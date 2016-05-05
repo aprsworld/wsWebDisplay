@@ -1287,7 +1287,6 @@ function data_update(data) {
 		dataOld = data;
 
 	}
-	console.log(loadedTime);
 	if(!updatelock && loadedTime > 1){
 		console.log(data);
 		refreshTreeData(data);
@@ -1541,7 +1540,7 @@ function refreshTreeData(newData){
 			Object.keys(newData[objectKeys]).forEach(function(subkey){	
 				oldD = dataOld[key][subkey];
 				newD = newData[key][subkey];	
-				if(typeof oldD === 'undefined' || typeof newD !=='object'){
+				if(typeof oldD === 'undefined'){
 					console.log(Object.keys(newData[objectKeys]));
                     console.log('test');
                     console.log(newD);
