@@ -359,8 +359,8 @@ pageElement.prototype = {
 					timeSinceData = secToTime(timeSinceData);
 					$('#dataAge').css({
 						"display" : "block",
-						"top": objectFound.top,
-						"left": objectFound.left+objectFound.widthToSave
+						"top": objectFound.top-10,
+						"left": objectFound.left+objectFound.widthToSave+10
 					});
 					console.log(e);
 					$('#dataAge').text('This Element: '+timeSinceData+' old');

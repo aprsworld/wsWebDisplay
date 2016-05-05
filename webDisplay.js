@@ -1285,6 +1285,7 @@ function data_update(data) {
 		});
         });
 		dataOld = data;
+			dataUpdateTime = Date.now();
 
 	}
 	if(!updatelock && loadedTime > 1){
