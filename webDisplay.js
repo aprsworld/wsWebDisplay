@@ -1287,7 +1287,8 @@ function data_update(data) {
 		dataOld = data;
 
 	}
-	if(!updatelock){
+	console.log(loadedTime);
+	if(!updatelock && loadedTime > 1){
 		console.log(data);
 		refreshTreeData(data);
 	}
@@ -1541,12 +1542,13 @@ function refreshTreeData(newData){
 				oldD = dataOld[key][subkey];
 				newD = newData[key][subkey];	
 				if(typeof oldD === 'undefined' || typeof newD !=='object'){
+					console.log(Object.keys(newData[objectKeys]));
                     console.log('test');
                     console.log(newD);
                         dataOld[key][subkey] = {};
-                   
+                   	
                     for(var levelThree in newD){
-                        console.log(levelThree);
+                        console.log(newD[levelThree]);
                        
                         dataOld[key][subkey][levelThree] = newD[levelThree];
                         /*if(Object.prototype.toString.call(newD[levelThree]) === '[object Array]'){
