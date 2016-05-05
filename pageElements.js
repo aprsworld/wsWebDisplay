@@ -367,8 +367,9 @@ pageElement.prototype = {
 					else{
 						finalleft = objectFound.left+objectFound.widthToSave+10;	
 					}
-					if(objectFound.top+objectFound.heightToSave+100 > $(window).height()){
-						finaltop = objectFound.top-(110);
+				console.log(window);
+					if(objectFound.top < 0){
+						finaltop = objectFound.top+objectFound.heightToSave;
 					}
 					else{
 						finaltop = objectFound.top;
@@ -700,7 +701,7 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.id = this.parentId;
 	var treeTime = $('#stationTree').jstree(true).get_node(log.treeId).original.obj.time;
 	
-	$('.top-container').append('<div title="'+this.toolTip+'" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
+	$('.top-container').append('<div title="" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	console.log(logId);
 	$('#'+logId).css('top',pageY);
 	$('#'+logId).css('left',pageX);
@@ -713,7 +714,7 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.heightToSave = $('#'+this.parentId).height();
 	this.widthToSave = $('#'+this.parentId).width();
 	this.typeChange = this.typeUnits;
-	
+	this.lastData = Date.now();
 	$('#'+this.parentId).css('z-index',this.count);
 
 	
@@ -1436,7 +1437,7 @@ pageCell.prototype.setResize = function(){
 //creates the html from the object properties
 pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	
-	$('.top-container').append('<div title="'+this.toolTip+'" class="tr draggable" id="' + this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+currentData+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
+	$('.top-container').append('<div title="" class="tr draggable" id="' + this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+currentData+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 	var cellId = this.parentId;
 	$('#'+cellId).css('top',pageY);
 	$('#'+cellId).css('left',pageX);
@@ -1449,6 +1450,7 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.heightToSave = $('#'+this.parentId).height();
 	this.widthToSave = $('#'+this.parentId).width();
 	this.count = cellCount;
+	this.lastData = Date.now();
 	$('#'+this.parentId).css('z-index',this.count);
 
 	
@@ -2087,7 +2089,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	var camId = this.fullId;
 	var camObj = this; 
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+camId+'" >');
-	$('.top-container').append('<div title="'+camObj.toolTip+'"class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
+	$('.top-container').append('<div title=""class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
 	
 	//set resize and drag
 	camObj.setResize();
@@ -2129,7 +2131,7 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		cell_arr.push(camObj);
 		//calcluate download
 		$('#bytesReceived').html(calculateDownload());
-		
+		camObj.lastData = Date.now();
 		$('#'+camId).css('z-index',camObj.count);
 		camObj.timerAppend();
 	});	
