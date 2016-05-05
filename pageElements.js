@@ -747,7 +747,8 @@ pageLog.prototype.loadHtml = function(){
 	var objectFound = this;
 	this.setDrag();
 	this.setResize();
-	this.lastData = null;
+	
+	this.lastData = Date.now();
 
 	this.timerAppend();
 	if(this.hidden){
@@ -1514,7 +1515,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 	$('.top-container').append('<div style="'+this.style+'" title="" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
-	this.lastData = null;
+	this.lastData  = Date.now();
 	//this handles the time since the data has been updated for this element
 	this.timerAppend();
 	
@@ -2184,7 +2185,7 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 		//Allow dragging and resizing as well as a pop-out hover image
 		camObj.setDrag();
 		camObj.setResize();
-		camObj.lastData = null;
+		camObj.lastData = Date.now();
 		camObj.timerAppend();
 		
 		//if we are not in edit mode when loading, we want dragging and resizing to be disabled until
