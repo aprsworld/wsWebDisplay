@@ -1671,10 +1671,12 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 	/*if hovering is set to disabled, we remove the event handler and hide the 
 	* options in the edit window responsible for configuring hover. 
 	*/
+	console.log(boolHover);
 	if(boolHover == false){
 		console.log('BOOOOOOL HOVER '+ boolHover);
 		camObj.hoverable = false;
-		$( '#'+camId ).off("mouseenter mouseleave",camObj.hoverFunction);
+		$( "#"+camId  ).off("mouseenter.popOut");
+		$( "#"+camId  ).off("mouseleave.popOut");
 		$('#hoverTimeRow, #suppressHoverable').hide();		
 		return;	
 	}
@@ -1694,9 +1696,13 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			$( "#"+camId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);	
 			return;
 		}
-		$( "#"+camId  ).unbind("mouseenter", camObj.hoverFunction);
-		$( "#"+camId  ).unbind("mouseleave",camObj.hoverFunction);
-		camObj.hoverFunction = $( "#"+camId ).hover(function(){
+		$( "#"+camId  ).off("mouseenter.popOut");
+		$( "#"+camId  ).off("mouseleave.popOut");
+		//camObj.hoverFunction = $( "#"+camId ).hover(function(){
+		$("#"+camId ).on({
+			
+			"mouseenter.popOut": function() {
+				
 			var camSrc = camObj.src;
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
@@ -1760,7 +1766,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					}
 				}, timeOut); //end hoverTimeOut
 			} //end if(editMode == false && suppressed == false)
-		}, function () {
+		},
+		"mouseleave.popOut":function () {
 			clearInterval(camObj.timerInterval);
 			$("#"+camObj.parentId).find('.timerBlock').remove();
 			if(editMode === false && suppressed == false){	
@@ -1770,7 +1777,9 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 				
 			}
 		}
-	);} //end $('#'camId).hover(function()
+	});
+	}
+	//);} //end $('#'camId).hover(function()
 } //end set hover
 
 //sets the supression for hover
