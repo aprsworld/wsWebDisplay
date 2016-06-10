@@ -372,7 +372,6 @@ pageElement.prototype = {
 					if(objectFound.top - $('#wsToolTip').height() < 0){
 						if(objectFound.top+objectFound.heightToSave > $(window).height()*.9){
 							finaltop = objectFound.top + $('#wsToolTip').height();
-							finalleft = objectFound.left;	
 
 						}
 						else{
