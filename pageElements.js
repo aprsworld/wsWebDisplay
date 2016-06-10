@@ -360,6 +360,8 @@ pageElement.prototype = {
 				}
 				var finalleft, finaltop;
 				console.log($('#wsToolTip').width());
+									console.log("top "+objectFound.top);
+
 					if(objectFound.left+objectFound.widthToSave+$('#wsToolTip').width() > $(window).width()){
 						
 						finalleft = objectFound.left-($('#wsToolTip').width()+20);
@@ -367,12 +369,25 @@ pageElement.prototype = {
 					else{
 						finalleft = objectFound.left+objectFound.widthToSave+10;	
 					}
-				console.log(window);
-					if(objectFound.top < 0){
-						finaltop = objectFound.top+objectFound.heightToSave;
+					if(objectFound.top - $('#wsToolTip').height() < 0){
+						if(objectFound.top+objectFound.heightToSave > $(window).height()*.9){
+							finaltop = objectFound.top + $('#wsToolTip').height();
+							finalleft = objectFound.left;	
+
+						}
+						else{
+							finaltop = objectFound.top+objectFound.heightToSave;
+	
+						}
 					}
 					else{
 						finaltop = objectFound.top;
+					}
+					if(objectFound.top - $('#wsToolTip').height() < 0 && objectFound.left+objectFound.widthToSave+$('#wsToolTip').width() > $(window).width()){
+						finaltop = objectFound.top + $('#wsToolTip').height();
+						finalleft = objectFound.left;	
+
+	
 					}
 				$('#wsToolTip').css({
 					"display" : "block",

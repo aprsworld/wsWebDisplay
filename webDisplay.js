@@ -928,7 +928,7 @@ function clickToCreate(item, data, x ,y){
 }
 
 function positionDiv(obj, new_id){
-var posTop, posLeft, width, height;
+	var posTop, posLeft, width, height;
 	collapseWindows();
 	var posSpan = document.createElement("SPAN"); 
 	var posDiv = document.createElement("DIV");
