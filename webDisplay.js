@@ -1531,9 +1531,14 @@ function createImage(){
 //used to build the tree.
 function refreshTreeData(newData){
 	console.log('partial data update initiated');
+	console.log(newData);
 	dataUpdateTime = Date.now();
 	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
+	if(newData.hasOwnProperty('webdisplay')){ //We return if we see a full data update
+		return;
+   	}
+	console.log(objectKeys);
 	//iterates through the keys of the old data object
 	Object.keys(newData).forEach(function(key){	
 		//checks if the current key equals the key that we are looking for
