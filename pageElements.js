@@ -353,8 +353,11 @@ pageElement.prototype = {
 				
 					
 					$('#filePathSpan').text(objectFound.toolTip);
-				if(!isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
-					console.log('tick');
+				if((objectFound.receivedUpdate == false || objectFound.receivedUpdate == null) && !isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
+					timeSinceData = secToTime(timeSinceData);
+					$('#dataAge').text("Added "+timeSinceData+" ago.");
+				}
+				else if(!isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
 					timeSinceData = secToTime(timeSinceData);
 					$('#dataAge').text(timeSinceData+' old');
 				}

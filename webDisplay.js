@@ -1598,6 +1598,7 @@ function refreshTreeData(newData){
 										var matches = $.grep(cell_arr, function(item, index) {
 											if(typeof item !== 'undefined' && item.elementType !== 'pageSettings' && item.path === "."+key+"."+subkey+"."+key1+"."+key2){
 												item.lastData = Date.now();
+												item.receivedUpdate = true;
 												//item.toolTip = 'Last data received: '+item.lastData+" \n "+item.path.substring(1).replace(staticRegexPeriod, " >> ");
 												//$('#'+item.parentId).attr('title', 'Last data received: '+item.lastData+" \n "+item.toolTip);
 												return item;
