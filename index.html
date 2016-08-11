@@ -1,8 +1,8 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 <head>
 	<title>WS Web Display</title>
-		 <meta charset="UTF-8"> 
+		 <meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="/wsWebDisplay/res/jquery-2.1.4.min.js"></script>
 	<!-- configuration -->
@@ -21,13 +21,13 @@
 	<!-- jstree -->
 	<script src="/wsWebDisplay/res/external/dist/jstree.js"></script>
 	<!-- web client -->
-	<script src="/wsBroadcast-WebClient/js/wsb-client.js"></script> 
+	<script src="/wsBroadcast-WebClient/js/wsb-client.js"></script>
 	<script src="/wsBroadcast-WebClient/res/pako.min.js"></script>
 	<!-- color picker script -->
 	<script src="/wsWebDisplay/res/external/evol-colorpicker.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/wsWebDisplay/res/external/hammer.js" type="text/javascript" charset="utf-8"></script>
 	<!-- version number -->
-	<script type="text/javascript" src="/wsWebDisplay/version.js"></script>	
+	<script type="text/javascript" src="/wsWebDisplay/version.js"></script>
 	<!-- script that holds object structure for page elements -->
 	<script type="text/javascript" src="/wsWebDisplay/pageElements.js"></script>
 	<!-- script for converting units -->
@@ -42,24 +42,27 @@
 	<link rel="stylesheet" type="text/css" href="/wsWebDisplay/res/external/evol.colorpicker.min.css">
 	<!-- font awesome include -->
 	<link rel="stylesheet" href="/wsWebDisplay/res/external/font-awesome/css/font-awesome.min.css">
-	
+
 </head>
 
 <body onload="data_start();">
-	
+
 <div id="preload">
 </div>
-<div id="rulerBox">	
-	
+<div id="rulerBox">
+
 </div>
 <div id="rulerBox2">
 </div>
-<div id="rulerBox3">	
+<div id="rulerBox3">
+</div>
+<div id="closePopOut">
+	<i class="fa fa-times" aria-hidden="true"></i>
 </div>
 <div id="wsToolTip">
 	<span id="filePathSpan"> </span>
 	<span id="dataAge"></span>
-</div>	
+</div>
 <div id="swipeOverlay">
 </div>
 <div id="cropDialog">
@@ -84,7 +87,7 @@
 	</div>-->
 <div id="content">
 	<div class="container">
-		
+
 		<div id="hammerSpace" class="top-container">
 			<div class="controls">
 				<div title="Please finish cropping" class="controlsOverlay"></div>
@@ -95,29 +98,29 @@
 				<i id="jsTreeInfo" title="" class="fa fa-question"></i>
 				<div  ondragstart="return false;" ondrop="return false;"  id="stationTree"></div>
 				<div id="refreshControlRow" class="controlRow">
-					<button title="Manually refreshes tree to update with changes" id="refreshTree"><i class="fa fa-refresh"></i><span> Refresh Tree </span></button>	
-				</div>	
+					<button title="Manually refreshes tree to update with changes" id="refreshTree"><i class="fa fa-refresh"></i><span> Refresh Tree </span></button>
+				</div>
 				<div class="controlRow">
-					<button title="Adjust page background color, page title, etc." id="pageEdit" onclick=""><i class="fa fa-pencil-square-o"></i><span> Page Settings </span></button>	
-				</div>	
+					<button title="Adjust page background color, page title, etc." id="pageEdit" onclick=""><i class="fa fa-pencil-square-o"></i><span> Page Settings </span></button>
+				</div>
 				<div class="controlRow">
-					<button title="Create stand-alone images and text blocks" id="createStatic"><i class="fa fa-magic"></i><span> Create Static Element </span></button>					
+					<button title="Create stand-alone images and text blocks" id="createStatic"><i class="fa fa-magic"></i><span> Create Static Element </span></button>
 				</div>
 				<div class="controlRow">
 					<button title="Save and load configurations" id="configMenu"><i class="fa fa-cloud-download"></i><span> Configurations </span></button>
 				</div>
 				<div class="drag-handle"></div>
 			</div>
-			
+
 		</div>
-	
+
 	</div>
 </div>
 <div id="statusBar">
 	<span id="timer"> loading page... </span>
 	<span id="timer1"> Data not yet received from socket </span>
 	<button id="masterEdit" onclick="edit()"> </button>
-	<span class="statusTimers" id="version"> <i class="fa fa-calendar" aria-hidden="true"></i> </span>	
+	<span class="statusTimers" id="version"> <i class="fa fa-calendar" aria-hidden="true"></i> </span>
 	<span class="statusTimers" id="bytesReceived"> 0 Bytes Transferred</span>
 	<span class="statusTimers eleAge">Oldest and Newest Element <i class="fa fa-clock-o" aria-hidden="true"></i></span>
 
@@ -127,7 +130,7 @@
 	<h1> Edit </h1>
 	<h2> Edit Cell </h2>
 	<hr>
-		
+
 		<div id="configRow" class="editWindowRow">
 			<input id="saveAs" type="textfield" value="" placeholder="Save Configuration As..."></input>
 			<button id="saveState" onclick="captureState()"> <i class="fa fa-floppy-o"></i><span> Save Configuration </span></button>
@@ -141,22 +144,22 @@
 		</div>
 		<div id="staticRow" class="editWindowRow">
 			<button id="createText" title="Creates a text block element on the page" onclick="createText()"> <i class="fa fa-align-left fa-2x"></i> Create Text </button>
-			<button id="createImg" title="Creates an img block element on the page" onclick="createImage()"> <i class="fa fa-file-image-o fa-2x"></i> Create Image </button>	
+			<button id="createImg" title="Creates an img block element on the page" onclick="createImage()"> <i class="fa fa-file-image-o fa-2x"></i> Create Image </button>
 		</div>
-<!-- 
-	ACCORDIAN		
- -->	
-		<div id="accordion">
-<!-- 
-	TEXT ROW		
+<!--
+	ACCORDIAN
  -->
-	 	<h3 id="textAccordionH3"> Text Options</h3>		
+		<div id="accordion">
+<!--
+	TEXT ROW
+ -->
+	 	<h3 id="textAccordionH3"> Text Options</h3>
 		<div id="textAccordion">
 			<div id="titleRow" class="editWindowRow">
 				<label> Edit Title </label><input title="" class="titleChange" type="text"></input>
 				<i id="titleInputInfo" title="Changes the title of the webpage - this can sometimes be seen at the top-left corner of the browser window. This will also change the text on your browser tab." class="fa fa-question"></i>
 
-			</div>	
+			</div>
 			<div id="labelRow" class="editWindowRow">
 				<label> Edit Label </label><input title="Add a unit label" class="labelChange" type="text" placeholder="Add a Label"></input>
 			</div>
@@ -210,10 +213,10 @@
 				<textarea title="" class="bodyChange" type="text" placeholder="Change Text"></textarea>
 			</div>
 		</div>
-<!-- 
-	COLORS ROW		
+<!--
+	COLORS ROW
  -->
-	 	<h3 id="colorAccordionH3"> Color Options </h3>	
+	 	<h3 id="colorAccordionH3"> Color Options </h3>
 		<div id="colorAccordion">
 			<div id="colorAccordionContent">
 			<div id="backgroundColorRow" class="editWindowRow">
@@ -223,7 +226,7 @@
 				<label id="textColorLabel"> Font Color</label><input title="Type in a color" class="textColorChange" type="text" placeholder="Type in a color"></input>
 			</div>
 			<div id="opacityRow" class="editWindowRow">
-				<label id="opacityLabel"> Background Opacity: <span id="opacityPercent"> </span> </label><div id="opacitySlider" ></div>	
+				<label id="opacityLabel"> Background Opacity: <span id="opacityPercent"> </span> </label><div id="opacitySlider" ></div>
 			</div>
 
 
@@ -235,13 +238,13 @@
 					<option class="gridOpt" value="10">10</option>
 					<option class="gridOpt" value="25">25</option>
 					<option class="gridOpt" value="50">50</option>
-					<option class="gridOpt" value="100">100</option>			
-				</select> 	
+					<option class="gridOpt" value="100">100</option>
+				</select>
 			</div>
 			</div>
 		</div>
-<!-- 
-	HOVER ROW		
+<!--
+	HOVER ROW
  -->
 	    <h3 id="hoverAccordionH3"> Pop-Out Image </h3>
 		<div id="hoverAccordion">
@@ -249,12 +252,12 @@
 				<label id="hoverLabel"> Hoverable </label>
 				<div id="hoverRadios" title="">
 					<input id="hoverEnabled" type="radio" name="hoverToggle" value="enabled" checked> <span> Enabled</span> </input>
-					<input id="hoverDisabled" type="radio" name="hoverToggle" value="disabled"><span> Disabled</span> </input>	
+					<input id="hoverDisabled" type="radio" name="hoverToggle" value="disabled"><span> Disabled</span> </input>
 				</div>
 				<label id="clickableLabel"> Clickable </label>
 				<div id="clickableRadios" title="">
 					<input id="clickableEnabled" type="radio" name="clickableToggle" value="enabled" checked> <span> Enabled</span> </input>
-					<input id="clickableDisabled" type="radio" name="clickableToggle" value="disabled"><span> Disabled</span> </input>	
+					<input id="clickableDisabled" type="radio" name="clickableToggle" value="disabled"><span> Disabled</span> </input>
 				</div>
 			<div id="suppressHoverable">
 				<label>Suppress When Size &ge; Native</label>
@@ -270,26 +273,26 @@
 			<div id="hoverTargetRow" class="editWindowRow">
 				<label> Pop-Out Image Link </label>
 				<input id="hoverTarget" type="text" value=""></input>
-				<button title="Changes the URL that the hover-image navigates to when clicked - to return default functionality, leave blank and click change" id="changeTarget">Change</button>				
+				<button title="Changes the URL that the hover-image navigates to when clicked - to return default functionality, leave blank and click change" id="changeTarget">Change</button>
 
 				<label> Target Link Behavior </label>
 				<select id="targetSelect">
 					<option class="targetOption" value="_blank">New Tab</option>
-					<option class="targetOption" value="_self">Same Tab</option>		
+					<option class="targetOption" value="_self">Same Tab</option>
 				</select>
-				<button  id="changeTargetBehavior">Change</button>				
+				<button  id="changeTargetBehavior">Change</button>
 
 			</div>
 		</div>
-<!-- 
-	DIMENSIONS ROW		
+<!--
+	DIMENSIONS ROW
  -->
 	  	<h3 id="sizingAccordionH3"> Sizing Options </h3>
 		<div id="sizingAccordion">
-			
+
 			<div id="zRow" class="editWindowRow">
 				<label id="zLabel"> Depth </label>
-				<div id="zSlider" ></div>	
+				<div id="zSlider" ></div>
 			</div>
 			<div id="manualResizeRow" class="editWindowRow">
 				<div><label id="manualWidthLabel"> Width </label><input id="manualWidth" type="text" value=""></input><button id="applyWidthDim"> Apply </button> </div>
@@ -297,7 +300,7 @@
 
 				<div><label id="manualHeightLabel"> Height </label><input id="manualHeight" type="text" value=""></input><button id="applyHeightDim"> Apply </button></div>
 				<button id="resizePreviousHeight"> Use Last Element's Height </button>
-				
+
 
 			</div>
 			<div id="cropRow" class="editWindowRow">
@@ -314,9 +317,9 @@
 			<button id="hideModule"> <i class="fa fa-eye-slash fa-2x"></i> Hide <br> Selected</button>
 			<button id="deleteModule"> <i class="fa fa-trash fa-2x"></i>Delete Selected </button>
 		</div>
-	
+
 </div>
-	
+
 	<button title="Minimize Edit Window (shortcut: esc key)" id="editMinimize"><span>Hide </span><i class="fa fa-long-arrow-right"></i></button>
 	<button title="Expand Edit Window" id="editMaximize"><i class="fa fa-long-arrow-left"></i> Show</button>
 

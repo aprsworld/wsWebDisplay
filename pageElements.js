@@ -19,7 +19,7 @@ pageElement.prototype = {
 	gridProps: {
 		"grid":[1,1],
 		"snap":"true",
-		"snapTolerance":.4	
+		"snapTolerance":.4
 	},
 	setStyle: function(styleList) {
 		this.style = styleList;
@@ -31,7 +31,7 @@ pageElement.prototype = {
 	},
 	//sets type of element to be a data cell, image block, textblock, camera, etc.
 	setType: function(elementType) {
-		this.elementType = elementType;	
+		this.elementType = elementType;
 	},
 	//gets the type
 	getType: function(){
@@ -47,12 +47,12 @@ pageElement.prototype = {
 			$('#'+this.parentId).remove();
 			$('.timerBlock').remove();
 
-			cell_arr.splice(elementPos, 1);	
+			cell_arr.splice(elementPos, 1);
 			console.log(cell_arr);
-		}	
+		}
 	},
 	setZindex: function(zIndex){
-		$('#'+this.parentId).css('z-index', zIndex ); 
+		$('#'+this.parentId).css('z-index', zIndex );
 		var style = this.getStyle();
 		this.setStyle(style);
 	},
@@ -67,15 +67,15 @@ pageElement.prototype = {
 			this.hidden = true;
 			$("#"+id).addClass('hide');
 			$("#"+id).css('opacity','.2');
-			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');	
+			$('#hideModule').html('<i class="fa fa-eye fa-2x"></i> Unhide Selected');
 		}
 	},
 	setSelected: function() {
 		var objectFound = this;
 		for(var k in cell_arr){
-			cell_arr[k].setDeselected();	
+			cell_arr[k].setDeselected();
 		}
-		
+
 		this.selected = true;
 		if(this.type != 'pageSettings'){
 			$( 'html' ).off('keyup');
@@ -112,7 +112,7 @@ pageElement.prototype = {
 				var posLeft = ui.position.left;
 				var posTop = ui.position.top;
 				console.log('start: '+posTop);
-				var posSpan = document.createElement("SPAN"); 
+				var posSpan = document.createElement("SPAN");
 				posDiv = document.createElement("DIV");
 				posDiv.id = 'positionDiv';
 				$('body').append(posDiv);
@@ -121,7 +121,7 @@ pageElement.prototype = {
 				$('#positionDiv').append('<i class="fa fa-long-arrow-down fa-rotate-320"></i>');
 				$('#positionDiv').append(posSpan);
 				$('#rulerBox, #rulerBox2, #rulerBox3').show();
-				
+
 				var fullId;
 
 				if(tempArray.length > 1){
@@ -134,12 +134,12 @@ pageElement.prototype = {
 								left:  $('#'+fullId).offset().left+leftOffSet
 							});
 							$('#'+fullId).css('top');
-						}	
+						}
 					}
 				}
 			},
 			drag: function(event, ui){
-				
+
 				var posTop = (Math.floor((ui.position.top-topOffSet) / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor((ui.position.left-leftOffSet) / thisObj.gridProps.size) * thisObj.gridProps.size);
 				ui.position.top = posTop;
@@ -149,7 +149,7 @@ pageElement.prototype = {
 				distanceTop = posTop-startTop;
 				distanceLeft = posLeft-startLeft;
 				var fullId;
-				
+
 				if(tempArray.length > 1){
 					for(var i = 0; i< tempArray.length; i++){
 						fullId = tempArray[i].parentId;
@@ -160,11 +160,11 @@ pageElement.prototype = {
 								left:  $('#'+fullId).offset().left+distanceLeft
 							});
 							$('#'+fullId).css('top');
-						}	
+						}
 					}
 				}
 				$('#positionSpan').text("("+posLeft+", "+posTop+")");
-				var width = posLeft+'px';	
+				var width = posLeft+'px';
 				var height = posTop+'px';
 				$('#positionDiv').css({
 					'top': posTop-18,
@@ -174,7 +174,7 @@ pageElement.prototype = {
 					'top': posTop,
 					'left': posLeft
 				});
-				
+
 				$('#rulerBox').css({
 					height: height,
 					width: width
@@ -183,7 +183,7 @@ pageElement.prototype = {
 					left: width,
 					height: height,
 					width: "100%"
-					
+
 				});
 				$('#rulerBox3').css({
 					top: height,
@@ -211,25 +211,25 @@ pageElement.prototype = {
 				thisObj.left = roundedLeft;
 				thisObj.onChangeStyle();
 				$('#rulerBox, #rulerBox2, #rulerBox3').hide();
-				
+
 			}
 		});
 	},
 	setResize: function() {
 		var handleTarget;
-		var thisObj = this;		
+		var thisObj = this;
 		$('#'+thisObj.parentId).resizable({
 			grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
 			start: function(event, ui){
 				$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
-				$(this).removeAttr("title");			
+				$(this).removeAttr("title");
 				$('#'+thisObj.parentId).on('mouseup', function(e) {
-					$('#'+thisObj.parentId).attr('title',title);	
+					$('#'+thisObj.parentId).attr('title',title);
 				});
 				var width = $('#'+thisObj.parentId).css('width');
 				var height = $('#'+thisObj.parentId).css('height');
-				var posSpan = document.createElement("SPAN"); 
+				var posSpan = document.createElement("SPAN");
 				posSpan.id = 'resizeSpan';
 				posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 				$('#resizeSpan').css({
@@ -247,7 +247,7 @@ pageElement.prototype = {
 				$('#resizeSpan').css({
 					top: event.clientY+5,
 					left: event.clientX+5
-				}); 
+				});
 				$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
 			},
 			stop: function(event, ui){
@@ -343,15 +343,15 @@ pageElement.prototype = {
 			parentTop,
 			divWidth,
 			parentLeft;
-		
+
 		$( "#"+this.parentId ).hover(function(e){
 			if(!editMode){
 			//set interval to change text content every second
 			objectFound.timeInterval = setInterval( function(){
 				//human readable time
 				timeSinceData = parseInt(round((Date.now()-objectFound.lastData)/1000, 0),10);
-				
-					
+
+
 					$('#filePathSpan').text(objectFound.toolTip);
 				if((objectFound.receivedUpdate == false || objectFound.receivedUpdate == null) && !isNaN(timeSinceData) && objectFound.lastData !== null && typeof timeSinceData === 'number'){
 					timeSinceData = secToTime(timeSinceData);
@@ -366,11 +366,11 @@ pageElement.prototype = {
 									console.log("top "+objectFound.top);
 
 					if(objectFound.left+objectFound.widthToSave+$('#wsToolTip').width() > $(window).width()){
-						
+
 						finalleft = objectFound.left-($('#wsToolTip').width()+20);
 					}
 					else{
-						finalleft = objectFound.left+objectFound.widthToSave+10;	
+						finalleft = objectFound.left+objectFound.widthToSave+10;
 					}
 					if(objectFound.top - $('#wsToolTip').height() < 0){
 						if(objectFound.top+objectFound.heightToSave > $(window).height()*.9){
@@ -379,7 +379,7 @@ pageElement.prototype = {
 						}
 						else{
 							finaltop = objectFound.top+objectFound.heightToSave;
-	
+
 						}
 					}
 					else{
@@ -387,16 +387,16 @@ pageElement.prototype = {
 					}
 					if(objectFound.top - $('#wsToolTip').height() < 0 && objectFound.left+objectFound.widthToSave+$('#wsToolTip').width() > $(window).width()){
 						finaltop = objectFound.top + $('#wsToolTip').height();
-						finalleft = objectFound.left;	
+						finalleft = objectFound.left;
 
-	
+
 					}
 				$('#wsToolTip').css({
 					"display" : "block",
 					"top": finaltop,
 					"left": finalleft
 				});
-					
+
 					/*if(objectFound.lastData == oldestElement.time){
 						console.log('oldest');
 						appendedDiv.textContent = 'Last data received: '+timeSinceData+' \n Oldest Data on Page';
@@ -413,7 +413,7 @@ pageElement.prototype = {
 					if(objectFound.lastData != newestElement.time && objectFound.lastData != oldestElement.time){
 						//appendedDiv.textContent = 'Last data received: '+timeSinceData+' Newest Data on Page is '+newestElement.item+' Oldest Data on page '+oldestElement.item;
 					}*/
-				
+
 			}, 1000 );
 			}
 		}, function () {
@@ -423,7 +423,7 @@ pageElement.prototype = {
 			//when user "un-hovers," clear interval and remove text
 			clearInterval(objectFound.timeInterval);
 			//appendedDiv.remove();
-		});	
+		});
 	}
 }
 /***********************************************************************************
@@ -465,15 +465,15 @@ pageSettings.prototype.tableHasItem = function(key){
 pageSettings.prototype.isTableItemCurrent = function(key, newValue){
 	if(this.pageTable[key] != newValue){
 		this.pageTable[key] = newValue;
-		return false;	
+		return false;
 	}
 	else{
-		return true;	
+		return true;
 	}
 }
 
 pageSettings.prototype.removeTableEntry = function(key){
-	delete this.pageTable[key];	
+	delete this.pageTable[key];
 }
 
 /*
@@ -497,10 +497,10 @@ pageSettings.prototype.cyclePlay = function() {
 	var obj = this;
 	clearInterval(obj.cycleTimeout);
 	$('#cycleMessage').remove();
-	obj.cycleTimeout = setInterval(function(){ 
+	obj.cycleTimeout = setInterval(function(){
 		obj.nextItem();
 	}, obj.cycleInterval);
-	var message = "Auto Play Started With An Interval Of "+obj.cycleInterval/1000+" Seconds"; 
+	var message = "Auto Play Started With An Interval Of "+obj.cycleInterval/1000+" Seconds";
 	createMessage(message, 2000);
 }
 pageSettings.prototype.changeInterval = function(){
@@ -510,7 +510,7 @@ pageSettings.prototype.changeInterval = function(){
 		value = parseInt(value, 10);
 		clearInterval(obj.cycleTimeout);
 		obj.cycleInterval = value*1000;
-		obj.cycleTimeout = setInterval(function(){ 
+		obj.cycleTimeout = setInterval(function(){
 			obj.nextItem();
 		}, obj.cycleInterval);
 		var message = "Changed Auto Play Interval To "+value+" seconds";
@@ -520,7 +520,7 @@ pageSettings.prototype.changeInterval = function(){
 		var message = "Please Enter a Value Greater Than 2 Into The Input Field";
 		createMessage(message, 2000);
 	}
-	
+
 }
 pageSettings.prototype.cyclePause = function() {
 	var obj = this;
@@ -534,10 +534,10 @@ pageSettings.prototype.cyclePause = function() {
 pageSettings.prototype.resetInterval = function() {
 	var obj = this;
 	clearInterval(obj.cycleTimeout);
-	obj.cycleTimeout = setInterval(function(){ 
+	obj.cycleTimeout = setInterval(function(){
 		obj.nextItem();
 	}, obj.cycleInterval);
-	
+
 }
 pageSettings.prototype.nextItem = function() {
 	$('.imgCamContainer').remove();
@@ -549,12 +549,12 @@ pageSettings.prototype.nextItem = function() {
 		createMessage(message, 2000);
 		this.currentLayoutIndex++;
 		if(this.currentLayoutIndex >= arr.length){
-			this.currentLayoutIndex = 0;	
+			this.currentLayoutIndex = 0;
 		}
 		var layout = arr[this.currentLayoutIndex]
 		var arrlength = cell_arr.length;
 		for(var i = 0; i< arrlength; i++){
-			console.log(cell_arr[i]);		
+			console.log(cell_arr[i]);
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
@@ -569,7 +569,7 @@ pageSettings.prototype.prevItem = function() {
 	$('#cycleMessage').remove();
 	$('.itemBlock').remove();
 	if(typeof this.currentLayoutIndex !== 'undefined'){
-		var message = "Previous Configuration..."; 
+		var message = "Previous Configuration...";
 		createMessage(message, 2000);
 		this.currentLayoutIndex--;
 		if(this.currentLayoutIndex < 0){
@@ -579,7 +579,7 @@ pageSettings.prototype.prevItem = function() {
 		var layout = arr[this.currentLayoutIndex]
 		var arrlength = cell_arr.length;
 		for(var i = 0; i< arrlength; i++){
-			console.log(cell_arr[i]);		
+			console.log(cell_arr[i]);
 			$('#'+cell_arr[i].parentId).remove();
 		}
 		cell_arr.length = 0;
@@ -606,7 +606,7 @@ pageSettings.prototype.updateElementDimensions = function(obj){
 		if(obj.containerId != oldObj.containerId){
 			this.elementDimensions.shift();
 			this.elementDimensions.push(obj);
-			
+
 		}
 	}
 	console.log(this.elementDimensions);
@@ -620,12 +620,12 @@ pageSettings.prototype.previousElementDimensions = function(){
 pageSettings.prototype.previousElementWidth = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
-	$("#manualWidth").val(dims.getWidth());	
+	$("#manualWidth").val(dims.getWidth());
 }
 pageSettings.prototype.previousElementHeight = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
-	$("#manualHeight").val(dims.getHeight());	
+	$("#manualHeight").val(dims.getHeight());
 }
 pageSettings.prototype.createGrid = function createGrid(size) {
 		$('.gridlines').remove();
@@ -659,7 +659,7 @@ pageSettings.prototype.createGrid = function createGrid(size) {
 		  	'border-bottom': '1px solid #444',
             'height': '0px'
 
-		  
+
       })
         .addClass('gridlines')
         .appendTo(sel);
@@ -668,10 +668,10 @@ pageSettings.prototype.createGrid = function createGrid(size) {
 	pageElement.prototype.gridProps = {
 		"grid":[size/2, size/2],
 		"snap":".gridlines",
-		"snapTolerance":snapTolerance,	
+		"snapTolerance":snapTolerance,
 		"size":size
 	}
-	
+
 	this.gridSize = size;
 
 }
@@ -700,7 +700,7 @@ var pageLog = function(){
 	this.containerId;
 	this.parentId = "testLog";
 	this.hidden;
-	this.elementType;	
+	this.elementType;
 	this.logLimit = 10;
 	this.head = null;
 	this.tail = null;
@@ -717,7 +717,7 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	var tableId = this.parentId+'_table';
 	this.id = this.parentId;
 	var treeTime = $('#stationTree').jstree(true).get_node(log.treeId).original.obj.time;
-	
+
 	$('.top-container').append('<div title="" id="'+logId+'"class="dataLog"><h2> Log:' + this.title + ' </h2><div class="logContainer"><table id="'+tableId+'"><thead><tr><th>Time</th><th>Data</th></tr></thead><tbody></tbody></table></div></div>');
 	console.log(logId);
 	$('#'+logId).css('top',pageY);
@@ -725,7 +725,7 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.setDrag();
 	this.setResize();
 	this.timerAppend();
-	this.count = cellCount;	
+	this.count = cellCount;
 	this.top = pageY;
 	this.left = pageX;
 	this.heightToSave = $('#'+this.parentId).height();
@@ -734,12 +734,12 @@ pageLog.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.lastData = Date.now();
 	$('#'+this.parentId).css('z-index',this.count);
 
-	
-	var pageObjId = 'pageSettings';	
+
+	var pageObjId = 'pageSettings';
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 	var pageObj= cell_arr[pageElementPos];
 	var updatePath = this.path.split(".");
-	
+
 	updatePath.length = updatePath.length-1;
 	updatePath = updatePath.join();
 	updatePath = updatePath.replace(/\,/g,"/");
@@ -765,7 +765,7 @@ pageLog.prototype.loadHtml = function(){
 	var objectFound = this;
 	this.setDrag();
 	this.setResize();
-	
+
 	this.lastData = Date.now();
 
 	this.timerAppend();
@@ -775,8 +775,8 @@ pageLog.prototype.loadHtml = function(){
 		if(editMode == false){
 			$('#'+this.parentId).css('visibility','hidden');
 		}
-	}	
-	
+	}
+
 	if(editMode == false){
 		$('#'+this.parentId).draggable({disabled:true});
 		$('#'+this.parentId).resizable({disabled:true});
@@ -785,11 +785,11 @@ pageLog.prototype.loadHtml = function(){
 		$('#'+this.parentId).draggable({disabled:false});
 		$('#'+this.parentId).resizable({disabled:false});
 	}
-	var pageObjId = 'pageSettings';	
+	var pageObjId = 'pageSettings';
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 	var pageObj= cell_arr[pageElementPos];
 	var updatePath = this.path.split(".");
-	
+
 	updatePath.length = updatePath.length-1;
 	updatePath = updatePath.join();
 	updatePath = updatePath.replace(/\,/g,"/");
@@ -817,7 +817,7 @@ var logEntry = function(){
 //it checks to see if the interval has passed and returns a boolean based on the result
 pageLog.prototype.checkInterval = function(time){
 	if(this.tail == null){
-		return true;	
+		return true;
 	}
 	var oldTime = this.tail.timeStamp;
 	var difference = time-oldTime;
@@ -825,7 +825,7 @@ pageLog.prototype.checkInterval = function(time){
 		return true;
 	}
 	else{
-		return false;	
+		return false;
 	}
 };
 //creates a logEntry object and inserts it into the queue
@@ -859,7 +859,7 @@ pageLog.prototype.push = function(time, currentTime, currentData){
 		this._length++;
 
 	} else {
-		console.log('duplicate');	
+		console.log('duplicate');
 	}
 
 };
@@ -873,7 +873,7 @@ pageLog.prototype.listToArray = function() {
 	currentNode = this.head;
 	nextNode = currentNode.next;
 	index = 0;
-	
+
 	while(currentNode.next !== null){
 		//store current node in current index of array
 		this.nodeArray[index] = currentNode;
@@ -898,7 +898,7 @@ pageLog.prototype.listToArray = function() {
 	//cleanup
 	currentNode, nextNode, previousNode, index = null;
 }
-//converts an array to a list 
+//converts an array to a list
 //not currently in use
 pageLog.prototype.arrayToList = function() {
 	var length = this.nodeArray.length;
@@ -915,7 +915,7 @@ pageLog.prototype.arrayToList = function() {
 		return;
 	}
 	previousNode = this.head;
-	for(index; index<length; index++){	
+	for(index; index<length; index++){
 		//set current node to the value of the current array position
 		currentNode = this.nodeArray[index];
 		console.log(currentNode);
@@ -934,18 +934,18 @@ pageLog.prototype.searchNodeAt = function(position) {
         length = this._length,
         count = 1,
         message = {failure: 'Failure: non-existent node in this list.'};
- 
+
     // 1st use-case: an invalid position
     if (length === 0 || position < 1 || position > length) {
         throw new Error(message.failure);
     }
- 
+
     // 2nd use-case: a valid position
     while (count < position) {
         currentNode = currentNode.next;
         count++;
     }
- 
+
     return currentNode;
 };
 
@@ -964,9 +964,9 @@ pageLog.prototype.convertAll = function() {
 		newVal = round(newVal, objectFound.precision);
 		 $("#"+objectFound.parentId+'_'+currentNode.timeStamp).html('<td>'+currentNode.timeValue+'</td><td>'+ newVal +'<span class="logLabel">'+objectFound.label+'</span></td>');
 		 currentNode = currentNode.next;
-		
+
         count++;
-    }	
+    }
 }
 
 //removes an element from the doubly linked list and links remaining nodes together
@@ -979,13 +979,13 @@ pageLog.prototype.remove = function(position) {
 		afterNodeToDelete = null,
         nodeToDelete = null,
         deletedNode = null;
- 
+
     // 1st use-case: an invalid position
     if (length === 0 || position < 1 || position > length) {
         //throw new Error(message.failure);
 		console.log('failure');
     }
- 
+
     // 2nd use-case: the first node is removed
     if (position === 1) {
 		if (this.head){
@@ -1002,7 +1002,7 @@ pageLog.prototype.remove = function(position) {
         } else {
             this.tail = null;
         }
- 
+
     // 3rd use-case: the last node is removed
     } else if (position === this._length) {
         this.tail = this.tail.previous;
@@ -1013,17 +1013,17 @@ pageLog.prototype.remove = function(position) {
             currentNode = currentNode.next;
             count++;
         }
- 
+
         beforeNodeToDelete = currentNode.previous;
         nodeToDelete = currentNode;
         afterNodeToDelete = currentNode.next;
- 
+
         beforeNodeToDelete.next = afterNodeToDelete;
         afterNodeToDelete.previous = beforeNodeToDelete;
         deletedNode = nodeToDelete;
         nodeToDelete = null;
     }
- 
+
     this._length--;
 };
 
@@ -1034,7 +1034,7 @@ pageLog.prototype.setTypeChange = function(type){
 
 //sets the label
 pageLog.prototype.setLabel = function(text){
-	var containerId = this.parentId;	
+	var containerId = this.parentId;
 	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
 		$('#'+containerId).find('.label').text(text);
 	}
@@ -1048,20 +1048,20 @@ pageLog.prototype.setLabel = function(text){
 //allows for the element to be resized by the user
 pageLog.prototype.setResize = function(){
 	var handleTarget;
-	var thisObj = this;		
+	var thisObj = this;
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
 		//start function
 		start: function(event, ui){
 			$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
-				$(this).removeAttr("title");			
+				$(this).removeAttr("title");
 				$('#'+thisObj.parentId).on('mouseup', function(e) {
-					$('#'+thisObj.parentId).attr('title',title);	
+					$('#'+thisObj.parentId).attr('title',title);
 				});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
-			var posSpan = document.createElement("SPAN"); 
+			var posSpan = document.createElement("SPAN");
 			posSpan.id = 'resizeSpan';
 			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 			$('#resizeSpan').css({
@@ -1078,8 +1078,8 @@ pageLog.prototype.setResize = function(){
 			var top = $('#positionDiv').css('top');
 			var left = $('#positionDiv').css('left');
 			var newWidth, newHeight;
-			
-			
+
+
 			var direction = $(event.target).data('ui-resizable').axis;
 			if(direction == 'e' || direction == 'se' || direction == 's'){
 				newWidth = (Math.floor(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
@@ -1088,25 +1088,25 @@ pageLog.prototype.setResize = function(){
 				$('#'+thisObj.parentId).height(newHeight);
 			}
 			else{
-				
+
 				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
 				newWidth = (Math.ceil(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
 				newHeight = (Math.ceil(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
-				
+
 				ui.position.top = posTop;
 				ui.position.left = posLeft;
 				$('#'+thisObj.parentId).css('top',posTop);
 				$('#'+thisObj.parentId).css('left',posLeft);
 				$('#'+thisObj.parentId).width(newWidth);
 				$('#'+thisObj.parentId).height(newHeight);
-				
+
 			}
-			
+
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
-			}); 
+			});
 			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
 		},
 		//after function
@@ -1117,7 +1117,7 @@ pageLog.prototype.setResize = function(){
 			thisObj.widthToSave = $('#'+thisObj.parentId).width();
 		}
 	});
-	
+
 }
 
 //function that changes the fontsize
@@ -1133,11 +1133,11 @@ pageLog.prototype.fontSizeChange = function(size){
 pageLog.prototype.setTitle = function(text){
 	var containerId = this.parentId;
 	if(text == ''){
-		$('#'+containerId).children('h2').text(text);	
+		$('#'+containerId).children('h2').text(text);
 	}
 	else{
-		$('#'+containerId).children('h2').text(text);	
-			
+		$('#'+containerId).children('h2').text(text);
+
 	}
 	this.title = text;
 }
@@ -1153,11 +1153,11 @@ pageLog.prototype.fontColorChange = function(color){
 
 //sets the opacity of the background using rgba(r,g,b,a)
 pageLog.prototype.setOpacity = function(opacity, ui) {
-	var containerId = this.parentId;	
+	var containerId = this.parentId;
 	opacity = opacity.toString();
 	var newColor;
 	var selectedModule = containerId;
-	
+
 	//checks to see if our background-color property is in rgba format
 	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
 		console.log(ui.value);
@@ -1176,7 +1176,7 @@ pageLog.prototype.setOpacity = function(opacity, ui) {
 	$('.backgroundColorChange').val(''+newColor);
 	$('#opacitySlider .ui-slider-range').css('background', newColor );
 	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
-	
+
 }
 
 //sets the precision of the value properties
@@ -1197,19 +1197,19 @@ pageLog.prototype.setLogLimit = function(limit){
 	limit = parseInt(limit);
 	//first use-case: new limit is larger than current limit
 	if(limit >= this._length){
-		this.logLimit = limit;	
+		this.logLimit = limit;
 	}
-	
+
 	//second use-case: new limit is smaller than current limit - we need to delete nodes
 	else{
 		var start = this.searchNodeAt(limit),
 			currentNode = start.next,
 			nextNode = start.next;
-		
+
 		this._length = limit;
 		this.logLimit = limit;
 		this.tail = start;
-		
+
 		//start deleting nodes
 		while(currentNode !== null){
 			nextNode = currentNode.next;
@@ -1219,7 +1219,7 @@ pageLog.prototype.setLogLimit = function(limit){
 			currentNode = null;
 			currentNode = nextNode;
 		}
-		
+
 	}
 }
 /***********************************************************************************
@@ -1239,7 +1239,7 @@ var pageCell = function(){
 	this.value;
 	this.setType('pageCell');
 	this.units = '';
-	
+
 }
 extend(pageCell,pageElement);
 
@@ -1289,30 +1289,30 @@ pageCell.prototype.fontSizeChange = function(size){
 
 //changes value of title in element html
 // |``````````title```````````|
-// |``````````````````````````| 
+// |``````````````````````````|
 // |      value   label       |
 // ````````````````````````````
 pageCell.prototype.setTitle = function(text){
 	var containerId = this.fullId;
 	//removes title from element if text = ''
 	if(text == ''){
-		$('#'+containerId).siblings('.myTableTitle').children('p').text(text);	
-		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0)');	
+		$('#'+containerId).siblings('.myTableTitle').children('p').text(text);
+		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0)');
 	}
 	else{
-		$('#'+containerId).siblings('.myTableTitle').children('p').text(text);	
-		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0.35)');	
+		$('#'+containerId).siblings('.myTableTitle').children('p').text(text);
+		$('#'+containerId).siblings('.myTableTitle').css('background-color','rgba(0, 0, 0, 0.35)');
 	}
 	this.title = text;
-} 
+}
 
 //changes value of label in element html
 // |``````````title```````````|
-// |``````````````````````````| 
+// |``````````````````````````|
 // |      value   label       |
 // ````````````````````````````
 pageCell.prototype.setLabel = function(text){
-	var containerId = this.fullId;	
+	var containerId = this.fullId;
 	//if label override is on, label will not change
 	if(this.hasOwnProperty('labelOverride') && this.labelOverride == true){
 		$('#'+containerId).find('.label').text(text);
@@ -1335,11 +1335,11 @@ pageCell.prototype.setLabelOverride = function(value, label){
 	else{
 		var updatedLabel;
 		if(typeof this.typeUnits === 'undefined' || typeof this.type ==='undefined' || typeof this.typeChange === 'undefined' || this.value === 'undefined'){
-			updatedLabel = htmlEntities(this.units);	
+			updatedLabel = htmlEntities(this.units);
 		}
 		else{
-			var result = chooseConversion(this.type, this.typeUnits.toUpperCase(), this.value, this.typeChange.toUpperCase());	
-			updatedLabel = htmlEntities(result.label);	
+			var result = chooseConversion(this.type, this.typeUnits.toUpperCase(), this.value, this.typeChange.toUpperCase());
+			updatedLabel = htmlEntities(result.label);
 		}
 		$('#'+this.fullId).find('.label').text(updatedLabel);
 	}
@@ -1347,7 +1347,7 @@ pageCell.prototype.setLabelOverride = function(value, label){
 
 //sets opacity using RGBA( r, g, b, a)
 pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
-	var containerId = this.fullId;	
+	var containerId = this.fullId;
 	opacity = opacity.toString();
 	var newColor;
 	//background color is in rgba format...
@@ -1368,30 +1368,30 @@ pageCell.prototype.setOpacity = function(opacity, selectedModule, ui) {
 	$('.backgroundColorChange').val(''+newColor);
 	$('#opacitySlider .ui-slider-range').css('background', newColor );
 	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
-	
+
 	var style = this.getStyle();
 	this.setStyle(style);
 }
 
 //This function defines how resizing works for data cells
-//these resize functions could be refactores so that start, resize, and stop 
+//these resize functions could be refactores so that start, resize, and stop
 // all call functions instead of the code duplication that I have now
 pageCell.prototype.setResize = function(){
 	var handleTarget;
-	var thisObj = this;		
+	var thisObj = this;
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
 		//function that executes when resizing starts
 		start: function(event, ui){
 			$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
-				$(this).removeAttr("title");			
+				$(this).removeAttr("title");
 				$('#'+thisObj.parentId).on('mouseup', function(e) {
-					$('#'+thisObj.parentId).attr('title',title);	
+					$('#'+thisObj.parentId).attr('title',title);
 				});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
-			var posSpan = document.createElement("SPAN"); 
+			var posSpan = document.createElement("SPAN");
 			posSpan.id = 'resizeSpan';
 			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 			$('#resizeSpan').css({
@@ -1408,8 +1408,8 @@ pageCell.prototype.setResize = function(){
 			var top = $('#positionDiv').css('top');
 			var left = $('#positionDiv').css('left');
 			var newWidth, newHeight;
-			
-			
+
+
 			var direction = $(event.target).data('ui-resizable').axis;
 			//we have to change the way resizing works when dragging from the e, se and s sides
 			if(direction == 'e' || direction == 'se' || direction == 's'){
@@ -1419,27 +1419,27 @@ pageCell.prototype.setResize = function(){
 				$('#'+thisObj.parentId).height(newHeight);
 			}
 			else{
-				
+
 				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
 				newWidth = (Math.ceil(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
 				newHeight = (Math.ceil(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
-				
+
 				ui.position.top = posTop;
 				ui.position.left = posLeft;
 				$('#'+thisObj.parentId).css('top',posTop);
 				$('#'+thisObj.parentId).css('left',posLeft);
 				$('#'+thisObj.parentId).width(newWidth);
 				$('#'+thisObj.parentId).height(newHeight);
-				
+
 			}
-			
+
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
-			}); 
+			});
 			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
-			
+
 		},
 		//function that executes after resizing
 		stop: function(event, ui){
@@ -1453,7 +1453,7 @@ pageCell.prototype.setResize = function(){
 
 //creates the html from the object properties
 pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
-	
+
 	$('.top-container').append('<div title="" class="tr draggable" id="' + this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+currentData+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ this.units +'</span></div></div>');
 	var cellId = this.parentId;
 	$('#'+cellId).css('top',pageY);
@@ -1461,7 +1461,7 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.setDrag();
 	this.setResize();
 	this.timerAppend();
-	
+
 	this.top = pageY;
 	this.left = pageX;
 	this.heightToSave = $('#'+this.parentId).height();
@@ -1470,12 +1470,12 @@ pageCell.prototype.createHtml = function(cellCount, currentData, pageX, pageY){
 	this.lastData = Date.now();
 	$('#'+this.parentId).css('z-index',this.count);
 
-	
-	var pageObjId = 'pageSettings';	
+
+	var pageObjId = 'pageSettings';
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 	var pageObj= cell_arr[pageElementPos];
 	var updatePath = this.path.split(".");
-	
+
 	updatePath.length = updatePath.length-1;
 	updatePath = updatePath.join();
 	updatePath = updatePath.replace(/\,/g,"/");
@@ -1493,19 +1493,19 @@ pageCell.prototype.loadHtml = function(cellCount){
 	var result;
 	var label = this.label;
 	if(typeof label === 'undefined'){
-		label = this.units	
+		label = this.units
 	}
 	//set datatype based on value in json
 	if(typeof updatedPath == 'string'){
-		this.dataType = 'string';	
+		this.dataType = 'string';
 	}
 	else{
-		this.dataType = 'number';	
+		this.dataType = 'number';
 	}
 	console.log(this.path);
 	console.log(updatedPath);
 	console.log(this.dataType);
-	
+
 	//if the data type is a number, then it can be manipulated
 	if(this.dataType !== 'string'){
  		if(updatedPath !== 'undefined'){
@@ -1516,7 +1516,7 @@ pageCell.prototype.loadHtml = function(cellCount){
 				console.log(updatedPath);
 				console.log(this.type);
 				console.log(this.typeChange);
-				result = chooseConversion(this.type, this.typeUnits.toUpperCase(), updatedPath, this.typeChange.toUpperCase()).value;	
+				result = chooseConversion(this.type, this.typeUnits.toUpperCase(), updatedPath, this.typeChange.toUpperCase()).value;
 				updatedPath = result;
 				console.log(result.label);
 			}
@@ -1526,25 +1526,25 @@ pageCell.prototype.loadHtml = function(cellCount){
 		}
 
 		else{
-		updatedPath = 'Loading...'	
+		updatedPath = 'Loading...'
 		}
-	
-			
-	}	
+
+
+	}
 	$('.top-container').append('<div style="'+this.style+'" title="" class="tr draggable" id="'+ this.parentId + '"><div class="td myTableID"> ID: <span>' + this.title + '</span> </div><div class="td myTableTitle"><p class="titleText">' + this.title + '</p></div><div class="td myTableValue" id="' + this.fullId + '"><p>'+updatedPath+'</p><span class="path">'+ this.path +'</span><span class="label"> '+ label +'</span></div></div>');
 	this.setDrag();
 	this.setResize();
 	this.lastData  = Date.now();
 	//this handles the time since the data has been updated for this element
 	this.timerAppend();
-	
+
 	if(this.hidden){
 		$('#'+this.parentId).addClass('hide');
 		console.log($('#'+this.parentId).attr('class'));
 		if(editMode == false){
 			$('#'+this.parentId).css('visibility','hidden');
 		}
-	}	
+	}
 	if(this.title == ''){
 		$('#'+this.fullId).siblings('.myTableTitle').css('background-color','rgba(0,0,0,0)');
 	}
@@ -1556,11 +1556,11 @@ pageCell.prototype.loadHtml = function(cellCount){
 		$('#'+this.parentId).draggable({disabled:false});
 		$('#'+this.parentId).resizable({disabled:false});
 	}
-	var pageObjId = 'pageSettings';	
+	var pageObjId = 'pageSettings';
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 	var pageObj= cell_arr[pageElementPos];
 	var updatePath = this.path.split(".");
-	
+
 	updatePath.length = updatePath.length-1;
 	updatePath = updatePath.join();
 	updatePath = updatePath.replace(/\,/g,"/");
@@ -1582,7 +1582,7 @@ var pageCam = function(){
 	this.clickable = false;
 	this.suppressed;
 	this.hoverDelay;
-	this.cropped;	
+	this.cropped;
 	this.natWidth;
 	this.natHeight;
 	this.id;
@@ -1605,10 +1605,11 @@ pageCam.prototype.setClickable = function(boolClick){
 		this.clickable = true;
 		//click event bound to object property so that we can clear it later
 		camObj.clickFunction = $('#'+camObj.parentId).on("click", function(e) {
-			//if ctrl key is held during click 
-			
+			//if ctrl key is held during click
+
 			if(e.ctrlKey && !editMode && camObj.clickable && !camObj.clicked) {
-			 	
+			 	$('#closePopOut').show();
+
 				//Add elements to DOM for our hover image
 				var hoverImg = document.createElement('img'),
 				hoverImgLink = document.createElement('a');
@@ -1617,7 +1618,7 @@ pageCam.prototype.setClickable = function(boolClick){
 			 	var camSrc = camObj.src,
 				camWidth = parseInt(camObj.natWidth),
 				camHeight = parseInt(camObj.natHeight);
-				
+
 				//are we using a webkit browser?
 				var isWebkit = 'WebkitAppearance' in document.documentElement.style,
 				hoverImgId = camObj.parentId+'hover1';
@@ -1628,7 +1629,7 @@ pageCam.prototype.setClickable = function(boolClick){
 				$(hoverImgLink).width(camWidth);
 				$(hoverImgLink).height(camHeight);
 				hoverImg.src = camSrc;
-				
+
 				if(typeof camObj.hoverTarget !== 'undefined' && camObj.hoverTarget !== ''){
 					hoverImgLink.href = camObj.hoverTarget;
 				}
@@ -1651,11 +1652,11 @@ pageCam.prototype.setClickable = function(boolClick){
 				var height = parseInt(camObj.natHeight,10);
 				var left = parseInt($('#'+camObj.parentId).css('left'),10)
 				var width = parseInt(camObj.natWidth,10);
-				
+
 				if(isWebkit){
 					$('#'+hoverImgId).css({
 						"top": (((window.innerHeight-height)/2)-top)+"px",
-						"left": (((window.innerWidth-width)/2)-left)+"px"	
+						"left": (((window.innerWidth-width)/2)-left)+"px"
 					});
 				}
 				else{
@@ -1667,7 +1668,10 @@ pageCam.prototype.setClickable = function(boolClick){
 				//seperate click events
 				setTimeout(function(){
 					//click event for closing out the hover image
-					$(document.body).one("click", ":not(#"+hoverImgId+", #"+hoverImgId+" *,#"+camObj.parentId+", #"+camObj.parentId+" *)", function(e){ 
+					$(document.body).one("click", ":not(#"+hoverImgId+", #"+hoverImgId+" *,#"+camObj.parentId+", #"+camObj.parentId+" *)", function(e){
+						$('#closePopOut').hide();
+						$('#hammerspace').css('opacity', '1');
+
 						camObj.clicked = false;
 						$('#'+hoverImgId).remove();
 						$('#'+camObj.parentId).removeClass('focusedCam');
@@ -1677,18 +1681,18 @@ pageCam.prototype.setClickable = function(boolClick){
 			 }
 		});
 	}
-}	
+}
 
 //sets class for hover and sets delay time
 pageCam.prototype.setHover = function(boolHover, hoverTime){
 
 	var camObj, camId, radiobtn;
 	camObj = this;
-	clearTimeout(camObj.timeOut);	
+	clearTimeout(camObj.timeOut);
 	camId = camObj.containerId;
-	
-	/*if hovering is set to disabled, we remove the event handler and hide the 
-	* options in the edit window responsible for configuring hover. 
+
+	/*if hovering is set to disabled, we remove the event handler and hide the
+	* options in the edit window responsible for configuring hover.
 	*/
 	console.log(boolHover);
 	if(boolHover == false){
@@ -1696,8 +1700,8 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		camObj.hoverable = false;
 		$( "#"+camId  ).off("mouseenter.popOut");
 		$( "#"+camId  ).off("mouseleave.popOut");
-		$('#hoverTimeRow, #suppressHoverable').hide();		
-		return;	
+		$('#hoverTimeRow, #suppressHoverable').hide();
+		return;
 	}
 	//else, continue setting hover event handler
 	else{
@@ -1706,22 +1710,22 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		timeOut = hoverTime*1000;
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
-		
-		/*if the src of the image changes while we are hovering, we don't want 
+
+		/*if the src of the image changes while we are hovering, we don't want
 		* this function to set another hover event handler. Instead we just change
 		* the src of the hover image and return
 		*/
 		if($( "#"+camId  ).hasClass('focusedCam')){
-			$( "#"+camId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);	
+			$( "#"+camId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);
 			return;
 		}
 		$( "#"+camId  ).off("mouseenter.popOut");
 		$( "#"+camId  ).off("mouseleave.popOut");
 		//camObj.hoverFunction = $( "#"+camId ).hover(function(){
 		$("#"+camId ).on({
-			
+
 			"mouseenter.popOut": function() {
-				
+
 			var camSrc = camObj.src;
 			suppressed = false;
 			camWidth = parseInt(camObj.natWidth);
@@ -1729,12 +1733,12 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 			divWidth = parseInt($('#'+camId).css('width').slice(0,-2));
 			isWebkit = 'WebkitAppearance' in document.documentElement.style;
 			hoverImgId = camId+'hover';
-			
+
 			if(camWidth <= divWidth && camObj.suppressed == true){
 				suppressed = true;
 			}
 			if(editMode == false && suppressed == false){
-				clearTimeout(camObj.timeOut);	
+				clearTimeout(camObj.timeOut);
 				//sets a user-configurable timeout so that the hover does not trigger right away
 				camObj.timeOut = setTimeout(function() {
 					console.log('time');
@@ -1743,10 +1747,10 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					$(hoverImgLink).width(camWidth);
 					$(hoverImgLink).height(camHeight);
 					hoverImg.src = camSrc;
-				
+
 					if(typeof camObj.hoverTarget !== 'undefined' && camObj.hoverTarget !== ''){
 						hoverImgLink.href = camObj.hoverTarget;
-						
+
 					}
 					else{
 						hoverImgLink.href = camSrc;
@@ -1761,7 +1765,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					console.log(hoverImg);
 					$('#'+camId).append(hoverImgLink);
 					$('#'+camId).addClass('focusedCam');
-				
+
 					hoverImgLink.id = hoverImgId;
 					hoverImgLink.className = 'expandedCam';
 					var top = parseInt($('#'+camId).css('top'),10)
@@ -1774,7 +1778,7 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 					if(isWebkit){
 						$('#'+hoverImgId).css({
 							"top": (((window.innerHeight-height)/2)-top)+"px",
-							"left": (((window.innerWidth-width)/2)-left)+"px"	
+							"left": (((window.innerWidth-width)/2)-left)+"px"
 						});
 					}
 					else{
@@ -1789,11 +1793,11 @@ pageCam.prototype.setHover = function(boolHover, hoverTime){
 		"mouseleave.popOut":function () {
 			clearInterval(camObj.timerInterval);
 			$("#"+camObj.parentId).find('.timerBlock').remove();
-			if(editMode === false && suppressed == false){	
+			if(editMode === false && suppressed == false){
 				clearTimeout(camObj.timeOut);
 				$('#'+hoverImgId).remove();
 				$('#'+camId).removeClass('focusedCam');
-				
+
 			}
 		}
 	});
@@ -1816,7 +1820,7 @@ pageCam.prototype.setCrop = function(boolCrop){
 	else{
 		var style = this.getStyle();
 		this.setStyle(style);
-		this.cropped = false;	
+		this.cropped = false;
 	}
 
 }
@@ -1834,7 +1838,7 @@ pageCam.prototype.getNatHeight = function(){
 //sets the natural width and height of an image
 pageCam.prototype.setNaturalDimensions = function(height, width){
 	console.log("width "+width+" height "+height);
-	
+
 	this.natHeight = height;
 	this.natWidth = width;
 	this.changedHeight = height;
@@ -1857,7 +1861,7 @@ pageCam.prototype.resize = function(){
 	camObj.setStyle(newStyle);
 	camObj.setResize();
 	camObj.setDrag();
-	
+
 }
 
 //gets current height of the camera
@@ -1927,7 +1931,7 @@ pageCam.prototype.setWidthHeightFields = function(){
 pageCam.prototype.previousElementWidth = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
-	$("#manualWidth").val(dims.getWidth());	
+	$("#manualWidth").val(dims.getWidth());
 	this.widthToSave = $('#'+this.parentId).width();
 
 }
@@ -1936,7 +1940,7 @@ pageCam.prototype.previousElementWidth = function(){
 pageCam.prototype.previousElementHeight = function(){
 	var dims = this.elementDimensions[0];
 	console.log(dims);
-	$("#manualHeight").val(dims.getHeight());	
+	$("#manualHeight").val(dims.getHeight());
 	this.heightToSave = $('#'+this.parentId).height();
 
 }
@@ -1956,7 +1960,7 @@ pageCam.prototype.camCrop = function(){
 		originalHeight = thisElement.css('height');
 		left = thisElement.css('left');
 		top = thisElement.css('top');
-		src = thisObj.src;		
+		src = thisObj.src;
 		diffFromNatHeight = (height)/thisObj.natHeight;
 		diffFromNatWidth = (width)/thisObj.natWidth;
 		console.log(height+" "+thisObj.natHeight+" "+diffFromNatHeight);
@@ -2036,13 +2040,13 @@ pageCam.prototype.camCrop = function(){
 				console.log(cropHeight+ " "+cropWidth);
 			}
 		});
-	}	
+	}
 	//event for finalizing the cropping
 	$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
 	$( document ).on( "click", "#endCrop" , function() {
 		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
 		$('#endCrop, #cancelCrop, #cropDialog').hide();
-		
+
 		width = parseInt((width));
 		height = parseInt((height));
 		$('.cropperWrapper').remove();
@@ -2078,11 +2082,11 @@ pageCam.prototype.camCrop = function(){
 			"height": heightcrop+"px",
 			"background-size": width+"px "+height+"px "
 		});
-		$('.controlsOverlay').hide();				
+		$('.controlsOverlay').hide();
 		thisElement.resizable({disabled:true});
 		thisObj.setCrop(true);
 		thisElement.show();
-		
+
 	});
 	//event for canceling the cropping
 	$( document ).off( "click", "#cancelCrop"); //unbind old events, and bind a new one
@@ -2098,16 +2102,16 @@ pageCam.prototype.camCrop = function(){
 		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
 		$('#endCrop, #cancelCrop, #cropDialog').hide();
 		$('.cropperWrapper').remove();
-		$('.controlsOverlay').hide();								
+		$('.controlsOverlay').hide();
 	});
 }
 //creates element
 pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 	var camId = this.fullId;
-	var camObj = this; 
+	var camObj = this;
 	$('#preload').append('<img alt="camimage" src="" id="preload_'+camId+'" >');
 	$('.top-container').append('<div title=""class="imgCamContainer suppressHover hoverables" id='+camId+' style=""><img alt="1" style="visibility:hidden;" src="'+value+'"></div>');
-	
+
 	//set resize and drag
 	camObj.setResize();
 	camObj.setDrag();
@@ -2118,9 +2122,9 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		"top":pageY,
 		"left":pageX
 	});
-	
+
 	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
-	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the 
+	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the
 	//real image once it is completely loaded.
 	$('#preload_'+camId).load(function() {
 		var src = $(this).attr("src");
@@ -2130,16 +2134,16 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.suppressed = true;
 		camObj.hoverDelay = 1;
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
-		camObj.cropped = false;	
-		camObj.count = cellCount; 
+		camObj.cropped = false;
+		camObj.count = cellCount;
 		camObj.src = value;
-		
+
 		var currentMode = editMode
 		var width = $('#'+camId).children('img').width();
-		var height = $('#'+camId).children('img').height();	
+		var height = $('#'+camId).children('img').height();
 		var hov = true;
 		var delay = 1;
-		
+
 		camObj.setNaturalDimensions(height, width);
 		camObj.heightToSave = height;
 		camObj.widthToSave = width;
@@ -2151,17 +2155,17 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		camObj.lastData = Date.now();
 		$('#'+camId).css('z-index',camObj.count);
 		camObj.timerAppend();
-	});	
-	
+	});
+
 	//update src after .load is called
 
 	$('#preload_'+camId).attr('src', value);
-	
-	var pageObjId = 'pageSettings';	
+
+	var pageObjId = 'pageSettings';
 	var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 	var pageObj= cell_arr[pageElementPos];
 	var updatePath = this.path.split(".");
-	
+
 	updatePath.length = updatePath.length-1;
 	updatePath = updatePath.join();
 	updatePath = updatePath.replace(/\,/g,"/");
@@ -2171,37 +2175,37 @@ pageCam.prototype.createHtml = function(cellCount, value, pageX, pageY){
 		data_object.filters_set(pageObj.updateTable);
 
 	}
-	
+
 }
 
 pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
-	
+
 	var camId = this.fullId;
 	var camObj = this;
-	
+
 	//get the image src value
-	
-	
+
+
 	var updatedPath = ref(dataOld, this.path);
 	if(typeof updatedPath === 'undefined'){
 		updatedPath = 'images/unavailable.svg';
 	}
-	
+
 	camObj.src = updatedPath;
 	console.log(updatedPath);
-	
+
 	var img = document.createElement("IMG");
 	img.alt = "camimage";
 	img.id = 'preload_'+this.fullId
 	$('#preload').append(img);
-	
+
 	//$('#preload').append('<img alt="camimage" src="" id="preload_'+this.fullId+'" >');
 	console.log($('#'+camObj.parentId+''));
-	
+
 	//The below code is responsible for pre-loading an image so that the whole image appears to load instantly
-	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the 
+	//The '#preload_' element loads the image first, and then the jquery .load() function sets the source of the
 	//real image once it is completely loaded.
-	$(img).load( null, function() { 
+	$(img).load( null, function() {
 		console.log(camObj);
 		console.log(camObj.style);
 			$('#content').append('<div title="" class="imgCamContainer suppressHover hoverables" id="'+camObj.parentId+'"><img alt="1" style="visibility:hidden;" src=""></div>');
@@ -2209,13 +2213,13 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 		$('#'+camObj.parentId).attr('style', camObj.style);
 		$('#'+camObj.parentId).find('img').attr('src', updatedPath);
 		$('#'+camObj.parentId).css('background-image', 'url('+updatedPath+')');
-		
+
 		//Allow dragging and resizing as well as a pop-out hover image
 		camObj.setDrag();
 		camObj.setResize();
 		camObj.lastData = Date.now();
 		camObj.timerAppend();
-		
+
 		//if we are not in edit mode when loading, we want dragging and resizing to be disabled until
 		//we enter edit mode.
 		if(editMode == false){
@@ -2226,7 +2230,7 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 			$('#'+camObj.parentId).draggable({disabled:false});
 			$('#'+camObj.parentId).resizable({disabled:false});
 		}
-		
+
 		//if the loaded object states that it is hidden, we grant the new element the 'hide' class.
 		if(camObj.hidden){
 			$('#'+camObj.parentId).addClass('hide');
@@ -2234,11 +2238,11 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 			if(editMode == false){
 				$('#'+camObj.parentId).css('visibility','hidden');
 			}
-		}	
-		
+		}
+
 		//we locate the pageSettings element in our object array so that we can update its hashtable with
 		//the path to our camera.
-		var pageObjId = 'pageSettings';	
+		var pageObjId = 'pageSettings';
 		var pageElementPos = cell_arr.map(function(x) {return x.id; }).indexOf(pageObjId);
 		var pageObj= cell_arr[pageElementPos];
 		var updatePath = camObj.path.split(".");
@@ -2258,21 +2262,21 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 			if(typeof image_size === 'number'){
 				cameraDataSize = cameraDataSize + image_size;
 				console.log(cameraDataSize);
-				
+
 				//calculate the image size and upate the byte counter
 				$('#bytesReceived').html(calculateDownload());
 			}
 		}
 		//add the path to the hash table
 		pageObj.addToTable(camObj.path, updatedPath);
-		
+
 		//if table does not already have this image or the current image src is not up to date, add this image to the hash table.
 		camObj.setClickable(true);
 		camObj.setHover(camObj.hoverable, camObj.hoverDelay);
 		adjustDimensions(widthRatio, heightRatio, camObj);
 
 	});
-	
+
 	//update src after .load is called
 	//$('#preload_'+camId).attr('src', updatedPath);
 	img.src = updatedPath;
@@ -2282,7 +2286,7 @@ pageCam.prototype.loadHtml = function(widthRatio, heightRatio){
 //removes the cam and deletes it from teh array of objects so that it is not saved
 pageCam.prototype.removeSelf = function(){
 	console.log('REMOVED');
-	
+
 		var obj = this;
 		var objId = obj.fullId;
 		var elementPos = cell_arr.map(function(x) {return x.id; }).indexOf(objId);
@@ -2293,8 +2297,8 @@ pageCam.prototype.removeSelf = function(){
 		$('#'+objId).remove();
 		$('#preload_'+objId).remove();
 		console.log(cell_arr);
-		
-		
+
+
 	}
 
 /***********************************************************************************
@@ -2321,31 +2325,31 @@ pageImg.prototype.setHover = function(boolHover, hoverTime){
 	var imgObj, imgId, radiobtn;
 	imgObj = this;
 	console.log(this);
-	
+
 	//clear old timeout
-	clearTimeout(imgObj.timeOut);	
+	clearTimeout(imgObj.timeOut);
 	imgId = imgObj.parentId;
 	console.log(imgId);
-	
+
 	//if hovering is not enabled, return out of the function
 	if(boolHover == false){
 		console.log('false');
 		imgObj.hoverable = false;
 		$( '#'+imgId ).off("mouseenter mouseleave");
-		$('#hoverTimeRow, #suppressHoverable').hide();		
-		return;	
+		$('#hoverTimeRow, #suppressHoverable').hide();
+		return;
 	}
 	else{
 		var suppressed, imgId, imgWidth, divWidth, imgHeight, isWebkit, hoverImgId, timeOut, hoverTimeOut, hoverImg, hoverImgLink;
 		imgObj.hoverable = true;
 		timeOut = hoverTime*1000;
 		if($( "#"+imgId  ).hasClass('focusedCam')){
-			$( "#"+imgId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);	
+			$( "#"+imgId  ).find('.expandedCam, .webKitCam').attr('src',camObj.src);
 			return;
 		}
 		hoverImg = document.createElement('img');
 		hoverImgLink = document.createElement('a');
-		$('#hoverTimeRow, #suppressHoverable').show();	
+		$('#hoverTimeRow, #suppressHoverable').show();
 		$( "#"+imgId  ).unbind("mouseenter mouseleave");
 		$( "#"+imgId ).hover(function(){
 
@@ -2362,7 +2366,7 @@ pageImg.prototype.setHover = function(boolHover, hoverTime){
 			}
 
 			if(editMode == false && suppressed == false){
-				clearTimeout(imgObj.timeOut);	
+				clearTimeout(imgObj.timeOut);
 				console.log(imgObj.timeOut);
 				imgObj.timeOut = setTimeout(function() {
 					console.log('time');
@@ -2396,12 +2400,12 @@ pageImg.prototype.setHover = function(boolHover, hoverTime){
 					}
 					else{
 						hoverImg.className = 'expandedCam';
-					}	
+					}
 				}, timeOut); //end hoverTimeOut
 
 			} //end if(editMode == false && suppressed == false)
 		}, function () {
-			if(editMode == false){	
+			if(editMode == false){
 				clearTimeout(imgObj.timeOut);
 				$(hoverImgLink).remove();
 				$('#'+imgId).removeClass('focusedCam');
@@ -2414,24 +2418,24 @@ pageImg.prototype.setSuppression = function(boolSuppress){
 	this.suppressed = boolSuppress;
 }
 
-/*This method grabs the url from Edit URL input field in the edit menu - 
+/*This method grabs the url from Edit URL input field in the edit menu -
  * it then changes the src to that value
 */
 pageImg.prototype.setSrc = function(){
-	
+
 	//capture 'this' so that we can use it in the load event below
 	var objectFound = this;
-	
+
 	//reset the image size so we are working a clean slate with no defined height and width
 	objectFound.resize();
-	
+
 	//create a temporary image so that we can pre-load the incoming image
 	var tempImg = document.createElement('img');
 	var selectedChild = this.id;
 	var selectedModule = this.parentId;
 	console.log(selectedModule);
 	var url = $("#"+selectedModule).find('img');
-	
+
 	//wait for temporary image to load so we can set the src among other things
 	$(tempImg).one('load', function() {
 		//grab natural width and height of image so we can pull the image in at native size
@@ -2439,7 +2443,7 @@ pageImg.prototype.setSrc = function(){
 		var height = tempImg.naturalHeight;
 		var newSrc = $('.urlChange').val();
 		console.log(width+' '+height);
-		
+
 		url.attr('width',width);
 		url.attr('height',height);
 		$("#"+selectedChild).width(width);
@@ -2451,7 +2455,7 @@ pageImg.prototype.setSrc = function(){
 		$("#"+selectedModule).css('background-image', 'url('+newSrc+')');
 		$("#"+selectedModule).css('background-repeat','no-repeat');
 		url.attr('src', $('.urlChange').val());
-		
+
 		//now that image is loaded we can adjust all of the object properties accurately
 		objectFound.src = $('.urlChange').val();
 		objectFound.natHeight = height;
@@ -2467,7 +2471,7 @@ pageImg.prototype.setSrc = function(){
 		url.attr('width','0');
 		url.attr('height','0');
 		tempImg.src = $('.urlChange').val();
-	}, 100); 
+	}, 100);
 }
 
 //this sets our cropped value and refreshes the style
@@ -2480,22 +2484,22 @@ pageImg.prototype.setCrop = function(boolCrop){
 	else{
 		var style = this.getStyle();
 		this.setStyle(style);
-		this.cropped = false;	
+		this.cropped = false;
 	}
 
 }
 
 //Large, ridiculous function for cropping - may have to be refactored some day
 pageImg.prototype.imgCrop = function(){
-	
+
 	//capture 'this' in a variable so it can be used within the scopes below
 	var thisObj = this;
 	var thisElement = $("#"+thisObj.parentId);
-	
+
 	//hide the DOM element while we work on croppying
 	thisElement.hide();
 	var width, height, left, top, src, diffFromNatWidth, diffFromNatHeight, cropTop, cropLeft, cropWidth, cropHeight, originalWidth, originalHeight;
-	
+
 	//cropping situation if our camera has already been cropped
 	if(thisObj.cropped == true){
 		width = parseInt(thisObj.changedWidth);
@@ -2504,7 +2508,7 @@ pageImg.prototype.imgCrop = function(){
 		originalHeight = thisElement.css('height');
 		left = thisElement.css('left');
 		top = thisElement.css('top');
-		src = thisObj.src;		
+		src = thisObj.src;
 		diffFromNatHeight = (height)/thisObj.natHeight;
 		diffFromNatWidth = (width)/thisObj.natWidth;
 		console.log(width+" "+thisObj.natWidth+" "+diffFromNatHeight);
@@ -2579,13 +2583,13 @@ pageImg.prototype.imgCrop = function(){
 				cropTop = Math.round(e.y);
 			}
 		});
-	}	
+	}
 	//event for finalizing the cropping
 	$( document ).off( "click", "#endCrop"); //unbind old events, and bind a new one
 	$( document ).on( "click", "#endCrop" , function() {
 		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
 		$('#endCrop, #cancelCrop, #cropDialog').hide();
-		
+
 		width = parseInt((width));
 		height = parseInt((height));
 		$('.cropperWrapper').remove();
@@ -2622,7 +2626,7 @@ pageImg.prototype.imgCrop = function(){
 			"background-size": width+"px "+height+"px ",
 			"overflow": "hidden"
 		});
-		$('.controlsOverlay').hide();				
+		$('.controlsOverlay').hide();
 		thisElement.resizable({disabled:true});
 		thisObj.setCrop(true);
 		thisElement.show();
@@ -2641,7 +2645,7 @@ pageImg.prototype.imgCrop = function(){
 		$('#cropModule, #hideDelRow, #resizeModule, #hoverRow, #zRow, #hoverTimeRow, .editWindow, .controls').show();
 		$('#endCrop, #cancelCrop, #cropDialog').hide();
 		$('.cropperWrapper').remove();
-		$('.controlsOverlay').hide();								
+		$('.controlsOverlay').hide();
 	});
 }
 
@@ -2655,7 +2659,7 @@ pageImg.prototype.getWidth = function(){
 		return $("#"+this.parentId).width();
 }
 
-//this function is applies the width value in the input field 
+//this function is applies the width value in the input field
 //under sizing options in the edit menu
 pageImg.prototype.applyWidth = function(){
 	var obj = this;
@@ -2669,7 +2673,7 @@ pageImg.prototype.applyWidth = function(){
 
 }
 
-//this function is applies the height value in the input field 
+//this function is applies the height value in the input field
 //under sizing options in the edit menu
 pageImg.prototype.applyHeight = function(){
 	var obj = this;
@@ -2732,7 +2736,7 @@ pageImg.prototype.resize = function(){
 //sets up the jqueryUI resizing function used to resize the element
 pageImg.prototype.setResize = function(){
 	var handleTarget;
-	var thisObj = this;		
+	var thisObj = this;
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', aspectRatio: true, disabled: false,
 		//function that executes when user starts resizing
@@ -2740,13 +2744,13 @@ pageImg.prototype.setResize = function(){
 			//this event is for removing the title property during resizing
 			$('#'+thisObj.parentId).off('mouseup');
 				var title = thisObj.toolTip;
-				$(this).removeAttr("title");			
+				$(this).removeAttr("title");
 				$('#'+thisObj.parentId).on('mouseup', function(e) {
-					$('#'+thisObj.parentId).attr('title',title);	
+					$('#'+thisObj.parentId).attr('title',title);
 				});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
-			var posSpan = document.createElement("SPAN"); 
+			var posSpan = document.createElement("SPAN");
 			posSpan.id = 'resizeSpan';
 			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 			//creates an info box near the user's cursor that shows the current height and width
@@ -2766,7 +2770,7 @@ pageImg.prototype.setResize = function(){
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
-			}); 
+			});
 			$('#resizeSpan').text("Width: "+width+"  Height: "+height+"");
 		},
 		//function that executes after finishes resizing
@@ -2782,12 +2786,12 @@ pageImg.prototype.setResize = function(){
 			thisObj.heightToSave = $('#'+thisObj.parentId).height();
 			thisObj.widthToSave = $('#'+thisObj.parentId).width();
 		}
-	});	
+	});
 }
 //creates the html associated with this object
 pageImg.prototype.createHtml = function(cellCount){
 	$('.top-container').append('<div id="'+this.parentId+'" title="'+this.parentId+'" style="background-image: url(images/insert_image.svg)" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="320" height="240" id="'+this.id+'" alt="'+this.id+'" src="images/insert_image.svg"></img></div>');
-	this.src = "images/insert_image.svg";	
+	this.src = "images/insert_image.svg";
 	this.setDrag();
 	this.setResize();
 	this.count = cellCount;
@@ -2801,14 +2805,14 @@ pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
 	var objectFound = this;
 	$('#content').append('<div id="'+this.parentId+'" title="'+this.parentId+'" class="imgBlockContainer"><div class="cam-drag-handle"></div><img class="imageInsert" width="'+this.width+'" height="'+this.height+'" id='+this.id+' alt='+this.id+' src="'+this.src+'"></img></div>');
 	$('#'+this.id).load(function() {
-		
+
 		$('#'+objectFound.parentId).attr('style',objectFound.style);
 		$('#'+objectFound.parentId).css("background-repeat", "no-repeat");
-		
+
 		//set hovering event
 		objectFound.setSuppression(objectFound.suppressed);
 		objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
-		
+
 		//if the hidden property is set to true, the element must be hidden when we load it (depending on if we are in edit
 		//mode or not)
 		if(objectFound.hidden){
@@ -2818,7 +2822,7 @@ pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
 				$('#'+objectFound.parentId).css('visibility','hidden');
 			}
 
-		}	
+		}
 		//adjusts dimensions of object to fit our current screen resolution
 		adjustDimensions(widthRatio, heightRatio, objectFound);
 
@@ -2826,7 +2830,7 @@ pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
 
 	objectFound.setDrag();
 	objectFound.setResize();
-	
+
 	//disable dragging and reszing if we are not in edit mode
 	if(editMode == false){
 		$('#'+objectFound.parentId).draggable({disabled:true});
@@ -2836,7 +2840,7 @@ pageImg.prototype.loadHtml = function(widthRatio, heightRatio){
 		$('#'+objectFound.parentId).draggable({disabled:false});
 		$('#'+objectFound.parentId).resizable({disabled:false});
 	}
-	
+
 }
 /***********************************************************************************
 * TEXT BLOCK OBJECT
@@ -2861,7 +2865,7 @@ pageText.prototype.createHtml = function(cellCount){
 	//incremental ID attribute
 	textBlock.id = "block"+cellCount+rand;
 	textBlock.title = textBlock.id;
-	
+
 	this.toolTip = textBlock.title;
 	this.id = "block"+cellCount+rand;
 	this.parentId = "block"+cellCount+rand;
@@ -2888,7 +2892,7 @@ pageText.prototype.loadHtml = function(){
 	textBlock.id = this.parentId;
 	this.id = this.parentId;
 	this.parentId = this.parentId;
-	
+
 	this.toolTip = textBlock.title;
 	//appends a textblock to the div with our default text
 	$(textBlock).append('<p>'+textContent+'</p>');
@@ -2903,7 +2907,7 @@ pageText.prototype.loadHtml = function(){
 		if(editMode == false){
 			$('#'+this.parentId).css('visibility','hidden');
 		}
-	}	
+	}
 	if(editMode == false){
 		$('#'+this.parentId).draggable({disabled:true});
 		$('#'+this.parentId).resizable({disabled:true});
@@ -2915,7 +2919,7 @@ pageText.prototype.loadHtml = function(){
 }
 pageText.prototype.fontSizeChange = function(size){
 	if(size == ''){
-		size =  8;	
+		size =  8;
 	}
 	size = size.trim();
 
@@ -2933,19 +2937,19 @@ pageText.prototype.fontColorChange = function(color){
 }
 pageText.prototype.setResize = function(){
 	var handleTarget;
-	var thisObj = this;		
+	var thisObj = this;
 	$('#'+thisObj.parentId).resizable({
 		grid: [1,1], handles: 'all', disabled: false,
 		start: function(event, ui){
 			$('#'+thisObj.parentId).off('mouseup');
 			var title = thisObj.toolTip;
-			$(this).removeAttr("title");			
+			$(this).removeAttr("title");
 			$('#'+thisObj.parentId).on('mouseup', function(e) {
-				$('#'+thisObj.parentId).attr('title',title);	
+				$('#'+thisObj.parentId).attr('title',title);
 			});
 			var width = $('#'+thisObj.parentId).css('width');
 			var height = $('#'+thisObj.parentId).css('height');
-			var posSpan = document.createElement("SPAN"); 
+			var posSpan = document.createElement("SPAN");
 			posSpan.id = 'resizeSpan';
 			posSpan.textContent = "Width: "+width+"  Height: "+height+")";
 			$('#resizeSpan').css({
@@ -2961,8 +2965,8 @@ pageText.prototype.setResize = function(){
 			var top = $('#positionDiv').css('top');
 			var left = $('#positionDiv').css('left');
 			var newWidth, newHeight;
-			
-			
+
+
 			var direction = $(event.target).data('ui-resizable').axis;
 			if(direction == 'e' || direction == 'se' || direction == 's'){
 				newWidth = (Math.floor(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
@@ -2971,25 +2975,25 @@ pageText.prototype.setResize = function(){
 				$('#'+thisObj.parentId).height(newHeight);
 			}
 			else{
-				
+
 				var posTop = (Math.floor(ui.position.top / thisObj.gridProps.size) * thisObj.gridProps.size);
 				var posLeft = (Math.floor(ui.position.left / thisObj.gridProps.size) * thisObj.gridProps.size);
 				newWidth = (Math.ceil(ui.size.width / thisObj.gridProps.size) * thisObj.gridProps.size);
 				newHeight = (Math.ceil(ui.size.height / thisObj.gridProps.size) * thisObj.gridProps.size);
-				
+
 				ui.position.top = posTop;
 				ui.position.left = posLeft;
 				$('#'+thisObj.parentId).css('top',posTop);
 				$('#'+thisObj.parentId).css('left',posLeft);
 				$('#'+thisObj.parentId).width(newWidth);
 				$('#'+thisObj.parentId).height(newHeight);
-				
+
 			}
-			
+
 			$('#resizeSpan').css({
 				top: event.clientY+5,
 				left: event.clientX+5
-			}); 
+			});
 			$('#resizeSpan').text("Width: "+newWidth+"  Height: "+newHeight+"");
 		},
 		stop: function(event, ui){
@@ -3018,7 +3022,7 @@ pageText.prototype.setText = function(text){
 
 pageText.prototype.setOpacity = function(opacity, selectedModule, ui){
 	var thisObj = this;
-	var containerId = this.parentId;	
+	var containerId = this.parentId;
 	opacity = opacity.toString();
 	var newColor;
 	if($('#'+selectedModule).css('background-color').indexOf("rgba") < 0){
@@ -3034,7 +3038,7 @@ pageText.prototype.setOpacity = function(opacity, selectedModule, ui){
 	$('.backgroundColorChange').val(''+newColor);
 	$('#opacitySlider .ui-slider-range').css('background', newColor );
 	$('#opacitySlider .ui-slider-handle').css('border-color', newColor);
-	
+
 	var style = this.getStyle();
 	this.setStyle(style);
 }

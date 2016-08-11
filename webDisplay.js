@@ -30,7 +30,9 @@ var elementStats = function(){
 	var date = Date.now();
 	var oldestEle;
 	jQuery.each(cell_arr, function(index, item) {
-		if(item.elementType == 'pageLog' ||item.elementType == 'pageCell' ||item.elementType == 'pageCam' ){
+		if(item == undefined){
+		}
+		else if(item.elementType == 'pageLog' ||item.elementType == 'pageCell' ||item.elementType == 'pageCam' ){
 			if((date-item.lastData) > oldest){
 				oldest = date-item.lastData;
 				oldestEle = item;
@@ -335,9 +337,6 @@ function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals).toFixed(decimals);
 }
 function data_error(errors, delay) {
-	console.log(errors[0]);
-	console.log(errors);
-	console.log(delay);
     //$('#ws_status').text(errors[0] + ': Reconnecting in ' + delay + 's.');
 	$('#timer1').html('<span>'+errors[0] + ': connecting in ' + delay + ' s. </span>');
 }
@@ -562,35 +561,40 @@ function dynamicUpdate(data) {
 		else if(objectFound.elementType == 'pageCam'){
 			var currentCam;
 			value = ref(data, objectFound.path);
-			objectFound.value = value;
-			objectFound.dataType = typeof value;
-			currentCam = $("#"+objectFound.fullId);
-			currentCam = currentCam.attr('id');
-			$('#preload_'+currentCam).unbind();
-			$('#preload_'+currentCam).load(function() {
-				var src = objectFound.value;
-				var cam = $(this).attr('id').replace("preload_","");
-				if(objectFound.src != src){	
-					$('#'+cam).find('img').attr('src', src);
-					objectFound.src = src;
-					console.log(objectFound.src);
-					objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
-					//access table in pagesettings object to see if this image has already been loaded by the browser in another element - if not, we add the size of the image to the data counter
-					if(!pageObj.isTableItemCurrent(objectFound.path,objectFound.src)){
-						//get size of image
-						cameraDataSize = cameraDataSize + ref(data, objectFound.path.replace('image_url','image_size'));
-						console.log(cameraDataSize);
-						//calculate data transferred now that image has fully loaded
-						$('#bytesReceived').html(calculateDownload());
+			if(value == objectFound.value){
+				console.log(value);
+			}
+			else{
+				objectFound.value = value;
+				objectFound.dataType = typeof value;
+				currentCam = $("#"+objectFound.fullId);
+				currentCam = currentCam.attr('id');
+				$('#preload_'+currentCam).unbind();
+				$('#preload_'+currentCam).load(function() {
+					var src = objectFound.value;
+					var cam = $(this).attr('id').replace("preload_","");
+					if(objectFound.src != src){	
+						$('#'+cam).find('img').attr('src', src);
+						objectFound.src = src;
+						//console.log(objectFound.src);
+						objectFound.setHover(objectFound.hoverable, objectFound.hoverDelay);
+						//access table in pagesettings object to see if this image has already been loaded by the browser in another element - if not, we add the size of the image to the data counter
+						if(!pageObj.isTableItemCurrent(objectFound.path,objectFound.src)){
+							//get size of image
+							cameraDataSize = cameraDataSize + ref(data, objectFound.path.replace('image_url','image_size'));
+							//console.log(cameraDataSize);
+							//calculate data transferred now that image has fully loaded
+							$('#bytesReceived').html(calculateDownload());
+
+						}
 
 					}
-					
-				}
-				$('#'+cam).css('background-image', 'url('+src+')');	
-			});
-			//src is set after the .load() function
-			
-			$('#preload_'+currentCam).attr('src',value);		
+					$('#'+cam).css('background-image', 'url('+src+')');	
+				});
+				//src is set after the .load() function
+
+				$('#preload_'+currentCam).attr('src',value);	
+			}
 		}
 		//for other elements...
 		else{
@@ -707,26 +711,26 @@ function sinceDataTimer(){
 	//console.log(updatelock);
 	//if it has been longer than our time out, we set the flag to be true
 	if(time > 1800){
-		console.log(time);
+		//console.log(time);
 		timedOut = true;
 	}
 	//if timedout flag is true, it will attempt to send a full data update once data is sent again
 	if(timedOut){
 		//console.log(timedOut);
 		//console.log(updatelock);
-		console.log(timedOut);
+		//console.log(timedOut);
 		if(data_object.ws_error !== false || time < 1800){
-				console.log(time);
+				//console.log(time);
 			data_object.ValueGet(function(rsp){
 				updatelock = true;
 				if(!rsp.data || rsp.error){
 					// Couldn't get configuration data from server
-					console.log(rsp);
+					//console.log(rsp);
 					updatelock = false;
 					return;
 				}
 				dataOld = rsp.data
-				console.log(dataOld);
+				//console.log(dataOld);
 				dynamicUpdate(dataOld);
 				
 								
@@ -735,7 +739,7 @@ function sinceDataTimer(){
 				iterateStations(dataOld, "", jsonArray, lastk);
 
 				
-				console.log(rsp.data);
+				//console.log(rsp.data);
 				dataUpdateTime = Date.now();
 				timedOut = false;
 				updatelock = false;
@@ -1289,7 +1293,7 @@ function data_update(data) {
 
 	}
 	if(!updatelock && loadedTime > 1){
-		console.log(data);
+		//console.log(data);
 		refreshTreeData(data);
 	}
 	dataTransferred = this.rx_data_counter();
@@ -1299,7 +1303,7 @@ function data_update(data) {
 	//if edit mode is not on and it has been almost 15 seconds since last tree refresh, the tree will refresh
 	if(editMode == false && treeRefreshTimer >= 14){
 		refreshTree(dataOld);	
-		console.log('refreshed');
+		//console.log('refreshed');
 		treeRefreshTimer = 0;
 	}
 	// clears document ready function
@@ -1530,15 +1534,15 @@ function createImage(){
 //this function accepts the partial updates and combines them with the existing data structure
 //used to build the tree.
 function refreshTreeData(newData){
-	console.log('partial data update initiated');
-	console.log(newData);
+	//console.log('partial data update initiated');
+	//console.log(newData);
 	dataUpdateTime = Date.now();
 	var oldD, newD;
 	var objectKeys = Object.keys(newData)[0]; //the station id that is being updated
 	if(newData.hasOwnProperty('webdisplay')){ //We return if we see a full data update
 		return;
    	}
-	console.log(objectKeys);
+	//console.log(objectKeys);
 	//iterates through the keys of the old data object
 	Object.keys(newData).forEach(function(key){	
 		//checks if the current key equals the key that we are looking for
@@ -3187,7 +3191,7 @@ function populateJsonField(){
 }
 
 function adjustDimensions(widthRatio, heightRatio, thisObj){
-	console.log(heightRatio+" "+widthRatio);
+	//console.log(heightRatio+" "+widthRatio);
 	var eleWidth, eleHeight, eleTop, eleLeft;
 	
 	eleWidth = parseFloat(thisObj.widthToSave)*widthRatio;
@@ -3217,7 +3221,7 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 			"font-size": eleFontSize+"px"
 		});
 		
-		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
+		//console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
 	else if(thisObj.elementType === 'pageCam'){
 		if(thisObj.cropped){
@@ -3245,7 +3249,7 @@ function adjustDimensions(widthRatio, heightRatio, thisObj){
 		thisObj.changedHeight = (parseFloat(thisObj.changedHeight)*heightRatio)+"px";
 		thisObj.natWidth = thisObj.natWidth*widthRatio;
 		thisObj.natHeight = thisObj.natHeight*heightRatio;
-		console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
+		//console.log(eleTop+" "+eleLeft+" "+ eleWidth+" "+eleHeight);
 	}
 	else if(thisObj.elementType === 'pageLog'){
 		var eleFontSize = parseFloat($('#'+thisObj.parentId).css('font-size'))*heightRatio;
