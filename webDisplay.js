@@ -710,7 +710,8 @@ function sinceDataTimer(){
 	//console.log(timedOut);
 	//console.log(updatelock);
 	//if it has been longer than our time out, we set the flag to be true
-	if(time > 1800){
+	console.log(time+" since last update");
+	if(time > 60){
 		//console.log(time);
 		timedOut = true;
 	}
@@ -719,7 +720,7 @@ function sinceDataTimer(){
 		//console.log(timedOut);
 		//console.log(updatelock);
 		//console.log(timedOut);
-		if(data_object.ws_error !== false || time < 1800){
+		if(data_object.ws_error !== false || time < 60){
 				//console.log(time);
 			data_object.ValueGet(function(rsp){
 				updatelock = true;
@@ -749,6 +750,7 @@ function sinceDataTimer(){
 	}
 	$('#timer1').html("<span>Data received " + time + " sec. ago </span>");
 }
+
 function timer(){
 	currentTime = Date.now();
 	loadedTime = loadedTime+1;
@@ -1104,8 +1106,46 @@ function data_update(data) {
 			   }
 					
 			});
-			//attempts to grab the get parameter to set background color
-			setInterval(sinceDataTimer,1000);
+			//setInterval(sinceDataTimer,1000);
+			var lastTime2 = (new Date()).getTime();
+
+			setInterval(function() {
+			  time = Date.now();
+			  time = Math.floor((time - dataUpdateTime)/1000);
+			  var currentTime = (new Date()).getTime();
+			  if (data_object.ws_error !== false || currentTime > (lastTime2 + 1000*4)) {  // ignore small delays
+					console.log("probably just woke up");
+					data_object.ValueGet(function(rsp){
+						updatelock = true;
+						if(!rsp.data || rsp.error){
+							// Couldn't get configuration data from server
+							console.log(rsp.error);
+							updatelock = false;
+							return;
+						}
+						dataOld = rsp.data
+						console.log(dataOld);
+						dynamicUpdate(dataOld);
+
+
+						var lastk = "#";
+						jsonArray = [];
+						iterateStations(dataOld, "", jsonArray, lastk);
+
+
+						//console.log(rsp.data);
+						dataUpdateTime = Date.now();
+						timedOut = false;
+						updatelock = false;
+						lastTime2 = currentTime;
+					},'');		
+			  }
+			  else{
+				lastTime2 = currentTime;
+			  }
+			  $('#timer1').html("<span>Data received " + time + " sec. ago </span>");
+	
+			}, 1000);
 			//populateCams(cams);
 			var lastk = "#";
 			jsonArray = [];
