@@ -565,6 +565,7 @@ function dynamicUpdate(data) {
 				console.log(value);
 			}
 			else{
+				objectFound.lastData = Date.now();
 				objectFound.value = value;
 				objectFound.dataType = typeof value;
 				currentCam = $("#"+objectFound.fullId);
@@ -602,7 +603,9 @@ function dynamicUpdate(data) {
 			//finds value of object
 			value = ref(data, objectFound.path);
 						objectFound.value = value;
-
+			if(value !== objectFound.value){
+				objectFound.lastData = Date.now();
+			}
 			if(( value !== null && typeof value === 'object' )){
 				value = ' [Incorrect Format - \"value\" property is undefined] ';	
 			}
@@ -1374,7 +1377,7 @@ function calculateDownload(){
 	}
 	size = round(size, 2);
 	size = size.toLocaleString();
-	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> Data Transfered <i title="Downloaded data counts data coming in \n from the webSocket since page load as well \n as well image size of camera elements" class="fa fa-question-circle"></i>';
+	message = '<span title="'+originalSize.toLocaleString()+' bytes">'+size+type+'</span> Data Transfered <i title="Downloaded data counts data coming in \n from the webSocket since page load \n as well image size of camera elements" class="fa fa-question-circle"></i>';
 	return message;
 }
 //gets parameters in url
