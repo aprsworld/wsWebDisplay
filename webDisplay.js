@@ -1,3 +1,6 @@
+/*
+Beware, here be dragons...
+*/
 /***** Global variables ********/
 var editMode = false;
 var time; //incremental variable that keeps track of time since last data update

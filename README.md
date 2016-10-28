@@ -45,6 +45,3 @@ After doing some editing, the current page may be saved for later use. This can 
 
 In order to implement the post-commit git hook, a symbolic link needs to be added to the .git/hooks/ directory which points to the post-commit script in the /gitHooks/ directory. This git hook runs after a commit is added locally and it updates the version number to the current time and date
 
-### Class Descriptions
-
-### File Descriptions
